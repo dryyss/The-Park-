@@ -1,0 +1,105 @@
+# .cursorrules — The Park (plateforme TCG)
+
+Tu es l'assistant de développement du projet **The Park**, une plateforme web TCG (collection, marketplace, boutique, échanges sécurisés). Respecte ces règles à chaque génération de code.
+
+---
+
+## Stack imposée (ne pas dévier sans raison)
+
+- **Next.js 15** (App Router uniquement, pas de Pages Router) · **React 19** · **TypeScript strict**.
+- **Prisma + PostgreSQL** pour les données. Toute évolution de schéma passe par une migration Prisma.
+- **Auth0** pour l'auth (comptes, âge, consentement parental).
+- **Payload CMS v3** pour le catalogue (cartes, saisons, versions, langues).
+- **Pusher / WebSocket** pour le chat contextualisé.
+- **Stripe** pour la boutique (+ Stripe Connect pour la couche sécurité C2C).
+- **Resend** pour les e-mails. **Recharts** pour les graphes.
+- Package manager : **pnpm**.
+
+---
+
+## Conventions de code
+
+- **TypeScript strict** : pas de `any` implicite, typer les retours d'API et les props.
+- **Server Components par défaut** ; `"use client"` seulement si interactivité réelle (state, events, hooks navigateur).
+- **Server Actions** ou **route handlers** (`app/api/.../route.ts`) pour les mutations ; ne jamais exposer une clé secrète côté client.
+- Validation des entrées avec **Zod** à chaque frontière (form, API, webhook).
+- Accès données via une **couche service** (`server/`), jamais Prisma directement dans un composant.
+- Nommage : composants `PascalCase`, hooks `useX`, fichiers utilitaires `kebab-case`, types `PascalCase`.
+- **i18n** : aucune chaîne en dur dans l'UI → passer par `messages/{fr,ja,en}`. Prévoir que le japonais peut être plus compact, l'anglais plus long.
+- Commentaires et libellés produit **en français** (docs client en français), code/identifiants en anglais.
+
+---
+
+## Design system (tokens)
+
+```css
+--carmin:    #D6004F;  /* signature, CTA, actions principales */
+--carmin-alt:#D81B60;  /* variante interactive */
+--rouge-fonce:#900030; /* ombres, profondeur */
+--charbon:   #1E2424;  /* fonds sombres, texte, sidebar admin */
+--blanc-casse:#FBF4F6; /* respirations, tuiles produit */
+--or:        #E8B23A;  /* EXCLUSIF : badge "Officiel ✔" boutique / Gold rarity */
+/* néon (vert/orange/rouge) = STATUTS uniquement (succès/alerte/danger) */
+```
+
+Règles d'usage :
+- **Carmin = action** (boutons, liens actifs). **Or = officiel** (vente directe Lighton / rareté Gold) — ne pas l'utiliser pour des CTA génériques.
+- Néon réservé aux **badges de statut**, jamais en décor.
+- Esprit JDM/street **par petites touches** (japonais 駐車場, fumée de drift, barcode) — l'ambiance ne doit jamais nuire à la lisibilité, surtout dans l'admin (qui reste pro et dense).
+- **Mobile-first**, responsive obligatoire. Virtualiser les grandes grilles de cartes.
+- Pas de localStorage/sessionStorage si ce n'est pas justifié ; état via React/serveur.
+
+---
+
+## Règles métier critiques (ne jamais enfreindre)
+
+1. **Marketplace entre membres = pure mise en relation.** Aucun paiement n'y transite. Les prix sont **indicatifs**. Ne jamais coder d'encaissement sur la marketplace.
+2. **Boutique officielle = vente directe du créateur** avec vrai paiement Stripe. Bien la **distinguer visuellement** (badge or « Officiel ✔ ») de la marketplace.
+3. **Multi-versions** : une carte existe en plusieurs versions suivies **indépendamment** (possédé/manquant par version). Le modèle de données doit le refléter (relation carte → versions → possession par user).
+4. **Protection des mineurs** (prioritaire) :
+   - Contrôle d'âge à l'inscription ; consentement parental vérifiable < 15 ans.
+   - **Chat uniquement contextualisé à un échange** — pas de messagerie privée libre.
+   - File de modération **priorisant les signalements impliquant des mineurs**.
+   - Un mineur ne peut pas engager de transaction avec caution financière sans encadrement parental.
+5. **Vérification de possession** : on ne peut proposer à l'échange/vente que des cartes réellement détenues.
+6. **Échange = double validation** (ferme quand les deux acceptent). Historique **horodaté** conservé (preuve litige).
+7. **Aucune reproduction d'IP tierce** (Pokémon, One Piece, marques auto réelles non licenciées…). Seul le contenu fourni par le client.
+
+---
+
+## Couche sécurité C2C (échanges postaux) — quand on l'implémente
+
+- **Caution = 100 % de la valeur estimée** par défaut (Stripe PaymentIntent `capture_method: manual`). La réputation change le niveau de preuves, **pas** le taux de caution.
+- **Frais à la charge de l'acheteur**, qui **choisit** l'envoi sécurisé ou non. Sur un **échange**, choix **croisé** : chacun fixe la sécurité du colis qu'il **recevra**, l'autre doit s'y conformer.
+- **Preuves vidéo guidées in-app**, continues, horodatées **serveur**, hash SHA-256, **jeton du jour** affiché à filmer (anti-rejeu). Upload de fichier interdit sur étapes sensibles.
+- **Machine à états** stricte (voir `docs/Plan-Securite-Echanges.md`) : timeouts (non-expédition J+3, fenêtre réception 72 h, ré-autorisation J+5).
+- **Purge RGPD des vidéos : 60 j** après clôture (1 an si litige). Accès **modération seule**, URLs signées.
+- Vérif suivi via **agrégateur transporteurs** (La Poste/Colissimo, Chronopost, Mondial Relay…).
+
+---
+
+## Rôles admin
+
+- **Owner** : accès total, gère les autres admins + réglages sensibles.
+- Sous-rôles : **Modérateur**, **Gestionnaire catalogue**, **Créateur/Boutique**, **Support**.
+- Les permissions **masquent** les modules non autorisés (pas seulement désactiver). Vérifier le rôle **côté serveur** à chaque action sensible, jamais seulement côté UI.
+
+---
+
+## Sécurité & qualité
+
+- Valider/échapper toutes les entrées. Rate-limiting sur les endpoints sensibles. Journaliser les actions admin (audit).
+- Webhooks Stripe/transporteurs : **vérifier la signature**, traiter en idempotent.
+- Jamais de secret dans le client ni dans le repo (`.env.local`, non commité).
+- Tests sur la logique métier critique (machine à états, vérification de possession, permissions).
+- Privilégier des composants accessibles (labels, focus, contrastes).
+
+---
+
+## Ce qu'il NE faut PAS faire
+
+- Pas de paiement sur la marketplace entre membres.
+- Pas de messagerie privée libre entre membres.
+- Pas de réduction du taux de caution sous 100 % sans réglage admin explicite.
+- Pas d'IP tierce. Pas de chaînes UI en dur (i18n). Pas de Prisma dans les composants.
+- Pas de forum communautaire ni d'app mobile native (reportés en V2).
