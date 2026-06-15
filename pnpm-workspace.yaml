@@ -1,0 +1,8 @@
+# Réglages pnpm (v11 : les settings vivent ici, plus dans package.json).
+# Dépendances autorisées à exécuter leurs scripts de build (postinstall).
+allowBuilds:
+  '@prisma/engines': true
+  esbuild: true
+  prisma: true
+  sharp: true
+  unrs-resolver: true
