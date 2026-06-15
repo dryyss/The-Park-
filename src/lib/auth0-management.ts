@@ -16,30 +16,31 @@ const AUDIENCE = process.env.AUTH0_M2M_AUDIENCE ?? `https://${DOMAIN}/api/v2/`;
 type CachedToken = { accessToken: string; expiresAt: number };
 let cache: CachedToken | null = null;
 
-function assertConfig(): asserts DOMAIN is string {
+function requireConfig() {
   if (!DOMAIN || !CLIENT_ID || !CLIENT_SECRET) {
     throw new Error(
       "Management API non configurée : AUTH0_DOMAIN, AUTH0_M2M_CLIENT_ID et AUTH0_M2M_CLIENT_SECRET sont requis.",
     );
   }
+  return { domain: DOMAIN, clientId: CLIENT_ID, clientSecret: CLIENT_SECRET, audience: AUDIENCE };
 }
 
 async function getAccessToken(): Promise<string> {
-  assertConfig();
+  const { domain, clientId, clientSecret, audience } = requireConfig();
 
   // Réutilise le token tant qu'il reste >60s de validité.
   if (cache && cache.expiresAt - 60_000 > Date.now()) {
     return cache.accessToken;
   }
 
-  const res = await fetch(`https://${DOMAIN}/oauth/token`, {
+  const res = await fetch(`https://${domain}/oauth/token`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
       grant_type: "client_credentials",
-      client_id: CLIENT_ID,
-      client_secret: CLIENT_SECRET,
-      audience: AUDIENCE,
+      client_id: clientId,
+      client_secret: clientSecret,
+      audience,
     }),
     cache: "no-store",
   });
@@ -57,10 +58,10 @@ async function getAccessToken(): Promise<string> {
 }
 
 async function mgmt<T>(path: string, init?: RequestInit): Promise<T> {
-  assertConfig();
+  const { domain } = requireConfig();
   const token = await getAccessToken();
 
-  const res = await fetch(`https://${DOMAIN}/api/v2${path}`, {
+  const res = await fetch(`https://${domain}/api/v2${path}`, {
     ...init,
     headers: {
       authorization: `Bearer ${token}`,

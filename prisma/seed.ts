@@ -32,6 +32,20 @@ function slugify(s: string): string {
 }
 
 async function main() {
+  console.log("→ Compte Owner (démo / bootstrap admin)");
+  await prisma.user.upsert({
+    where: { email: "owner@thepark.local" },
+    update: { role: "ADMIN", staffRole: "OWNER", status: "ACTIVE" },
+    create: {
+      email: "owner@thepark.local",
+      displayName: "The Park Owner",
+      slug: "the-park-owner",
+      role: "ADMIN",
+      staffRole: "OWNER",
+      status: "ACTIVE",
+    },
+  });
+
   console.log("→ Saison");
   const season = await prisma.season.upsert({
     where: { code: "S01" },
@@ -132,8 +146,313 @@ async function main() {
     await prisma.badge.upsert({ where: { code: b.code }, update: b, create: b });
   }
 
-  const total = await prisma.card.count();
-  console.log(`✅ Seed terminé — ${total} cartes en base.`);
+  console.log("→ Membres de démo + collections");
+  // Variantes disponibles (1 Standard FR par carte au seed), triées par n° de carte.
+  const allVariants = await prisma.cardVariant.findMany({
+    include: { card: true },
+    orderBy: { card: { number: "asc" } },
+  });
+  const variantByNumber = new Map(allVariants.map((v) => [v.card.number, v]));
+
+  const demoMembers = [
+    { display: "LIGHTON_FACTORY", owned: 78, rating: 4.9, reviews: 231 },
+    { display: "MIDNIGHT_PURPLE", owned: 72, rating: 4.8, reviews: 143 },
+    { display: "DRIFT_KING_06", owned: 69, rating: 4.7, reviews: 88 },
+    { display: "SARA.S15", owned: 63, rating: 5.0, reviews: 54 },
+    { display: "TOUGE_HUNTER", owned: 55, rating: 4.4, reviews: 19 },
+    { display: "HACHI_ROKU", owned: 48, rating: 4.6, reviews: 31 },
+  ];
+
+  const memberRecords: { id: string; display: string; owned: number }[] = [];
+  for (const m of demoMembers) {
+    const slug = slugify(m.display);
+    const user = await prisma.user.upsert({
+      where: { email: `${slug}@thepark.local` },
+      update: { displayName: m.display, status: "ACTIVE", ratingAvg: m.rating, reviewCount: m.reviews },
+      create: {
+        email: `${slug}@thepark.local`,
+        displayName: m.display,
+        slug,
+        role: "MEMBER",
+        status: "ACTIVE",
+        collectionVisibility: "PUBLIC",
+        ratingAvg: m.rating,
+        reviewCount: m.reviews,
+      },
+    });
+    memberRecords.push({ id: user.id, display: m.display, owned: m.owned });
+
+    const owned = allVariants.slice(0, m.owned);
+    for (const v of owned) {
+      await prisma.collectionItem.upsert({
+        where: {
+          userId_variantId_condition: { userId: user.id, variantId: v.id, condition: "EXCELLENT" },
+        },
+        update: {},
+        create: { userId: user.id, variantId: v.id, condition: "EXCELLENT", quantity: 1 },
+      });
+    }
+  }
+
+  console.log("→ Annonces marketplace (prix indicatifs)");
+  const memberIds = memberRecords.map((r) => r.id);
+  // Idempotent : on repart d'un état propre pour les annonces de démo.
+  await prisma.listing.deleteMany({ where: { sellerId: { in: memberIds } } });
+
+  const ownerByDisplay = new Map(memberRecords.map((r) => [r.display, r.id]));
+  type Cond = "MINT" | "EXCELLENT" | "VERY_GOOD" | "GOOD" | "FAIR" | "DAMAGED";
+  type Pick = {
+    num: number;
+    seller: string;
+    type: "SELL" | "SELL_OR_TRADE" | "WANT";
+    cond: Cond;
+    price?: number;
+    budgetMax?: number;
+  };
+  const listingPicks: Pick[] = [
+    // On propose (vente / vente ou échange)
+    { num: 42, seller: "DRIFT_KING_06", type: "SELL", cond: "MINT", price: 19.9 },
+    { num: 64, seller: "MIDNIGHT_PURPLE", type: "SELL", cond: "VERY_GOOD", price: 39.9 },
+    { num: 35, seller: "SARA.S15", type: "SELL_OR_TRADE", cond: "VERY_GOOD", price: 14.5 },
+    { num: 60, seller: "DRIFT_KING_06", type: "SELL", cond: "GOOD", price: 26.0 },
+    { num: 68, seller: "LIGHTON_FACTORY", type: "SELL", cond: "MINT", price: 65.0 },
+    { num: 38, seller: "LIGHTON_FACTORY", type: "SELL", cond: "GOOD", price: 12.9 },
+    { num: 54, seller: "MIDNIGHT_PURPLE", type: "SELL", cond: "MINT", price: 44.0 },
+    { num: 16, seller: "SARA.S15", type: "SELL_OR_TRADE", cond: "EXCELLENT", price: 9.5 },
+    { num: 32, seller: "TOUGE_HUNTER", type: "SELL", cond: "DAMAGED", price: 22.0 },
+    { num: 57, seller: "LIGHTON_FACTORY", type: "SELL", cond: "EXCELLENT", price: 50.0 },
+    { num: 11, seller: "HACHI_ROKU", type: "SELL", cond: "DAMAGED", price: 8.9 },
+    { num: 75, seller: "MIDNIGHT_PURPLE", type: "SELL", cond: "MINT", price: 149.0 },
+    // On cherche (recherche d'une carte — mise en relation, pas de possession requise)
+    { num: 77, seller: "SARA.S15", type: "WANT", cond: "VERY_GOOD", budgetMax: 300.0 },
+    { num: 56, seller: "TOUGE_HUNTER", type: "WANT", cond: "VERY_GOOD", budgetMax: 45.0 },
+    { num: 71, seller: "MIDNIGHT_PURPLE", type: "WANT", cond: "VERY_GOOD", budgetMax: 60.0 },
+    { num: 40, seller: "HACHI_ROKU", type: "WANT", cond: "GOOD", budgetMax: 8.0 },
+  ];
+
+  let createdListings = 0;
+  for (const p of listingPicks) {
+    const variant = variantByNumber.get(p.num);
+    const sellerId = ownerByDisplay.get(p.seller);
+    if (!variant || !sellerId) continue;
+    const isWant = p.type === "WANT";
+    await prisma.listing.create({
+      data: {
+        sellerId,
+        variantId: variant.id,
+        type: p.type,
+        status: "ACTIVE",
+        price: isWant ? null : p.price,
+        budgetMax: isWant ? p.budgetMax : null,
+        minCondition: isWant ? p.cond : null,
+        condition: p.cond,
+        quantity: 1,
+        shippingMode: "STANDARD",
+      },
+    });
+    createdListings++;
+  }
+
+  const [total, members, listings] = await Promise.all([
+    prisma.card.count(),
+    prisma.user.count({ where: { role: "MEMBER" } }),
+    prisma.listing.count(),
+  ]);
+
+  console.log("→ Boutique officielle (produits Lighton)");
+  const sampleImg = (CARDS as RawCard[])[0]?.img ?? "placeholder.jpg";
+  const imgPath = sampleImg.startsWith("/") ? sampleImg : `/uploads/${sampleImg}`;
+
+  const shopProducts = [
+    {
+      sku: "TP-S01-DISPLAY",
+      slug: "display-moteur-forge",
+      name: "Display Moteur Forgé",
+      type: "DISPLAY" as const,
+      price: 89.9,
+      stock: 12,
+      description:
+        "La boîte scellée : 20 boosters de 5 cartes, soit 100 cartes Saison 1. Garantie d'au moins une Légendaire ou Gold par display.",
+      images: [imgPath],
+    },
+    {
+      sku: "TP-S01-BOOSTER",
+      slug: "booster-moteur-forge",
+      name: "Booster Moteur Forgé",
+      type: "BOOSTER" as const,
+      price: 4.9,
+      stock: 240,
+      description: "5 cartes Saison 1 · Moteur Forgé.",
+      images: [imgPath],
+    },
+    {
+      sku: "TP-S01-STARTER",
+      slug: "starter-drift-pack",
+      name: "Starter Drift Pack",
+      type: "STARTER_DECK" as const,
+      price: 14.9,
+      stock: 45,
+      description: "Deck prêt à jouer + 2 boosters.",
+      images: [imgPath],
+    },
+    {
+      sku: "TP-PROMO-LAUNCH",
+      slug: "pack-lancement",
+      name: "Pack Lancement",
+      type: "PROMO_PACK" as const,
+      price: 24.9,
+      stock: 0,
+      description: "Édition fondateurs — épuisé.",
+      images: [imgPath],
+    },
+    {
+      sku: "TP-MERCH-TEE",
+      slug: "tee-lighton",
+      name: "T-shirt Lighton · 駐車場",
+      type: "MERCH" as const,
+      price: 29.9,
+      stock: 18,
+      description: "Coton bio · sérigraphie JDM.",
+      images: [imgPath],
+    },
+    {
+      sku: "TP-S01-DISPLAY-LE",
+      slug: "display-moteur-forge-le",
+      name: "Display Moteur Forgé · Édition limitée",
+      type: "LIMITED_EDITION" as const,
+      price: 99.9,
+      stock: 3,
+      description: "Display numéroté · artwork exclusif.",
+      images: [imgPath],
+    },
+  ];
+
+  for (const p of shopProducts) {
+    await prisma.product.upsert({
+      where: { sku: p.sku },
+      update: {
+        name: p.name,
+        slug: p.slug,
+        type: p.type,
+        price: p.price,
+        stock: p.stock,
+        description: p.description,
+        images: p.images,
+        active: true,
+      },
+      create: { ...p, active: true },
+    });
+  }
+
+  console.log("→ Échanges de démo");
+  const factoryId = ownerByDisplay.get("LIGHTON_FACTORY");
+  const midnightId = ownerByDisplay.get("MIDNIGHT_PURPLE");
+  const driftId = ownerByDisplay.get("DRIFT_KING_06");
+  const saraId = ownerByDisplay.get("SARA.S15");
+  const tougeId = ownerByDisplay.get("TOUGE_HUNTER");
+  const hachiId = ownerByDisplay.get("HACHI_ROKU");
+
+  if (factoryId && midnightId && driftId && saraId && tougeId && hachiId) {
+    await prisma.exchange.deleteMany({
+      where: { OR: [{ initiatorId: factoryId }, { recipientId: factoryId }] },
+    });
+
+    const v = (n: number) => variantByNumber.get(n)!;
+
+    type ExSeed = {
+      recipientId: string;
+      status: "PROPOSED" | "ACCEPTED" | "AWAITING_SHIPMENT" | "COMPLETED";
+      secured?: boolean;
+      message?: string;
+      giveNums: number[];
+      getNums: number[];
+    };
+
+    const exchangeSeeds: ExSeed[] = [
+      { recipientId: midnightId, status: "PROPOSED", giveNums: [38], getNums: [64], message: "Intéressé par ton Ultra ?" },
+      { recipientId: driftId, status: "ACCEPTED", giveNums: [57], getNums: [42], secured: true },
+      { recipientId: saraId, status: "AWAITING_SHIPMENT", giveNums: [68], getNums: [35], secured: true },
+      { recipientId: tougeId, status: "COMPLETED", giveNums: [16], getNums: [32] },
+      { recipientId: hachiId, status: "COMPLETED", giveNums: [54], getNums: [11] },
+    ];
+
+    for (const ex of exchangeSeeds) {
+      await prisma.exchange.create({
+        data: {
+          initiatorId: factoryId,
+          recipientId: ex.recipientId,
+          status: ex.status,
+          secured: ex.secured ?? false,
+          message: ex.message,
+          completedAt: ex.status === "COMPLETED" ? new Date() : undefined,
+          items: {
+            create: [
+              ...ex.giveNums.map((n) => ({
+                fromInitiator: true,
+                variantId: v(n).id,
+                condition: "EXCELLENT" as const,
+              })),
+              ...ex.getNums.map((n) => ({
+                fromInitiator: false,
+                variantId: v(n).id,
+                condition: "VERY_GOOD" as const,
+              })),
+            ],
+          },
+        },
+      });
+    }
+
+    const firstBadge = await prisma.badge.findFirst({ where: { code: "first_card" } });
+    const holoBadge = await prisma.badge.findFirst({ where: { code: "first_holo" } });
+    if (firstBadge) {
+      await prisma.userBadge.upsert({
+        where: { userId_badgeId: { userId: factoryId, badgeId: firstBadge.id } },
+        update: {},
+        create: { userId: factoryId, badgeId: firstBadge.id },
+      });
+    }
+    if (holoBadge) {
+      await prisma.userBadge.upsert({
+        where: { userId_badgeId: { userId: factoryId, badgeId: holoBadge.id } },
+        update: {},
+        create: { userId: factoryId, badgeId: holoBadge.id },
+      });
+    }
+
+    if (midnightId && driftId) {
+      await prisma.review.deleteMany({ where: { targetId: factoryId } });
+      await prisma.review.createMany({
+        data: [
+          {
+            authorId: midnightId,
+            targetId: factoryId,
+            source: "EXCHANGE",
+            rating: 5,
+            comment: "Échange rapide et soigné, cartes bien protégées.",
+          },
+          {
+            authorId: driftId,
+            targetId: factoryId,
+            source: "EXCHANGE",
+            rating: 5,
+            comment: "Top vendeur, communication claire.",
+          },
+          {
+            authorId: saraId,
+            targetId: factoryId,
+            source: "EXCHANGE",
+            rating: 4,
+            comment: "Colis reçu en bon état.",
+          },
+        ],
+      });
+    }
+  }
+
+  console.log(
+    `✅ Seed terminé — ${total} cartes · ${members} membres · ${listings} annonces (${createdListings} créées).`,
+  );
 }
 
 main()

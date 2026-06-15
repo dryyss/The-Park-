@@ -2,28 +2,50 @@
 
 /*
   Design system — The Park (univers JDM / "garage de nuit").
-  Tokens de référence : .cursorrules. Carmin = action, Or = officiel,
-  néon = statuts uniquement. Thème sombre par défaut.
+  Palette alignée sur les maquettes _reference/. Tokens sémantiques :
+  carmin = action · or = officiel · néon = statuts uniquement.
+  Thème sombre par défaut.
 */
 @theme {
-  /* Signature */
-  --color-carmin: #d6004f;
-  --color-carmin-alt: #d81b60;
-  --color-rouge-fonce: #900030;
+  /* Signature carmin */
+  --color-carmin: #d81b60;
+  --color-carmin-alt: #f0246f;
+  --color-carmin-neon: #ff2e63;
+  --color-rouge-fonce: #7a0f37;
 
-  /* Neutres */
-  --color-charbon: #1e2424;
-  --color-charbon-700: #2a3232;
-  --color-charbon-500: #3a4444;
-  --color-blanc-casse: #fbf4f6;
+  /* Surfaces (du plus sombre au plus clair) */
+  --color-charbon: #131316;
+  --color-charbon-900: #0e0e11;
+  --color-charbon-800: #1a1a1e;
+  --color-charbon-700: #202024;
+  --color-charbon-600: #26262b;
+  --color-charbon-500: #2b2b31;
+  --color-charbon-400: #3a3a42;
+
+  /* Texte (du plus contrasté au plus discret) */
+  --color-blanc-casse: #f2efe9;
+  --color-texte-doux: #c9c6be;
+  --color-texte-corps: #a9a9b2;
+  --color-texte-muet: #8e8e98;
+  --color-texte-dim: #6e6e78;
+  --color-texte-faible: #5a5a64;
 
   /* Officiel (boutique / rareté Gold) — usage exclusif */
   --color-or: #e8b23a;
+  --color-or-clair: #ffd479;
 
   /* Statuts (néon) — badges uniquement, jamais en décor */
-  --color-statut-succes: #2fd17a;
+  --color-statut-succes: #5ed99a;
   --color-statut-alerte: #ff9f43;
   --color-statut-danger: #ff3b5c;
+
+  /* Couleurs de rareté */
+  --color-rarete-commune: #9ba3b2;
+  --color-rarete-rare: #4fa3ff;
+  --color-rarete-ultra: #b05cff;
+  --color-rarete-legendaire: #ff2e63;
+  --color-rarete-gold: #e8b23a;
+  --color-rarete-unique: #6fe3d0;
 
   /* Polices */
   --font-display: var(--font-display);
@@ -36,16 +58,72 @@
   --foreground: var(--color-blanc-casse);
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-/* Titres : lettrage condensé/bold */
+* {
+  box-sizing: border-box;
+}
+
+/* Titres : lettrage condensé (Anton, esprit lettrage JDM) */
 h1,
 h2,
 h3,
 .font-display {
   font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-weight: 400;
+}
+
+/* Animations maquettes */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes floaty {
+  0% {
+    transform: translateY(0) rotate(var(--rot, 0deg));
+  }
+  50% {
+    transform: translateY(-8px) rotate(var(--rot, 0deg));
+  }
+  100% {
+    transform: translateY(0) rotate(var(--rot, 0deg));
+  }
+}
+.animate-fade-up {
+  animation: fadeUp 0.6s ease both;
+}
+.animate-floaty {
+  animation: floaty 5s ease-in-out infinite;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-charbon);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-charbon-500);
+  border-radius: 6px;
+}
+::selection {
+  background: var(--color-carmin);
+  color: #fff;
 }

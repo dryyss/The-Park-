@@ -25,10 +25,30 @@ datasource db {
 //  ENUMS
 // ============================================================================
 
+/// Rôle de base du compte (membre vs staff). Le détail du staff est dans AdminRole.
 enum UserRole {
   MEMBER
   MODERATOR
   ADMIN
+}
+
+/// Sous-rôles admin (CDC §6) : permissions masquées côté serveur.
+/// OWNER = accès total ; les autres rôles ne voient que leurs modules.
+enum AdminRole {
+  OWNER
+  MODERATOR
+  CATALOG_MANAGER
+  SHOP_MANAGER
+  SUPPORT
+}
+
+/// Cycle de vie d'un compte (modération + RGPD).
+enum AccountStatus {
+  ACTIVE
+  PENDING_VERIFICATION
+  SUSPENDED
+  BANNED
+  DELETED
 }
 
 enum Visibility {
@@ -83,6 +103,15 @@ enum ShippingMode {
   SECURED
 }
 
+/// Transporteurs supportés par l'agrégateur de suivi (CDC couche C2C).
+enum Carrier {
+  LAPOSTE
+  COLISSIMO
+  CHRONOPOST
+  MONDIAL_RELAY
+  OTHER
+}
+
 enum ProductType {
   BOOSTER
   DISPLAY
@@ -111,13 +140,17 @@ enum AuctionStatus {
 }
 
 /// Machine à états d'un échange entre membres (double validation + envoi sécurisé).
+/// Aligné sur "The Park - Machine à États" (§5 plan de sécurisation).
 enum ExchangeStatus {
   PROPOSED
   ACCEPTED
   AWAITING_SHIPMENT
   SHIPPED
+  DELIVERED_WINDOW // livré · fenêtre 72h en cours
   DELIVERED
   COMPLETED
+  GUARANTEE_SUSPENDED // ré-autorisation refusée (J+5)
+  NOT_SHIPPED_CANCELLED // non expédié dans les délais (J+3)
   DISPUTED
   CANCELLED
 }
@@ -128,8 +161,11 @@ enum SaleStatus {
   PAID
   AWAITING_SHIPMENT
   SHIPPED
+  DELIVERED_WINDOW // livré · fenêtre 72h en cours
   DELIVERED
   COMPLETED
+  GUARANTEE_SUSPENDED
+  NOT_SHIPPED_CANCELLED
   DISPUTED
   CANCELLED
   REFUNDED
@@ -263,15 +299,24 @@ enum NotificationType {
 // ============================================================================
 
 model User {
-  id          String   @id @default(cuid())
-  auth0Id     String?  @unique
-  email       String   @unique
+  id          String     @id @default(cuid())
+  auth0Id     String?    @unique
+  email       String     @unique
   displayName String
-  slug        String   @unique
+  slug        String     @unique
   avatarUrl   String?
   bio         String?
-  role        UserRole @default(MEMBER)
-  language    Language @default(FR)
+  role        UserRole   @default(MEMBER)
+  /// Sous-rôle staff (null = membre simple). Vérifié côté serveur.
+  staffRole   AdminRole?
+  language    Language   @default(FR)
+
+  // Cycle de vie du compte (modération + RGPD)
+  status         AccountStatus @default(PENDING_VERIFICATION)
+  suspendedUntil DateTime?
+  bannedAt       DateTime?
+  lastLoginAt    DateTime?
+  deletedAt      DateTime? // soft-delete RGPD
 
   // Protection des mineurs (CDC §5.2)
   birthDate       DateTime?
@@ -283,13 +328,17 @@ model User {
   shopVisibility       Visibility @default(PUBLIC)
 
   // Paiement / conformité
-  kycStatus        KycStatus @default(NONE)
-  stripeCustomerId String?
-  walletBalance    Decimal   @default(0) @db.Decimal(10, 2)
+  kycStatus              KycStatus @default(NONE)
+  stripeCustomerId       String? // achats boutique (côté payeur)
+  stripeConnectAccountId String? // vendeur C2C (Stripe Connect)
+  connectChargesEnabled  Boolean   @default(false)
+  connectPayoutsEnabled  Boolean   @default(false)
 
   // Réputation dénormalisée (calculée à partir de Review)
-  ratingAvg   Float @default(0)
-  reviewCount Int   @default(0)
+  ratingAvg        Float @default(0)
+  reviewCount      Int   @default(0)
+  /// Score de fiabilité C2C (P2) : module le niveau de preuves exigé, pas le taux de caution.
+  reliabilityScore Int   @default(0)
 
   notificationPrefs Json?
 
@@ -316,10 +365,12 @@ model User {
   shipmentsSent     Shipment[] @relation("ShipmentShipper")
   shipmentsReceived Shipment[] @relation("ShipmentRecipient")
 
-  payments Payment[]
+  paymentsAsPayer Payment[] @relation("PaymentPayer")
+  paymentsAsPayee Payment[] @relation("PaymentPayee")
 
   disputesAsClaimant   Dispute[]           @relation("DisputeClaimant")
   disputesAsRespondent Dispute[]           @relation("DisputeRespondent")
+  disputesOpened       Dispute[]           @relation("DisputeOpener")
   disputeResolutions   DisputeResolution[]
   disputeEvidence      DisputeEvidence[]
 
@@ -331,11 +382,16 @@ model User {
   messages      Message[]
   notifications Notification[]
 
+  addresses         Address[]
+  transactionEvents TransactionEvent[]
+
   reportsMade       Report[]
   moderationActions ModerationAction[]
   connectionLogs    ConnectionLog[]
 
   @@index([role])
+  @@index([staffRole])
+  @@index([status])
 }
 
 /// Consentement parental vérifiable pour les moins de 15 ans (RGPD art. 8).
@@ -349,6 +405,29 @@ model ParentalConsent {
   token         String?   @unique
   verifiedAt    DateTime?
   createdAt     DateTime  @default(now())
+}
+
+/// Carnet d'adresses (livraison / facturation) — commandes boutique + envois C2C.
+model Address {
+  id        String  @id @default(cuid())
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  label     String? // ex: "Domicile", "Bureau"
+  fullName  String
+  line1     String
+  line2     String?
+  zip       String
+  city      String
+  country   String  @default("FR")
+  phone     String?
+  isDefault Boolean @default(false)
+
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 // ============================================================================
@@ -421,6 +500,7 @@ model CardVariant {
   versionTypeId String
   language      Language    @default(FR)
   editionLabel  String? // ex: "1ère édition"
+  imageUrl      String? // override visuel (reverse/alt art) sinon Card.imageUrl
 
   collectionItems CollectionItem[]
   listings        Listing[]
@@ -435,17 +515,25 @@ model CardVariant {
 // ============================================================================
 
 model CollectionItem {
-  id         String        @id @default(cuid())
-  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  variant    CardVariant   @relation(fields: [variantId], references: [id])
-  variantId  String
-  condition  CardCondition @default(EXCELLENT)
-  quantity   Int           @default(1)
-  forTrade   Boolean       @default(false)
-  forSale    Boolean       @default(false)
-  note       String?
-  acquiredAt DateTime      @default(now())
+  id               String        @id @default(cuid())
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String
+  variant          CardVariant   @relation(fields: [variantId], references: [id])
+  variantId        String
+  condition        CardCondition @default(EXCELLENT)
+  quantity         Int           @default(1)
+  /// Quantité engagée dans une annonce/échange actif (vérification de possession).
+  reservedQuantity Int           @default(0)
+  forTrade         Boolean       @default(false)
+  forSale          Boolean       @default(false)
+  note             String?
+
+  // Gradation optionnelle (PSA, PCA…)
+  isGraded     Boolean @default(false)
+  gradeCompany String?
+  gradeScore   Float?
+
+  acquiredAt DateTime @default(now())
 
   @@unique([userId, variantId, condition])
   @@index([userId])
@@ -495,6 +583,7 @@ model Listing {
   @@index([variantId])
   @@index([sellerId])
   @@index([status, type])
+  @@index([variantId, status])
 }
 
 // ============================================================================
@@ -543,14 +632,16 @@ model Order {
   shippingCost Decimal @default(0) @db.Decimal(10, 2)
   total        Decimal @db.Decimal(10, 2)
 
-  // Livraison
-  shippingName    String?
-  shippingAddress String?
-  shippingZip     String?
-  shippingCity    String?
-  shippingCountry String?
-  shippingMethod  String? // Relais, Colissimo, Chronopost…
-  trackingNumber  String?
+  // Livraison : référence au carnet d'adresses, avec copie inline en fallback (immuabilité historique)
+  shippingAddress   Address? @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId String?
+  shippingName      String?
+  shippingLine1     String?
+  shippingZip       String?
+  shippingCity      String?
+  shippingCountry   String?
+  shippingMethod    String? // Relais, Colissimo, Chronopost…
+  trackingNumber    String?
 
   items    OrderItem[]
   payment  Payment?
@@ -724,17 +815,25 @@ model Shipment {
   recipient   User   @relation("ShipmentRecipient", fields: [recipientId], references: [id])
   recipientId String
 
-  carrier        String?
+  carrier        Carrier?
   trackingNumber String?
   status         ShipmentStatus @default(PENDING)
   dropToken      String? // jeton du jour (anti-fraude), valable 24h
+  dropTokenDate  DateTime? // jour de validité du jeton
 
-  // Garantie post-livraison (fenêtre 72h, prolongeable 2x)
-  guaranteeEndsAt   DateTime?
-  guaranteeExtended Int       @default(0)
+  // Délai de dépôt après acceptation (J+3) : annulation si non expédié
+  notShipDeadline DateTime?
 
-  proofs   ShipmentProof[]
-  payments Payment[] // caution liée à cet envoi
+  // Garantie post-livraison (fenêtre 72h, prolongeable 2x ; ré-auth J+5)
+  guaranteeStartedAt DateTime?
+  guaranteeEndsAt    DateTime?
+  guaranteeExtended  Int       @default(0)
+  reauthCount        Int       @default(0)
+  lastReauthAt       DateTime?
+
+  proofs         ShipmentProof[]
+  payments       Payment[] // caution liée à cet envoi
+  trackingEvents TrackingEvent[]
 
   createdAt   DateTime  @default(now())
   shippedAt   DateTime?
@@ -745,17 +844,57 @@ model Shipment {
   @@index([status])
 }
 
-model ShipmentProof {
-  id         String    @id @default(cuid())
-  shipment   Shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+/// Historique des statuts remontés par l'agrégateur transporteurs (suivi colis).
+model TrackingEvent {
+  id         String         @id @default(cuid())
+  shipment   Shipment       @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
   shipmentId String
-  kind       ProofKind
-  mediaUrl   String
-  mediaHash  String? // intégrité (hash de la vidéo)
-  tokenShown String? // jeton affiché à l'écran lors de la prise
-  recordedAt DateTime  @default(now())
+  status     ShipmentStatus
+  label      String? // libellé transporteur brut
+  location   String?
+  occurredAt DateTime // horodatage transporteur
+  createdAt  DateTime       @default(now())
 
   @@index([shipmentId])
+}
+
+/// Journal horodaté (serveur) des transitions d'état d'une transaction.
+/// Polymorphe (sale/exchange/order/shipment) : preuve d'historique pour litige (CDC).
+model TransactionEvent {
+  id         String   @id @default(cuid())
+  entityType String // SALE, EXCHANGE, ORDER, SHIPMENT
+  entityId   String
+  fromStatus String?
+  toStatus   String
+  event      String // libellé de la transition / déclencheur
+  actor      User?    @relation(fields: [actorId], references: [id])
+  actorId    String? // null = transition système (timeout, webhook)
+  metadata   Json?
+  createdAt  DateTime @default(now()) // horodatage serveur
+
+  @@index([entityType, entityId])
+}
+
+model ShipmentProof {
+  id               String    @id @default(cuid())
+  shipment         Shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  shipmentId       String
+  kind             ProofKind
+  mediaUrl         String
+  storageKey       String? // clé de stockage objet (URL signée générée à la demande)
+  mediaHash        String? // intégrité SHA-256 de la vidéo
+  tokenShown       String? // jeton affiché à l'écran lors de la prise
+  durationSec      Int? // durée de la vidéo continue
+  recordedAt       DateTime  @default(now()) // horodatage client (indicatif)
+  serverRecordedAt DateTime  @default(now()) // horodatage serveur (fait foi)
+
+  // Purge RGPD : 60 j après clôture, 1 an si litige
+  purgeScheduledAt DateTime?
+  purgedAt         DateTime?
+  retentionReason  String? // ex: "DISPUTE_OPEN"
+
+  @@index([shipmentId])
+  @@index([purgeScheduledAt])
 }
 
 // ============================================================================
@@ -764,14 +903,22 @@ model ShipmentProof {
 
 model Payment {
   id                    String        @id @default(cuid())
-  user                  User          @relation(fields: [userId], references: [id])
+  /// Payeur (acheteur / déposant de caution).
+  user                  User          @relation("PaymentPayer", fields: [userId], references: [id])
   userId                String
+  /// Bénéficiaire (vendeur, via Stripe Connect) — null pour une caution restituée.
+  payee                 User?         @relation("PaymentPayee", fields: [payeeId], references: [id])
+  payeeId               String?
   kind                  PaymentKind
   status                PaymentStatus @default(REQUIRES_PAYMENT)
   amount                Decimal       @db.Decimal(10, 2)
   capturedAmount        Decimal       @default(0) @db.Decimal(10, 2)
+  applicationFee        Decimal       @default(0) @db.Decimal(10, 2)
   currency              String        @default("EUR")
   stripePaymentIntentId String?       @unique
+  stripeChargeId        String?
+  stripeTransferId      String? // virement Connect vers le vendeur
+  reauthCount           Int           @default(0)
 
   // Rattachements (selon le flux)
   sale       Sale?     @relation(fields: [saleId], references: [id])
@@ -785,11 +932,14 @@ model Payment {
   shipment   Shipment? @relation(fields: [shipmentId], references: [id])
   shipmentId String?
 
-  expiresAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  expiresAt  DateTime? // expiration de la pré-autorisation (~7j)
+  capturedAt DateTime?
+  releasedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@index([userId])
+  @@index([payeeId])
   @@index([status])
 }
 
@@ -805,10 +955,12 @@ model Dispute {
   priority      Int           @default(0)
   involvesMinor Boolean       @default(false)
 
-  claimant     User   @relation("DisputeClaimant", fields: [claimantId], references: [id])
+  claimant     User    @relation("DisputeClaimant", fields: [claimantId], references: [id])
   claimantId   String
-  respondent   User   @relation("DisputeRespondent", fields: [respondentId], references: [id])
+  respondent   User    @relation("DisputeRespondent", fields: [respondentId], references: [id])
   respondentId String
+  openedBy     User?   @relation("DisputeOpener", fields: [openedById], references: [id])
+  openedById   String?
 
   // Rattachements (selon le type)
   sale       Sale?     @relation(fields: [saleId], references: [id])
@@ -820,6 +972,15 @@ model Dispute {
   auction    Auction?  @relation(fields: [auctionId], references: [id])
   auctionId  String?
 
+  // SLA de traitement modération (48h) + escalade
+  dueAt           DateTime?
+  escalationLevel Int       @default(0)
+
+  // Appel d'un litige déjà clôturé (P2)
+  appealOf   Dispute? @relation("DisputeAppeal", fields: [appealOfId], references: [id])
+  appealOfId String?  @unique
+  appeal     Dispute? @relation("DisputeAppeal")
+
   evidence     DisputeEvidence[]
   resolution   DisputeResolution?
   conversation Conversation?
@@ -829,6 +990,7 @@ model Dispute {
   updatedAt  DateTime  @updatedAt
 
   @@index([status, priority])
+  @@index([dueAt])
 }
 
 model DisputeEvidence {
@@ -839,10 +1001,17 @@ model DisputeEvidence {
   uploaderId String
   kind       String // VIDEO_UNBOXING, PHOTO, TRACKING_SCREENSHOT…
   mediaUrl   String
+  storageKey String?
   mediaHash  String?
   createdAt  DateTime @default(now())
 
+  // Purge RGPD (1 an si litige)
+  purgeScheduledAt DateTime?
+  purgedAt         DateTime?
+  retentionReason  String?
+
   @@index([disputeId])
+  @@index([purgeScheduledAt])
 }
 
 model DisputeResolution {
@@ -992,16 +1161,18 @@ model Report {
 }
 
 model ModerationAction {
-  id          String   @id @default(cuid())
-  moderator   User     @relation(fields: [moderatorId], references: [id])
-  moderatorId String
-  action      String // USER_SUSPENDED, LISTING_REMOVED, DISPUTE_ARBITRATED…
-  targetType  String
-  targetId    String
-  details     Json?
-  createdAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  moderator    User     @relation(fields: [moderatorId], references: [id])
+  moderatorId  String
+  action       String // USER_SUSPENDED, LISTING_REMOVED, DISPUTE_ARBITRATED…
+  targetType   String
+  targetId     String
+  targetUserId String? // utilisateur visé (filtrage rapide de l'audit)
+  details      Json?
+  createdAt    DateTime @default(now())
 
   @@index([moderatorId])
+  @@index([targetUserId])
 }
 
 /// Journaux de connexion (obligation hébergeur LCEN, CDC §5.3).

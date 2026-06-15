@@ -1,30 +1,34 @@
 import type { Metadata } from "next";
-import { Oswald, Inter, Noto_Sans_JP } from "next/font/google";
+import { Anton, Hanken_Grotesk, Noto_Sans_JP } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Auth0Provider } from "@auth0/nextjs-auth0";
 import { routing } from "@/i18n/routing";
+import { TopBar } from "@/components/layout/top-bar";
+import { Footer } from "@/components/layout/footer";
+import { MobileTabs } from "@/components/layout/mobile-tabs";
 import "../globals.css";
 
-// Titres : condensé/bold (esprit lettrage JDM)
-const display = Oswald({
+// Titres : lettrage condensé JDM (Anton)
+const display = Anton({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["400"],
 });
 
 // Corps : lisible
-const sans = Inter({
+const sans = Hanken_Grotesk({
   variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
-// Japonais (option multilingue)
+// Japonais (touches JDM + option multilingue)
 const jp = Noto_Sans_JP({
   variable: "--font-jp",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -54,7 +58,14 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={`${display.variable} ${sans.variable} ${jp.variable} antialiased`}>
         <Auth0Provider>
-          <NextIntlClientProvider>{children}</NextIntlClientProvider>
+          <NextIntlClientProvider>
+            <div className="flex min-h-screen flex-col">
+              <TopBar />
+              <div className="flex-1 pb-20 lg:pb-0">{children}</div>
+              <Footer />
+            </div>
+            <MobileTabs />
+          </NextIntlClientProvider>
         </Auth0Provider>
       </body>
     </html>

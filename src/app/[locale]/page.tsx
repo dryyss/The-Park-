@@ -1,58 +1,51 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getCatalogSummary } from "@/server/catalog/catalog.service";
-import { Button } from "@/components/ui/button";
-import { AuthStatus } from "@/components/auth/auth-status";
+import { setRequestLocale } from "next-intl/server";
+import { getCatalogSummary, getCatalogStats, getFeaturedCards } from "@/server/catalog/catalog.service";
+import { getRecentListings } from "@/server/marketplace/marketplace.service";
+import { getTopCollectors, getRecentActivity } from "@/server/community/community.service";
+import { rarityMeta } from "@/lib/rarity";
+import { HeroSection } from "@/components/home/hero-section";
+import { RarityStrip, type RarityStripItem } from "@/components/home/rarity-strip";
+import { FeaturedCards } from "@/components/home/featured-cards";
+import { SeasonBanner } from "@/components/home/season-banner";
+import { LatestListings } from "@/components/home/latest-listings";
+import { ActivityFeed } from "@/components/home/activity-feed";
+import { TopCollectors } from "@/components/home/top-collectors";
+
+// Rendu dynamique : les données (catalogue, annonces, classement) viennent de la base.
+export const dynamic = "force-dynamic";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations("home");
-  const tc = await getTranslations("common");
-  const { season, totalCards, byRarity } = await getCatalogSummary();
+  const [stats, summary, featured, listings, collectors, activity] = await Promise.all([
+    getCatalogStats(),
+    getCatalogSummary(),
+    getFeaturedCards(8),
+    getRecentListings(6),
+    getTopCollectors(5),
+    getRecentActivity(5),
+  ]);
+
+  const rarities: RarityStripItem[] = summary.byRarity.map((r) => {
+    const meta = rarityMeta(r.code);
+    return { glyph: r.symbol ?? meta.glyph, label: r.label, count: r.count, color: r.color ?? meta.color };
+  });
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center gap-10 px-6 py-16">
-      <div className="flex justify-end">
-        <AuthStatus />
-      </div>
+    <main className="overflow-x-hidden">
+      <HeroSection stats={stats} heroCards={featured.slice(0, 3)} />
 
-      <header className="space-y-3">
-        <p className="font-display text-carmin text-sm tracking-[0.3em] uppercase">
-          {t("tagline")}
-        </p>
-        <h1 className="font-display text-6xl leading-none font-bold uppercase">The Park</h1>
-        <p className="text-blanc-casse/70 max-w-prose">{t("intro")}</p>
-      </header>
+      <div className="mx-auto max-w-[1320px] px-7 pb-[60px]">
+        <RarityStrip rarities={rarities} />
+        <FeaturedCards cards={featured.slice(3, 8)} />
+        <SeasonBanner />
+        <LatestListings listings={listings} />
 
-      <section className="border-charbon-500 bg-charbon-700/40 rounded-lg border p-6">
-        <h2 className="font-display text-xl uppercase">
-          {season ? t("seasonTitle", { code: season.code, name: season.name }) : t("noSeason")}
-        </h2>
-        <p className="text-blanc-casse/60 mt-1 text-sm">
-          {t("cardsInBase", { count: totalCards })} ·{" "}
-          <span className="text-statut-succes">{t("stackOk")}</span>
-        </p>
-
-        {byRarity.length > 0 && (
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {byRarity.map((r) => (
-              <li
-                key={r.code}
-                className="border-charbon-500 rounded-md border px-3 py-1 text-sm"
-                style={r.color ? { color: r.color } : undefined}
-              >
-                <span className="mr-1">{r.symbol}</span>
-                {r.label} · {r.count}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <div className="flex gap-3">
-        <Button>{tc("start")}</Button>
-        <Button variant="outline">{tc("browseCatalog")}</Button>
+        <div className="animate-fade-up mt-[60px] grid grid-cols-1 items-start gap-[18px] lg:grid-cols-[1.3fr_1fr]">
+          <ActivityFeed items={activity} />
+          <TopCollectors collectors={collectors} />
+        </div>
       </div>
     </main>
   );
