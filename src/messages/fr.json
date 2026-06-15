@@ -4,7 +4,11 @@
     "browseCatalog": "Découvrir le catalogue"
   },
   "home": {
-    "tagline": "Trading Card Game · Drift / JDM",
-    "intro": "Plateforme de collection, d'échange et de marketplace communautaire."
+    "tagline": "Trading Card Game · Drift / JDM 駐車場",
+    "intro": "Plateforme de collection, d'échange et de marketplace communautaire. Fondations en place — la suite : comptes, catalogue, collection multi-versions.",
+    "seasonTitle": "Saison {code} — {name}",
+    "noSeason": "Aucune saison en base",
+    "cardsInBase": "{count} cartes en base",
+    "stackOk": "stack Next 15 → Prisma 7 → Neon opérationnelle"
   }
 }

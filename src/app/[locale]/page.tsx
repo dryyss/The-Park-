@@ -1,29 +1,32 @@
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getCatalogSummary } from "@/server/catalog/catalog.service";
 import { Button } from "@/components/ui/button";
 
-export default async function Home() {
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("home");
+  const tc = await getTranslations("common");
   const { season, totalCards, byRarity } = await getCatalogSummary();
 
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center gap-10 px-6 py-16">
       <header className="space-y-3">
         <p className="font-display text-carmin text-sm tracking-[0.3em] uppercase">
-          Trading Card Game · Drift / JDM 駐車場
+          {t("tagline")}
         </p>
         <h1 className="font-display text-6xl leading-none font-bold uppercase">The Park</h1>
-        <p className="text-blanc-casse/70 max-w-prose">
-          Plateforme de collection, d&apos;échange et de marketplace communautaire. Fondations en
-          place — la suite : comptes, catalogue, collection multi-versions.
-        </p>
+        <p className="text-blanc-casse/70 max-w-prose">{t("intro")}</p>
       </header>
 
       <section className="border-charbon-500 bg-charbon-700/40 rounded-lg border p-6">
         <h2 className="font-display text-xl uppercase">
-          {season ? `Saison ${season.code} — ${season.name}` : "Aucune saison en base"}
+          {season ? t("seasonTitle", { code: season.code, name: season.name }) : t("noSeason")}
         </h2>
         <p className="text-blanc-casse/60 mt-1 text-sm">
-          {totalCards} cartes en base ·{" "}
-          <span className="text-statut-succes">stack Next 15 → Prisma 7 → Neon opérationnelle</span>
+          {t("cardsInBase", { count: totalCards })} ·{" "}
+          <span className="text-statut-succes">{t("stackOk")}</span>
         </p>
 
         {byRarity.length > 0 && (
@@ -43,8 +46,8 @@ export default async function Home() {
       </section>
 
       <div className="flex gap-3">
-        <Button>Commencer</Button>
-        <Button variant="outline">Découvrir le catalogue</Button>
+        <Button>{tc("start")}</Button>
+        <Button variant="outline">{tc("browseCatalog")}</Button>
       </div>
     </main>
   );
