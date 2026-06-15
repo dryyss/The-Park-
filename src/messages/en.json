@@ -3,6 +3,12 @@
     "start": "Get started",
     "browseCatalog": "Browse the catalog"
   },
+  "auth": {
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "greeting": "Hi, {name}"
+  },
   "home": {
     "tagline": "Trading Card Game · Drift / JDM 駐車場",
     "intro": "Collection, trading and community marketplace platform. Foundations in place — next: accounts, catalog, multi-version collection.",

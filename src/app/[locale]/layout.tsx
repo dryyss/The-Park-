@@ -3,6 +3,7 @@ import { Oswald, Inter, Noto_Sans_JP } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { Auth0Provider } from "@auth0/nextjs-auth0";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -52,7 +53,9 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body className={`${display.variable} ${sans.variable} ${jp.variable} antialiased`}>
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <Auth0Provider>
+          <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        </Auth0Provider>
       </body>
     </html>
   );

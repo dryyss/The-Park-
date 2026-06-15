@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getCatalogSummary } from "@/server/catalog/catalog.service";
 import { Button } from "@/components/ui/button";
+import { AuthStatus } from "@/components/auth/auth-status";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -12,6 +13,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col justify-center gap-10 px-6 py-16">
+      <div className="flex justify-end">
+        <AuthStatus />
+      </div>
+
       <header className="space-y-3">
         <p className="font-display text-carmin text-sm tracking-[0.3em] uppercase">
           {t("tagline")}

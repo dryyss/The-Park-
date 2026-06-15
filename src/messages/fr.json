@@ -3,6 +3,12 @@
     "start": "Commencer",
     "browseCatalog": "Découvrir le catalogue"
   },
+  "auth": {
+    "login": "Se connecter",
+    "signup": "Créer un compte",
+    "logout": "Se déconnecter",
+    "greeting": "Bonjour, {name}"
+  },
   "home": {
     "tagline": "Trading Card Game · Drift / JDM 駐車場",
     "intro": "Plateforme de collection, d'échange et de marketplace communautaire. Fondations en place — la suite : comptes, catalogue, collection multi-versions.",
