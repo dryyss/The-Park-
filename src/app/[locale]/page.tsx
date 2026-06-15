@@ -11,8 +11,8 @@ import { LatestListings } from "@/components/home/latest-listings";
 import { ActivityFeed } from "@/components/home/activity-feed";
 import { TopCollectors } from "@/components/home/top-collectors";
 
-// Rendu dynamique : les données (catalogue, annonces, classement) viennent de la base.
-export const dynamic = "force-dynamic";
+// Données catalogue mises en cache côté serveur (120 s) — évite un aller-retour Neon à chaque navigation.
+export const revalidate = 60;
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

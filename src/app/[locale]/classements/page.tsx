@@ -7,8 +7,10 @@ import { RankingsPodium, RankingsTable } from "@/components/rankings/rankings-po
 
 export const dynamic = "force-dynamic";
 
-function catHref(cat: RankingCategory): string {
-  return `/classements?cat=${cat}`;
+function rankingsHref(cat: RankingCategory, page?: number): string {
+  const params = new URLSearchParams({ cat });
+  if (page && page > 1) params.set("page", String(page));
+  return `/classements?${params.toString()}`;
 }
 
 export default async function ClassementsPage({
@@ -16,7 +18,7 @@ export default async function ClassementsPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ cat?: string }>;
+  searchParams: Promise<{ cat?: string; page?: string }>;
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -25,15 +27,20 @@ export default async function ClassementsPage({
 
   const cat: RankingCategory =
     sp.cat === "reputation" || sp.cat === "exchanges" ? sp.cat : "completion";
+  const requestedPage = Math.max(1, Number.parseInt(sp.page ?? "1", 10) || 1);
 
   const viewer = await getViewerUser();
-  const data = await getRankings(cat, viewer?.slug);
+  const data = await getRankings(cat, viewer?.slug, requestedPage);
 
   const tabs: { k: RankingCategory; label: string }[] = [
     { k: "completion", label: t("catCompletion") },
     { k: "reputation", label: t("catReputation") },
     { k: "exchanges", label: t("catExchanges") },
   ];
+
+  const onFirstPage = data.page === 1;
+  const hasPrev = data.page > 1;
+  const hasNext = data.page < data.pageCount;
 
   return (
     <main className="mx-auto max-w-[1100px] px-7 pt-9 pb-[60px]">
@@ -42,7 +49,7 @@ export default async function ClassementsPage({
           {tabs.map((tab) => (
             <Link
               key={tab.k}
-              href={catHref(tab.k)}
+              href={rankingsHref(tab.k)}
               className={[
                 "font-display rounded-lg px-4 py-2.5 text-[12.5px] tracking-[1.5px] uppercase transition",
                 cat === tab.k ? "bg-carmin text-white" : "text-texte-muet hover:text-blanc-casse",
@@ -54,8 +61,55 @@ export default async function ClassementsPage({
         </div>
       </PageHeader>
 
-      <RankingsPodium rows={data.podium} />
-      <RankingsTable rows={data.rows} />
+      {onFirstPage && <RankingsPodium rows={data.podium} />}
+
+      {data.viewerRank !== null && (
+        <p className="mt-5 text-[12.5px] font-bold text-texte-muet">
+          {t("yourRank", { rank: data.viewerRank, total: data.total })}
+        </p>
+      )}
+
+      {data.rows.length > 0 ? (
+        <RankingsTable rows={data.rows} />
+      ) : (
+        <p className="mt-8 rounded-[18px] border border-charbon-500 bg-charbon-800 px-6 py-10 text-center text-[13px] text-texte-muet">
+          {t("empty")}
+        </p>
+      )}
+
+      {data.pageCount > 1 && (
+        <nav className="mt-6 flex items-center justify-between" aria-label={t("pagination")}>
+          {hasPrev ? (
+            <Link
+              href={rankingsHref(cat, data.page - 1)}
+              className="font-display rounded-[10px] border-[1.5px] border-charbon-400 px-5 py-2.5 text-[12px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin hover:text-white"
+            >
+              ← {t("prev")}
+            </Link>
+          ) : (
+            <span className="font-display rounded-[10px] border-[1.5px] border-charbon-600 px-5 py-2.5 text-[12px] tracking-[1.5px] text-texte-dim uppercase opacity-40">
+              ← {t("prev")}
+            </span>
+          )}
+
+          <span className="font-display text-[12px] tracking-[1px] text-texte-muet uppercase">
+            {t("pageOf", { page: data.page, total: data.pageCount })}
+          </span>
+
+          {hasNext ? (
+            <Link
+              href={rankingsHref(cat, data.page + 1)}
+              className="font-display rounded-[10px] border-[1.5px] border-charbon-400 px-5 py-2.5 text-[12px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin hover:text-white"
+            >
+              {t("next")} →
+            </Link>
+          ) : (
+            <span className="font-display rounded-[10px] border-[1.5px] border-charbon-600 px-5 py-2.5 text-[12px] tracking-[1.5px] text-texte-dim uppercase opacity-40">
+              {t("next")} →
+            </span>
+          )}
+        </nav>
+      )}
     </main>
   );
 }

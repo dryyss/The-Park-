@@ -18,7 +18,13 @@ export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
     adapter,
-    log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+    // Les logs "query" ralentissent fortement la navigation en dev (chaque requête Neon).
+    log:
+      process.env.PRISMA_LOG_QUERIES === "1"
+        ? ["query", "error", "warn"]
+        : process.env.NODE_ENV === "development"
+          ? ["error", "warn"]
+          : ["error"],
   });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

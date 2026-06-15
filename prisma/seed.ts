@@ -53,6 +53,18 @@ async function main() {
     create: { code: "S01", name: "Moteur Forgé", sortOrder: 1 },
   });
 
+  console.log("→ Saison 2 (teaser verrouillée)");
+  await prisma.season.upsert({
+    where: { code: "S02" },
+    update: { name: "Nuit Tokyo", releaseDate: new Date("2027-06-01T18:00:00+02:00") },
+    create: {
+      code: "S02",
+      name: "Nuit Tokyo",
+      sortOrder: 2,
+      releaseDate: new Date("2027-06-01T18:00:00+02:00"),
+    },
+  });
+
   console.log("→ Raretés");
   const rarityByCode: Record<string, string> = {};
   for (let i = 0; i < RARITY_ORDER.length; i++) {
@@ -103,18 +115,20 @@ async function main() {
       create: { seasonId: season.id, number: c.num, slug, ...data },
     });
 
-    // Variante Standard FR par défaut (le reste se peuplera via la collection / import)
-    await prisma.cardVariant.upsert({
-      where: {
-        cardId_versionTypeId_language: {
-          cardId: card.id,
-          versionTypeId: vtByCode["standard"],
-          language: "FR",
+    // Toutes les variantes FR (Standard, Reverse, Édition spéciale, Alternative)
+    for (const vtCode of ["standard", "reverse", "special", "alternative"] as const) {
+      await prisma.cardVariant.upsert({
+        where: {
+          cardId_versionTypeId_language: {
+            cardId: card.id,
+            versionTypeId: vtByCode[vtCode],
+            language: "FR",
+          },
         },
-      },
-      update: {},
-      create: { cardId: card.id, versionTypeId: vtByCode["standard"], language: "FR" },
-    });
+        update: {},
+        create: { cardId: card.id, versionTypeId: vtByCode[vtCode], language: "FR" },
+      });
+    }
   }
 
   console.log("→ Badges (CDC Module 9)");
@@ -147,8 +161,9 @@ async function main() {
   }
 
   console.log("→ Membres de démo + collections");
-  // Variantes disponibles (1 Standard FR par carte au seed), triées par n° de carte.
+  const standardVtId = vtByCode["standard"];
   const allVariants = await prisma.cardVariant.findMany({
+    where: { versionTypeId: standardVtId },
     include: { card: true },
     orderBy: { card: { number: "asc" } },
   });
@@ -324,6 +339,7 @@ async function main() {
       stock: 3,
       description: "Display numéroté · artwork exclusif.",
       images: [imgPath],
+      releaseDate: new Date("2026-09-01T18:00:00+02:00"),
     },
   ];
 
@@ -339,6 +355,7 @@ async function main() {
         description: p.description,
         images: p.images,
         active: true,
+        ...( "releaseDate" in p ? { releaseDate: p.releaseDate } : {}),
       },
       create: { ...p, active: true },
     });
@@ -446,6 +463,201 @@ async function main() {
             comment: "Colis reçu en bon état.",
           },
         ],
+      });
+    }
+
+    console.log("→ Notifications, wishlist, enchères, panier, commande, messagerie");
+    await prisma.notification.deleteMany({ where: { userId: factoryId } });
+    await prisma.notification.createMany({
+      data: [
+        {
+          userId: factoryId,
+          type: "EXCHANGE_PROPOSED",
+          actorId: midnightId,
+          entityType: "EXCHANGE",
+          payload: { partner: "MIDNIGHT_PURPLE" },
+        },
+        {
+          userId: factoryId,
+          type: "MESSAGE_RECEIVED",
+          actorId: driftId,
+          entityType: "CONVERSATION",
+          payload: { preview: "Salut, colis prêt !" },
+        },
+        {
+          userId: factoryId,
+          type: "AUCTION_OUTBID",
+          actorId: saraId,
+          entityType: "AUCTION",
+          payload: { card: "Turbo Phantom", amount: "45,00 €" },
+        },
+        {
+          userId: factoryId,
+          type: "BADGE_UNLOCKED",
+          payload: { badge: "Première holo" },
+        },
+        {
+          userId: factoryId,
+          type: "ORDER_UPDATE",
+          entityType: "ORDER",
+          payload: { status: "SHIPPED", orderNumber: "TP-2026-00042" },
+        },
+      ],
+    });
+
+    const wishlistNums = [77, 56, 71, 40, 68];
+    for (const n of wishlistNums) {
+      const card = await prisma.card.findFirst({ where: { number: n, seasonId: season.id } });
+      if (!card) continue;
+      await prisma.wishlistItem.upsert({
+        where: { userId_cardId: { userId: factoryId, cardId: card.id } },
+        update: {},
+        create: { userId: factoryId, cardId: card.id },
+      });
+    }
+
+    await prisma.bid.deleteMany({ where: { auction: { sellerId: { in: memberIds } } } });
+    await prisma.auction.deleteMany({ where: { sellerId: { in: memberIds } } });
+
+    const auctionSeeds = [
+      { num: 42, seller: "DRIFT_KING_06", start: 15, current: 19.9, hours: 4 },
+      { num: 64, seller: "MIDNIGHT_PURPLE", start: 30, current: 39.9, hours: 12 },
+      { num: 75, seller: "MIDNIGHT_PURPLE", start: 100, current: 149, hours: 2 },
+    ];
+    const endsBase = Date.now();
+    for (const a of auctionSeeds) {
+      const variant = variantByNumber.get(a.num);
+      const sellerId = ownerByDisplay.get(a.seller);
+      if (!variant || !sellerId) continue;
+      const auction = await prisma.auction.create({
+        data: {
+          sellerId,
+          variantId: variant.id,
+          startPrice: a.start,
+          currentPrice: a.current,
+          status: "ACTIVE",
+          startsAt: new Date(endsBase - 86400000),
+          endsAt: new Date(endsBase + a.hours * 3600000),
+          antiSnipe: true,
+        },
+      });
+      await prisma.bid.createMany({
+        data: [
+          { auctionId: auction.id, bidderId: factoryId, amount: a.current - 2 },
+          { auctionId: auction.id, bidderId: saraId!, amount: a.current },
+        ],
+      });
+    }
+
+    const booster = await prisma.product.findFirst({ where: { sku: "TP-S01-BOOSTER" } });
+    const display = await prisma.product.findFirst({ where: { sku: "TP-S01-DISPLAY" } });
+    if (booster && display) {
+      await prisma.cartItem.deleteMany({ where: { userId: factoryId } });
+      await prisma.cartItem.createMany({
+        data: [
+          { userId: factoryId, productId: booster.id, quantity: 2 },
+          { userId: factoryId, productId: display.id, quantity: 1 },
+        ],
+      });
+
+      await prisma.orderItem.deleteMany({ where: { order: { userId: factoryId } } });
+      await prisma.order.deleteMany({ where: { userId: factoryId } });
+      await prisma.order.create({
+        data: {
+          orderNumber: "TP-2026-00042",
+          userId: factoryId,
+          status: "SHIPPED",
+          subtotal: 99.7,
+          shippingCost: 0,
+          total: 99.7,
+          shippingName: "LIGHTON_FACTORY",
+          shippingLine1: "12 rue du Drift",
+          shippingZip: "75011",
+          shippingCity: "Paris",
+          shippingCountry: "FR",
+          shippingMethod: "Colissimo",
+          trackingNumber: "6A12345678901",
+          shippedAt: new Date(),
+          items: {
+            create: [
+              { productId: display.id, quantity: 1, unitPrice: 89.9 },
+              { productId: booster.id, quantity: 2, unitPrice: 4.9 },
+            ],
+          },
+        },
+      });
+    }
+
+    const acceptedExchange = await prisma.exchange.findFirst({
+      where: { initiatorId: factoryId, recipientId: driftId, status: "ACCEPTED" },
+    });
+    if (acceptedExchange) {
+      await prisma.message.deleteMany({
+        where: { conversation: { exchangeId: acceptedExchange.id } },
+      });
+      await prisma.conversationParticipant.deleteMany({
+        where: { conversation: { exchangeId: acceptedExchange.id } },
+      });
+      await prisma.conversation.deleteMany({ where: { exchangeId: acceptedExchange.id } });
+
+      const conv = await prisma.conversation.create({
+        data: {
+          context: "EXCHANGE",
+          exchangeId: acceptedExchange.id,
+          participants: {
+            create: [{ userId: factoryId }, { userId: driftId }],
+          },
+          messages: {
+            create: [
+              { senderId: factoryId, body: "Salut ! Échange validé de mon côté, j'expédie demain." },
+              { senderId: driftId, body: "Parfait, pareil ici. Envoi sécurisé activé ?" },
+              { senderId: factoryId, body: "Oui, caution autorisée. Je filme l'emballage in-app." },
+            ],
+          },
+        },
+      });
+      void conv;
+    }
+
+    await prisma.user.update({
+      where: { id: factoryId },
+      data: { role: "ADMIN", staffRole: "OWNER" },
+    });
+
+    console.log("→ Signalements & litiges (modération démo)");
+    await prisma.report.deleteMany({});
+    await prisma.dispute.deleteMany({});
+
+    if (midnightId && driftId) {
+      await prisma.report.create({
+        data: {
+          reporterId: driftId,
+          targetType: "LISTING",
+          targetId: "demo-listing",
+          reason: "Prix manifestement incohérent avec la cote.",
+          involvesMinor: false,
+          priority: 0,
+        },
+      });
+      await prisma.report.create({
+        data: {
+          reporterId: hachiId!,
+          targetType: "USER",
+          targetId: tougeId!,
+          reason: "Comportement inapproprié en chat d'échange.",
+          involvesMinor: true,
+          priority: 100,
+        },
+      });
+      await prisma.dispute.create({
+        data: {
+          type: "EXCHANGE",
+          reason: "Colis reçu endommagé — preuves vidéo contestées.",
+          claimantId: midnightId,
+          respondentId: driftId,
+          involvesMinor: false,
+          priority: 10,
+        },
       });
     }
   }

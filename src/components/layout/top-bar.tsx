@@ -2,6 +2,7 @@
 
 // La route /auth/login est servie par le middleware Auth0, pas par une page Next.
 /* eslint-disable @next/next/no-html-link-for-pages */
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -47,6 +48,29 @@ export function TopBar() {
   const { user } = useUser();
   const initial = (user?.name ?? user?.email ?? "K").charAt(0).toUpperCase();
 
+  // État live de la top-bar (panier / notifs / messages), rafraîchi à chaque navigation.
+  const [live, setLive] = useState({ cart: 0, notifications: 0, messages: 0 });
+  useEffect(() => {
+    let active = true;
+    fetch("/api/topbar", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (active && data) {
+          setLive({
+            cart: Number(data.cart) || 0,
+            notifications: Number(data.notifications) || 0,
+            messages: Number(data.messages) || 0,
+          });
+        }
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [pathname]);
+
+  const cartBadge = live.cart > 0 ? (live.cart > 99 ? "99+" : String(live.cart)) : undefined;
+
   return (
     <header className="sticky top-0 z-40 flex h-[66px] items-center gap-7 border-b border-charbon-500 bg-charbon/[0.86] px-5 backdrop-blur-md md:px-7">
       {/* Logo */}
@@ -68,6 +92,7 @@ export function TopBar() {
             <Link
               key={item.key}
               href={item.href}
+              prefetch={true}
               className={[
                 "font-display rounded-[7px] px-3 py-2 text-[12.5px] tracking-[1.4px] transition",
                 active
@@ -93,19 +118,19 @@ export function TopBar() {
           </svg>
         </IconButton>
         <span className="hidden sm:contents">
-          <IconButton href="/notifications" title={t("notifications")} badge="dot">
+          <IconButton href="/notifications" title={t("notifications")} badge={live.notifications > 0 ? "dot" : undefined}>
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
               <path d="M13.7 21a2 2 0 0 1-3.4 0" />
             </svg>
           </IconButton>
-          <IconButton href="/messages" title={t("messages")} badge="dot">
+          <IconButton href="/messages" title={t("messages")} badge={live.messages > 0 ? "dot" : undefined}>
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
             </svg>
           </IconButton>
         </span>
-        <IconButton href="/panier" title={t("cart")} badge="3">
+        <IconButton href="/boutique/panier" title={t("cart")} badge={cartBadge}>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="9" cy="21" r="1" />
             <circle cx="20" cy="21" r="1" />
@@ -113,13 +138,16 @@ export function TopBar() {
           </svg>
         </IconButton>
 
-        <Link
-          href="/vendre"
-          className="font-display hidden -skew-x-3 items-center gap-1 rounded-[10px] bg-carmin px-3 py-2 text-[12px] tracking-[1px] text-white shadow-[3px_3px_0_rgba(0,0,0,0.4)] transition hover:bg-carmin-alt sm:flex"
-        >
-          <span className="text-base leading-none">+</span>
-          {t("sell").toUpperCase()}
-        </Link>
+        {/* « Vendre » réservé aux membres connectés (la page exige la connexion). */}
+        {user && (
+          <Link
+            href="/vendre"
+            className="font-display hidden -skew-x-3 items-center gap-1 rounded-[10px] bg-carmin px-3 py-2 text-[12px] tracking-[1px] text-white shadow-[3px_3px_0_rgba(0,0,0,0.4)] transition hover:bg-carmin-alt sm:flex"
+          >
+            <span className="text-base leading-none">+</span>
+            {t("sell").toUpperCase()}
+          </Link>
+        )}
 
         {/* Avatar / auth */}
         {user ? (

@@ -1,4 +1,5 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { rarityMeta, cardImage, type HoloVariant } from "@/lib/rarity";
 import { formatPrice } from "@/lib/format";
@@ -41,7 +42,7 @@ function toCardDisplay(card: {
 }
 
 /** Cartes vedettes : les plus cotées de la saison courante. */
-export async function getFeaturedCards(limit = 5): Promise<CardDisplay[]> {
+async function fetchFeaturedCards(limit: number) {
   const cards = await prisma.card.findMany({
     orderBy: [{ quoteValue: "desc" }, { number: "asc" }],
     take: limit,
@@ -50,8 +51,15 @@ export async function getFeaturedCards(limit = 5): Promise<CardDisplay[]> {
   return cards.map(toCardDisplay);
 }
 
+export async function getFeaturedCards(limit = 5): Promise<CardDisplay[]> {
+  return unstable_cache(() => fetchFeaturedCards(limit), ["featured-cards", String(limit)], {
+    revalidate: 120,
+    tags: ["catalog"],
+  })();
+}
+
 /** Stats d'en-tête de l'accueil (cartes / raretés / versions / uniques). */
-export async function getCatalogStats() {
+async function fetchCatalogStats() {
   const [totalCards, rarityCount, versionCount, uniqueCount] = await Promise.all([
     prisma.card.count(),
     prisma.rarity.count(),
@@ -61,11 +69,16 @@ export async function getCatalogStats() {
   return { totalCards, rarityCount, versionCount, uniqueCount };
 }
 
+export const getCatalogStats = unstable_cache(fetchCatalogStats, ["catalog-stats"], {
+  revalidate: 120,
+  tags: ["catalog"],
+});
+
 /**
  * Couche service catalogue (.cursorrules : pas de Prisma direct dans les composants).
  * Résumé de la saison courante pour l'accueil / les tableaux de complétion.
  */
-export async function getCatalogSummary() {
+async function fetchCatalogSummary() {
   const season = await prisma.season.findFirst({
     orderBy: { sortOrder: "asc" },
   });
@@ -99,7 +112,52 @@ export async function getCatalogSummary() {
   return { season, totalCards, byRarity };
 }
 
+export async function getCatalogSummary() {
+  return unstable_cache(fetchCatalogSummary, ["catalog-summary"], {
+    revalidate: 120,
+    tags: ["catalog"],
+  })();
+}
+
+export interface SeasonCardRow {
+  slug: string;
+  name: string;
+  image: string;
+  glyph: string;
+  color: string;
+  tilt: number;
+  holo: number;
+  variant: HoloVariant;
+}
+
+/** Grille catalogue d'une saison (tri par numéro). */
+export async function getSeasonCards(seasonCode = "S01"): Promise<SeasonCardRow[]> {
+  const season = await prisma.season.findUnique({ where: { code: seasonCode } });
+  if (!season) return [];
+
+  const cards = await prisma.card.findMany({
+    where: { seasonId: season.id },
+    orderBy: { number: "asc" },
+    include: { rarity: true },
+  });
+
+  return cards.map((c) => {
+    const meta = rarityMeta(c.rarity.code);
+    return {
+      slug: c.slug,
+      name: c.name,
+      image: cardImage(c.imageUrl),
+      glyph: c.rarity.symbol ?? meta.glyph,
+      color: c.rarity.color ?? meta.color,
+      tilt: meta.tilt,
+      holo: meta.holo,
+      variant: meta.variant,
+    };
+  });
+}
+
 export interface CardDetail {
+  id: string;
   slug: string;
   number: number;
   numberLabel: string;
@@ -121,7 +179,7 @@ export interface CardDetail {
   variant: HoloVariant;
   prevSlug: string | null;
   nextSlug: string | null;
-  versions: { code: string; label: string; owned: boolean }[];
+  versions: { variantId: string; code: string; label: string; owned: boolean }[];
   listings: {
     id: string;
     price: string;
@@ -173,6 +231,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
   const ownedSet = new Set(ownedVariants.map((o) => o.variantId));
 
   return {
+    id: card.id,
     slug: card.slug,
     number: card.number,
     numberLabel: card.rarity.code === "p" ? `${String(card.number).padStart(2, "0")} · PROMO` : `${String(card.number).padStart(2, "0")}/78`,
@@ -195,6 +254,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     prevSlug: idx > 0 ? neighbors[idx - 1].slug : null,
     nextSlug: idx < neighbors.length - 1 ? neighbors[idx + 1].slug : null,
     versions: card.variants.map((v) => ({
+      variantId: v.id,
       code: v.versionType.code,
       label: v.versionType.label,
       owned: ownedSet.has(v.id),

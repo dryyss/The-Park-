@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { getShopProductBySlug } from "@/server/shop/shop.service";
 import { ShopOfficialBanner } from "@/components/shop/shop-sections";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 
 export const dynamic = "force-dynamic";
 
@@ -46,15 +47,14 @@ export default async function BoutiqueProduitPage({
           <p className="mt-2 text-[12px] font-bold text-texte-dim">
             {product.inStock ? t("inStock", { count: product.stock }) : t("soldOut")}
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <button
-              type="button"
-              disabled={!product.inStock}
-              className="font-display -skew-x-3 rounded-[11px] bg-carmin px-7 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {t("addToCart")}
-            </button>
-            <Link href="/boutique" className="font-display -skew-x-3 rounded-[11px] border border-charbon-400 px-6 py-3.5 text-[14px] tracking-wide text-blanc-casse uppercase">
+          <div className="mt-6 flex flex-col gap-3">
+            <AddToCartButton
+              productId={product.id}
+              inStock={product.inStock}
+              stock={product.stock}
+              locale={locale}
+            />
+            <Link href="/boutique" className="font-display -skew-x-3 self-start rounded-[11px] border border-charbon-400 px-6 py-3.5 text-[14px] tracking-wide text-blanc-casse uppercase transition hover:border-carmin">
               {t("backToCatalog")}
             </Link>
           </div>

@@ -6,7 +6,6 @@ import { getUserCollection } from "@/server/collection/collection.service";
 import { avatarGradient } from "@/lib/avatars";
 import { formatPercent } from "@/lib/format";
 import { CollectionCardTile } from "@/components/collection/collection-card-tile";
-import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -18,10 +17,7 @@ export default async function CollectionneurPage({ params }: { params: Promise<{
   const profile = await getCollectorProfile(slug);
   if (!profile) notFound();
 
-  const user = await prisma.user.findFirst({ where: { slug }, select: { id: true } });
-  const collection = user
-    ? await getUserCollection(user.id, { segment: "owned" })
-    : null;
+  const collection = await getUserCollection(profile.userId, { segment: "owned" });
 
   const previewCards = collection?.sections.flatMap((s) => s.cards).slice(0, 12) ?? [];
 

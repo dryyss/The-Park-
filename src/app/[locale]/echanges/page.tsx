@@ -1,5 +1,5 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { getViewerUser } from "@/server/user/user.service";
+import { requireAuthViewer } from "@/server/user/user.service";
 import { getViewerExchanges, type ExchangeTab } from "@/server/exchange/exchange.service";
 import { PageHeader } from "@/components/common/page-header";
 import { ExchangeBoard } from "@/components/exchange/exchange-board";
@@ -20,10 +20,7 @@ export default async function EchangesPage({
   const sp = await searchParams;
   const t = await getTranslations("exchanges");
 
-  const viewer = await getViewerUser();
-  if (!viewer) {
-    return <main className="mx-auto max-w-[1320px] px-7 py-24 text-center text-texte-dim">{t("noUser")}</main>;
-  }
+  const viewer = await requireAuthViewer(`/${locale}/echanges`);
 
   const tab: ExchangeTab = sp.tab === "done" ? "done" : "current";
   const data = await getViewerExchanges(viewer.id, tab, sp.id);

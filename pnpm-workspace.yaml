@@ -1,3 +1,6 @@
+packages:
+  - "."
+
 # Réglages pnpm (v11 : les settings vivent ici, plus dans package.json).
 # Dépendances autorisées à exécuter leurs scripts de build (postinstall).
 allowBuilds:

@@ -1,4 +1,5 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
 export interface TopCollector {
@@ -12,7 +13,7 @@ export interface TopCollector {
 }
 
 /** Classement des collectionneurs par nombre de variantes possédées. */
-export async function getTopCollectors(limit = 5): Promise<TopCollector[]> {
+async function fetchTopCollectors(limit: number): Promise<TopCollector[]> {
   const total = await prisma.cardVariant.count();
 
   const grouped = await prisma.collectionItem.groupBy({
@@ -46,17 +47,28 @@ export async function getTopCollectors(limit = 5): Promise<TopCollector[]> {
   });
 }
 
+export async function getTopCollectors(limit = 5): Promise<TopCollector[]> {
+  return unstable_cache(() => fetchTopCollectors(limit), ["top-collectors", String(limit)], {
+    revalidate: 60,
+    tags: ["rankings"],
+  })();
+}
+
+/** Type d'événement affiché dans le flux — calque sur Listing.type. */
+export type ActivityKind = "SELL" | "TRADE" | "WANT";
+
 export interface ActivityItem {
   id: string;
-  kind: "LISTING";
+  kind: ActivityKind;
   actorName: string;
   cardName: string;
+  /** Renseigné pour SELL / TRADE ; null pour WANT (recherche). */
   price: unknown;
   at: Date;
 }
 
 /** Flux d'activité du park (dérivé des dernières annonces réelles). */
-export async function getRecentActivity(limit = 5): Promise<ActivityItem[]> {
+async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
   const listings = await prisma.listing.findMany({
     where: { status: "ACTIVE" },
     orderBy: { createdAt: "desc" },
@@ -69,12 +81,19 @@ export async function getRecentActivity(limit = 5): Promise<ActivityItem[]> {
 
   return listings.map((l) => ({
     id: l.id,
-    kind: "LISTING" as const,
+    kind: l.type === "WANT" ? "WANT" : l.type === "SELL_OR_TRADE" ? "TRADE" : "SELL",
     actorName: l.seller.displayName,
     cardName: l.variant.card.name,
-    price: l.price,
+    price: l.type === "WANT" ? null : l.price,
     at: l.createdAt,
   }));
+}
+
+export async function getRecentActivity(limit = 5): Promise<ActivityItem[]> {
+  return unstable_cache(() => fetchRecentActivity(limit), ["recent-activity", String(limit)], {
+    revalidate: 30,
+    tags: ["listings"],
+  })();
 }
 
 export type RankingCategory = "completion" | "reputation" | "exchanges";
@@ -94,12 +113,22 @@ export interface RankingsView {
   category: RankingCategory;
   podium: RankingRow[];
   rows: RankingRow[];
+  page: number;
+  pageCount: number;
+  total: number;
+  /** Rang global du viewer (1-based) s'il figure au classement, sinon null. */
+  viewerRank: number | null;
 }
 
 const RANK_COLORS = ["#E8B23A", "#C9C6BE", "#E8945A"];
+const PAGE_SIZE = 20;
 
-/** Classements complets (complétion, réputation, échanges). */
-export async function getRankings(category: RankingCategory, viewerSlug?: string): Promise<RankingsView> {
+/** Classements complets (complétion, réputation, échanges), paginés. */
+export async function getRankings(
+  category: RankingCategory,
+  viewerSlug?: string,
+  page = 1,
+): Promise<RankingsView> {
   const totalVariants = await prisma.cardVariant.count();
 
   const members = await prisma.user.findMany({
@@ -153,16 +182,22 @@ export async function getRankings(category: RankingCategory, viewerSlug?: string
     isViewer: viewerSlug === m.slug,
   }));
 
-  const podiumOrder = [1, 0, 2]; // 2nd, 1st, 3rd for layout
-  const podium = podiumOrder
-    .map((i) => rows[i])
-    .filter(Boolean)
-    .map((r, i) => ({ ...r, rank: podiumOrder[i] + 1 }));
+  // Podium en ordre naturel (1er, 2e, 3e) ; la mise en page (2e – 1er – 3e) est gérée par RankingsPodium.
+  const podium = rows.slice(0, 3);
 
-  return { category, podium, rows: rows.slice(0, 10) };
+  const total = rows.length;
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const current = Math.min(Math.max(1, Math.trunc(page) || 1), pageCount);
+  const start = (current - 1) * PAGE_SIZE;
+  const pageRows = rows.slice(start, start + PAGE_SIZE);
+
+  const viewerRank = viewerSlug ? rows.find((r) => r.isViewer)?.rank ?? null : null;
+
+  return { category, podium, rows: pageRows, page: current, pageCount, total, viewerRank };
 }
 
 export interface CollectorProfile {
+  userId: string;
   displayName: string;
   slug: string;
   initial: string;
@@ -188,6 +223,7 @@ export async function getCollectorProfile(slug: string): Promise<CollectorProfil
   ]);
 
   return {
+    userId: user.id,
     displayName: user.displayName,
     slug: user.slug,
     initial: user.displayName.charAt(0).toUpperCase(),

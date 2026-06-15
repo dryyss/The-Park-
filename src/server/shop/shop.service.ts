@@ -1,4 +1,5 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/format";
 import type { ProductType } from "@/generated/prisma/client";
@@ -72,25 +73,34 @@ function mapProduct(p: {
   };
 }
 
-/** Catalogue boutique officielle (Lighton). */
-export async function getShopCatalog(category: ShopCategory = "all"): Promise<ShopProduct[]> {
-  const products = await prisma.product.findMany({
+async function fetchShopProducts() {
+  return prisma.product.findMany({
     where: { active: true },
     orderBy: [{ type: "asc" }, { price: "asc" }],
   });
+}
 
-  const mapped = products.map(mapProduct);
+async function getAllShopProducts() {
+  const products = await unstable_cache(fetchShopProducts, ["shop-products"], {
+    revalidate: 120,
+    tags: ["shop"],
+  })();
+  return products.map(mapProduct);
+}
+
+/** Catalogue boutique officielle (Lighton). */
+export async function getShopCatalog(category: ShopCategory = "all"): Promise<ShopProduct[]> {
+  const mapped = await getAllShopProducts();
   if (category === "all") return mapped;
   return mapped.filter((p) => p.category === category);
 }
 
 /** Produit vedette (display) pour le hero boutique. */
 export async function getFeaturedShopProduct(): Promise<ShopProduct | null> {
-  const p = await prisma.product.findFirst({
-    where: { active: true, type: "DISPLAY" },
-    orderBy: { price: "desc" },
-  });
-  return p ? mapProduct(p) : null;
+  const mapped = await getAllShopProducts();
+  const displays = mapped.filter((p) => p.type === "DISPLAY");
+  if (displays.length === 0) return null;
+  return displays.sort((a, b) => b.priceRaw - a.priceRaw)[0];
 }
 
 export async function getShopProductBySlug(slug: string): Promise<ShopProduct | null> {

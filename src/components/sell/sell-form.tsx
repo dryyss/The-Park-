@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import type { OwnedCardForSale } from "@/server/marketplace/sell.service";
+import { publishListingAction } from "@/server/marketplace/marketplace.actions";
 
 export function SellForm({ cards }: { cards: OwnedCardForSale[] }) {
   const t = useTranslations("sell");
+  const router = useRouter();
   const [selected, setSelected] = useState(0);
   const [listingType, setListingType] = useState<"fixed" | "auction">("fixed");
   const [price, setPrice] = useState("");
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   const card = cards[selected];
 
@@ -23,6 +29,25 @@ export function SellForm({ cards }: { cards: OwnedCardForSale[] }) {
         </Link>
       </div>
     );
+  }
+
+  function handlePublish() {
+    if (!card || listingType !== "fixed") return;
+    const parsed = parseFloat(price.replace(",", "."));
+    if (!Number.isFinite(parsed) || parsed < 0) {
+      setError("VALIDATION");
+      return;
+    }
+    setError(null);
+    startTransition(async () => {
+      const res = await publishListingAction({ variantId: card.variantId, price: parsed });
+      if (res.ok) {
+        setSuccess(true);
+        router.push("/marketplace");
+      } else {
+        setError(res.error);
+      }
+    });
   }
 
   return (
@@ -58,20 +83,8 @@ export function SellForm({ cards }: { cards: OwnedCardForSale[] }) {
         <section className="rounded-[18px] border border-charbon-500 bg-charbon-800 p-5">
           <StepHeader n="02" title={t("stepType")} />
           <div className="mb-4 flex gap-2.5">
-            <TypeCard
-              active={listingType === "fixed"}
-              emoji="🏷️"
-              title={t("typeFixed")}
-              desc={t("typeFixedDesc")}
-              onClick={() => setListingType("fixed")}
-            />
-            <TypeCard
-              active={listingType === "auction"}
-              emoji="🔨"
-              title={t("typeAuction")}
-              desc={t("typeAuctionDesc")}
-              onClick={() => setListingType("auction")}
-            />
+            <TypeCard active={listingType === "fixed"} emoji="🏷️" title={t("typeFixed")} desc={t("typeFixedDesc")} onClick={() => setListingType("fixed")} />
+            <TypeCard active={listingType === "auction"} emoji="🔨" title={t("typeAuction")} desc={t("typeAuctionDesc")} onClick={() => setListingType("auction")} disabled />
           </div>
           {listingType === "fixed" && (
             <div>
@@ -96,12 +109,15 @@ export function SellForm({ cards }: { cards: OwnedCardForSale[] }) {
         <section className="rounded-[18px] border border-charbon-500 bg-charbon-800 p-5">
           <StepHeader n="03" title={t("stepPublish")} />
           <p className="mb-4 text-[12.5px] font-semibold text-texte-dim">{t("disclaimer")}</p>
+          {success && <p className="mb-3 text-[13px] font-bold text-statut-succes">{t("publishSuccess")}</p>}
+          {error && <p className="mb-3 text-[13px] font-bold text-neon-rouge">{t("publishError")}</p>}
           <button
             type="button"
-            disabled
-            className="font-display w-full -skew-x-3 cursor-not-allowed rounded-[11px] bg-charbon-600 px-6 py-3.5 text-[14px] tracking-[1.5px] text-texte-faible uppercase"
+            disabled={pending || listingType !== "fixed" || success}
+            onClick={handlePublish}
+            className="font-display w-full -skew-x-3 rounded-[11px] bg-carmin px-6 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase transition hover:bg-carmin-alt disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {t("publishSoon")}
+            {pending ? t("publishing") : t("publish")}
           </button>
         </section>
       </div>
@@ -140,18 +156,21 @@ function TypeCard({
   title,
   desc,
   onClick,
+  disabled,
 }: {
   active: boolean;
   emoji: string;
   title: string;
   desc: string;
   onClick: () => void;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`flex flex-1 flex-col gap-1.5 rounded-[13px] border-[1.5px] p-4 text-left transition ${active ? "border-carmin bg-carmin/10" : "border-charbon-500 bg-charbon hover:border-charbon-400"}`}
+      disabled={disabled}
+      className={`flex flex-1 flex-col gap-1.5 rounded-[13px] border-[1.5px] p-4 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${active ? "border-carmin bg-carmin/10" : "border-charbon-500 bg-charbon hover:border-charbon-400"}`}
     >
       <div className="text-[20px]">{emoji}</div>
       <div className="text-[13.5px] font-extrabold text-blanc-casse">{title}</div>

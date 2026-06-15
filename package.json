@@ -13,7 +13,8 @@
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "auth0:roles": "tsx scripts/setup-auth0-roles.ts"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.22.0",
@@ -26,7 +27,9 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "server-only": "^0.0.1",
-    "tailwind-merge": "^3.6.0"
+    "stripe": "^18.0.0",
+    "tailwind-merge": "^3.6.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

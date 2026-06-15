@@ -82,6 +82,7 @@ export async function getUserCollection(userId: string, filters: CollectionFilte
   ]);
 
   const vtCodes = new Map(versionTypes.map((v) => [v.id, v.code]));
+  const cardByNumber = new Map(cards.map((c) => [c.number, c]));
   const ownedByCard = new Map<number, { qty: number; versions: Set<string> }>();
 
   for (const item of items) {
@@ -122,7 +123,7 @@ export async function getUserCollection(userId: string, filters: CollectionFilte
   const filtered = enriched.filter((c) => {
     if (filters.segment === "owned" && !c.owned) return false;
     if (filters.segment === "missing" && c.owned) return false;
-    if (filters.rarity && cards.find((x) => x.number === c.number)?.rarity.code !== filters.rarity) return false;
+    if (filters.rarity && cardByNumber.get(c.number)?.rarity.code !== filters.rarity) return false;
     if (q && !c.name.toLowerCase().includes(q) && !String(c.number).includes(q)) return false;
     return true;
   });
@@ -133,7 +134,7 @@ export async function getUserCollection(userId: string, filters: CollectionFilte
   const rarityOrder = ["c", "r", "u", "l", "g", "p"];
   const byRarityCode = new Map<string, CollectionCard[]>();
   for (const c of filtered) {
-    const card = cards.find((x) => x.number === c.number)!;
+    const card = cardByNumber.get(c.number)!;
     const list = byRarityCode.get(card.rarity.code) ?? [];
     list.push(c);
     byRarityCode.set(card.rarity.code, list);
@@ -143,7 +144,7 @@ export async function getUserCollection(userId: string, filters: CollectionFilte
     .filter((code) => byRarityCode.has(code))
     .map((code) => {
       const sectionCards = byRarityCode.get(code)!;
-      const allInRarity = enriched.filter((c) => cards.find((x) => x.number === c.number)?.rarity.code === code);
+      const allInRarity = enriched.filter((c) => cardByNumber.get(c.number)?.rarity.code === code);
       const ownedInRarity = allInRarity.filter((c) => c.owned).length;
       const meta = rarityMeta(code);
       return {
@@ -160,7 +161,7 @@ export async function getUserCollection(userId: string, filters: CollectionFilte
     });
 
   const rarityBars = rarityOrder.map((code) => {
-    const allInRarity = enriched.filter((c) => cards.find((x) => x.number === c.number)?.rarity.code === code);
+    const allInRarity = enriched.filter((c) => cardByNumber.get(c.number)?.rarity.code === code);
     const ownedInRarity = allInRarity.filter((c) => c.owned).length;
     const meta = rarityMeta(code);
     const r = cards.find((x) => x.rarity.code === code)?.rarity;

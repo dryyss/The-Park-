@@ -1,6 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { getViewerUser } from "@/server/user/user.service";
+import { requireAuthViewer } from "@/server/user/user.service";
 import { getOwnedCardsForSale } from "@/server/marketplace/sell.service";
 import { SellForm } from "@/components/sell/sell-form";
 
@@ -11,8 +11,8 @@ export default async function VendrePage({ params }: { params: Promise<{ locale:
   setRequestLocale(locale);
   const t = await getTranslations("sell");
 
-  const viewer = await getViewerUser();
-  const cards = viewer ? await getOwnedCardsForSale(viewer.id) : [];
+  const viewer = await requireAuthViewer(`/${locale}/vendre`);
+  const cards = await getOwnedCardsForSale(viewer.id);
 
   return (
     <main className="mx-auto max-w-[1120px] px-7 pt-7 pb-[60px]">

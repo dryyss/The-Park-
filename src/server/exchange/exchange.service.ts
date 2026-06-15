@@ -138,3 +138,25 @@ export async function getViewerExchanges(
 
   return { current, done, selected };
 }
+
+/** Cartes possédées disponibles pour proposer un échange. */
+export async function getViewerOwnedCardsForPropose(userId: string) {
+  const items = await prisma.collectionItem.findMany({
+    where: { userId, reservedQuantity: 0 },
+    include: {
+      variant: {
+        include: { card: true, versionType: true },
+      },
+    },
+    orderBy: { variant: { card: { number: "asc" } } },
+    take: 24,
+  });
+
+  return items.map((i) => ({
+    variantId: i.variantId,
+    name: i.variant.card.name,
+    number: i.variant.card.number,
+    image: cardImage(i.variant.card.imageUrl),
+    versionLabel: i.variant.versionType.label,
+  }));
+}

@@ -1,11 +1,6 @@
-import "server-only";
-
 /**
  * Client minimal pour la Management API d'Auth0 (app Machine-to-Machine).
  * Utilisé côté serveur uniquement : ne jamais importer dans un composant client.
- *
- * Cas d'usage The Park : lire/écrire les `app_metadata` (âge vérifié, statut de
- * consentement parental), gérer les rôles admin, consulter un profil en modération.
  */
 
 const DOMAIN = process.env.AUTH0_DOMAIN;
@@ -15,6 +10,10 @@ const AUDIENCE = process.env.AUTH0_M2M_AUDIENCE ?? `https://${DOMAIN}/api/v2/`;
 
 type CachedToken = { accessToken: string; expiresAt: number };
 let cache: CachedToken | null = null;
+
+export function isAuth0ManagementConfigured(): boolean {
+  return Boolean(DOMAIN && CLIENT_ID && CLIENT_SECRET);
+}
 
 function requireConfig() {
   if (!DOMAIN || !CLIENT_ID || !CLIENT_SECRET) {
@@ -28,7 +27,6 @@ function requireConfig() {
 async function getAccessToken(): Promise<string> {
   const { domain, clientId, clientSecret, audience } = requireConfig();
 
-  // Réutilise le token tant qu'il reste >60s de validité.
   if (cache && cache.expiresAt - 60_000 > Date.now()) {
     return cache.accessToken;
   }
@@ -75,7 +73,6 @@ async function mgmt<T>(path: string, init?: RequestInit): Promise<T> {
     throw new Error(`Management API error ${init?.method ?? "GET"} ${path} (${res.status}): ${await res.text()}`);
   }
 
-  // Certaines réponses (DELETE / PATCH roles) sont vides.
   const text = await res.text();
   return (text ? JSON.parse(text) : undefined) as T;
 }
@@ -88,16 +85,25 @@ export interface Auth0User {
   user_metadata?: Record<string, unknown>;
 }
 
-export const auth0Management = {
-  getUser: (userId: string) =>
-    mgmt<Auth0User>(`/users/${encodeURIComponent(userId)}`),
+export interface Auth0Role {
+  id: string;
+  name: string;
+  description?: string;
+}
 
-  /** Fusionne dans app_metadata (réservé serveur : âge vérifié, consentement…). */
+export const auth0Management = {
+  getUser: (userId: string) => mgmt<Auth0User>(`/users/${encodeURIComponent(userId)}`),
+
   updateAppMetadata: (userId: string, appMetadata: Record<string, unknown>) =>
     mgmt<Auth0User>(`/users/${encodeURIComponent(userId)}`, {
       method: "PATCH",
       body: JSON.stringify({ app_metadata: appMetadata }),
     }),
+
+  listRoles: () => mgmt<Auth0Role[]>("/roles"),
+
+  createRole: (payload: { name: string; description: string }) =>
+    mgmt<Auth0Role>("/roles", { method: "POST", body: JSON.stringify(payload) }),
 
   getUserRoles: (userId: string) =>
     mgmt<{ id: string; name: string }[]>(`/users/${encodeURIComponent(userId)}/roles`),
@@ -105,6 +111,12 @@ export const auth0Management = {
   assignRoles: (userId: string, roleIds: string[]) =>
     mgmt<void>(`/users/${encodeURIComponent(userId)}/roles`, {
       method: "POST",
+      body: JSON.stringify({ roles: roleIds }),
+    }),
+
+  removeUserRoles: (userId: string, roleIds: string[]) =>
+    mgmt<void>(`/users/${encodeURIComponent(userId)}/roles`, {
+      method: "DELETE",
       body: JSON.stringify({ roles: roleIds }),
     }),
 };

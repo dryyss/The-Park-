@@ -1,4 +1,5 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 import { rarityMeta, cardImage, type HoloVariant } from "@/lib/rarity";
@@ -98,7 +99,7 @@ function toListingDisplay(l: ListingRow): ListingDisplay {
 }
 
 /** Dernières annonces actives (marketplace), de la plus récente à la plus ancienne. */
-export async function getRecentListings(limit = 6): Promise<ListingDisplay[]> {
+async function fetchRecentListings(limit: number) {
   const listings = await prisma.listing.findMany({
     where: { status: "ACTIVE" },
     orderBy: { createdAt: "desc" },
@@ -106,6 +107,13 @@ export async function getRecentListings(limit = 6): Promise<ListingDisplay[]> {
     include: listingInclude,
   });
   return listings.map((l) => toListingDisplay(l as unknown as ListingRow));
+}
+
+export async function getRecentListings(limit = 6): Promise<ListingDisplay[]> {
+  return unstable_cache(() => fetchRecentListings(limit), ["recent-listings", String(limit)], {
+    revalidate: 30,
+    tags: ["listings"],
+  })();
 }
 
 function intentWhere(intent: MarketIntent): Prisma.ListingWhereInput {

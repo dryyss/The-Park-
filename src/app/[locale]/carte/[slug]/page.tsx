@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { HoloCard } from "@/components/cards/holo-card";
 import { getCardDetail } from "@/server/catalog/catalog.service";
-import { getViewerUser } from "@/server/user/user.service";
+import { getViewerUser, getAuthenticatedViewer } from "@/server/user/user.service";
+import { CardMemberActions } from "@/components/cards/card-member-actions";
 import { avatarGradient } from "@/lib/avatars";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
   const tc = await getTranslations("conditions");
 
   const viewer = await getViewerUser();
+  const authenticated = await getAuthenticatedViewer();
   const card = await getCardDetail(slug, viewer?.id);
   if (!card) notFound();
 
@@ -109,6 +111,13 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
               ))}
             </div>
           </div>
+
+          <CardMemberActions
+            cardId={card.id}
+            cardSlug={card.slug}
+            isAuthenticated={!!authenticated}
+            versions={card.versions}
+          />
 
           <div className="mt-6 flex flex-wrap gap-2.5">
             <Link href="/marketplace" className="font-display -skew-x-3 rounded-[10px] bg-carmin px-5.5 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase shadow-[3px_3px_0_rgba(0,0,0,0.45)] transition hover:bg-carmin-alt">

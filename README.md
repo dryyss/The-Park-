@@ -103,11 +103,21 @@ Univers **street / graffiti / sticker JDM** (« garage de nuit »). Voir `.curso
 ```bash
 # Prérequis : Node 20+, pnpm, PostgreSQL, comptes Auth0 / Stripe / Resend
 pnpm install
-cp .env.example .env.local        # remplir les clés
-pnpm prisma migrate dev           # schéma multi-versions
-pnpm payload generate:types       # types CMS
-pnpm dev                          # http://localhost:3000
+cp .env.example .env        # remplir DATABASE_URL et les clés
+pnpm db:migrate             # migrations versionnées (schéma Prisma)
+pnpm db:seed                # catalogue S01, membres démo, boutique, échanges
+pnpm dev                    # http://localhost:3000
 ```
+
+**Workflow base de données**
+
+| Commande | Rôle |
+| -------- | ---- |
+| `pnpm db:migrate` | Applique les migrations Prisma (`prisma migrate dev`) |
+| `pnpm db:seed` | Peuple PostgreSQL depuis `prisma/seed.ts` + `cards-data.mjs` |
+| `pnpm db:studio` | Interface visuelle Prisma Studio |
+
+Après seed, **toutes les données métier** (cartes, annonces, boutique, échanges…) proviennent de PostgreSQL. Le fichier `prisma/cards-data.mjs` sert uniquement au peuplement initial.
 
 Variables d'env attendues : `DATABASE_URL`, `AUTH0_*`, `STRIPE_*`, `PUSHER_*`, `RESEND_API_KEY`, `PAYLOAD_SECRET`, `NEXT_PUBLIC_APP_URL`.
 
