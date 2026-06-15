@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes ringPulse { 0% { transform: scale(0.9); opacity: 0.7; } 100% { transform: scale(1.6); opacity: 0; } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+</style>
+</helmet>
+<div data-screen-label="Prolongation de garantie" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 12px; color: #8E8E98; margin-left: 6px;">
+      <a href="The Park - Échanges.dc.html" style="color: #8E8E98; text-decoration: none;" style-hover="color: #D81B60;">Achats</a>
+      <span style="color: #45454E;">/</span>
+      <a href="The Park - Envoi Sécurisé.dc.html" style="color: #8E8E98; text-decoration: none;" style-hover="color: #D81B60;">E-2412</a>
+      <span style="color: #45454E;">/</span>
+      <span style="color: #C9C6BE;">Garantie</span>
+    </div>
+    <div style="flex: 1;"></div>
+    <a href="The Park - Profil.dc.html" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; color: #fff; border: 2px solid #2B2B31; text-decoration: none;">K</a>
+  </div>
+
+  <div style="max-width: 760px; margin: 0 auto; padding: 34px 28px 70px;">
+
+    <!-- ===== ACTIVE PROMPT ===== -->
+    <sc-if value="{{ isPrompt }}" hint-placeholder-val="{{ true }}">
+      <div>
+        <div style="display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 12px; letter-spacing: 3px; color: #E8B23A; text-transform: uppercase; margin-bottom: 10px;">
+          <span style="position: relative; width: 12px; height: 12px;"><span style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid #E8B23A; animation: ringPulse 1.5s ease-out infinite;"></span><span style="position: absolute; inset: 3px; border-radius: 50%; background: #E8B23A;"></span></span>
+          Acheminement plus long que prévu
+        </div>
+        <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(32px, 5vw, 52px); line-height: 0.92; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 4px 4px 0 #D81B60;">Prolonge ta garantie</h1>
+        <p style="max-width: 600px; margin: 15px 0 0; font-size: 13.5px; line-height: 1.65; color: #8E8E98;">Ton colis est toujours en route, mais la <strong style="color: #C9C6BE;">préautorisation bancaire</strong> de ta caution arrive à expiration (~7 jours). Pour ne pas perdre la protection, on repose une nouvelle empreinte — <strong style="color: #C9C6BE;">aucun débit</strong>, c'est juste le renouvellement du blocage.</p>
+
+        <!-- countdown card -->
+        <div style="position: relative; margin-top: 24px; background: linear-gradient(150deg, rgba(232,178,58,0.1), #1A1A1E 55%); border: 1.5px solid rgba(232,178,58,0.4); border-radius: 18px; padding: 24px; overflow: hidden;">
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 11px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8B23A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+              <div style="font-family: 'Anton', sans-serif; font-size: 17px; letter-spacing: 0.6px; color: #F2EFE9;">Autorisation valable encore</div>
+            </div>
+            <div style="margin-left: auto; display: flex; align-items: baseline; gap: 9px;">
+              <span style="font-family: 'Anton', sans-serif; font-size: 32px; letter-spacing: 1.5px; color: #E8B23A; font-variant-numeric: tabular-nums;">{{ countdown }}</span>
+            </div>
+          </div>
+          <div style="height: 7px; border-radius: 999px; background: #26262B; margin-top: 14px; overflow: hidden;"><div style="height: 100%; width: {{ barPct }}; border-radius: 999px; background: linear-gradient(90deg, #E8B23A, #D81B60);"></div></div>
+          <div style="display: flex; justify-content: space-between; margin-top: 7px; font-weight: 700; font-size: 10.5px; color: #6E6E78;"><span>Posée le 09/06 · 19:21</span><span>Expire le 16/06 · 19:21</span></div>
+
+          <!-- transaction recap -->
+          <div style="display: flex; align-items: center; gap: 14px; margin-top: 20px; padding: 13px 15px; background: #202024; border: 1px solid #2B2B31; border-radius: 13px;">
+            <img src="uploads/35_NISSAN_S13_KOUKI.jpg" alt="Nissan S13 Kouki" style="width: 46px; aspect-ratio: 5/7; object-fit: cover; border-radius: 8px; box-shadow: 0 6px 14px rgba(0,0,0,0.5);">
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 9px; font-weight: 800; letter-spacing: 1.3px; color: #6E6E78; text-transform: uppercase;">Achat à SARA.S15 · E-2412</div>
+              <div style="font-weight: 800; font-size: 13.5px; color: #F2EFE9; margin-top: 2px;">Nissan S13 Kouki</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-family: 'Anton', sans-serif; font-size: 19px; color: #8E83FF;">14,50 €</div>
+              <div style="font-weight: 700; font-size: 9.5px; color: #6E6E78;">caution bloquée</div>
+            </div>
+          </div>
+
+          <!-- tracking note -->
+          <div style="display: flex; align-items: center; gap: 9px; margin-top: 13px; padding: 11px 14px; background: rgba(79,163,255,0.07); border: 1px solid rgba(79,163,255,0.25); border-radius: 11px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4FA3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            <span style="font-weight: 700; font-size: 11px; color: #C9C6BE;">Suivi : <strong style="color: #F2EFE9;">en transit</strong> · dernier point Vitrolles (13) · pas encore livré</span>
+          </div>
+        </div>
+
+        <!-- actions -->
+        <div style="display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap;">
+          <div onClick="{{ onProlong }}" style="flex: 1; min-width: 240px; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 1.2px; padding: 16px; background: #D81B60; color: #fff; border-radius: 13px; cursor: pointer; box-shadow: 4px 4px 0 rgba(0,0,0,0.5); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: translate(-2px,-2px); box-shadow: 6px 6px 0 rgba(0,0,0,0.5);">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            PROLONGER LA GARANTIE
+          </div>
+          <div onClick="{{ onDecline }}" style="display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1px; padding: 16px 20px; background: transparent; color: #8E8E98; border: 1.5px solid #2B2B31; border-radius: 13px; cursor: pointer; transition: color 0.15s ease, border-color 0.15s ease;" style-hover="color: #FF8A7E; border-color: rgba(255,107,94,0.4);">Renoncer à la garantie</div>
+        </div>
+
+        <!-- 3DS note -->
+        <div style="display: flex; align-items: flex-start; gap: 10px; margin-top: 16px; background: #16161a; border: 1px solid #232328; border-radius: 12px; padding: 14px 16px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635BFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span style="font-weight: 600; font-size: 11.5px; color: #8E8E98; line-height: 1.55;">La nouvelle empreinte peut demander une <strong style="color: #C9C6BE;">authentification 3-D Secure</strong> de ta banque. L'ancienne autorisation est annulée dès que la nouvelle est validée. Renouvellement limité à 2 fois ; au-delà, escalade modération.</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ===== PROLONGED OK ===== -->
+    <sc-if value="{{ isProlonged }}" hint-placeholder-val="{{ false }}">
+      <div style="background: linear-gradient(150deg, rgba(94,217,154,0.1), #1A1A1E 55%); border: 1.5px solid rgba(94,217,154,0.45); border-radius: 18px; padding: 30px 28px; animation: pop 0.3s ease;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <span style="width: 52px; height: 52px; border-radius: 14px; background: #5ED99A; color: #0E1A12; display: flex; align-items: center; justify-content: center; transform: rotate(-6deg); box-shadow: 0 10px 22px rgba(94,217,154,0.3);"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+          <div>
+            <div style="font-family: 'Anton', sans-serif; font-size: 27px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Garantie prolongée</div>
+            <div style="font-weight: 700; font-size: 12.5px; color: #5ED99A; margin-top: 3px;">Nouvelle empreinte validée · 3-D Secure OK</div>
+          </div>
+        </div>
+        <p style="font-size: 13px; line-height: 1.6; color: #8E8E98; margin: 18px 0 0;">Ta caution de <strong style="color: #C9C6BE;">14,50 €</strong> est de nouveau bloquée pour ~7 jours. La protection reste active jusqu'à la livraison. Rien n'a été débité.</p>
+        <div style="display: flex; align-items: center; gap: 9px; margin-top: 18px; padding: 13px 15px; background: #202024; border: 1px solid #2B2B31; border-radius: 12px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8B23A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+          <span style="font-weight: 700; font-size: 11.5px; color: #C9C6BE;">Nouvelle expiration : <strong style="color: #F2EFE9;">23/06 · 19:21</strong> · renouvellement 1/2 utilisé</span>
+        </div>
+        <a href="The Park - Envoi Sécurisé.dc.html" style="display: inline-flex; align-items: center; gap: 9px; margin-top: 20px; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1px; padding: 13px 22px; background: #D81B60; color: #fff; border-radius: 11px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45);">SUIVRE L'ENVOI →</a>
+      </div>
+    </sc-if>
+
+    <!-- ===== SUSPENDED ===== -->
+    <sc-if value="{{ isSuspended }}" hint-placeholder-val="{{ false }}">
+      <div style="background: linear-gradient(150deg, rgba(232,178,58,0.1), #1A1A1E 55%); border: 1.5px solid rgba(232,178,58,0.45); border-radius: 18px; padding: 30px 28px; animation: pop 0.3s ease;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <span style="width: 52px; height: 52px; border-radius: 14px; background: rgba(232,178,58,0.16); color: #E8B23A; display: flex; align-items: center; justify-content: center; transform: rotate(-6deg);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4v16M14 4v16"></path></svg></span>
+          <div>
+            <div style="font-family: 'Anton', sans-serif; font-size: 26px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Garantie suspendue</div>
+            <div style="font-weight: 700; font-size: 12.5px; color: #E8B23A; margin-top: 3px;">État GARANTIE_SUSPENDUE · aucun débit effectué</div>
+          </div>
+        </div>
+        <p style="font-size: 13px; line-height: 1.6; color: #8E8E98; margin: 18px 0 0;">Tu as choisi de ne pas renouveler. Ton ancienne autorisation a été <strong style="color: #C9C6BE;">annulée</strong> (rien n'a été prélevé) et la <strong style="color: #C9C6BE;">couverture financière tombe</strong>. Le colis continue normalement — mais en cas de problème, la caution ne pourra plus t'indemniser.</p>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; background: #202024; border: 1px solid #2B2B31; border-radius: 12px;">
+            <span style="width: 22px; height: 22px; border-radius: 6px; background: rgba(94,217,154,0.14); color: #5ED99A; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <span style="font-weight: 700; font-size: 11.5px; color: #C9C6BE;">Le suivi transporteur reste actif et visible.</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; background: #202024; border: 1px solid #2B2B31; border-radius: 12px;">
+            <span style="width: 22px; height: 22px; border-radius: 6px; background: rgba(94,217,154,0.14); color: #5ED99A; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <span style="font-weight: 700; font-size: 11.5px; color: #C9C6BE;">L'expéditeur reste protégé par ses preuves vidéo déjà déposées.</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; background: #202024; border: 1px solid rgba(255,107,94,0.25); border-radius: 12px;">
+            <span style="width: 22px; height: 22px; border-radius: 6px; background: rgba(255,107,94,0.14); color: #FF6B5E; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></span>
+            <span style="font-weight: 700; font-size: 11.5px; color: #C9C6BE;">Plus d'indemnisation possible côté acheteur en cas de litige.</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 11px; margin-top: 22px; flex-wrap: wrap;">
+          <div onClick="{{ onReprendre }}" style="display: flex; align-items: center; gap: 9px; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1px; padding: 13px 20px; background: #E8B23A; color: #1A1405; border-radius: 11px; cursor: pointer; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); transition: filter 0.15s ease;" style-hover="filter: brightness(1.08);">REPOSER UNE CAUTION</div>
+          <a href="The Park - Envoi Sécurisé.dc.html" style="display: flex; align-items: center; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1px; padding: 13px 20px; background: transparent; color: #C9C6BE; border: 1.5px solid #2B2B31; border-radius: 11px; text-decoration: none; transform: skewX(-3deg);">VOIR LE SUIVI</a>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { mode: 'prompt', secsLeft: 33 * 3600 + 12 * 60 + 47 };  // ~33h to expiry
+
+  componentDidMount() {
+    this._t = setInterval(() => this.setState(s => ({ secsLeft: Math.max(0, s.secsLeft - 1) })), 1000);
+  }
+  componentWillUnmount() { clearInterval(this._t); }
+
+  fmt(n) {
+    const h = Math.floor(n / 3600), m = Math.floor((n % 3600) / 60), s = n % 60;
+    return String(h).padStart(2, '0') + 'h ' + String(m).padStart(2, '0') + 'm ' + String(s).padStart(2, '0') + 's';
+  }
+
+  renderVals() {
+    const mode = this.state.mode;
+    const TOTAL = 48 * 3600;  // window since J+5 notification
+    const left = this.state.secsLeft;
+    const pct = Math.max(0, Math.min(100, (left / TOTAL) * 100));
+    return {
+      isPrompt: mode === 'prompt',
+      isProlonged: mode === 'prolonged',
+      isSuspended: mode === 'suspended',
+      countdown: this.fmt(left),
+      barPct: pct.toFixed(1) + '%',
+      onProlong: () => this.setState({ mode: 'prolonged' }),
+      onDecline: () => this.setState({ mode: 'suspended' }),
+      onReprendre: () => this.setState({ mode: 'prolonged' })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+@keyframes sheen { 0% { transform: translateX(-130%) skewX(-18deg); } 60%, 100% { transform: translateX(240%) skewX(-18deg); } }
+::-webkit-scrollbar { height: 9px; width: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+input::placeholder, textarea::placeholder { color: #5A5A64; }
+</style>
+</helmet>
+<div data-screen-label="Mettre en vente" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center;">
+      <a href="The Park - Accueil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ACCUEIL</a>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #F2EFE9; background: #202024; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="transform: translateY(-1.5px);">COLLECTION</a>
+      <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">MARKETPLACE</a>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ÉCHANGES</a>
+      <a href="The Park - Classements.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">CLASSEMENTS</a>
+      <a href="The Park - Profil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">PROFIL</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Notifications.dc.html" title="Notifications" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a>
+      <a href="The Park - Messages.dc.html" title="Messages" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a><a href="The Park - Panier.dc.html" title="Panier" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #D81B60; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #131316; box-sizing: border-box;">3</span></a><a href="The Park - Vendre.dc.html" style="display: flex; align-items: center; gap: 5px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 8px 13px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.4);"><span style="font-size: 16px; line-height: 1;">+</span>VENDRE</a><a href="The Park - Magasin.dc.html" title="Mon portefeuille" style="display: flex; align-items: center; gap: 10px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 6px 7px 6px 16px; text-decoration: none; color: #F2EFE9; transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;" style-hover="border-color: #D81B60; transform: translateY(-1.5px); box-shadow: 0 6px 14px rgba(216,27,96,0.25);">
+        <span style="font-weight: 800; font-size: 13.5px; letter-spacing: 0.5px;">{{ walletLabel }}</span>
+        <span style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #D81B60; color: #fff; font-weight: 800; font-size: 15px; line-height: 1;">+</span>
+      </a>
+      <a href="The Park - Profil.dc.html" title="KENJI-13 · Profil" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #2B2B31; text-decoration: none; transition: border-color 0.18s ease, transform 0.2s ease;" style-hover="border-color: #D81B60; transform: scale(1.08) rotate(-4deg);">K</a>
+    </div>
+  </div>
+
+  <div style="max-width: 1120px; margin: 0 auto; padding: 28px 28px 60px;">
+
+    <div style="display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 12.5px; color: #8E8E98; animation: fadeUp 0.4s ease both;">
+      <a href="The Park - Ma Collection.dc.html" style="color: #8E8E98; text-decoration: none; transition: color 0.15s ease;" style-hover="color: #D81B60;">Ma collection</a>
+      <span style="color: #45454E;">/</span>
+      <span style="color: #C9C6BE;">Mettre en vente</span>
+    </div>
+
+    <h1 style="margin: 16px 0 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(34px, 4.5vw, 52px); line-height: 0.95; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 4px 4px 0 #D81B60; animation: fadeUp 0.5s ease both;">Mettre en vente</h1>
+    <div style="font-weight: 700; font-size: 13.5px; color: #A9A9B2; margin-top: 14px; animation: fadeUp 0.5s 0.05s ease both;">Sors une carte de ton classeur et propose-la à la communauté.</div>
+
+    <div style="display: grid; grid-template-columns: 1fr 360px; gap: 18px; margin-top: 24px; align-items: start;">
+
+      <!-- COLONNE GAUCHE — FORMULAIRE -->
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+
+        <!-- 1. choisir la carte -->
+        <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 22px; animation: fadeUp 0.5s 0.08s ease both;">
+          <div style="display: flex; align-items: baseline; gap: 11px; margin-bottom: 16px;">
+            <span style="font-family: 'Anton', sans-serif; font-size: 15px; color: #D81B60; transform: skewX(-3deg);">01</span>
+            <div style="font-family: 'Anton', sans-serif; font-size: 17px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg);">Choisis la carte</div>
+          </div>
+          <div style="display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 12px;">
+            <sc-for list="{{ cards }}" as="cd" hint-placeholder-count="6">
+              <div onClick="{{ pickCard }}" data-i="{{ cd.i }}" style="flex-shrink: 0; width: 92px; cursor: pointer;">
+                <div style="position: relative; aspect-ratio: 5/7; border-radius: 10px; overflow: hidden; border: 2.5px solid {{ cd.border }}; box-shadow: 0 8px 16px rgba(0,0,0,0.45); transition: transform 0.15s ease;" style-hover="transform: translateY(-3px);">
+                  <img src="{{ cd.img }}" alt="{{ cd.name }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                  <span style="position: absolute; top: 6px; left: 6px; font-family: 'Anton', sans-serif; font-size: 9px; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 5px; background: rgba(0,0,0,0.7); color: {{ cd.rarColor }};">{{ cd.rarGlyph }}</span>
+                </div>
+                <div style="font-weight: 800; font-size: 9.5px; color: #A9A9B2; margin-top: 6px; text-align: center; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ cd.short }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- 2. type de vente -->
+        <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 22px; animation: fadeUp 0.5s 0.12s ease both;">
+          <div style="display: flex; align-items: baseline; gap: 11px; margin-bottom: 16px;">
+            <span style="font-family: 'Anton', sans-serif; font-size: 15px; color: #D81B60; transform: skewX(-3deg);">02</span>
+            <div style="font-family: 'Anton', sans-serif; font-size: 17px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg);">Type de vente</div>
+          </div>
+          <div style="display: flex; gap: 10px; margin-bottom: 18px;">
+            <div onClick="{{ pickType }}" data-t="fixed" style="flex: 1; display: flex; flex-direction: column; gap: 6px; background: {{ fixedBg }}; border: 1.5px solid {{ fixedBorder }}; border-radius: 13px; padding: 16px; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease;">
+              <div style="font-size: 20px;">🏷️</div>
+              <div style="font-weight: 800; font-size: 13.5px; color: #F2EFE9;">Prix fixe</div>
+              <div style="font-weight: 700; font-size: 11px; color: #8E8E98;">Achat immédiat, vente rapide.</div>
+            </div>
+            <div onClick="{{ pickType }}" data-t="auction" style="flex: 1; display: flex; flex-direction: column; gap: 6px; background: {{ aucBg }}; border: 1.5px solid {{ aucBorder }}; border-radius: 13px; padding: 16px; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease;">
+              <div style="font-size: 20px;">🔨</div>
+              <div style="font-weight: 800; font-size: 13.5px; color: #F2EFE9;">Enchère</div>
+              <div style="font-weight: 700; font-size: 11px; color: #8E8E98;">Laisse le marché fixer le prix.</div>
+            </div>
+          </div>
+
+          <!-- prix fixe -->
+          <sc-if value="{{ isFixed }}" hint-placeholder-val="{{ true }}">
+            <div style="animation: pop 0.25s ease both;">
+              <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 7px;">Prix de vente</div>
+              <div style="position: relative;">
+                <input value="{{ price }}" onChange="{{ onPrice }}" type="number" placeholder="0" style="width: 100%; background: #131316; border: 1.5px solid #2B2B31; border-radius: 11px; padding: 14px 42px 14px 16px; color: #F2EFE9; font-family: 'Anton', sans-serif; font-size: 20px; outline: none;">
+                <span style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-family: 'Anton', sans-serif; font-size: 18px; color: #6E6E78;">€</span>
+              </div>
+              <div style="font-weight: 700; font-size: 11.5px; color: #8E8E98; margin-top: 8px;">Cote estimée de cette carte : <strong style="color: #5ED99A;">{{ coteLabel }}</strong></div>
+            </div>
+          </sc-if>
+
+          <!-- enchère -->
+          <sc-if value="{{ isAuction }}" hint-placeholder-val="{{ false }}">
+            <div style="animation: pop 0.25s ease both; display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; gap: 12px;">
+                <div style="flex: 1;">
+                  <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 7px;">Mise de départ</div>
+                  <div style="position: relative;">
+                    <input value="{{ startBid }}" onChange="{{ onStartBid }}" type="number" placeholder="0" style="width: 100%; background: #131316; border: 1.5px solid #2B2B31; border-radius: 11px; padding: 13px 38px 13px 16px; color: #F2EFE9; font-family: 'Anton', sans-serif; font-size: 18px; outline: none;">
+                    <span style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-family: 'Anton', sans-serif; font-size: 15px; color: #6E6E78;">€</span>
+                  </div>
+                </div>
+                <div style="flex: 1;">
+                  <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 7px;">Prix de réserve</div>
+                  <div style="position: relative;">
+                    <input value="{{ reserve }}" onChange="{{ onReserve }}" type="number" placeholder="optionnel" style="width: 100%; background: #131316; border: 1.5px solid #2B2B31; border-radius: 11px; padding: 13px 38px 13px 16px; color: #F2EFE9; font-family: 'Anton', sans-serif; font-size: 18px; outline: none;">
+                    <span style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-family: 'Anton', sans-serif; font-size: 15px; color: #6E6E78;">€</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 10px;">Durée de l'enchère</div>
+                <div style="display: flex; gap: 8px;">
+                  <sc-for list="{{ durations }}" as="d" hint-placeholder-count="4">
+                    <div onClick="{{ pickDur }}" data-d="{{ d.v }}" style="flex: 1; text-align: center; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 0.5px; padding: 12px 6px; background: {{ d.bg }}; border: 1.5px solid {{ d.border }}; color: {{ d.color }}; border-radius: 10px; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease;">{{ d.label }}</div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <!-- 3. état + description -->
+        <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 22px; animation: fadeUp 0.5s 0.16s ease both;">
+          <div style="display: flex; align-items: baseline; gap: 11px; margin-bottom: 16px;">
+            <span style="font-family: 'Anton', sans-serif; font-size: 15px; color: #D81B60; transform: skewX(-3deg);">03</span>
+            <div style="font-family: 'Anton', sans-serif; font-size: 17px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg);">État &amp; description</div>
+          </div>
+          <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 10px;">État de la carte</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;">
+            <sc-for list="{{ conditions }}" as="c" hint-placeholder-count="4">
+              <div onClick="{{ pickCond }}" data-c="{{ c.v }}" style="font-weight: 800; font-size: 12px; padding: 9px 15px; background: {{ c.bg }}; border: 1.5px solid {{ c.border }}; color: {{ c.color }}; border-radius: 999px; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;">{{ c.label }}</div>
+            </sc-for>
+          </div>
+          <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 10px;">Photos réelles</div>
+          <div style="display: flex; gap: 10px; margin-bottom: 18px;">
+            <div style="width: 78px; height: 78px; border-radius: 12px; background: #131316; border: 1.5px dashed #3A3A42; display: flex; align-items: center; justify-content: center; color: #6E6E78; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease;" style-hover="border-color: #D81B60; color: #D81B60;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+            <div style="width: 78px; height: 78px; border-radius: 12px; background: #131316; border: 1.5px dashed #3A3A42; display: flex; align-items: center; justify-content: center; color: #6E6E78; font-size: 22px;">📷</div>
+            <div style="flex: 1; display: flex; align-items: center; font-weight: 700; font-size: 11.5px; color: #6E6E78; line-height: 1.5;">Ajoute 2 photos minimum (recto / verso). Les annonces avec photos réelles se vendent 3× plus vite.</div>
+          </div>
+          <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 10px;">Description</div>
+          <textarea value="{{ desc }}" onChange="{{ onDesc }}" placeholder="Décris l'état, l'historique de la carte, les défauts éventuels…" style="width: 100%; min-height: 92px; resize: vertical; background: #131316; border: 1.5px solid #2B2B31; border-radius: 11px; padding: 13px 16px; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 13.5px; line-height: 1.55; outline: none;"></textarea>
+        </div>
+      </div>
+
+      <!-- COLONNE DROITE — APERÇU LIVE -->
+      <div style="position: sticky; top: 90px; display: flex; flex-direction: column; gap: 14px; animation: fadeUp 0.5s 0.12s ease both;">
+        <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 22px;">
+          <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 16px;">Aperçu de l'annonce</div>
+          <div style="background: #131316; border: 1px solid #2B2B31; border-radius: 16px; overflow: hidden;">
+            <div style="position: relative; aspect-ratio: 5/7; overflow: hidden;">
+              <img src="{{ selImg }}" alt="{{ selName }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+              <div style="position: absolute; inset: 0; overflow: hidden; pointer-events: none;"><div style="position: absolute; top: -20%; left: 0; width: 40%; height: 140%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: sheen 4.5s 0.4s ease-in-out infinite;"></div></div>
+              <span style="position: absolute; top: 11px; left: 11px; font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 0.5px; padding: 4px 9px; border-radius: 6px; background: rgba(0,0,0,0.72); color: {{ selRarColor }}; backdrop-filter: blur(4px);">{{ selRarGlyph }} {{ selRarLabel }}</span>
+              <span style="position: absolute; top: 11px; right: 11px; font-family: 'Anton', sans-serif; font-size: 10px; letter-spacing: 0.5px; padding: 4px 9px; border-radius: 6px; background: {{ typeBadgeBg }}; color: #fff;">{{ typeBadge }}</span>
+            </div>
+            <div style="padding: 15px 16px 17px;">
+              <div style="font-weight: 800; font-size: 14px; color: #F2EFE9; line-height: 1.25;">{{ selName }}</div>
+              <div style="font-weight: 700; font-size: 11.5px; color: #8E8E98; margin-top: 5px;">{{ condLabel }} · vendu par KENJI-13</div>
+              <div style="display: flex; align-items: baseline; justify-content: space-between; margin-top: 12px;">
+                <div>
+                  <div style="font-weight: 700; font-size: 10px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">{{ priceCaption }}</div>
+                  <div style="font-family: 'Anton', sans-serif; font-size: 26px; color: #F2EFE9; letter-spacing: 0.5px; margin-top: 2px;">{{ displayPrice }}</div>
+                </div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 10px 16px; background: #D81B60; color: #fff; border-radius: 9px; transform: skewX(-3deg);">{{ previewCta }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- estimation gains -->
+        <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 20px;">
+          <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 12px;">Tu recevras</div>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; font-weight: 700;">
+            <div style="display: flex; justify-content: space-between; color: #8E8E98;"><span>{{ priceCaption }}</span><span style="color: #F2EFE9;">{{ displayPrice }}</span></div>
+            <div style="display: flex; justify-content: space-between; color: #8E8E98;"><span>Commission The Park (8 %)</span><span style="color: #FF8A8A;">−{{ feeLabel }}</span></div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 5px; padding-top: 10px; border-top: 1px dashed #2F2F36;"><span style="font-weight: 800; text-transform: uppercase; font-size: 11px; color: #C9C6BE; letter-spacing: 1px;">Net estimé</span><span style="font-family: 'Anton', sans-serif; font-size: 22px; color: #5ED99A;">{{ netLabel }}</span></div>
+          </div>
+        </div>
+
+        <div onClick="{{ publish }}" style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1.5px; padding: 16px; text-align: center; background: #D81B60; color: #fff; border-radius: 12px; cursor: pointer; transform: skewX(-3deg); box-shadow: 4px 4px 0 rgba(0,0,0,0.5); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px,-2px); box-shadow: 6px 6px 0 rgba(0,0,0,0.5);">{{ publishCta }}</div>
+        <div style="text-align: center; font-weight: 700; font-size: 11px; color: #6E6E78;">En publiant, tu acceptes les règles de vente de The Park.</div>
+      </div>
+    </div>
+
+    <dc-import name="The Park - Footer" hint-size="100%,320px" style="display: block; width: 100%;"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { cardIdx: 0, type: 'fixed', price: '', startBid: '', reserve: '', dur: 3, cond: 'tb', desc: '' };
+
+  constructor(props) {
+    super(props);
+    this.RAR = {
+      g: { glyph: '✸', color: '#E8B23A', label: 'Gold' },
+      l: { glyph: '❀', color: '#FF2E63', label: 'Légendaire' },
+      u: { glyph: '✦', color: '#B05CFF', label: 'Ultra Rare' },
+      r: { glyph: '◈', color: '#4FA3FF', label: 'Rare Holo' },
+      c: { glyph: '◆', color: '#9BA3B2', label: 'Commune' }
+    };
+    this.CARDS = [
+      { name: 'TOYOTA AE86 TRUENO', short: 'AE86 TRUENO', img: 'uploads/76_TOYOTA_COROLLA_TRUENO.jpg', rar: 'g', cote: 149 },
+      { name: 'NISSAN SKYLINE R34', short: 'SKYLINE R34', img: 'uploads/34_NISSAN_SKYLINE-GTT.jpg', rar: 'r', cote: 50 },
+      { name: 'MAZDA RX7 FD', short: 'RX7 FD', img: 'uploads/38_MAZDA_RXY_FD.jpg', rar: 'r', cote: 30 },
+      { name: 'TOYOTA SUPRA MK4', short: 'SUPRA MK4', img: 'uploads/42_TOYOTA_SUPRA_MK4_rare.jpg', rar: 'r', cote: 32 },
+      { name: 'NISSAN SILVIA S15', short: 'SILVIA S15', img: 'uploads/04-NISSAN_S15_SPECR.jpg', rar: 'c', cote: 30 },
+      { name: 'BMW M3 E92', short: 'M3 E92', img: 'uploads/19-BMW_M3_E92.jpg', rar: 'c', cote: 30 }
+    ];
+    this.CONDS = [
+      { v: 'neuf', label: 'Neuf' }, { v: 'tb', label: 'Très bon état' },
+      { v: 'bon', label: 'Bon état' }, { v: 'correct', label: 'Correct' }
+    ];
+    this.DURS = [ { v: 1, label: '24 H' }, { v: 3, label: '3 J' }, { v: 5, label: '5 J' }, { v: 7, label: '7 J' } ];
+  }
+
+  euro(v) { return v.toFixed(2).replace('.', ',') + ' €'; }
+
+  renderVals() {
+    const { cardIdx, type, price, startBid, reserve, dur, cond, desc } = this.state;
+    const walletLabel = (v => this.euro(isNaN(v) ? 128.5 : v))(parseFloat(localStorage.getItem('thepark_wallet')));
+    const card = this.CARDS[cardIdx];
+    const r = this.RAR[card.rar];
+    const isFixed = type === 'fixed';
+    const condLabel = (this.CONDS.find(c => c.v === cond) || {}).label || 'Très bon état';
+
+    const baseVal = isFixed ? parseFloat(price) : parseFloat(startBid);
+    const hasVal = !isNaN(baseVal) && baseVal > 0;
+    const displayPrice = hasVal ? this.euro(baseVal) : '— €';
+    const fee = hasVal ? Math.round(baseVal * 0.08 * 100) / 100 : 0;
+    const net = hasVal ? baseVal - fee : 0;
+
+    return {
+      walletLabel,
+      cards: this.CARDS.map((c, i) => {
+        const cr = this.RAR[c.rar];
+        return { i: String(i), name: c.name, short: c.short, img: c.img,
+          rarColor: cr.color, rarGlyph: cr.glyph,
+          border: i === cardIdx ? '#D81B60' : 'transparent' };
+      }),
+      pickCard: (e) => this.setState({ cardIdx: +e.currentTarget.dataset.i }),
+
+      isFixed, isAuction: type === 'auction',
+      fixedBg: isFixed ? 'rgba(216,27,96,0.08)' : '#131316', fixedBorder: isFixed ? '#D81B60' : '#2B2B31',
+      aucBg: !isFixed ? 'rgba(216,27,96,0.08)' : '#131316', aucBorder: !isFixed ? '#D81B60' : '#2B2B31',
+      pickType: (e) => this.setState({ type: e.currentTarget.dataset.t }),
+
+      price, startBid, reserve,
+      coteLabel: this.euro(card.cote),
+      onPrice: (e) => this.setState({ price: e.target.value }),
+      onStartBid: (e) => this.setState({ startBid: e.target.value }),
+      onReserve: (e) => this.setState({ reserve: e.target.value }),
+
+      durations: this.DURS.map(d => ({ v: String(d.v), label: d.label,
+        bg: dur === d.v ? 'rgba(216,27,96,0.08)' : '#131316',
+        border: dur === d.v ? '#D81B60' : '#2B2B31',
+        color: dur === d.v ? '#fff' : '#8E8E98' })),
+      pickDur: (e) => this.setState({ dur: +e.currentTarget.dataset.d }),
+
+      conditions: this.CONDS.map(c => ({ v: c.v, label: c.label,
+        bg: cond === c.v ? 'rgba(216,27,96,0.12)' : '#131316',
+        border: cond === c.v ? '#D81B60' : '#2B2B31',
+        color: cond === c.v ? '#fff' : '#8E8E98' })),
+      pickCond: (e) => this.setState({ cond: e.currentTarget.dataset.c }),
+      desc, onDesc: (e) => this.setState({ desc: e.target.value }),
+
+      // preview
+      selImg: card.img, selName: card.name,
+      selRarColor: r.color, selRarGlyph: r.glyph, selRarLabel: r.label,
+      condLabel,
+      typeBadge: isFixed ? 'ACHAT DIRECT' : 'ENCHÈRE',
+      typeBadgeBg: isFixed ? '#1F8A5B' : '#B8531F',
+      priceCaption: isFixed ? 'Prix' : 'Mise de départ',
+      displayPrice,
+      previewCta: isFixed ? 'ACHETER' : 'ENCHÉRIR',
+
+      feeLabel: this.euro(fee), netLabel: this.euro(net),
+      publishCta: isFixed ? 'PUBLIER L\'ANNONCE' : 'LANCER L\'ENCHÈRE',
+      publish: () => { window.location.href = isFixed ? 'The Park - Marketplace.dc.html' : 'The Park - Encheres.dc.html'; }
+    };
+  }
+}
+</script>
+</body>
+</html>

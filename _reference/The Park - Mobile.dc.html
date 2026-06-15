@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #0E0E11; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.mscroll::-webkit-scrollbar { width: 0; height: 0; }
+::selection { background: #D81B60; color: #fff; }
+</style>
+</helmet>
+<div data-screen-label="Version mobile" style="min-height: 100vh; background: #0E0E11; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif;">
+
+  <!-- en-tête -->
+  <div style="max-width: 1280px; margin: 0 auto; padding: 44px 32px 0; animation: fadeUp 0.5s ease both;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 38px; height: 38px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); overflow: hidden;"><img src="uploads/pasted-1781200672492-0.png" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);"></div>
+      <span style="font-weight: 800; font-size: 11px; letter-spacing: 1.5px; color: #6E6E78; text-transform: uppercase; padding: 4px 10px; border: 1px solid #2B2B31; border-radius: 6px;">Design mobile · iOS</span>
+    </div>
+    <div style="font-weight: 700; font-size: 11.5px; letter-spacing: 4px; color: #D81B60; text-transform: uppercase; margin-top: 22px;">The Park · App mobile</div>
+    <h1 style="margin: 12px 0 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(36px, 5vw, 58px); line-height: 0.92; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 4px 4px 0 #D81B60;">The Park dans ta poche</h1>
+    <p style="margin: 16px 0 0; max-width: 560px; font-size: 14.5px; color: #A9A9B2; line-height: 1.6;">Les écrans clés adaptés au format mobile : navigation par onglets en bas, cartes plein écran et achats au pouce.</p>
+  </div>
+
+  <!-- galerie d'iPhones -->
+  <div class="mscroll" style="display: flex; gap: 40px; align-items: flex-start; overflow-x: auto; padding: 40px 32px 60px; scroll-snap-type: x mandatory;">
+
+    <!-- ============ 1 · ACCUEIL ============ -->
+    <div style="flex-shrink: 0; scroll-snap-align: center; animation: fadeUp 0.5s 0.05s ease both;">
+      <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg); margin-bottom: 14px; padding-left: 8px;">01 · Accueil</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402px,874px" style="display: block;">
+        <div style="height: 100%; display: flex; flex-direction: column; background: #0E0E11; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif;">
+          <!-- app bar -->
+          <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 56px 18px 12px;">
+            <div style="display: flex; align-items: center; gap: 9px;">
+              <div style="width: 32px; height: 32px; border-radius: 8px; background: #F2EFE9; transform: rotate(-4deg); overflow: hidden;"><img src="uploads/pasted-1781200672492-0.png" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);"></div>
+              <div style="font-family: 'Anton', sans-serif; font-size: 17px; letter-spacing: 1px;">THE PARK</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 6px 7px 6px 13px;"><span style="font-weight: 800; font-size: 12.5px;">128,50 €</span><span style="width: 21px; height: 21px; border-radius: 50%; background: #D81B60; color: #fff; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center;">+</span></div>
+          </div>
+          <!-- body -->
+          <div style="flex: 1; overflow: auto; padding: 6px 18px 18px;">
+            <!-- hero -->
+            <div style="position: relative; border-radius: 18px; overflow: hidden; padding: 22px 20px 20px; background: linear-gradient(135deg, #2A0E1B, #14060C); border: 1px solid #3A1620;">
+              <div style="position: absolute; top: -40px; right: -30px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(216,27,96,0.3), transparent 65%);"></div>
+              <div style="position: relative; font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 2px; color: #D81B60;">注目 · SAISON 1</div>
+              <div style="position: relative; font-family: 'Anton', sans-serif; font-size: 30px; line-height: 0.95; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); margin-top: 10px;">Le set<br>Moteur Forgé</div>
+              <div style="position: relative; display: inline-block; margin-top: 16px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 11px 18px; background: #D81B60; color: #fff; border-radius: 10px; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.5);">OUVRIR UN BOOSTER</div>
+            </div>
+            <!-- featured -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin: 22px 0 12px;">
+              <div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg);">Cartes en vedette</div>
+              <span style="font-weight: 800; font-size: 12px; color: #D81B60;">Tout voir</span>
+            </div>
+            <div style="display: flex; gap: 12px; overflow-x: auto; margin: 0 -18px; padding: 0 18px 6px;">
+              <div style="flex-shrink: 0; width: 118px;"><div style="aspect-ratio: 5/7; border-radius: 11px; overflow: hidden; border: 2px solid #E8B23A; box-shadow: 0 10px 20px rgba(0,0,0,0.5);"><img src="uploads/76_TOYOTA_COROLLA_TRUENO.jpg" style="width: 100%; height: 100%; object-fit: cover;"></div><div style="font-weight: 800; font-size: 11px; margin-top: 7px;">AE86 TRUENO</div><div style="font-family: 'Anton', sans-serif; font-size: 14px; color: #E8B23A;">149 €</div></div>
+              <div style="flex-shrink: 0; width: 118px;"><div style="aspect-ratio: 5/7; border-radius: 11px; overflow: hidden; border: 2px solid #4FA3FF; box-shadow: 0 10px 20px rgba(0,0,0,0.5);"><img src="uploads/34_NISSAN_SKYLINE-GTT.jpg" style="width: 100%; height: 100%; object-fit: cover;"></div><div style="font-weight: 800; font-size: 11px; margin-top: 7px;">SKYLINE R34</div><div style="font-family: 'Anton', sans-serif; font-size: 14px; color: #F2EFE9;">50 €</div></div>
+              <div style="flex-shrink: 0; width: 118px;"><div style="aspect-ratio: 5/7; border-radius: 11px; overflow: hidden; border: 2px solid #B05CFF; box-shadow: 0 10px 20px rgba(0,0,0,0.5);"><img src="uploads/64_PORSCHE_911_RWB.jpg" style="width: 100%; height: 100%; object-fit: cover;"></div><div style="font-weight: 800; font-size: 11px; margin-top: 7px;">911 RWB</div><div style="font-family: 'Anton', sans-serif; font-size: 14px; color: #F2EFE9;">60 €</div></div>
+            </div>
+            <!-- drop live -->
+            <div style="display: flex; align-items: center; gap: 13px; margin-top: 20px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 15px; padding: 14px 16px;">
+              <div style="width: 44px; height: 44px; border-radius: 11px; background: #2A0E1B; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">🎴</div>
+              <div style="flex: 1;"><div style="display: flex; align-items: center; gap: 7px;"><span style="font-weight: 800; font-size: 13px;">Drop en direct</span><span style="font-weight: 800; font-size: 8px; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 4px; background: rgba(216,27,96,0.16); color: #FF2E63;">LIVE</span></div><div style="font-weight: 700; font-size: 11.5px; color: #8E8E98; margin-top: 2px;">Booster Saison 1 · 4,99 €</div></div>
+              <span style="color: #6E6E78;">›</span>
+            </div>
+          </div>
+          <!-- tab bar -->
+          <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-around; padding: 12px 14px 30px; background: rgba(19,19,22,0.92); backdrop-filter: blur(14px); border-top: 1px solid #2B2B31;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; color: #D81B60;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"></path><path d="M5 10v10h14V10"></path></svg><span style="font-weight: 800; font-size: 9px;">Accueil</span></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; color: #6E6E78;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg><span style="font-weight: 800; font-size: 9px;">Classeur</span></div>
+            <div style="margin-top: -22px; width: 52px; height: 52px; border-radius: 16px; background: #D81B60; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 18px rgba(216,27,96,0.45); transform: rotate(-4deg);"><span style="font-size: 24px;">🎴</span></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; color: #6E6E78;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg><span style="font-weight: 800; font-size: 9px;">Échanges</span></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; color: #6E6E78;"><span style="width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 11px; color: #fff;">K</span><span style="font-weight: 800; font-size: 9px;">Profil</span></div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+    <!-- ============ 2 · CLASSEUR ============ -->
+    <div style="flex-shrink: 0; scroll-snap-align: center; animation: fadeUp 0.5s 0.1s ease both;">
+      <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg); margin-bottom: 14px; padding-left: 8px;">02 · Classeur</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402px,874px" style="display: block;">
+        <div style="height: 100%; display: flex; flex-direction: column; background: #0E0E11; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif;">
+          <div style="flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 56px 18px 12px;">
+            <span style="color: #8E8E98; font-size: 22px;">‹</span>
+            <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg);">Classeur S1</div>
+          </div>
+          <div style="flex: 1; overflow: auto; padding: 6px 18px 18px;">
+            <!-- progression -->
+            <div style="display: flex; align-items: center; gap: 18px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 18px;">
+              <div style="position: relative; width: 84px; height: 84px; flex-shrink: 0;">
+                <svg width="84" height="84" viewBox="0 0 84 84" style="transform: rotate(-90deg);"><circle cx="42" cy="42" r="36" fill="none" stroke="#26262B" stroke-width="9"></circle><circle cx="42" cy="42" r="36" fill="none" stroke="#D81B60" stroke-width="9" stroke-linecap="round" stroke-dasharray="127 226"></circle></svg>
+                <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 22px;">56%</div>
+              </div>
+              <div><div style="font-family: 'Anton', sans-serif; font-size: 22px;">44 <span style="font-size: 14px; color: #6E6E78;">/ 78</span></div><div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-top: 2px;">cartes possédées</div><div style="font-weight: 800; font-size: 12px; color: #5ED99A; margin-top: 8px;">Valeur · 1 310 €</div></div>
+            </div>
+            <!-- filtres -->
+            <div style="display: flex; gap: 8px; overflow-x: auto; margin: 18px -18px 14px; padding: 0 18px;">
+              <span style="flex-shrink: 0; font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 0.5px; padding: 8px 14px; background: #D81B60; color: #fff; border-radius: 999px;">TOUTES</span>
+              <span style="flex-shrink: 0; font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 0.5px; padding: 8px 14px; background: #1A1A1E; border: 1px solid #2B2B31; color: #C9C6BE; border-radius: 999px;">◈ RARES</span>
+              <span style="flex-shrink: 0; font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 0.5px; padding: 8px 14px; background: #1A1A1E; border: 1px solid #2B2B31; color: #C9C6BE; border-radius: 999px;">✦ ULTRA</span>
+            </div>
+            <!-- grille -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+              <div style="aspect-ratio: 5/7; border-radius: 9px; overflow: hidden; border: 2px solid #9BA3B2;"><img src="uploads/04-NISSAN_S15_SPECR.jpg" style="width: 100%; height: 100%; object-fit: cover;"></div>
+              <div style="aspect-ratio: 5/7; border-radius: 9px; overflow: hidden; border: 2px solid #9BA3B2;"><img src="uploads/16-BMW_E46_M3.jpg" style="width: 100%; height: 100%; object-fit: cover;"></div>
+              <div style="aspect-ratio: 5/7; border-radius: 9px; background: #15151A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;"><span style="font-family: 'Anton', sans-serif; font-size: 18px; color: #2E2E35;">07</span><span style="color: #3A3A42;">🔒</span></div>
+              <div style="aspect-ratio: 5/7; border-radius: 9px; overflow: hidden; border: 2px solid #4FA3FF;"><img src="uploads/32_NISSAN_SKYLINE_R32.jpg" style="width: 100%; height: 100%; object-fit: cover;"></div>
+              <div style="aspect-ratio: 5/7; border-radius: 9px; background: #15151A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;"><span style="font-family: 'Anton', sans-serif; font-size: 18px; color: #2E2E35;">33</span><span style="color: #3A3A42;">🔒</span></div>
+              <div style="aspect-ratio: 5/7; border-radius: 9px; overflow: hidden; border: 2px solid #4FA3FF;"><img src="uploads/38_MAZDA_RXY_FD.jpg" style="width: 100%; height: 100%; object-fit: cover;"></div>
+              <div style="aspect-ratio: 5/7; border-radius: 9px; overflow: hidden; border: 2px solid #B05CFF;"><img src="uploads/54_NISSAN_S15_ICONIQUE.jpg" style="width: 100%; height: 100%; object-fit: cover;"></div>
+              <div style="aspect-ratio: 5/7; border-radius: 9px; overflow: hidden; border: 2px solid #E8B23A;"><img src="uploads/76_TOYOTA_COROLLA_TRUENO.jpg" style="width: 100%; height: 100%; object-fit: cover;"></div>
+              <div style="aspect-ratio: 5/7; border-radius: 9px; background: #15151A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;"><span style="font-family: 'Anton', sans-serif; font-size: 18px; color: #2E2E35;">77</span><span style="color: #3A3A42;">🔒</span></div>
+            </div>
+          </div>
+          <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-around; padding: 12px 14px 30px; background: rgba(19,19,22,0.92); backdrop-filter: blur(14px); border-top: 1px solid #2B2B31;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; color: #6E6E78;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"></path><path d="M5 10v10h14V10"></path></svg><span style="font-weight: 800; font-size: 9px;">Accueil</span></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; color: #D81B60;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg><span style="font-weight: 800; font-size: 9px;">Classeur</span></div>
+            <div style="margin-top: -22px; width: 52px; height: 52px; border-radius: 16px; background: #D81B60; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 18px rgba(216,27,96,0.45); transform: rotate(-4deg);"><span style="font-size: 24px;">🎴</span></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; color: #6E6E78;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg><span style="font-weight: 800; font-size: 9px;">Échanges</span></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; color: #6E6E78;"><span style="width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 11px; color: #fff;">K</span><span style="font-weight: 800; font-size: 9px;">Profil</span></div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+    <!-- ============ 3 · FICHE CARTE ============ -->
+    <div style="flex-shrink: 0; scroll-snap-align: center; animation: fadeUp 0.5s 0.15s ease both;">
+      <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg); margin-bottom: 14px; padding-left: 8px;">03 · Fiche carte</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402px,874px" style="display: block;">
+        <div style="height: 100%; display: flex; flex-direction: column; background: #0E0E11; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif;">
+          <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 56px 18px 10px;">
+            <span style="color: #8E8E98; font-size: 22px;">‹</span>
+            <span style="color: #8E8E98; font-size: 19px;">♡</span>
+          </div>
+          <div style="flex: 1; overflow: auto; padding: 4px 18px 18px;">
+            <div style="position: relative; aspect-ratio: 5/7; max-width: 248px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 2px solid #E8B23A; box-shadow: 0 22px 50px rgba(0,0,0,0.65);">
+              <img src="uploads/76_TOYOTA_COROLLA_TRUENO.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+              <span style="position: absolute; top: 10px; left: 10px; font-family: 'Anton', sans-serif; font-size: 11px; padding: 3px 9px; border-radius: 6px; background: rgba(0,0,0,0.72); color: #E8B23A;">✸ GOLD</span>
+            </div>
+            <div style="font-family: 'Anton', sans-serif; font-size: 24px; line-height: 1; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); margin-top: 20px;">Toyota AE86<br>Trueno</div>
+            <div style="font-weight: 700; font-size: 12px; color: #8E8E98; margin-top: 8px;">N° 76 / 78 · 日本 Japon · Set Moteur Forgé</div>
+            <!-- stats -->
+            <div style="display: flex; gap: 10px; margin-top: 18px;">
+              <div style="flex: 1; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 13px; padding: 13px;"><div style="font-size: 9px; font-weight: 800; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">Puissance</div><div style="font-family: 'Anton', sans-serif; font-size: 19px; margin-top: 4px;">130 ch</div></div>
+              <div style="flex: 1; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 13px; padding: 13px;"><div style="font-size: 9px; font-weight: 800; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">Poids</div><div style="font-family: 'Anton', sans-serif; font-size: 19px; margin-top: 4px;">940 kg</div></div>
+              <div style="flex: 1; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 13px; padding: 13px;"><div style="font-size: 9px; font-weight: 800; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">Cote</div><div style="font-family: 'Anton', sans-serif; font-size: 19px; margin-top: 4px; color: #E8B23A;">149 €</div></div>
+            </div>
+            <p style="font-size: 12.5px; line-height: 1.6; color: #A9A9B2; margin: 16px 0 0;">L'emblème du drift ! Connue dans le monde entier grâce à un manga à succès, c'est la voiture avec laquelle tout a commencé.</p>
+          </div>
+          <!-- barre d'action -->
+          <div style="flex-shrink: 0; display: flex; gap: 10px; padding: 14px 18px 34px; background: rgba(19,19,22,0.94); backdrop-filter: blur(14px); border-top: 1px solid #2B2B31;">
+            <div style="width: 52px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: transparent; border: 1.5px solid #3A3A42; border-radius: 13px; color: #C9C6BE; font-size: 18px;">⇄</div>
+            <div style="flex: 1; text-align: center; font-family: 'Anton', sans-serif; font-size: 14.5px; letter-spacing: 1px; padding: 16px; background: #D81B60; color: #fff; border-radius: 13px; transform: skewX(-3deg); box-shadow: 4px 4px 0 rgba(0,0,0,0.5);">ACHETER · 149 €</div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+    <!-- ============ 4 · PANIER ============ -->
+    <div style="flex-shrink: 0; scroll-snap-align: center; animation: fadeUp 0.5s 0.2s ease both;">
+      <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg); margin-bottom: 14px; padding-left: 8px;">04 · Panier</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402px,874px" style="display: block;">
+        <div style="height: 100%; display: flex; flex-direction: column; background: #0E0E11; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif;">
+          <div style="flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 56px 18px 12px;">
+            <span style="color: #8E8E98; font-size: 22px;">‹</span>
+            <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg);">Panier · 3</div>
+          </div>
+          <div style="flex: 1; overflow: auto; padding: 6px 18px 18px;">
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; gap: 13px; align-items: center; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 14px; padding: 12px;"><img src="uploads/76_TOYOTA_COROLLA_TRUENO.jpg" style="width: 50px; aspect-ratio: 5/7; object-fit: cover; border-radius: 8px; border: 1px solid #E8B23A;"><div style="flex: 1;"><div style="font-weight: 800; font-size: 13px;">TOYOTA AE86 TRUENO</div><div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; margin-top: 3px;">✸ Gold · Neuf</div></div><div style="font-family: 'Anton', sans-serif; font-size: 16px;">149 €</div></div>
+              <div style="display: flex; gap: 13px; align-items: center; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 14px; padding: 12px;"><img src="uploads/42_TOYOTA_SUPRA_MK4_rare.jpg" style="width: 50px; aspect-ratio: 5/7; object-fit: cover; border-radius: 8px; border: 1px solid #4FA3FF;"><div style="flex: 1;"><div style="font-weight: 800; font-size: 13px;">TOYOTA SUPRA MK4</div><div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; margin-top: 3px;">◈ Rare · Très bon</div></div><div style="font-family: 'Anton', sans-serif; font-size: 16px;">32 €</div></div>
+              <div style="display: flex; gap: 13px; align-items: center; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 14px; padding: 12px;"><img src="uploads/38_MAZDA_RXY_FD.jpg" style="width: 50px; aspect-ratio: 5/7; object-fit: cover; border-radius: 8px; border: 1px solid #4FA3FF;"><div style="flex: 1;"><div style="font-weight: 800; font-size: 13px;">MAZDA RX7 FD</div><div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; margin-top: 3px;">◈ Rare · Neuf</div></div><div style="font-family: 'Anton', sans-serif; font-size: 16px;">28 €</div></div>
+            </div>
+            <!-- récap -->
+            <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; padding: 16px; margin-top: 16px;">
+              <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 12.5px; color: #8E8E98;"><span>Sous-total</span><span style="color: #F2EFE9;">209,00 €</span></div>
+              <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 7px;"><span>Livraison suivie</span><span style="color: #5ED99A;">Offerte</span></div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 11px; padding-top: 11px; border-top: 1px dashed #2F2F36;"><span style="font-weight: 800; font-size: 11px; letter-spacing: 1px; color: #C9C6BE; text-transform: uppercase;">Total</span><span style="font-family: 'Anton', sans-serif; font-size: 24px;">210,50 €</span></div>
+            </div>
+          </div>
+          <div style="flex-shrink: 0; padding: 14px 18px 34px; background: rgba(19,19,22,0.94); backdrop-filter: blur(14px); border-top: 1px solid #2B2B31;">
+            <div style="text-align: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; padding: 16px; background: #D81B60; color: #fff; border-radius: 13px; transform: skewX(-3deg); box-shadow: 4px 4px 0 rgba(0,0,0,0.5);">PAYER · 210,50 €</div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

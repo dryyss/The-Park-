@@ -1,0 +1,1019 @@
+// ============================================================================
+//  THE PARK — Schéma de données (v0)
+//  Trading Card Game · collection, marketplace, échanges, boutique, escrow.
+//
+//  Périmètre : CDC-THEPARK-2026-002 (V1 enrichie) + extension "paiement réel"
+//  validée le 15/06/2026 (envoi sécurisé / caution Stripe / enchères /
+//  boutique officielle / litiges) — à acter par avenant au contrat.
+//
+//  ⚠ v0 à affiner avec le MD de cadrage à venir.
+//  ⚠ Catalogue (Card/Season/Rarity/VersionType) : modélisé ici comme source de
+//     vérité. Si Payload CMS v3 gère ces tables, on arbitrera l'appartenance à
+//     l'intégration du Module 5 (import catalogue).
+// ============================================================================
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================================
+//  ENUMS
+// ============================================================================
+
+enum UserRole {
+  MEMBER
+  MODERATOR
+  ADMIN
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum KycStatus {
+  NONE
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+/// Neuve, Excellent, Très bon, Bon, Moyen, Abîmée (CDC Module 3)
+enum CardCondition {
+  MINT
+  EXCELLENT
+  VERY_GOOD
+  GOOD
+  FAIR
+  DAMAGED
+}
+
+/// Langue d'impression de la carte (≠ langue d'interface).
+enum Language {
+  FR
+  EN
+  JP
+  DE
+  US
+}
+
+enum ListingType {
+  SELL
+  TRADE
+  SELL_OR_TRADE
+  WANT
+}
+
+enum ListingStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  SOLD
+  CANCELLED
+  EXPIRED
+}
+
+enum ShippingMode {
+  STANDARD
+  SECURED
+}
+
+enum ProductType {
+  BOOSTER
+  DISPLAY
+  STARTER_DECK
+  PROMO_PACK
+  MERCH
+  LIMITED_EDITION
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PREPARING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum AuctionStatus {
+  SCHEDULED
+  ACTIVE
+  CLOSED
+  SOLD
+  CANCELLED
+}
+
+/// Machine à états d'un échange entre membres (double validation + envoi sécurisé).
+enum ExchangeStatus {
+  PROPOSED
+  ACCEPTED
+  AWAITING_SHIPMENT
+  SHIPPED
+  DELIVERED
+  COMPLETED
+  DISPUTED
+  CANCELLED
+}
+
+/// Machine à états d'une vente marketplace (paiement + envoi sécurisé).
+enum SaleStatus {
+  PENDING_PAYMENT
+  PAID
+  AWAITING_SHIPMENT
+  SHIPPED
+  DELIVERED
+  COMPLETED
+  DISPUTED
+  CANCELLED
+  REFUNDED
+}
+
+enum ShipmentType {
+  SALE
+  EXCHANGE
+  ORDER
+}
+
+enum ShipmentStatus {
+  PENDING
+  SHIPPED
+  IN_TRANSIT
+  DELIVERED
+  RETURNED
+  LOST
+}
+
+/// Preuves vidéo horodatées de l'envoi sécurisé + déballage filmé.
+enum ProofKind {
+  PRESENTATION
+  ENVELOPE
+  CLOSURE_ADDRESS
+  DROP_RECEIPT
+  UNBOXING
+}
+
+enum PaymentKind {
+  CAUTION
+  PURCHASE
+  SECURED_FEE
+  STORE_ORDER
+  AUCTION_PAYMENT
+}
+
+/// Calque sur les statuts d'un PaymentIntent Stripe (pré-autorisation / capture).
+enum PaymentStatus {
+  REQUIRES_PAYMENT
+  AUTHORIZED
+  CAPTURED
+  PARTIALLY_CAPTURED
+  RELEASED
+  REFUNDED
+  CANCELLED
+  FAILED
+}
+
+enum DisputeType {
+  SALE
+  EXCHANGE
+  ORDER
+  AUCTION
+}
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  AWAITING_EVIDENCE
+  RESOLVED
+  CLOSED
+}
+
+enum DisputeVerdict {
+  FAVOR_CLAIMANT
+  FAVOR_RESPONDENT
+  SPLIT
+}
+
+enum CaptureDecision {
+  FULL
+  PARTIAL
+  NONE
+  REFUND
+}
+
+enum ReviewSource {
+  SALE
+  EXCHANGE
+}
+
+enum ConversationContext {
+  EXCHANGE
+  SALE
+  AUCTION
+  DISPUTE
+}
+
+enum ReportTargetType {
+  USER
+  LISTING
+  MESSAGE
+  REVIEW
+  SHOP
+  AUCTION
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWING
+  RESOLVED
+  DISMISSED
+}
+
+enum NotificationType {
+  EXCHANGE_PROPOSED
+  EXCHANGE_ACCEPTED
+  EXCHANGE_COMPLETED
+  SALE_CREATED
+  PAYMENT_AUTHORIZED
+  SHIPMENT_SHIPPED
+  SHIPMENT_DELIVERED
+  GUARANTEE_EXPIRING
+  DISPUTE_OPENED
+  DISPUTE_RESOLVED
+  OFFER_RECEIVED
+  AUCTION_OUTBID
+  AUCTION_WON
+  AUCTION_ENDED
+  REVIEW_RECEIVED
+  BADGE_UNLOCKED
+  LISTING_SOLD
+  LISTING_EXPIRING
+  ORDER_UPDATE
+  MESSAGE_RECEIVED
+}
+
+// ============================================================================
+//  UTILISATEURS, PROFIL, RÉPUTATION  (Module 1, 8, 9)
+// ============================================================================
+
+model User {
+  id          String   @id @default(cuid())
+  auth0Id     String?  @unique
+  email       String   @unique
+  displayName String
+  slug        String   @unique
+  avatarUrl   String?
+  bio         String?
+  role        UserRole @default(MEMBER)
+  language    Language @default(FR)
+
+  // Protection des mineurs (CDC §5.2)
+  birthDate       DateTime?
+  parentalConsent ParentalConsent?
+
+  // Visibilité (CDC Module 1)
+  profileVisibility    Visibility @default(PUBLIC)
+  collectionVisibility Visibility @default(PUBLIC)
+  shopVisibility       Visibility @default(PUBLIC)
+
+  // Paiement / conformité
+  kycStatus        KycStatus @default(NONE)
+  stripeCustomerId String?
+  walletBalance    Decimal   @default(0) @db.Decimal(10, 2)
+
+  // Réputation dénormalisée (calculée à partir de Review)
+  ratingAvg   Float @default(0)
+  reviewCount Int   @default(0)
+
+  notificationPrefs Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  collectionItems CollectionItem[]
+  wishlistItems   WishlistItem[]
+  listings        Listing[]
+  cartItems       CartItem[]
+  orders          Order[]
+
+  auctionsSelling Auction[] @relation("AuctionSeller")
+  auctionsWon     Auction[] @relation("AuctionWinner")
+  bids            Bid[]
+
+  exchangesInitiated Exchange[] @relation("ExchangeInitiator")
+  exchangesReceived  Exchange[] @relation("ExchangeRecipient")
+
+  salesAsBuyer  Sale[] @relation("SaleBuyer")
+  salesAsSeller Sale[] @relation("SaleSeller")
+
+  shipmentsSent     Shipment[] @relation("ShipmentShipper")
+  shipmentsReceived Shipment[] @relation("ShipmentRecipient")
+
+  payments Payment[]
+
+  disputesAsClaimant   Dispute[]           @relation("DisputeClaimant")
+  disputesAsRespondent Dispute[]           @relation("DisputeRespondent")
+  disputeResolutions   DisputeResolution[]
+  disputeEvidence      DisputeEvidence[]
+
+  reviewsAuthored Review[]    @relation("ReviewAuthor")
+  reviewsReceived Review[]    @relation("ReviewTarget")
+  badges          UserBadge[]
+
+  conversations ConversationParticipant[]
+  messages      Message[]
+  notifications Notification[]
+
+  reportsMade       Report[]
+  moderationActions ModerationAction[]
+  connectionLogs    ConnectionLog[]
+
+  @@index([role])
+}
+
+/// Consentement parental vérifiable pour les moins de 15 ans (RGPD art. 8).
+model ParentalConsent {
+  id            String    @id @default(cuid())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String    @unique
+  guardianName  String?
+  guardianEmail String
+  method        String? // ex: email vérifié, justificatif…
+  token         String?   @unique
+  verifiedAt    DateTime?
+  createdAt     DateTime  @default(now())
+}
+
+// ============================================================================
+//  CATALOGUE  (Module 2, 5) — éventuellement géré par Payload CMS v3
+// ============================================================================
+
+model Season {
+  id          String    @id @default(cuid())
+  code        String    @unique // ex: "S01"
+  name        String // ex: "Moteur Forgé"
+  releaseDate DateTime?
+  sortOrder   Int       @default(0)
+  cards       Card[]
+  createdAt   DateTime  @default(now())
+}
+
+model Rarity {
+  id        String  @id @default(cuid())
+  code      String  @unique // c, r, u, l, g, p
+  label     String // Commune, Rare Holo…
+  symbol    String? // ◆ ◈ ✦ ❀ ✸ ✪
+  color     String? // hex
+  sortOrder Int     @default(0)
+  cards     Card[]
+}
+
+/// Type de version (paramétrable par l'admin) : Standard, Reverse, Alternative…
+model VersionType {
+  id        String        @id @default(cuid())
+  code      String        @unique
+  label     String
+  isFoil    Boolean       @default(false)
+  sortOrder Int           @default(0)
+  variants  CardVariant[]
+}
+
+model Card {
+  id          String  @id @default(cuid())
+  season      Season  @relation(fields: [seasonId], references: [id])
+  seasonId    String
+  number      Int // numéro dans la saison
+  name        String
+  slug        String  @unique
+  rarity      Rarity  @relation(fields: [rarityId], references: [id])
+  rarityId    String
+  imageUrl    String?
+  quoteValue  Decimal @default(0) @db.Decimal(10, 2) // cote indicative (€)
+  powerCh     Int? // puissance (ch)
+  weightKg    Int? // poids (kg)
+  country     String? // code pays, extensible (JP, US, DE…)
+  description String?
+  isUnique    Boolean @default(false)
+
+  variants  CardVariant[]
+  wishlists WishlistItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([seasonId, number])
+  @@index([rarityId])
+}
+
+/// Déclinaison concrète et collectionnable d'une carte (carte × version × langue).
+model CardVariant {
+  id            String      @id @default(cuid())
+  card          Card        @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  cardId        String
+  versionType   VersionType @relation(fields: [versionTypeId], references: [id])
+  versionTypeId String
+  language      Language    @default(FR)
+  editionLabel  String? // ex: "1ère édition"
+
+  collectionItems CollectionItem[]
+  listings        Listing[]
+  auctions        Auction[]
+  exchangeItems   ExchangeItem[]
+
+  @@unique([cardId, versionTypeId, language])
+}
+
+// ============================================================================
+//  COLLECTION & WISHLIST  (Module 3, 4)
+// ============================================================================
+
+model CollectionItem {
+  id         String        @id @default(cuid())
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  variant    CardVariant   @relation(fields: [variantId], references: [id])
+  variantId  String
+  condition  CardCondition @default(EXCELLENT)
+  quantity   Int           @default(1)
+  forTrade   Boolean       @default(false)
+  forSale    Boolean       @default(false)
+  note       String?
+  acquiredAt DateTime      @default(now())
+
+  @@unique([userId, variantId, condition])
+  @@index([userId])
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  card      Card     @relation(fields: [cardId], references: [id])
+  cardId    String
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, cardId])
+}
+
+// ============================================================================
+//  MARKETPLACE — ANNONCES  (Module 6, 7)
+// ============================================================================
+
+model Listing {
+  id           String        @id @default(cuid())
+  seller       User          @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  sellerId     String
+  variant      CardVariant   @relation(fields: [variantId], references: [id])
+  variantId    String
+  type         ListingType
+  status       ListingStatus @default(ACTIVE)
+  price        Decimal?      @db.Decimal(10, 2) // prix indicatif (vente)
+  condition    CardCondition @default(EXCELLENT)
+  quantity     Int           @default(1)
+  shippingMode ShippingMode  @default(STANDARD)
+  description  String?
+
+  // pour les annonces "WANT" (je recherche)
+  budgetMax    Decimal?       @db.Decimal(10, 2)
+  minCondition CardCondition?
+
+  viewCount Int       @default(0)
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  sales Sale[]
+
+  @@index([variantId])
+  @@index([sellerId])
+  @@index([status, type])
+}
+
+// ============================================================================
+//  BOUTIQUE OFFICIELLE  (maquettes Boutique/Panier/Checkout/Commandes)
+// ============================================================================
+
+model Product {
+  id          String      @id @default(cuid())
+  sku         String      @unique
+  name        String
+  slug        String      @unique
+  type        ProductType
+  price       Decimal     @db.Decimal(10, 2)
+  stock       Int         @default(0)
+  description String?
+  images      String[]
+  releaseDate DateTime?
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  orderItems OrderItem[]
+  cartItems  CartItem[]
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  orderNumber String      @unique
+  user        User        @relation(fields: [userId], references: [id])
+  userId      String
+  status      OrderStatus @default(PENDING)
+
+  subtotal     Decimal @db.Decimal(10, 2)
+  shippingCost Decimal @default(0) @db.Decimal(10, 2)
+  total        Decimal @db.Decimal(10, 2)
+
+  // Livraison
+  shippingName    String?
+  shippingAddress String?
+  shippingZip     String?
+  shippingCity    String?
+  shippingCountry String?
+  shippingMethod  String? // Relais, Colissimo, Chronopost…
+  trackingNumber  String?
+
+  items    OrderItem[]
+  payment  Payment?
+  shipment Shipment?
+  disputes Dispute[]
+
+  createdAt DateTime  @default(now())
+  shippedAt DateTime?
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int     @default(1)
+  unitPrice Decimal @db.Decimal(10, 2)
+}
+
+// ============================================================================
+//  ENCHÈRES  (maquette Encheres — temps réel, anti-snipe)
+// ============================================================================
+
+model Auction {
+  id           String        @id @default(cuid())
+  seller       User          @relation("AuctionSeller", fields: [sellerId], references: [id])
+  sellerId     String
+  variant      CardVariant   @relation(fields: [variantId], references: [id])
+  variantId    String
+  condition    CardCondition @default(EXCELLENT)
+  startPrice   Decimal       @db.Decimal(10, 2)
+  reservePrice Decimal?      @db.Decimal(10, 2)
+  currentPrice Decimal       @default(0) @db.Decimal(10, 2)
+  bidIncrement Decimal       @default(1) @db.Decimal(10, 2)
+  status       AuctionStatus @default(SCHEDULED)
+  antiSnipe    Boolean       @default(true)
+  startsAt     DateTime
+  endsAt       DateTime
+  winner       User?         @relation("AuctionWinner", fields: [winnerId], references: [id])
+  winnerId     String?
+
+  bids         Bid[]
+  payment      Payment?
+  disputes     Dispute[]
+  conversation Conversation?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, endsAt])
+}
+
+model Bid {
+  id        String   @id @default(cuid())
+  auction   Auction  @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  auctionId String
+  bidder    User     @relation(fields: [bidderId], references: [id])
+  bidderId  String
+  amount    Decimal  @db.Decimal(10, 2)
+  maxAmount Decimal? @db.Decimal(10, 2) // enchère automatique (proxy bidding)
+  isAuto    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([auctionId])
+}
+
+// ============================================================================
+//  ÉCHANGES ENTRE MEMBRES  (Module 8 — double validation)
+// ============================================================================
+
+model Exchange {
+  id          String         @id @default(cuid())
+  initiator   User           @relation("ExchangeInitiator", fields: [initiatorId], references: [id])
+  initiatorId String
+  recipient   User           @relation("ExchangeRecipient", fields: [recipientId], references: [id])
+  recipientId String
+  status      ExchangeStatus @default(PROPOSED)
+
+  secured Boolean @default(false) // option envoi sécurisé
+  message String?
+
+  items        ExchangeItem[]
+  shipments    Shipment[]
+  payments     Payment[] // cautions (escrow) si sécurisé
+  disputes     Dispute[]
+  conversation Conversation?
+  reviews      Review[]
+
+  createdAt   DateTime  @default(now())
+  acceptedAt  DateTime?
+  completedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  @@index([initiatorId])
+  @@index([recipientId])
+  @@index([status])
+}
+
+model ExchangeItem {
+  id            String        @id @default(cuid())
+  exchange      Exchange      @relation(fields: [exchangeId], references: [id], onDelete: Cascade)
+  exchangeId    String
+  /// true = côté initiateur, false = côté destinataire
+  fromInitiator Boolean
+  variant       CardVariant   @relation(fields: [variantId], references: [id])
+  variantId     String
+  condition     CardCondition @default(EXCELLENT)
+  quantity      Int           @default(1)
+
+  @@index([exchangeId])
+}
+
+// ============================================================================
+//  VENTES MARKETPLACE (achat sécurisé)
+// ============================================================================
+
+model Sale {
+  id        String     @id @default(cuid())
+  listing   Listing    @relation(fields: [listingId], references: [id])
+  listingId String
+  buyer     User       @relation("SaleBuyer", fields: [buyerId], references: [id])
+  buyerId   String
+  seller    User       @relation("SaleSeller", fields: [sellerId], references: [id])
+  sellerId  String
+  status    SaleStatus @default(PENDING_PAYMENT)
+
+  price        Decimal      @db.Decimal(10, 2)
+  serviceFee   Decimal      @default(0) @db.Decimal(10, 2)
+  shippingMode ShippingMode @default(STANDARD)
+  shippingCost Decimal      @default(0) @db.Decimal(10, 2)
+
+  shipment     Shipment?
+  payments     Payment[]
+  disputes     Dispute[]
+  conversation Conversation?
+  reviews      Review[]
+
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  @@index([buyerId])
+  @@index([sellerId])
+  @@index([status])
+}
+
+// ============================================================================
+//  ENVOI SÉCURISÉ / ESCROW — preuves vidéo, suivi, garantie  (maquettes
+//  Envoi Sécurisé / Déballage Sécurisé / Prolongation Garantie)
+// ============================================================================
+
+model Shipment {
+  id      String       @id @default(cuid())
+  type    ShipmentType
+  secured Boolean      @default(false)
+
+  // Rattachement polymorphe (une seule des trois est renseignée)
+  sale       Sale?     @relation(fields: [saleId], references: [id])
+  saleId     String?   @unique
+  exchange   Exchange? @relation(fields: [exchangeId], references: [id])
+  exchangeId String?
+  order      Order?    @relation(fields: [orderId], references: [id])
+  orderId    String?   @unique
+
+  shipper     User   @relation("ShipmentShipper", fields: [shipperId], references: [id])
+  shipperId   String
+  recipient   User   @relation("ShipmentRecipient", fields: [recipientId], references: [id])
+  recipientId String
+
+  carrier        String?
+  trackingNumber String?
+  status         ShipmentStatus @default(PENDING)
+  dropToken      String? // jeton du jour (anti-fraude), valable 24h
+
+  // Garantie post-livraison (fenêtre 72h, prolongeable 2x)
+  guaranteeEndsAt   DateTime?
+  guaranteeExtended Int       @default(0)
+
+  proofs   ShipmentProof[]
+  payments Payment[] // caution liée à cet envoi
+
+  createdAt   DateTime  @default(now())
+  shippedAt   DateTime?
+  deliveredAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  @@index([exchangeId])
+  @@index([status])
+}
+
+model ShipmentProof {
+  id         String    @id @default(cuid())
+  shipment   Shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  shipmentId String
+  kind       ProofKind
+  mediaUrl   String
+  mediaHash  String? // intégrité (hash de la vidéo)
+  tokenShown String? // jeton affiché à l'écran lors de la prise
+  recordedAt DateTime  @default(now())
+
+  @@index([shipmentId])
+}
+
+// ============================================================================
+//  PAIEMENTS / ESCROW STRIPE
+// ============================================================================
+
+model Payment {
+  id                    String        @id @default(cuid())
+  user                  User          @relation(fields: [userId], references: [id])
+  userId                String
+  kind                  PaymentKind
+  status                PaymentStatus @default(REQUIRES_PAYMENT)
+  amount                Decimal       @db.Decimal(10, 2)
+  capturedAmount        Decimal       @default(0) @db.Decimal(10, 2)
+  currency              String        @default("EUR")
+  stripePaymentIntentId String?       @unique
+
+  // Rattachements (selon le flux)
+  sale       Sale?     @relation(fields: [saleId], references: [id])
+  saleId     String?
+  exchange   Exchange? @relation(fields: [exchangeId], references: [id])
+  exchangeId String?
+  order      Order?    @relation(fields: [orderId], references: [id])
+  orderId    String?   @unique
+  auction    Auction?  @relation(fields: [auctionId], references: [id])
+  auctionId  String?   @unique
+  shipment   Shipment? @relation(fields: [shipmentId], references: [id])
+  shipmentId String?
+
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+// ============================================================================
+//  LITIGES & ARBITRAGE  (maquette Litige Arbitrage — Module 10)
+// ============================================================================
+
+model Dispute {
+  id            String        @id @default(cuid())
+  type          DisputeType
+  status        DisputeStatus @default(OPEN)
+  reason        String
+  priority      Int           @default(0)
+  involvesMinor Boolean       @default(false)
+
+  claimant     User   @relation("DisputeClaimant", fields: [claimantId], references: [id])
+  claimantId   String
+  respondent   User   @relation("DisputeRespondent", fields: [respondentId], references: [id])
+  respondentId String
+
+  // Rattachements (selon le type)
+  sale       Sale?     @relation(fields: [saleId], references: [id])
+  saleId     String?
+  exchange   Exchange? @relation(fields: [exchangeId], references: [id])
+  exchangeId String?
+  order      Order?    @relation(fields: [orderId], references: [id])
+  orderId    String?
+  auction    Auction?  @relation(fields: [auctionId], references: [id])
+  auctionId  String?
+
+  evidence     DisputeEvidence[]
+  resolution   DisputeResolution?
+  conversation Conversation?
+
+  openedAt   DateTime  @default(now())
+  resolvedAt DateTime?
+  updatedAt  DateTime  @updatedAt
+
+  @@index([status, priority])
+}
+
+model DisputeEvidence {
+  id         String   @id @default(cuid())
+  dispute    Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  disputeId  String
+  uploader   User     @relation(fields: [uploaderId], references: [id])
+  uploaderId String
+  kind       String // VIDEO_UNBOXING, PHOTO, TRACKING_SCREENSHOT…
+  mediaUrl   String
+  mediaHash  String?
+  createdAt  DateTime @default(now())
+
+  @@index([disputeId])
+}
+
+model DisputeResolution {
+  id              String          @id @default(cuid())
+  dispute         Dispute         @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  disputeId       String          @unique
+  moderator       User            @relation(fields: [moderatorId], references: [id])
+  moderatorId     String
+  verdict         DisputeVerdict
+  captureDecision CaptureDecision @default(NONE)
+  captureAmount   Decimal         @default(0) @db.Decimal(10, 2)
+  notes           String?
+  sanctions       Json?
+  createdAt       DateTime        @default(now())
+}
+
+// ============================================================================
+//  AVIS, RÉPUTATION, BADGES  (Module 8, 9)
+// ============================================================================
+
+model Review {
+  id         String       @id @default(cuid())
+  author     User         @relation("ReviewAuthor", fields: [authorId], references: [id])
+  authorId   String
+  target     User         @relation("ReviewTarget", fields: [targetId], references: [id])
+  targetId   String
+  source     ReviewSource
+  sale       Sale?        @relation(fields: [saleId], references: [id])
+  saleId     String?
+  exchange   Exchange?    @relation(fields: [exchangeId], references: [id])
+  exchangeId String?
+  rating     Int // 1..5
+  comment    String?
+  visibility Visibility   @default(PUBLIC)
+  createdAt  DateTime     @default(now())
+
+  @@unique([authorId, saleId])
+  @@unique([authorId, exchangeId])
+  @@index([targetId])
+}
+
+model Badge {
+  id          String      @id @default(cuid())
+  code        String      @unique
+  label       String
+  description String?
+  icon        String?
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  badge      Badge    @relation(fields: [badgeId], references: [id])
+  badgeId    String
+  progress   Int      @default(100) // %
+  unlockedAt DateTime @default(now())
+
+  @@unique([userId, badgeId])
+}
+
+// ============================================================================
+//  MESSAGERIE CONTEXTUALISÉE  (Module 8 — pas de messagerie privée libre)
+// ============================================================================
+
+model Conversation {
+  id      String              @id @default(cuid())
+  context ConversationContext
+
+  // Une conversation est toujours liée à un contexte (1:1)
+  exchange   Exchange? @relation(fields: [exchangeId], references: [id])
+  exchangeId String?   @unique
+  sale       Sale?     @relation(fields: [saleId], references: [id])
+  saleId     String?   @unique
+  auction    Auction?  @relation(fields: [auctionId], references: [id])
+  auctionId  String?   @unique
+  dispute    Dispute?  @relation(fields: [disputeId], references: [id])
+  disputeId  String?   @unique
+
+  participants ConversationParticipant[]
+  messages     Message[]
+
+  createdAt DateTime @default(now())
+}
+
+model ConversationParticipant {
+  id             String       @id @default(cuid())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  lastReadAt     DateTime?
+
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String
+  sender         User         @relation(fields: [senderId], references: [id])
+  senderId       String
+  body           String
+  attachments    String[]
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+}
+
+// ============================================================================
+//  NOTIFICATIONS  (transverse)
+// ============================================================================
+
+model Notification {
+  id         String           @id @default(cuid())
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  type       NotificationType
+  actorId    String? // déclencheur (sans contrainte FK : polymorphe)
+  entityType String?
+  entityId   String?
+  payload    Json?
+  readAt     DateTime?
+  createdAt  DateTime         @default(now())
+
+  @@index([userId, readAt])
+}
+
+// ============================================================================
+//  MODÉRATION & CONFORMITÉ (Module 10, LCEN)
+// ============================================================================
+
+model Report {
+  id            String           @id @default(cuid())
+  reporter      User             @relation(fields: [reporterId], references: [id])
+  reporterId    String
+  targetType    ReportTargetType
+  targetId      String
+  reason        String
+  involvesMinor Boolean          @default(false)
+  status        ReportStatus     @default(PENDING)
+  priority      Int              @default(0)
+  createdAt     DateTime         @default(now())
+
+  @@index([status, priority])
+}
+
+model ModerationAction {
+  id          String   @id @default(cuid())
+  moderator   User     @relation(fields: [moderatorId], references: [id])
+  moderatorId String
+  action      String // USER_SUSPENDED, LISTING_REMOVED, DISPUTE_ARBITRATED…
+  targetType  String
+  targetId    String
+  details     Json?
+  createdAt   DateTime @default(now())
+
+  @@index([moderatorId])
+}
+
+/// Journaux de connexion (obligation hébergeur LCEN, CDC §5.3).
+model ConnectionLog {
+  id        String   @id @default(cuid())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  ip        String?
+  userAgent String?
+  action    String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}

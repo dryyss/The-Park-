@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+</style>
+</helmet>
+<div data-screen-label="Classements" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center;">
+      <a href="The Park - Accueil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ACCUEIL</a>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">COLLECTION</a>
+      <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">MARKETPLACE</a>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ÉCHANGES</a>
+      <div style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; background: #D81B60; color: #fff; border-radius: 7px; transform: rotate(-1.5deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); cursor: default;">CLASSEMENTS</div>
+      <a href="The Park - Profil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">PROFIL</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Notifications.dc.html" title="Notifications" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a>
+      <a href="The Park - Messages.dc.html" title="Messages" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a><a href="The Park - Panier.dc.html" title="Panier" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #D81B60; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #131316; box-sizing: border-box;">3</span></a><a href="The Park - Vendre.dc.html" style="display: flex; align-items: center; gap: 5px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 8px 13px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.4);"><span style="font-size: 16px; line-height: 1;">+</span>VENDRE</a><a href="The Park - Magasin.dc.html" title="Mon portefeuille" style="display: flex; align-items: center; gap: 10px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 6px 7px 6px 16px; text-decoration: none; color: #F2EFE9; transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;" style-hover="border-color: #D81B60; transform: translateY(-1.5px); box-shadow: 0 6px 14px rgba(216,27,96,0.25);">
+        <span style="font-weight: 800; font-size: 13.5px; letter-spacing: 0.5px;">{{ walletLabel }}</span>
+        <span style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #D81B60; color: #fff; font-weight: 800; font-size: 15px; line-height: 1;">+</span>
+      </a>
+      <a href="The Park - Profil.dc.html" title="KENJI-13 · Profil" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #2B2B31; text-decoration: none; transition: border-color 0.18s ease, transform 0.2s ease;" style-hover="border-color: #D81B60; transform: scale(1.08) rotate(-4deg);">K</a>
+    </div>
+  </div>
+
+  <div style="max-width: 1100px; margin: 0 auto; padding: 36px 28px 60px;">
+
+    <!-- ===== HEADER ===== -->
+    <div style="position: relative; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 20px; animation: fadeUp 0.5s ease both;">
+      <div style="position: absolute; top: -26px; right: 0; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 130px; line-height: 1; color: rgba(242,239,233,0.035); pointer-events: none; user-select: none;">栄光</div>
+      <div>
+        <div style="font-weight: 700; font-size: 12px; letter-spacing: 4px; color: #D81B60; text-transform: uppercase; margin-bottom: 10px;">Saison 1 · Moteur Forgé</div>
+        <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(44px, 6vw, 74px); line-height: 0.95; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-4deg); color: #F2EFE9; text-shadow: 4px 4px 0 #D81B60;">Classements</h1>
+      </div>
+      <div style="display: flex; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 11px; padding: 5px; gap: 3px; margin-bottom: 4px;">
+        <sc-for list="{{ cats }}" as="c" hint-placeholder-count="3">
+          <div onClick="{{ setCat }}" data-c="{{ c.k }}" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.5px; padding: 10px 16px; border-radius: 8px; cursor: pointer; background: {{ c.bg }}; color: {{ c.color }}; white-space: nowrap; transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;" style-hover="transform: translateY(-1.5px);">{{ c.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- ===== PODIUM ===== -->
+    <div style="display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 14px; margin-top: 34px; align-items: end; animation: fadeUp 0.5s 0.08s ease both;">
+      <sc-for list="{{ podium }}" as="p" hint-placeholder-count="3">
+        <div style="position: relative; background: #1A1A1E; border: 1.5px solid {{ p.border }}; border-radius: 18px; padding: {{ p.pad }}; text-align: center; box-shadow: {{ p.shadow }};">
+          <div style="position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(-4deg); font-family: 'Anton', sans-serif; font-size: 13px; padding: 5px 14px; background: {{ p.medalBg }}; color: {{ p.medalColor }}; border-radius: 7px; box-shadow: 2px 2px 0 rgba(0,0,0,0.45);">{{ p.medal }}</div>
+          <div style="width: {{ p.avSize }}; height: {{ p.avSize }}; margin: 10px auto 0; border-radius: 20px; background: {{ p.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: {{ p.avFont }}; color: #fff; transform: rotate(-3deg); box-shadow: 4px 4px 0 rgba(0,0,0,0.45);">{{ p.ini }}</div>
+          <div style="font-family: 'Anton', sans-serif; font-size: 17px; letter-spacing: 1px; color: #F2EFE9; margin-top: 14px;">{{ p.who }}</div>
+          <div style="font-family: 'Anton', sans-serif; font-size: 30px; color: {{ p.valColor }}; margin-top: 4px;">{{ p.val }}</div>
+          <div style="font-weight: 700; font-size: 11px; color: #6E6E78; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px;">{{ p.sub }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- ===== TABLE ===== -->
+    <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; overflow: hidden; margin-top: 22px; animation: fadeUp 0.5s 0.12s ease both;">
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
+        <div style="display: flex; align-items: center; gap: 16px; padding: 13px 22px; border-bottom: 1px solid #232328; background: {{ r.bg }}; border-left: 3px solid {{ r.accent }};">
+          <span style="font-family: 'Anton', sans-serif; font-size: 16px; color: {{ r.rankColor }}; width: 34px;">#{{ r.rank }}</span>
+          <span style="width: 32px; height: 32px; border-radius: 50%; background: {{ r.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 12px; color: #fff; flex-shrink: 0;">{{ r.ini }}</span>
+          <span style="font-weight: 800; font-size: 13.5px; color: #F2EFE9; width: 190px;">{{ r.who }} <span style="font-weight: 700; font-size: 10.5px; color: #D81B60;">{{ r.youTag }}</span></span>
+          <div style="flex: 1; height: 6px; border-radius: 4px; background: #26262B; overflow: hidden;">
+            <div style="height: 100%; border-radius: 4px; background: {{ r.fill }}; width: {{ r.w }}; transition: width 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) {{ r.delay }};"></div>
+          </div>
+          <span style="font-family: 'Anton', sans-serif; font-size: 17px; color: #F2EFE9; width: 92px; text-align: right;">{{ r.val }}</span>
+          <span style="font-weight: 700; font-size: 10.5px; color: #6E6E78; width: 84px; text-transform: uppercase; letter-spacing: 0.5px;">{{ r.sub }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <dc-import name="The Park - Footer" hint-size="100%,320px" style="display: block; width: 100%;"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { cat: 'comp', mounted: false };
+
+  constructor(props) {
+    super(props);
+    this.AV = {
+      'LIGHTON_FACTORY': ['L', 'linear-gradient(135deg, #D81B60, #7A0F37)'],
+      'MIDNIGHT_PURPLE': ['M', 'linear-gradient(135deg, #6FE3D0, #1F8C7A)'],
+      'SARA.S15': ['S', 'linear-gradient(135deg, #B05CFF, #5A1F8C)'],
+      'HACHI_ROKU': ['H', 'linear-gradient(135deg, #FF6B5E, #8C2F1F)'],
+      'DRIFT_KING_06': ['D', 'linear-gradient(135deg, #4FA3FF, #1F4E8C)'],
+      'RX7_LOVER': ['R', 'linear-gradient(135deg, #E8B23A, #8C641F)'],
+      'KENJI-13': ['K', 'linear-gradient(135deg, #D81B60, #7A0F37)'],
+      'TOUGE_HUNTER': ['T', 'linear-gradient(135deg, #E8B23A, #8C641F)'],
+      'NIGHT_RUNNER': ['N', 'linear-gradient(135deg, #9BA3B2, #45454E)'],
+      'SHAKOTAN_BOY': ['B', 'linear-gradient(135deg, #5ED99A, #1F8C5A)']
+    };
+    this.DATA = {
+      comp: {
+        label: 'COMPLÉTION', sub: 'complétion', fmt: (v) => v + '%', max: 100,
+        rows: [['LIGHTON_FACTORY', 98], ['MIDNIGHT_PURPLE', 94], ['SARA.S15', 91], ['HACHI_ROKU', 88], ['DRIFT_KING_06', 85], ['RX7_LOVER', 79], ['KENJI-13', 76], ['TOUGE_HUNTER', 71], ['NIGHT_RUNNER', 64], ['SHAKOTAN_BOY', 58]]
+      },
+      rep: {
+        label: 'RÉPUTATION', sub: 'note moyenne', fmt: (v) => '★ ' + v.toFixed(1).replace('.', ','), max: 5,
+        rows: [['SARA.S15', 5.0], ['LIGHTON_FACTORY', 4.9], ['MIDNIGHT_PURPLE', 4.8], ['KENJI-13', 4.8], ['DRIFT_KING_06', 4.7], ['HACHI_ROKU', 4.6], ['TOUGE_HUNTER', 4.4], ['NIGHT_RUNNER', 4.3], ['RX7_LOVER', 4.0], ['SHAKOTAN_BOY', 4.1]]
+      },
+      ech: {
+        label: 'ÉCHANGES', sub: 'échanges validés', fmt: (v) => String(v), max: 212,
+        rows: [['MIDNIGHT_PURPLE', 212], ['LIGHTON_FACTORY', 184], ['DRIFT_KING_06', 121], ['SARA.S15', 98], ['HACHI_ROKU', 64], ['TOUGE_HUNTER', 41], ['KENJI-13', 23], ['NIGHT_RUNNER', 18], ['RX7_LOVER', 14], ['SHAKOTAN_BOY', 9]]
+      }
+    };
+  }
+
+  componentDidMount() {
+    setTimeout(() => this.setState({ mounted: true }), 120);
+  }
+
+  renderVals() {
+    const { cat, mounted } = this.state;
+    const d = this.DATA[cat];
+
+    const cats = Object.entries(this.DATA).map(([k, v]) => ({
+      k, label: v.label,
+      bg: cat === k ? '#D81B60' : 'transparent',
+      color: cat === k ? '#fff' : '#8E8E98'
+    }));
+
+    const MEDALS = [
+      { medal: '1', medalBg: '#E8B23A', medalColor: '#131316', border: 'rgba(232,178,58,0.55)', shadow: '0 18px 40px rgba(232,178,58,0.08)', valColor: '#E8B23A', pad: '26px 20px 24px', avSize: '74px', avFont: '30px' },
+      { medal: '2', medalBg: '#C9C6BE', medalColor: '#131316', border: '#3A3A42', shadow: 'none', valColor: '#F2EFE9', pad: '22px 18px 20px', avSize: '62px', avFont: '25px' },
+      { medal: '3', medalBg: '#B07A4A', medalColor: '#131316', border: '#3A3A42', shadow: 'none', valColor: '#F2EFE9', pad: '22px 18px 20px', avSize: '62px', avFont: '25px' }
+    ];
+    // ordre visuel : 2e, 1er, 3e
+    const order = [1, 0, 2];
+    const podium = order.map(i => {
+      const [who, v] = d.rows[i];
+      const av = this.AV[who];
+      return { ...MEDALS[i], who, ini: av[0], avBg: av[1], val: d.fmt(v), sub: d.sub };
+    });
+
+    const rows = d.rows.slice(3).map(([who, v], idx) => {
+      const av = this.AV[who];
+      const you = who === 'KENJI-13';
+      return {
+        rank: idx + 4, who, ini: av[0], avBg: av[1],
+        youTag: you ? '— TOI' : '',
+        val: d.fmt(v), sub: d.sub,
+        w: (mounted ? Math.round(v / d.max * 100) : 0) + '%',
+        fill: you ? '#D81B60' : '#45454E',
+        delay: (0.1 + idx * 0.06).toFixed(2) + 's',
+        bg: you ? 'rgba(216,27,96,0.07)' : 'transparent',
+        accent: you ? '#D81B60' : 'transparent',
+        rankColor: you ? '#D81B60' : '#5A5A64'
+      };
+    });
+
+    return {
+      walletLabel: (v => (isNaN(v) ? 128.5 : v).toFixed(2).replace('.', ',') + ' €')(parseFloat(localStorage.getItem('thepark_wallet'))),
+      cats, podium, rows,
+      setCat: (e) => this.setState({ cat: e.currentTarget.dataset.c })
+    };
+  }
+}
+</script>
+</body>
+</html>

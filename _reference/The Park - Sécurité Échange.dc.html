@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+</style>
+</helmet>
+<div data-screen-label="Sécurité de l'échange — choix croisé" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== SLIM HEADER ===== -->
+  <div style="display: flex; align-items: center; justify-content: space-between; height: 64px; padding: 0 28px; background: #1A1A1E; border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Échanges.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 38px; height: 38px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 17px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-weight: 800; font-size: 9px; letter-spacing: 1.5px; color: #D81B60; margin-top: 3px;">ÉCHANGE ENTRE MEMBRES</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 12px; color: #8E8E98;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B05CFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+      Échange E-2418 · double caution
+    </div>
+  </div>
+
+  <div style="max-width: 1120px; margin: 0 auto; padding: 30px 28px 60px;">
+
+    <!-- breadcrumb -->
+    <div style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 12px; color: #8E8E98;">
+      <a href="The Park - Échanges.dc.html" style="color: #8E8E98; text-decoration: none;" style-hover="color: #D81B60;">Échanges</a>
+      <span style="color: #45454E;">/</span>
+      <span style="color: #8E8E98;">E-2418 · avec SARA.S15</span>
+      <span style="color: #45454E;">/</span>
+      <span style="color: #C9C6BE;">Sécurité de l'envoi</span>
+    </div>
+
+    <!-- HERO -->
+    <div style="margin-top: 14px; animation: fadeUp 0.5s ease;">
+      <div style="display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 12px; letter-spacing: 3px; color: #B05CFF; text-transform: uppercase; margin-bottom: 10px;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B05CFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+        Choix croisé · chacun fixe la sécurité du colis qu'il recevra
+      </div>
+      <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(32px, 4.8vw, 54px); line-height: 0.92; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 4px 4px 0 #D81B60;">Sécurité de l'échange</h1>
+      <p style="max-width: 740px; margin: 15px 0 0; font-size: 13.5px; line-height: 1.65; color: #8E8E98;">Tu choisis comment tu veux <strong style="color: #C9C6BE;">recevoir</strong> ta carte — et SARA.S15 devra <strong style="color: #C9C6BE;">expédier</strong> selon ce niveau. Réciproquement, elle fixe la sécurité de son colis, que <strong style="color: #C9C6BE;">tu</strong> devras respecter. Les frais de chaque envoi sont à la charge de celui qui les exige (le destinataire).</p>
+    </div>
+
+    <!-- ===== TWO LANES ===== -->
+    <div style="display: grid; grid-template-columns: 1fr 54px 1fr; gap: 14px; margin-top: 26px; align-items: stretch; animation: fadeUp 0.5s 0.06s ease;">
+
+      <!-- LANE A : tu reçois -->
+      <div style="background: #1A1A1E; border: 1.5px solid rgba(216,27,96,0.35); border-radius: 18px; padding: 20px 22px; display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; gap: 11px;">
+          <span style="width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(135deg, #D81B60, #7A0F37); color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; transform: rotate(-3deg);">K</span>
+          <div>
+            <div style="font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; color: #6E6E78; text-transform: uppercase;">Tu reçois</div>
+            <div style="font-weight: 800; font-size: 14.5px; color: #F2EFE9;">SARA.S15 → toi</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 12px 14px; background: #202024; border: 1px solid #2B2B31; border-radius: 12px;">
+          <img src="uploads/54_NISSAN_S15_ICONIQUE.jpg" alt="Nissan S15 Iconique" style="width: 42px; aspect-ratio: 5/7; object-fit: cover; border-radius: 7px; box-shadow: 0 6px 14px rgba(0,0,0,0.5);">
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13px; color: #F2EFE9; line-height: 1.2;">Nissan S15 Iconique</div>
+            <div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; margin-top: 2px;">◈◈ Ultra Rare · cote 22,00 €</div>
+          </div>
+        </div>
+        <div style="font-weight: 800; font-size: 10px; letter-spacing: 1px; color: #8E8E98; text-transform: uppercase; margin: 18px 0 10px;">Niveau exigé pour ce colis</div>
+        <div style="display: flex; flex-direction: column; gap: 9px; flex: 1;">
+          <sc-for list="{{ levelsA }}" as="l" hint-placeholder-count="2">
+            <div onClick="{{ l.onClick }}" style="cursor: pointer; padding: 13px 14px; border-radius: 12px; border: 1.5px solid {{ l.border }}; background: {{ l.bg }}; transition: all 0.15s ease;">
+              <div style="display: flex; align-items: center; gap: 11px;">
+                <span style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid {{ l.dot }}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{ l.dotFill }};"></span></span>
+                <span style="font-weight: 800; font-size: 13px; color: #F2EFE9; flex: 1;">{{ l.name }}</span>
+                <span style="font-family: 'Anton', sans-serif; font-size: 15px; color: {{ l.priceColor }};">{{ l.price }}</span>
+              </div>
+              <div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; margin-top: 7px; line-height: 1.45; padding-left: 29px;">{{ l.desc }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 13px; padding-top: 13px; border-top: 1px solid #2B2B31;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8B23A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+          <span style="font-weight: 700; font-size: 11px; color: #C9C6BE;">SARA.S15 expédiera selon <strong style="color: #F2EFE9;">ton</strong> choix · frais à ta charge</span>
+        </div>
+      </div>
+
+      <!-- CENTER swap -->
+      <div style="display: flex; align-items: center; justify-content: center;">
+        <div style="width: 44px; height: 44px; border-radius: 50%; background: #1A1A1E; border: 1.5px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #B05CFF;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+        </div>
+      </div>
+
+      <!-- LANE B : SARA reçoit -->
+      <div style="background: #1A1A1E; border: 1.5px solid rgba(176,92,255,0.35); border-radius: 18px; padding: 20px 22px; display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; gap: 11px;">
+          <span style="width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(135deg, #B05CFF, #5A1F8C); color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; transform: rotate(-3deg);">S</span>
+          <div>
+            <div style="font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; color: #6E6E78; text-transform: uppercase;">SARA.S15 reçoit</div>
+            <div style="font-weight: 800; font-size: 14.5px; color: #F2EFE9;">toi → SARA.S15</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 12px 14px; background: #202024; border: 1px solid #2B2B31; border-radius: 12px;">
+          <img src="uploads/35_NISSAN_S13_KOUKI.jpg" alt="Nissan S13 Kouki" style="width: 42px; aspect-ratio: 5/7; object-fit: cover; border-radius: 7px; box-shadow: 0 6px 14px rgba(0,0,0,0.5);">
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13px; color: #F2EFE9; line-height: 1.2;">Nissan S13 Kouki</div>
+            <div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; margin-top: 2px;">◈ Rare · cote 14,50 €</div>
+          </div>
+        </div>
+        <div style="font-weight: 800; font-size: 10px; letter-spacing: 1px; color: #8E8E98; text-transform: uppercase; margin: 18px 0 10px;">Niveau exigé par SARA.S15</div>
+        <div style="display: flex; flex-direction: column; gap: 9px; flex: 1;">
+          <sc-for list="{{ levelsB }}" as="l" hint-placeholder-count="2">
+            <div style="padding: 13px 14px; border-radius: 12px; border: 1.5px solid {{ l.border }}; background: {{ l.bg }}; opacity: {{ l.opacity }};">
+              <div style="display: flex; align-items: center; gap: 11px;">
+                <span style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid {{ l.dot }}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{ l.dotFill }};"></span></span>
+                <span style="font-weight: 800; font-size: 13px; color: #F2EFE9; flex: 1;">{{ l.name }}</span>
+                <span style="font-family: 'Anton', sans-serif; font-size: 15px; color: {{ l.priceColor }};">{{ l.price }}</span>
+              </div>
+              <div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; margin-top: 7px; line-height: 1.45; padding-left: 29px;">{{ l.desc }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 13px; padding-top: 13px; border-top: 1px solid #2B2B31;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B05CFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          <span style="font-weight: 700; font-size: 11px; color: #C9C6BE;">Imposé par SARA.S15 · <strong style="color: #F2EFE9;">tu</strong> dois t'y conformer</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SUMMARY BAR ===== -->
+    <div style="display: grid; grid-template-columns: 1fr 340px; gap: 18px; margin-top: 18px; align-items: start; animation: fadeUp 0.5s 0.12s ease;">
+
+      <!-- obligations recap -->
+      <div style="background: #16161a; border: 1px solid #232328; border-radius: 16px; padding: 18px 20px;">
+        <div style="font-weight: 800; font-size: 12px; color: #C9C6BE; margin-bottom: 14px;">Ce que chacun devra faire</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #B05CFF, #5A1F8C); color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 13px; flex-shrink: 0;">S</span>
+            <div style="font-weight: 700; font-size: 12px; color: #C9C6BE; line-height: 1.45;">SARA.S15 expédie en <strong style="color: #F2EFE9;">{{ obligationA }}</strong> (le niveau que tu as choisi pour ta réception).</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #D81B60, #7A0F37); color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 13px; flex-shrink: 0;">K</span>
+            <div style="font-weight: 700; font-size: 12px; color: #C9C6BE; line-height: 1.45;">Tu expédies en <strong style="color: #F2EFE9;">{{ obligationB }}</strong> (le niveau imposé par SARA.S15).</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 9px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #232328;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8B23A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+          <span style="font-weight: 700; font-size: 11px; color: #8E8E98; line-height: 1.5;">En sécurisé, une <strong style="color: #C9C6BE;">caution = 100 % de la valeur estimée</strong> est bloquée de chaque côté (préautorisation Stripe non débitée). La clôture est synchrone : libérée quand les <strong style="color: #C9C6BE;">deux réceptions</strong> sont OK.</span>
+        </div>
+      </div>
+
+      <!-- frais + CTA -->
+      <div style="position: sticky; top: 24px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 20px;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.8px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Tes frais</div>
+        <div style="font-weight: 700; font-size: 10.5px; color: #6E6E78; margin-top: 3px;">Tu paies l'envoi que tu exiges (ta réception).</div>
+        <div style="display: flex; flex-direction: column; gap: 9px; margin-top: 16px;">
+          <div style="display: flex; justify-content: space-between; font-size: 12.5px;"><span style="color: #A9A9B2; font-weight: 600;">Ton niveau · {{ shortA }}</span><span style="color: #F2EFE9; font-weight: 800;">{{ feeA }}</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 12.5px;"><span style="color: #A9A9B2; font-weight: 600;">Caution bloquée</span><span style="color: #8E83FF; font-weight: 800;">22,00 €</span></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 15px; padding-top: 14px; border-top: 1px solid #2B2B31;">
+          <span style="font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 1px; color: #F2EFE9;">À PAYER</span>
+          <span style="font-family: 'Anton', sans-serif; font-size: 24px; color: #E8B23A;">{{ feeA }}</span>
+        </div>
+        <div style="font-weight: 700; font-size: 10px; color: #6E6E78; text-align: right; margin-top: 3px;">+ caution non débitée</div>
+        <a href="The Park - Envoi Sécurisé.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 16px; font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 1.2px; padding: 15px; background: #D81B60; color: #fff; border-radius: 12px; text-decoration: none; box-shadow: 4px 4px 0 rgba(0,0,0,0.5); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: translate(-2px,-2px); box-shadow: 6px 6px 0 rgba(0,0,0,0.5);">VALIDER &amp; BLOQUER LA CAUTION<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></a>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 12px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#635BFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span style="font-weight: 700; font-size: 10px; color: #8E8E98;">Préautorisation gérée par <strong style="color: #635BFF;">Stripe</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { a: 0, b: 0 };  // 0 = secured, 1 = standard
+
+  LEVELS = [
+    { name: 'Sécurisé', price: '+2,90 €', priceColor: '#E8B23A', short: 'Sécurisé',
+      desc: 'Preuves vidéo + suivi vérifié + caution. Litige arbitré par les preuves.' },
+    { name: 'Standard', price: '+0 €', priceColor: '#8E8E98', short: 'Standard',
+      desc: 'Envoi simple sans preuve ni garantie. Risque assumé par le destinataire.' }
+  ];
+
+  build(sel, interactive, key) {
+    return this.LEVELS.map((l, i) => {
+      const on = sel === i;
+      return {
+        name: l.name, price: l.price, priceColor: l.priceColor, desc: l.desc,
+        border: on ? (i === 0 ? '#5ED99A' : '#FF6B5E') : '#2B2B31',
+        bg: on ? (i === 0 ? 'rgba(94,217,154,0.06)' : 'rgba(255,107,94,0.05)') : '#202024',
+        dot: on ? (i === 0 ? '#5ED99A' : '#FF6B5E') : '#5A5A64',
+        dotFill: on ? (i === 0 ? '#5ED99A' : '#FF6B5E') : 'transparent',
+        opacity: interactive ? '1' : (on ? '1' : '0.5'),
+        onClick: interactive ? () => this.setState({ [key]: i }) : undefined
+      };
+    });
+  }
+
+  renderVals() {
+    const A = this.state.a, B = this.state.b;
+    return {
+      levelsA: this.build(A, true, 'a'),
+      levelsB: this.build(B, false, 'b'),
+      obligationA: this.LEVELS[A].name.toLowerCase(),
+      obligationB: this.LEVELS[B].name.toLowerCase(),
+      shortA: this.LEVELS[A].short,
+      feeA: A === 0 ? '2,90 €' : '0 €'
+    };
+  }
+}
+</script>
+</body>
+</html>

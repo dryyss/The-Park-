@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+</style>
+</helmet>
+<div data-screen-label="Profil collectionneur" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center;">
+      <a href="The Park - Accueil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ACCUEIL</a>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">COLLECTION</a>
+      <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">MARKETPLACE</a>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ÉCHANGES</a>
+      <a href="The Park - Classements.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">CLASSEMENTS</a>
+      <div style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; background: #D81B60; color: #fff; border-radius: 7px; transform: rotate(-1.5deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); cursor: default;">PROFIL</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Notifications.dc.html" title="Notifications" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a>
+      <a href="The Park - Messages.dc.html" title="Messages" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a><a href="The Park - Panier.dc.html" title="Panier" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #D81B60; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #131316; box-sizing: border-box;">3</span></a><a href="The Park - Vendre.dc.html" style="display: flex; align-items: center; gap: 5px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 8px 13px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.4);"><span style="font-size: 16px; line-height: 1;">+</span>VENDRE</a><a href="The Park - Magasin.dc.html" title="Mon portefeuille" style="display: flex; align-items: center; gap: 10px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 6px 7px 6px 16px; text-decoration: none; color: #F2EFE9; transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;" style-hover="border-color: #D81B60; transform: translateY(-1.5px); box-shadow: 0 6px 14px rgba(216,27,96,0.25);">
+        <span style="font-weight: 800; font-size: 13.5px; letter-spacing: 0.5px;">{{ walletLabel }}</span>
+        <span style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #D81B60; color: #fff; font-weight: 800; font-size: 15px; line-height: 1;">+</span>
+      </a>
+      <div title="KENJI-13" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #D81B60;">K</div>
+    </div>
+  </div>
+
+  <div style="max-width: 1320px; margin: 0 auto; padding: 32px 28px 60px;">
+
+    <!-- ===== PROFILE HEADER ===== -->
+    <div style="position: relative; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 20px; padding: 28px 30px; overflow: hidden; animation: fadeUp 0.5s ease both;">
+      <div style="position: absolute; inset: 0; background: radial-gradient(circle at 6% 0%, rgba(216,27,96,0.2), transparent 55%); pointer-events: none;"></div>
+      <div style="position: absolute; bottom: -22px; right: 14px; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 110px; line-height: 1; color: rgba(242,239,233,0.035); pointer-events: none;">健児</div>
+      <div style="width: 96px; height: 96px; border-radius: 22px; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 42px; color: #fff; transform: rotate(-3deg); box-shadow: 4px 4px 0 rgba(0,0,0,0.5); flex-shrink: 0;">K</div>
+      <div style="flex: 1; min-width: 260px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 38px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; text-shadow: 3px 3px 0 #D81B60;">Kenji-13</h1>
+          <span style="font-weight: 800; font-size: 11px; letter-spacing: 1px; padding: 5px 12px; border-radius: 999px; background: rgba(79,163,255,0.1); color: #4FA3FF; border: 1px solid rgba(79,163,255,0.4);">COLLECTIONNEUR</span>
+          <span style="font-weight: 800; font-size: 11px; letter-spacing: 1px; padding: 5px 12px; border-radius: 999px; background: rgba(232,178,58,0.1); color: #E8B23A; border: 1px solid rgba(232,178,58,0.4);">⧗ DEMANDE MARCHAND EN COURS</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 18px; margin-top: 10px; flex-wrap: wrap; font-size: 12.5px; font-weight: 700; color: #8E8E98;">
+          <span style="color: #E8B23A;">★★★★★ <span style="color: #F2EFE9;">4,8</span> <span style="color: #5A5A64;">(37 avis)</span></span>
+          <span>23 échanges réussis</span>
+          <span>12 ventes</span>
+          <span>Membre depuis 02/2026</span>
+        </div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 52px; line-height: 1; color: #F2EFE9;">{{ pct }}<span style="font-size: 24px; color: #D81B60;">%</span></div>
+        <div style="font-weight: 700; font-size: 12px; color: #8E8E98; margin-top: 4px;">59 / 78 cartes · Saison 1</div>
+      </div>
+    </div>
+
+    <!-- ===== STATS + COMPLETION ===== -->
+    <div style="display: grid; grid-template-columns: 330px 1fr; gap: 22px; margin-top: 22px; align-items: start;">
+
+      <div style="display: flex; flex-direction: column; gap: 14px; animation: fadeUp 0.5s 0.08s ease both;">
+        <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; padding: 20px 22px;">
+          <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase;">Valeur estimée de la collection</div>
+          <div style="font-family: 'Anton', sans-serif; font-size: 34px; color: #F2EFE9; margin-top: 6px;">486,40 €</div>
+          <div style="font-size: 11.5px; font-weight: 700; color: #5ED99A; margin-top: 2px;">▲ +12,4 % ce mois — cote marketplace</div>
+        </div>
+        <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; padding: 20px 22px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+            <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; color: #F2EFE9; transform: skewX(-3deg);">Complétion</h2>
+            <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 11px; color: #5A5A64; letter-spacing: 2px;">完成度</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{ bars }}" as="b" hint-placeholder-count="6">
+              <div>
+                <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 5px;">
+                  <div style="display: flex; align-items: baseline; gap: 7px;">
+                    <span style="color: {{ b.color }}; font-size: 12px;">{{ b.glyph }}</span>
+                    <span style="font-weight: 800; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #C9C6BE;">{{ b.label }}</span>
+                  </div>
+                  <span style="font-weight: 700; font-size: 11px; color: #8E8E98;">{{ b.count }}</span>
+                </div>
+                <div style="height: 6px; border-radius: 4px; background: #26262B; overflow: hidden;">
+                  <div style="height: 100%; border-radius: 4px; background: {{ b.fill }}; width: {{ b.w }}; transition: width 1s cubic-bezier(0.2, 0.7, 0.2, 1) {{ b.delay }};"></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 22px;">
+
+        <!-- BADGES -->
+        <div style="animation: fadeUp 0.5s 0.12s ease both;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+            <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 22px; letter-spacing: 2px; text-transform: uppercase; color: #F2EFE9; transform: skewX(-3deg); text-shadow: 2px 2px 0 #D81B60;">Badges</h2>
+            <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 12px; color: #5A5A64; letter-spacing: 2px;">バッジ</span>
+            <span style="font-weight: 800; font-size: 12px; padding: 4px 11px; border-radius: 999px; background: #1A1A1E; border: 1px solid #2B2B31; color: #D81B60;">6 / 9</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+            <sc-for list="{{ badges }}" as="bd" hint-placeholder-count="6">
+              <div title="{{ bd.tip }}" style="display: flex; align-items: center; gap: 12px; background: #1A1A1E; border: 1px solid {{ bd.border }}; border-radius: 14px; padding: 14px 16px; opacity: {{ bd.op }};">
+                <div style="width: 42px; height: 42px; border-radius: 11px; background: {{ bd.iconBg }}; color: {{ bd.iconColor }}; display: flex; align-items: center; justify-content: center; font-size: 19px; transform: rotate(-3deg); flex-shrink: 0; font-family: 'Noto Sans JP', sans-serif; font-weight: 900;">{{ bd.icon }}</div>
+                <div style="min-width: 0;">
+                  <div style="font-weight: 800; font-size: 12.5px; color: {{ bd.titleColor }};">{{ bd.name }}</div>
+                  <div style="font-weight: 600; font-size: 10.5px; color: #6E6E78; margin-top: 2px; line-height: 1.35;">{{ bd.desc }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- REPUTATION -->
+        <div style="animation: fadeUp 0.5s 0.16s ease both;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+            <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 22px; letter-spacing: 2px; text-transform: uppercase; color: #F2EFE9; transform: skewX(-3deg); text-shadow: 2px 2px 0 #D81B60;">Réputation</h2>
+            <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 12px; color: #5A5A64; letter-spacing: 2px;">評判</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+            <sc-for list="{{ reviews }}" as="rv" hint-placeholder-count="3">
+              <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 14px; padding: 16px 18px;">
+                <div style="display: flex; align-items: center; gap: 9px;">
+                  <span style="width: 28px; height: 28px; border-radius: 50%; background: {{ rv.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 12px; color: #fff; flex-shrink: 0;">{{ rv.ini }}</span>
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="font-weight: 800; font-size: 11.5px; color: #C9C6BE;">{{ rv.who }}</div>
+                    <div style="font-weight: 700; font-size: 10px; color: #5A5A64;">{{ rv.when }}</div>
+                  </div>
+                  <span style="font-weight: 800; font-size: 11px; color: #E8B23A; white-space: nowrap;">{{ rv.stars }}</span>
+                </div>
+                <p style="margin: 11px 0 0; font-size: 12px; line-height: 1.55; color: #A9A9B2;">{{ rv.text }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- ACTIVITY -->
+        <div style="animation: fadeUp 0.5s 0.2s ease both;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+            <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 22px; letter-spacing: 2px; text-transform: uppercase; color: #F2EFE9; transform: skewX(-3deg); text-shadow: 2px 2px 0 #D81B60;">Activité récente</h2>
+            <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 12px; color: #5A5A64; letter-spacing: 2px;">活動</span>
+          </div>
+          <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; overflow: hidden;">
+            <sc-for list="{{ activity }}" as="a" hint-placeholder-count="4">
+              <div style="display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid #232328;">
+                <span style="width: 34px; height: 34px; border-radius: 9px; background: {{ a.iconBg }}; color: {{ a.iconColor }}; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;">{{ a.icon }}</span>
+                <div style="flex: 1; font-weight: 700; font-size: 13px; color: #C9C6BE;">{{ a.text }} <span style="color: #F2EFE9;">{{ a.strong }}</span></div>
+                <span style="font-weight: 700; font-size: 11.5px; color: #5A5A64; white-space: nowrap;">{{ a.when }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <dc-import name="The Park - Footer" hint-size="100%,320px" style="display: block; width: 100%;"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { mounted: false };
+
+  componentDidMount() {
+    setTimeout(() => this.setState({ mounted: true }), 120);
+  }
+
+  renderVals() {
+    const m = this.state.mounted;
+    const BARS = [
+      ['Communes', '◆', '#9BA3B2', 19, 30],
+      ['Rares Holo', '◈', '#4FA3FF', 18, 20],
+      ['Ultra Rares', '✦', '#B05CFF', 15, 17],
+      ['Légendaires', '❀', '#FF2E63', 5, 7],
+      ['Gold', '✸', '#E8B23A', 1, 2],
+      ['Uniques', '✪', 'linear-gradient(90deg, #FF2E63, #FFD166, #4FA3FF)', 1, 2]
+    ];
+    const bars = BARS.map((b, i) => ({
+      label: b[0], glyph: b[1],
+      color: b[2].startsWith('linear') ? '#6FE3D0' : b[2],
+      fill: b[2],
+      count: b[3] + '/' + b[4],
+      w: (m ? Math.round(b[3] / b[4] * 100) : 0) + '%',
+      delay: (0.1 + i * 0.08).toFixed(2) + 's'
+    }));
+
+    const on = { border: '#2B2B31', op: '1', iconBg: 'rgba(216,27,96,0.12)', iconColor: '#D81B60', titleColor: '#F2EFE9' };
+    const off = { border: '#232328', op: '0.55', iconBg: '#202024', iconColor: '#45454E', titleColor: '#8E8E98' };
+    const badges = [
+      { ...on, icon: '初', name: 'Premier Contact', desc: 'Première carte ajoutée au classeur', tip: 'Débloqué' },
+      { ...on, icon: '◈', name: 'Holo Hunter', desc: '10 Rares Holo possédées', tip: 'Débloqué' },
+      { ...on, icon: '✸', name: 'Gold Digger', desc: 'Une carte Gold au classeur', tip: 'Débloqué' },
+      { ...on, icon: '交', name: 'Négociateur', desc: '10 échanges double-validés', tip: 'Débloqué' },
+      { ...on, icon: '75', name: '75 Club', desc: 'Collection complétée à 75 %', tip: 'Débloqué' },
+      { ...on, icon: '★', name: 'Vendeur fiable', desc: 'Note moyenne supérieure à 4,5', tip: 'Débloqué' },
+      { ...off, icon: '峠', name: 'Maître du Touge', desc: 'Toutes les Skyline réunies', tip: 'Verrouillé — il manque la R32 Fantôme Reverse' },
+      { ...off, icon: '商', name: 'Marchand vérifié', desc: 'Statut marchand validé', tip: 'Verrouillé — demande en cours' },
+      { ...off, icon: '全', name: 'Full Set', desc: 'Les 78 cartes de la Saison 1', tip: 'Verrouillé — 19 cartes manquantes' }
+    ];
+
+    const reviews = [
+      { ini: 'S', avBg: 'linear-gradient(135deg, #B05CFF, #5A1F8C)', who: 'SARA.S15', when: 'Échange · il y a 2 j', stars: '★★★★★', text: 'Échange nickel, carte sous protection rigide, envoi le jour même. Je recommande !' },
+      { ini: 'D', avBg: 'linear-gradient(135deg, #4FA3FF, #1F4E8C)', who: 'DRIFT_KING_06', when: 'Vente · il y a 1 sem.', stars: '★★★★☆', text: "Bonne communication, transaction fluide. Petit délai d'envoi mais carte conforme." },
+      { ini: 'M', avBg: 'linear-gradient(135deg, #6FE3D0, #1F8C7A)', who: 'MIDNIGHT_PURPLE', when: 'Vente · il y a 3 sem.', stars: '★★★★★', text: 'Vendeur sérieux, état Neuf vérifié à la réception. Parfait du début à la fin.' }
+    ];
+
+    const activity = [
+      { icon: '⇄', iconBg: 'rgba(79,163,255,0.12)', iconColor: '#4FA3FF', text: 'Échange validé avec SARA.S15 —', strong: 'S13 Kouki ↔ E30 Touring', when: 'il y a 2 j' },
+      { icon: '✓', iconBg: 'rgba(94,217,154,0.12)', iconColor: '#5ED99A', text: 'Achat chez LIGHTON_FACTORY —', strong: 'Mazda RX7 FD · 12,90 €', when: 'il y a 5 j' },
+      { icon: '✦', iconBg: 'rgba(216,27,96,0.12)', iconColor: '#FF2E63', text: 'Badge débloqué —', strong: '75 Club', when: 'il y a 1 sem.' },
+      { icon: '€', iconBg: 'rgba(232,178,58,0.12)', iconColor: '#E8B23A', text: 'Vente expédiée à TOUGE_HUNTER —', strong: 'BMW E30 325i · 4,50 €', when: 'il y a 2 sem.' }
+    ];
+
+    return {
+      pct: 76, bars, badges, reviews, activity,
+      walletLabel: (v => (isNaN(v) ? 128.5 : v).toFixed(2).replace('.', ',') + ' €')(parseFloat(localStorage.getItem('thepark_wallet')))
+    };
+  }
+}
+</script>
+</body>
+</html>

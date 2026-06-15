@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #131316; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+::-webkit-scrollbar { width: 9px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+input::placeholder { color: #5A5A64; }
+</style>
+</helmet>
+<div data-screen-label="Messagerie" style="height: 100vh; display: flex; flex-direction: column; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="flex-shrink: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center;">
+      <a href="The Park - Accueil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ACCUEIL</a>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">COLLECTION</a>
+      <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">MARKETPLACE</a>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #F2EFE9; background: #202024; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="transform: translateY(-1.5px);">ÉCHANGES</a>
+      <a href="The Park - Classements.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">CLASSEMENTS</a>
+      <a href="The Park - Profil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">PROFIL</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Messages.dc.html" title="Messages" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a><a href="The Park - Panier.dc.html" title="Panier" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #D81B60; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #131316; box-sizing: border-box;">3</span></a><a href="The Park - Vendre.dc.html" style="display: flex; align-items: center; gap: 5px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 8px 13px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.4);"><span style="font-size: 16px; line-height: 1;">+</span>VENDRE</a><a href="The Park - Magasin.dc.html" title="Mon portefeuille" style="display: flex; align-items: center; gap: 10px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 6px 7px 6px 16px; text-decoration: none; color: #F2EFE9; transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;" style-hover="border-color: #D81B60; transform: translateY(-1.5px); box-shadow: 0 6px 14px rgba(216,27,96,0.25);">
+        <span style="font-weight: 800; font-size: 13.5px; letter-spacing: 0.5px;">{{ walletLabel }}</span>
+        <span style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #D81B60; color: #fff; font-weight: 800; font-size: 15px; line-height: 1;">+</span>
+      </a>
+      <a href="The Park - Profil.dc.html" title="KENJI-13 · Profil" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #2B2B31; text-decoration: none; transition: border-color 0.18s ease, transform 0.2s ease;" style-hover="border-color: #D81B60; transform: scale(1.08) rotate(-4deg);">K</a>
+    </div>
+  </div>
+
+  <!-- ===== ZONE MESSAGERIE ===== -->
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 330px 1fr;">
+
+    <!-- LISTE CONVERSATIONS -->
+    <div style="border-right: 1px solid #2B2B31; display: flex; flex-direction: column; min-height: 0; background: #15151A;">
+      <div style="flex-shrink: 0; padding: 20px 20px 14px;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 24px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 2px 2px 0 #D81B60;">Messages</div>
+        <div style="position: relative; margin-top: 14px;">
+          <span style="position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #5A5A64;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></span>
+          <input placeholder="Rechercher un collectionneur" style="width: 100%; background: #1A1A1E; border: 1.5px solid #2B2B31; border-radius: 11px; padding: 11px 14px 11px 36px; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 13px; outline: none;">
+        </div>
+      </div>
+      <div style="flex: 1; overflow-y: auto; padding: 0 10px 14px;">
+        <sc-for list="{{ convos }}" as="c" hint-placeholder-count="5">
+          <div onClick="{{ pickConvo }}" data-id="{{ c.id }}" style="display: flex; align-items: center; gap: 12px; padding: 12px 11px; border-radius: 13px; cursor: pointer; background: {{ c.bg }}; transition: background 0.15s ease; margin-bottom: 2px;">
+            <div style="position: relative; flex-shrink: 0;">
+              <div style="width: 44px; height: 44px; border-radius: 12px; background: {{ c.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 18px; color: #fff; transform: rotate(-3deg);">{{ c.ini }}</div>
+              <sc-if value="{{ c.online }}" hint-placeholder-val="{{ false }}"><span style="position: absolute; bottom: -1px; right: -1px; width: 12px; height: 12px; border-radius: 50%; background: #5ED99A; border: 2.5px solid #15151A;"></span></sc-if>
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <span style="font-family: 'Anton', sans-serif; font-size: 13.5px; letter-spacing: 0.5px; color: #F2EFE9; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ c.name }}</span>
+                <span style="font-weight: 700; font-size: 10.5px; color: #6E6E78; flex-shrink: 0;">{{ c.time }}</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 3px;">
+                <span style="font-weight: 600; font-size: 12px; color: {{ c.previewColor }}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ c.preview }}</span>
+                <sc-if value="{{ c.hasUnread }}" hint-placeholder-val="{{ false }}"><span style="flex-shrink: 0; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #D81B60; color: #fff; font-weight: 800; font-size: 10.5px; display: flex; align-items: center; justify-content: center;">{{ c.unread }}</span></sc-if>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- CONVERSATION ACTIVE -->
+    <div style="display: flex; flex-direction: column; min-height: 0; position: relative;">
+      <div style="position: absolute; inset: 0; background: radial-gradient(circle at 80% 0%, rgba(216,27,96,0.06), transparent 50%); pointer-events: none;"></div>
+
+      <!-- en-tête conv -->
+      <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 24px; border-bottom: 1px solid #2B2B31; background: rgba(19,19,22,0.6); backdrop-filter: blur(8px); z-index: 1;">
+        <div style="display: flex; align-items: center; gap: 13px;">
+          <div style="width: 42px; height: 42px; border-radius: 12px; background: {{ activeAvBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 17px; color: #fff; transform: rotate(-3deg);">{{ activeIni }}</div>
+          <div>
+            <div style="font-family: 'Anton', sans-serif; font-size: 17px; letter-spacing: 0.5px; color: #F2EFE9;">{{ activeName }}</div>
+            <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 11px; color: #5ED99A; margin-top: 2px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #5ED99A;"></span>{{ activeStatus }}</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <a href="The Park - Proposer Echange.dc.html" style="display: flex; align-items: center; gap: 7px; font-family: 'Anton', sans-serif; font-size: 11.5px; letter-spacing: 1px; padding: 9px 14px; background: #1A1A1E; border: 1.5px solid #2B2B31; color: #C9C6BE; border-radius: 10px; text-decoration: none; transition: border-color 0.15s ease, color 0.15s ease;" style-hover="border-color: #D81B60; color: #fff;">⇄ PROPOSER UN ÉCHANGE</a>
+          <a href="The Park - Collectionneur.dc.html" title="Voir le profil" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.15s ease, color 0.15s ease;" style-hover="border-color: #D81B60; color: #fff;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></a>
+        </div>
+      </div>
+
+      <!-- fil de messages -->
+      <div ref="{{ threadRef }}" style="flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 14px; z-index: 1;">
+        <div style="text-align: center; font-weight: 700; font-size: 11px; color: #5A5A64; margin-bottom: 4px;">Aujourd'hui</div>
+        <sc-for list="{{ messages }}" as="m" hint-placeholder-count="4">
+          <div style="display: flex; flex-direction: column; align-items: {{ m.align }}; animation: fadeUp 0.3s ease both;">
+            <!-- bulle texte -->
+            <sc-if value="{{ m.isText }}" hint-placeholder-val="{{ true }}">
+              <div style="max-width: 62%; padding: 11px 15px; border-radius: {{ m.radius }}; background: {{ m.bubbleBg }}; color: {{ m.textColor }}; font-size: 13.5px; line-height: 1.5; font-weight: 500;">{{ m.text }}</div>
+            </sc-if>
+            <!-- carte partagée -->
+            <sc-if value="{{ m.isCard }}" hint-placeholder-val="{{ false }}">
+              <a href="The Park - Carte.dc.html?carte={{ m.cardNum }}" style="display: flex; gap: 12px; max-width: 300px; padding: 11px; border-radius: 16px; background: {{ m.bubbleBg }}; text-decoration: none; border: 1px solid {{ m.cardBorder }};">
+                <img src="{{ m.cardImg }}" alt="{{ m.cardName }}" style="width: 52px; aspect-ratio: 5/7; object-fit: cover; border-radius: 8px; display: block; flex-shrink: 0;">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                  <div style="font-weight: 800; font-size: 12.5px; color: #F2EFE9; line-height: 1.25;">{{ m.cardName }}</div>
+                  <div style="font-weight: 700; font-size: 11px; color: {{ m.cardRarColor }}; margin-top: 4px;">{{ m.cardRar }}</div>
+                  <div style="font-family: 'Anton', sans-serif; font-size: 15px; color: #F2EFE9; margin-top: 6px;">{{ m.cardPrice }}</div>
+                </div>
+              </a>
+            </sc-if>
+            <!-- offre d'échange -->
+            <sc-if value="{{ m.isOffer }}" hint-placeholder-val="{{ false }}">
+              <div style="max-width: 340px; border-radius: 16px; overflow: hidden; border: 1.5px solid #B05CFF; background: #1A1A1E;">
+                <div style="display: flex; align-items: center; gap: 8px; padding: 11px 15px; background: rgba(176,92,255,0.14);">
+                  <span style="font-size: 15px;">⇄</span>
+                  <span style="font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1px; color: #C99CFF;">OFFRE D'ÉCHANGE</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px; padding: 15px;">
+                  <div style="flex: 1;">
+                    <div style="font-size: 9.5px; font-weight: 800; letter-spacing: 1px; color: #FF8A8A; text-transform: uppercase; margin-bottom: 6px;">Tu donnes</div>
+                    <img src="uploads/42_TOYOTA_SUPRA_MK4_rare.jpg" style="width: 46px; aspect-ratio: 5/7; object-fit: cover; border-radius: 7px; display: block;">
+                  </div>
+                  <span style="font-size: 18px; color: #6E6E78;">⇄</span>
+                  <div style="flex: 1; text-align: right;">
+                    <div style="font-size: 9.5px; font-weight: 800; letter-spacing: 1px; color: #5ED99A; text-transform: uppercase; margin-bottom: 6px;">Tu reçois</div>
+                    <img src="uploads/34_NISSAN_SKYLINE-GTT.jpg" style="width: 46px; aspect-ratio: 5/7; object-fit: cover; border-radius: 7px; display: inline-block;">
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px; padding: 0 15px 15px;">
+                  <a href="The Park - Échanges.dc.html" style="flex: 1; text-align: center; font-family: 'Anton', sans-serif; font-size: 11.5px; letter-spacing: 1px; padding: 10px; background: #5ED99A; color: #0E1A12; border-radius: 9px; text-decoration: none;">ACCEPTER</a>
+                  <div style="flex: 1; text-align: center; font-family: 'Anton', sans-serif; font-size: 11.5px; letter-spacing: 1px; padding: 10px; background: transparent; border: 1.5px solid #3A3A42; color: #C9C6BE; border-radius: 9px; cursor: pointer;">REFUSER</div>
+                </div>
+              </div>
+            </sc-if>
+            <div style="font-weight: 700; font-size: 10px; color: #5A5A64; margin-top: 4px; padding: 0 4px;">{{ m.time }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- composeur -->
+      <div style="flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 16px 24px; border-top: 1px solid #2B2B31; background: rgba(19,19,22,0.6); backdrop-filter: blur(8px); z-index: 1;">
+        <div title="Partager une carte" style="width: 42px; height: 42px; flex-shrink: 0; border-radius: 11px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #8E8E98; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease;" style-hover="border-color: #D81B60; color: #fff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg></div>
+        <input value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onKey }}" placeholder="Écris un message…" style="flex: 1; background: #1A1A1E; border: 1.5px solid #2B2B31; border-radius: 12px; padding: 13px 16px; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 14px; outline: none;">
+        <div onClick="{{ send }}" style="width: 46px; height: 46px; flex-shrink: 0; border-radius: 12px; background: #D81B60; display: flex; align-items: center; justify-content: center; cursor: pointer; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); transition: background 0.15s ease, transform 0.15s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-1px,-1px);"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { activeId: 'zenki', draft: '', extra: [] };
+
+  constructor(props) {
+    super(props);
+    this.CONVOS = [
+      { id: 'zenki', name: 'ZENKI_GARAGE', ini: 'Z', avBg: 'linear-gradient(135deg, #B05CFF, #5A1F8C)', time: '14:21', preview: 'Ça marche pour la R34 !', online: true, unread: 2, status: 'En ligne' },
+      { id: 'lighton', name: 'LIGHTON_FACTORY', ini: 'L', avBg: 'linear-gradient(135deg, #E8B23A, #8C641F)', time: '11:08', preview: 'Tu as reçu le colis ?', online: false, unread: 0, status: 'Vu il y a 2 h' },
+      { id: 'drift', name: 'DRIFT_KING_94', ini: 'D', avBg: 'linear-gradient(135deg, #4FA3FF, #1F4E8C)', time: 'Hier', preview: 'Je te tiens au courant pour la Supra', online: true, unread: 0, status: 'En ligne' },
+      { id: 'maya', name: 'MAYA_DORI', ini: 'M', avBg: 'linear-gradient(135deg, #6FE3D0, #1F8C7A)', time: 'Hier', preview: 'Top, merci pour l\'échange 🙌', online: false, unread: 0, status: 'Vu hier' },
+      { id: 'rwb', name: 'RWB_OSAKA', ini: 'R', avBg: 'linear-gradient(135deg, #FF6B5E, #8C2F1F)', time: 'Lun', preview: 'La 911 est encore dispo ?', online: false, unread: 0, status: 'Vu lundi' }
+    ];
+    this.THREADS = {
+      zenki: [
+        { from: 'them', kind: 'text', text: 'Yo ! J\'ai vu que tu cherchais une Skyline R34 pour compléter ton set Saison 1 👀', time: '14:02' },
+        { from: 'me', kind: 'text', text: 'Carrément. Tu lâcherais la tienne contre quoi ?', time: '14:05' },
+        { from: 'them', kind: 'card', cardNum: 34, cardName: 'NISSAN SKYLINE R34', cardImg: 'uploads/34_NISSAN_SKYLINE-GTT.jpg', cardRar: '◈ Rare Holo', cardRarColor: '#4FA3FF', cardPrice: '50,00 €' },
+        { from: 'them', kind: 'text', text: 'Ta Supra MK4 m\'intéresse à mort. On part là-dessus ?', time: '14:09' },
+        { from: 'me', kind: 'offer', time: '14:14' },
+        { from: 'them', kind: 'text', text: 'Ça marche pour la R34 ! J\'accepte dès que tu confirmes 🤝', time: '14:21' }
+      ],
+      lighton: [
+        { from: 'them', kind: 'text', text: 'Salut Kenji, ton AE86 part demain en Colissimo suivi.', time: '10:40' },
+        { from: 'them', kind: 'text', text: 'Tu as reçu le colis ?', time: '11:08' }
+      ],
+      drift: [ { from: 'them', kind: 'text', text: 'Je te tiens au courant pour la Supra', time: 'Hier' } ],
+      maya: [ { from: 'me', kind: 'text', text: 'Échange validé, à bientôt !', time: 'Hier' }, { from: 'them', kind: 'text', text: 'Top, merci pour l\'échange 🙌', time: 'Hier' } ],
+      rwb: [ { from: 'them', kind: 'text', text: 'La 911 est encore dispo ?', time: 'Lun' } ]
+    };
+  }
+
+  componentDidUpdate() { this.scrollBottom(); }
+  componentDidMount() { this.scrollBottom(); }
+  scrollBottom() { const el = this._thread; if (el) el.scrollTop = el.scrollHeight; }
+
+  renderVals() {
+    const { activeId, draft, extra } = this.state;
+    const walletLabel = (v => (isNaN(v) ? 128.5 : v).toFixed(2).replace('.', ',') + ' €')(parseFloat(localStorage.getItem('thepark_wallet')));
+    const active = this.CONVOS.find(c => c.id === activeId) || this.CONVOS[0];
+    const base = this.THREADS[activeId] || [];
+    const thread = base.concat(extra.filter(m => m.cid === activeId));
+
+    return {
+      walletLabel,
+      threadRef: (el) => { this._thread = el; },
+      convos: this.CONVOS.map(c => ({
+        id: c.id, name: c.name, ini: c.ini, avBg: c.avBg, time: c.time,
+        preview: c.preview, online: c.online,
+        hasUnread: c.unread > 0 && c.id !== activeId, unread: String(c.unread),
+        previewColor: (c.unread > 0 && c.id !== activeId) ? '#C9C6BE' : '#8E8E98',
+        bg: c.id === activeId ? 'rgba(216,27,96,0.12)' : 'transparent'
+      })),
+      pickConvo: (e) => this.setState({ activeId: e.currentTarget.dataset.id }),
+
+      activeName: active.name, activeIni: active.ini, activeAvBg: active.avBg, activeStatus: active.status,
+
+      messages: thread.map(m => {
+        const me = m.from === 'me';
+        return {
+          align: me ? 'flex-end' : 'flex-start',
+          isText: m.kind === 'text', isCard: m.kind === 'card', isOffer: m.kind === 'offer',
+          text: m.text, time: m.time,
+          bubbleBg: me ? '#D81B60' : '#202024',
+          textColor: me ? '#fff' : '#E6E3DC',
+          radius: me ? '15px 15px 4px 15px' : '15px 15px 15px 4px',
+          cardBorder: me ? 'rgba(255,255,255,0.2)' : '#2B2B31',
+          cardNum: m.cardNum, cardName: m.cardName, cardImg: m.cardImg,
+          cardRar: m.cardRar, cardRarColor: m.cardRarColor, cardPrice: m.cardPrice
+        };
+      }),
+
+      draft,
+      onDraft: (e) => this.setState({ draft: e.target.value }),
+      onKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.doSend(); } },
+      send: () => this.doSend()
+    };
+  }
+
+  doSend() {
+    const t = (this.state.draft || '').trim();
+    if (!t) return;
+    const now = new Date();
+    const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+    this.setState(s => ({ extra: [...s.extra, { cid: s.activeId, from: 'me', kind: 'text', text: t, time }], draft: '' }));
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+input::placeholder { color: #5A5A64; }
+</style>
+</helmet>
+<div data-screen-label="Centre d'aide" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center;">
+      <a href="The Park - Accueil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ACCUEIL</a>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">COLLECTION</a>
+      <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">MARKETPLACE</a>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ÉCHANGES</a>
+      <a href="The Park - Classements.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">CLASSEMENTS</a>
+      <a href="The Park - Profil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">PROFIL</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Messages.dc.html" title="Messages" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a><a href="The Park - Panier.dc.html" title="Panier" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #D81B60; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #131316; box-sizing: border-box;">3</span></a><a href="The Park - Vendre.dc.html" style="display: flex; align-items: center; gap: 5px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 8px 13px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.4);"><span style="font-size: 16px; line-height: 1;">+</span>VENDRE</a><a href="The Park - Magasin.dc.html" title="Mon portefeuille" style="display: flex; align-items: center; gap: 10px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 6px 7px 6px 16px; text-decoration: none; color: #F2EFE9; transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;" style-hover="border-color: #D81B60; transform: translateY(-1.5px); box-shadow: 0 6px 14px rgba(216,27,96,0.25);">
+        <span style="font-weight: 800; font-size: 13.5px; letter-spacing: 0.5px;">{{ walletLabel }}</span>
+        <span style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #D81B60; color: #fff; font-weight: 800; font-size: 15px; line-height: 1;">+</span>
+      </a>
+      <a href="The Park - Profil.dc.html" title="KENJI-13 · Profil" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #2B2B31; text-decoration: none; transition: border-color 0.18s ease, transform 0.2s ease;" style-hover="border-color: #D81B60; transform: scale(1.08) rotate(-4deg);">K</a>
+    </div>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <div style="position: relative; overflow: hidden; border-bottom: 1px solid #2B2B31;">
+    <div style="position: absolute; top: -120px; left: 50%; transform: translateX(-50%); width: 720px; height: 420px; background: radial-gradient(circle, rgba(216,27,96,0.18), transparent 62%); pointer-events: none;"></div>
+    <div style="position: absolute; bottom: -40px; right: 24px; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 150px; line-height: 1; color: rgba(242,239,233,0.03); pointer-events: none; user-select: none;">助</div>
+    <div style="position: relative; max-width: 760px; margin: 0 auto; padding: 56px 28px 48px; text-align: center; animation: fadeUp 0.5s ease both;">
+      <div style="font-weight: 700; font-size: 11.5px; letter-spacing: 4px; color: #D81B60; text-transform: uppercase;">Centre d'aide · The Park</div>
+      <h1 style="margin: 14px 0 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(38px, 6vw, 64px); line-height: 0.92; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 4px 4px 0 #D81B60;">Comment peut-on t'aider ?</h1>
+      <div style="position: relative; max-width: 520px; margin: 30px auto 0;">
+        <span style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #6E6E78;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></span>
+        <input placeholder="Rechercher une question…" style="width: 100%; background: #1A1A1E; border: 1.5px solid #2B2B31; border-radius: 14px; padding: 16px 18px 16px 48px; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 15px; outline: none;">
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width: 1000px; margin: 0 auto; padding: 36px 28px 60px;">
+
+    <!-- ===== CATÉGORIES ===== -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; animation: fadeUp 0.5s 0.05s ease both;">
+      <sc-for list="{{ cats }}" as="cat" hint-placeholder-count="6">
+        <div onClick="{{ pickCat }}" data-k="{{ cat.k }}" style="display: flex; align-items: center; gap: 14px; background: {{ cat.bg }}; border: 1.5px solid {{ cat.border }}; border-radius: 16px; padding: 18px 20px; cursor: pointer; transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;" style-hover="transform: translateY(-3px);">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: #131316; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; font-size: 21px; flex-shrink: 0;">{{ cat.icon }}</div>
+          <div>
+            <div style="font-family: 'Anton', sans-serif; font-size: 13.5px; letter-spacing: 0.5px; color: #F2EFE9; text-transform: uppercase; line-height: 1.18;">{{ cat.label }}</div>
+            <div style="font-weight: 700; font-size: 11.5px; color: #8E8E98; margin-top: 5px;">{{ cat.count }} articles</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- ===== FAQ ===== -->
+    <div style="display: flex; align-items: baseline; gap: 14px; margin: 38px 0 18px;">
+      <div style="font-family: 'Anton', sans-serif; font-size: 24px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg);">{{ faqTitle }}</div>
+      <sc-if value="{{ filtered }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ clearCat }}" style="font-weight: 800; font-size: 12px; color: #D81B60; cursor: pointer;">× Tout afficher</div>
+      </sc-if>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="6">
+        <div style="background: #1A1A1E; border: 1.5px solid {{ q.border }}; border-radius: 14px; overflow: hidden; transition: border-color 0.15s ease;">
+          <div onClick="{{ toggleFaq }}" data-id="{{ q.id }}" style="display: flex; align-items: center; gap: 14px; padding: 18px 20px; cursor: pointer;">
+            <span style="font-size: 10px; font-weight: 800; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase; background: #131316; border: 1px solid #2B2B31; padding: 4px 9px; border-radius: 6px; flex-shrink: 0;">{{ q.catLabel }}</span>
+            <div style="flex: 1; font-weight: 800; font-size: 14.5px; color: #F2EFE9;">{{ q.question }}</div>
+            <span style="font-size: 20px; color: #D81B60; transform: {{ q.iconRot }}; transition: transform 0.2s ease; flex-shrink: 0; line-height: 1;">+</span>
+          </div>
+          <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 0 20px 20px 20px; font-size: 13.5px; line-height: 1.65; color: #A9A9B2; max-width: 760px;">{{ q.answer }}</div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- ===== CONTACT SUPPORT ===== -->
+    <div style="position: relative; overflow: hidden; margin-top: 40px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 20px; padding: 32px; animation: fadeUp 0.5s ease both;">
+      <div style="position: absolute; inset: 0; background: radial-gradient(circle at 100% 0%, rgba(216,27,96,0.14), transparent 55%); pointer-events: none;"></div>
+      <div style="position: relative; text-align: center; max-width: 520px; margin: 0 auto;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 26px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg);">Tu ne trouves pas ta réponse ?</div>
+        <p style="margin: 10px 0 0; font-size: 13.5px; color: #8E8E98; line-height: 1.6;">Notre équipe répond en moyenne en moins de 2 heures, du lundi au samedi.</p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px;">
+          <div style="display: flex; align-items: center; gap: 9px; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1px; padding: 14px 22px; background: #D81B60; color: #fff; border-radius: 12px; cursor: pointer; transform: skewX(-3deg); box-shadow: 4px 4px 0 rgba(0,0,0,0.5); transition: background 0.16s ease, transform 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px,-2px);">💬 CHAT EN DIRECT</div>
+          <a href="#" style="display: flex; align-items: center; gap: 9px; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1px; padding: 14px 22px; background: transparent; color: #C9C6BE; border: 1.5px solid #3A3A42; border-radius: 12px; text-decoration: none; transform: skewX(-3deg); transition: border-color 0.16s ease, color 0.16s ease;" style-hover="border-color: #D81B60; color: #fff;">✉️ E-MAIL</a>
+          <a href="#" style="display: flex; align-items: center; gap: 9px; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1px; padding: 14px 22px; background: transparent; color: #C9C6BE; border: 1.5px solid #3A3A42; border-radius: 12px; text-decoration: none; transform: skewX(-3deg); transition: border-color 0.16s ease, color 0.16s ease;" style-hover="border-color: #D81B60; color: #fff;">DISCORD</a>
+        </div>
+        <div style="display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; font-weight: 700; font-size: 12px; color: #5ED99A;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #5ED99A;"></span>Support en ligne · réponse rapide</div>
+      </div>
+    </div>
+
+    <!-- ===== LÉGAL ===== -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px;">
+      <a href="#" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #15151A; border: 1px solid #2B2B31; border-radius: 13px; padding: 16px 18px; text-decoration: none; transition: border-color 0.15s ease;" style-hover="border-color: #3A3A42;"><span style="font-weight: 800; font-size: 13px; color: #C9C6BE;">Conditions générales</span><span style="color: #6E6E78;">→</span></a>
+      <a href="#" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #15151A; border: 1px solid #2B2B31; border-radius: 13px; padding: 16px 18px; text-decoration: none; transition: border-color 0.15s ease;" style-hover="border-color: #3A3A42;"><span style="font-weight: 800; font-size: 13px; color: #C9C6BE;">Confidentialité</span><span style="color: #6E6E78;">→</span></a>
+      <a href="#" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #15151A; border: 1px solid #2B2B31; border-radius: 13px; padding: 16px 18px; text-decoration: none; transition: border-color 0.15s ease;" style-hover="border-color: #3A3A42;"><span style="font-weight: 800; font-size: 13px; color: #C9C6BE;">Politique de livraison</span><span style="color: #6E6E78;">→</span></a>
+      <a href="#" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #15151A; border: 1px solid #2B2B31; border-radius: 13px; padding: 16px 18px; text-decoration: none; transition: border-color 0.15s ease;" style-hover="border-color: #3A3A42;"><span style="font-weight: 800; font-size: 13px; color: #C9C6BE;">Cookies</span><span style="color: #6E6E78;">→</span></a>
+    </div>
+
+    <dc-import name="The Park - Footer" hint-size="100%,320px" style="display: block; width: 100%;"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { cat: null, open: 'q1' };
+
+  constructor(props) {
+    super(props);
+    this.CATS = [
+      { k: 'commandes', label: 'Commandes & livraison', icon: '📦' },
+      { k: 'paiement', label: 'Paiement & portefeuille', icon: '👛' },
+      { k: 'echanges', label: 'Échanges', icon: '⇄' },
+      { k: 'authenticite', label: 'Authenticité des cartes', icon: '🛡️' },
+      { k: 'compte', label: 'Compte & profil', icon: '👤' },
+      { k: 'vendre', label: 'Vendre sur The Park', icon: '🏷️' }
+    ];
+    this.FAQS = [
+      { id: 'q1', cat: 'commandes', question: 'Combien de temps prend la livraison d\'une carte ?', answer: 'Une fois le paiement validé, le vendeur dispose de 3 jours ouvrés pour expédier. La livraison suivie met ensuite 2 à 4 jours en France métropolitaine. Toute carte au-delà de 50 € voyage en envoi suivi avec signature.' },
+      { id: 'q2', cat: 'commandes', question: 'Comment suivre mon colis ?', answer: 'Dès que le vendeur expédie, tu reçois une notification avec le numéro de suivi. Retrouve l\'acheminement en temps réel depuis l\'écran de suivi de commande, accessible dans tes notifications.' },
+      { id: 'q3', cat: 'paiement', question: 'Comment fonctionne le portefeuille The Park ?', answer: 'Le portefeuille te permet de payer instantanément et sans frais, et de recevoir le produit de tes ventes. Tu peux le recharger par carte bancaire et demander un retrait vers ton compte à tout moment, sous 48 h.' },
+      { id: 'q4', cat: 'authenticite', question: 'Comment savoir si une carte est authentique ?', answer: 'Chaque carte Pocket Drifterz comporte un marquage de série. Les vendeurs vérifiés affichent un badge, et notre protection acheteur te rembourse intégralement si la carte reçue ne correspond pas à l\'annonce.' },
+      { id: 'q5', cat: 'echanges', question: 'Comment proposer un échange ?', answer: 'Depuis le profil d\'un collectionneur ou son classeur, lance une offre : ajoute les cartes que tu donnes et celles que tu souhaites recevoir. Une jauge t\'indique si l\'échange est équilibré, et tu peux ajouter une soulte pour ajuster.' },
+      { id: 'q6', cat: 'vendre', question: 'Quelle commission prend The Park sur une vente ?', answer: 'La commission est de 8 % du prix de vente, prélevée uniquement lorsque la transaction aboutit. La mise en vente et la mise en ligne d\'annonces sont entièrement gratuites.' },
+      { id: 'q7', cat: 'echanges', question: 'Que se passe-t-il si l\'autre collectionneur refuse mon offre ?', answer: 'Les cartes engagées dans une offre sont mises de côté pendant 48 h. Si l\'offre est refusée ou expire, elles reviennent automatiquement dans ton classeur, disponibles à la vente ou à l\'échange.' },
+      { id: 'q8', cat: 'compte', question: 'Puis-je changer mon pseudo de pilote ?', answer: 'Oui, depuis Paramètres → Profil. Ton pseudo est modifiable une fois tous les 30 jours. Il reste visible sur tes annonces, échanges et au classement.' }
+    ];
+  }
+
+  renderVals() {
+    const { cat, open } = this.state;
+    const walletLabel = (v => (isNaN(v) ? 128.5 : v).toFixed(2).replace('.', ',') + ' €')(parseFloat(localStorage.getItem('thepark_wallet')));
+    const catLabelOf = (k) => (this.CATS.find(c => c.k === k) || {}).label || k;
+    const list = cat ? this.FAQS.filter(f => f.cat === cat) : this.FAQS;
+
+    return {
+      walletLabel,
+      cats: this.CATS.map(c => ({
+        k: c.k, label: c.label, icon: c.icon,
+        count: this.FAQS.filter(f => f.cat === c.k).length,
+        bg: cat === c.k ? 'rgba(216,27,96,0.1)' : '#1A1A1E',
+        border: cat === c.k ? '#D81B60' : '#2B2B31'
+      })),
+      pickCat: (e) => this.setState({ cat: e.currentTarget.dataset.k }),
+      clearCat: () => this.setState({ cat: null }),
+      filtered: !!cat,
+      faqTitle: cat ? catLabelOf(cat) : 'Questions fréquentes',
+      faqs: list.map(f => ({
+        id: f.id, question: f.question, answer: f.answer,
+        catLabel: catLabelOf(f.cat).split(' ')[0],
+        open: open === f.id,
+        border: open === f.id ? '#D81B60' : '#2B2B31',
+        iconRot: open === f.id ? 'rotate(45deg)' : 'rotate(0deg)'
+      })),
+      toggleFaq: (e) => { const id = e.currentTarget.dataset.id; this.setState(s => ({ open: s.open === id ? null : id })); }
+    };
+  }
+}
+</script>
+</body>
+</html>

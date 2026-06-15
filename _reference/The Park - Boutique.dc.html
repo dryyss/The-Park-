@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes shine { 0% { background-position: -120% 0; } 100% { background-position: 220% 0; } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+</style>
+</helmet>
+<div data-screen-label="Boutique officielle — Accueil" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center;">
+      <a href="The Park - Accueil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 11px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ACCUEIL</a>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 11px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">COLLECTION</a>
+      <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 11px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">MARKETPLACE</a>
+      <div style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; background: #E8B23A; color: #1A1A1E; border-radius: 7px; transform: rotate(-1.5deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); cursor: default; display: flex; align-items: center; gap: 5px;">BOUTIQUE <span style="font-size: 10px;">✔</span></div>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 11px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ÉCHANGES</a>
+      <a href="The Park - Classements.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 11px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">CLASSEMENTS</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Notifications.dc.html" title="Notifications" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a>
+      <a href="The Park - Boutique Panier.dc.html" title="Panier boutique officielle" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #E8B23A; box-shadow: 0 0 0 1px rgba(232,178,58,0.25); display: flex; align-items: center; justify-content: center; color: #E8B23A; text-decoration: none; transition: color 0.18s ease, transform 0.18s ease;" style-hover="color: #FFD479; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #E8B23A; color: #1A1A1E; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #131316;">{{ cartCount }}</span></a>
+      <a href="The Park - Profil.dc.html" title="KENJI-13 · Profil" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #2B2B31; text-decoration: none; transition: border-color 0.18s ease, transform 0.2s ease;" style-hover="border-color: #D81B60; transform: scale(1.08) rotate(-4deg);">K</a>
+    </div>
+  </div>
+
+  <div style="max-width: 1320px; margin: 0 auto; padding: 30px 28px 60px;">
+
+    <!-- ===== OFFICIAL BANNER ===== -->
+    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; animation: fadeUp 0.4s ease both;">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 9px 15px 9px 11px; border-radius: 11px; background: linear-gradient(135deg, rgba(232,178,58,0.16), rgba(232,178,58,0.05)); border: 1px solid rgba(232,178,58,0.45);">
+        <span style="width: 26px; height: 26px; border-radius: 50%; background: #E8B23A; color: #1A1A1E; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900;">✔</span>
+        <div style="line-height: 1.1;">
+          <div style="font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1.2px; color: #F2EFE9;">BOUTIQUE OFFICIELLE</div>
+          <div style="font-weight: 800; font-size: 10px; letter-spacing: 1px; color: #E8B23A; text-transform: uppercase;">Vendu &amp; expédié par The Park</div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 12.5px; color: #8E8E98;">
+        <span style="width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 11px; color: #fff;">L</span>
+        Produits physiques signés <strong style="color: #F2EFE9;">Lighton</strong>
+      </div>
+      <div style="flex: 1;"></div>
+      <a href="The Park - Marketplace.dc.html" style="display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 11.5px; color: #6E6E78; text-decoration: none; padding: 8px 13px; border: 1px dashed #3A3A42; border-radius: 9px; transition: color 0.15s ease, border-color 0.15s ease;" style-hover="color: #C9C6BE; border-color: #5A5A64;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 16v-4M12 8h.01"></path><circle cx="12" cy="12" r="9"></circle></svg>
+        Vente directe créateur — ≠ marketplace entre membres
+      </a>
+    </div>
+
+    <!-- ===== HERO PRODUIT ===== -->
+    <div style="position: relative; display: grid; grid-template-columns: 1.15fr 1fr; gap: 0; border: 1px solid #2B2B31; border-radius: 22px; overflow: hidden; animation: fadeUp 0.5s ease both;">
+      <div style="position: relative; background: radial-gradient(circle at 50% 38%, #FFFFFF, #ECE6E8 78%); display: flex; align-items: center; justify-content: center; padding: 34px; min-height: 420px; overflow: hidden;">
+        <div style="position: absolute; top: 16px; left: 16px; font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 1.3px; padding: 7px 13px; background: #1A1A1E; color: #E8B23A; border-radius: 7px; transform: rotate(-2deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.2); z-index: 2; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #E8B23A; box-shadow: 0 0 8px #E8B23A;"></span>ÉDITION LIMITÉE</div>
+        <div style="position: absolute; bottom: -10px; right: 18px; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 90px; color: rgba(26,26,30,0.05); pointer-events: none; line-height: 1;">鍛造</div>
+        <img src="uploads/mockupdisplay20image.jpg" alt="Display Moteur Forgé" style="max-width: 100%; max-height: 380px; object-fit: contain; filter: drop-shadow(0 28px 40px rgba(0,0,0,0.35)); transition: transform 0.4s ease;" style-hover="transform: scale(1.04) rotate(-1deg);">
+      </div>
+      <div style="background: #1A1A1E; padding: 40px 44px; display: flex; flex-direction: column; justify-content: center; position: relative;">
+        <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 14px;">
+          <span style="font-weight: 700; font-size: 11px; letter-spacing: 3px; color: #E8B23A; text-transform: uppercase;">Saison 1 · Display</span>
+          <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 11px; color: #5A5A64;">鍛造エンジン</span>
+        </div>
+        <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(38px, 4.4vw, 56px); line-height: 0.94; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Display<br><span style="color: #E8B23A; text-shadow: 4px 4px 0 rgba(216,27,96,0.9);">Moteur Forgé</span></h1>
+        <p style="margin: 18px 0 0; max-width: 420px; font-size: 14.5px; line-height: 1.6; color: #A9A9B2;">La boîte scellée : <strong style="color: #F2EFE9;">20 boosters</strong> de 5 cartes, soit 100 cartes Saison 1. Garantie d'au moins une Légendaire ou Gold par display.</p>
+        <div style="display: flex; align-items: flex-end; gap: 16px; margin-top: 24px;">
+          <div style="font-family: 'Anton', sans-serif; font-size: 40px; color: #F2EFE9; line-height: 0.9;">89,90 €</div>
+          <div style="display: flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 8px; background: rgba(232,148,90,0.12); border: 1px solid rgba(232,148,90,0.4); margin-bottom: 4px;">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: #E8945A;"></span>
+            <span style="font-weight: 800; font-size: 11.5px; color: #E8945A;">Stock faible · 12 restants</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 11px; margin-top: 26px; flex-wrap: wrap;">
+          <a href="The Park - Boutique Produit.dc.html" onClick="{{ addHero }}" style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1.5px; padding: 15px 28px; background: #D81B60; color: #fff; border-radius: 11px; text-decoration: none; transform: skewX(-3deg); box-shadow: 4px 4px 0 rgba(0,0,0,0.5); display: inline-flex; align-items: center; gap: 9px; transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px,-2px); box-shadow: 6px 6px 0 rgba(0,0,0,0.5);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg>AJOUTER AU PANIER</a>
+          <a href="The Park - Boutique Produit.dc.html" style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1.5px; padding: 15px 24px; background: transparent; color: #F2EFE9; border: 1.5px solid #3A3A42; border-radius: 11px; text-decoration: none; transform: skewX(-3deg); display: inline-block; transition: border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;" style-hover="border-color: #E8B23A; color: #fff; transform: skewX(-3deg) translate(-2px,-2px);">VOIR LA FICHE</a>
+        </div>
+        <div style="display: flex; gap: 18px; margin-top: 26px; flex-wrap: wrap; font-weight: 700; font-size: 11.5px; color: #6E6E78;">
+          <span style="display: flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5ED99A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Paiement sécurisé Stripe</span>
+          <span style="display: flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5ED99A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Expédié sous 48 h</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FILTRES ===== -->
+    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 44px; margin-bottom: 22px; animation: fadeUp 0.45s ease both;">
+      <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 28px; letter-spacing: 1.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; text-shadow: 3px 3px 0 #D81B60;">Le catalogue</h2>
+      <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 12px; color: #5A5A64; letter-spacing: 2px;">公式ストア</span>
+      <div style="flex: 1;"></div>
+      <div style="display: flex; align-items: center; gap: 7px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 10px; padding: 4px;">
+        <sc-for list="{{ cats }}" as="c" hint-placeholder-count="4">
+          <button onClick="{{ c.onClick }}" style="font-family: 'Anton', sans-serif; font-size: 11.5px; letter-spacing: 1.2px; padding: 8px 14px; border: none; border-radius: 7px; cursor: pointer; background: {{ c.bg }}; color: {{ c.color }}; transition: background 0.15s ease, color 0.15s ease;">{{ c.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 10px; padding: 9px 13px; font-weight: 800; font-size: 12px; color: #C9C6BE; cursor: pointer;" style-hover="border-color: #3A3A42;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8E8E98" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M6 12h12M10 18h4"></path></svg>
+        Trier : {{ sortLabel }}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8E8E98" stroke-width="2.6" stroke-linecap="round"><path d="m6 9 6 6 6-6"></path></svg>
+      </div>
+    </div>
+
+    <!-- ===== GRILLE PRODUITS ===== -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;">
+      <sc-for list="{{ products }}" as="p" hint-placeholder-count="8">
+        <a href="The Park - Boutique Produit.dc.html?p={{ p.id }}" style="text-decoration: none; animation: pop 0.4s ease both;">
+          <div style="position: relative; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; overflow: hidden; transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;" style-hover="transform: translateY(-4px); border-color: rgba(232,178,58,0.55); box-shadow: 0 16px 30px rgba(0,0,0,0.45);">
+            <!-- image tile -->
+            <div style="position: relative; aspect-ratio: 1/1; background: radial-gradient(circle at 50% 40%, #FFFFFF, #ECE6E8 82%); display: flex; align-items: center; justify-content: center; padding: 22px; overflow: hidden;">
+              <span style="position: absolute; top: 11px; left: 11px; z-index: 2; display: flex; align-items: center; gap: 4px; font-weight: 900; font-size: 8.5px; letter-spacing: 0.8px; padding: 4px 8px; border-radius: 6px; background: #1A1A1E; color: #E8B23A; text-transform: uppercase;"><span style="font-size: 8px;">✔</span>OFFICIEL</span>
+              <sc-if value="{{ p.tag }}" hint-placeholder-val="{{ false }}">
+                <span style="position: absolute; top: 11px; right: 11px; z-index: 2; font-family: 'Anton', sans-serif; font-size: 9px; letter-spacing: 0.8px; padding: 5px 9px; border-radius: 6px; background: {{ p.tagBg }}; color: {{ p.tagColor }}; transform: rotate(3deg); box-shadow: 2px 2px 0 rgba(0,0,0,0.15);">{{ p.tag }}</span>
+              </sc-if>
+              <img src="{{ p.img }}" alt="{{ p.name }}" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 14px 22px rgba(0,0,0,0.28)); transition: transform 0.3s ease; {{ p.outStyle }}" style-hover="transform: scale(1.06);">
+              <sc-if value="{{ p.isOut }}" hint-placeholder-val="{{ false }}">
+                <div style="position: absolute; inset: 0; background: rgba(19,19,22,0.5); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1.5px; color: #fff; padding: 8px 16px; border: 2px solid #fff; border-radius: 8px; transform: rotate(-6deg); background: rgba(26,26,30,0.7);">ÉPUISÉ</span></div>
+              </sc-if>
+            </div>
+            <!-- info -->
+            <div style="padding: 14px 15px 16px;">
+              <div style="font-weight: 800; font-size: 9.5px; letter-spacing: 1.2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 5px;">{{ p.cat }}</div>
+              <div style="font-weight: 800; font-size: 14px; color: #F2EFE9; line-height: 1.25; min-height: 35px;">{{ p.name }}</div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 12px;">
+                <div style="font-family: 'Anton', sans-serif; font-size: 22px; color: #F2EFE9; white-space: nowrap;">{{ p.price }}</div>
+                <span style="display: flex; align-items: center; gap: 5px; font-weight: 800; font-size: 10.5px; color: {{ p.stockColor }}; white-space: nowrap;"><span style="width: 6px; height: 6px; border-radius: 50%; background: {{ p.stockColor }}; flex-shrink: 0;"></span>{{ p.stockLabel }}</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+
+    <!-- ===== RÉASSURANCE ===== -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 50px; animation: fadeUp 0.5s ease both;">
+      <div style="display: flex; align-items: center; gap: 14px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; padding: 18px 20px;">
+        <div style="width: 42px; height: 42px; border-radius: 11px; background: rgba(94,217,154,0.12); color: #5ED99A; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transform: rotate(-3deg);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg></div>
+        <div><div style="font-weight: 800; font-size: 13px; color: #F2EFE9; line-height: 1.2;">Paiement sécurisé</div><div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-top: 3px; line-height: 1.3;">Stripe · CB, Apple/Google Pay</div></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; padding: 18px 20px;">
+        <div style="width: 42px; height: 42px; border-radius: 11px; background: rgba(79,163,255,0.12); color: #4FA3FF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transform: rotate(-3deg);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>
+        <div><div style="font-weight: 800; font-size: 13px; color: #F2EFE9; line-height: 1.2;">Expédition suivie</div><div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-top: 3px; line-height: 1.3;">France &amp; Europe · 48 h</div></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; padding: 18px 20px;">
+        <div style="width: 42px; height: 42px; border-radius: 11px; background: rgba(232,178,58,0.12); color: #E8B23A; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transform: rotate(-3deg);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.6 8 11 4.6-2.4 8-6 8-11V5z"></path><path d="m9 12 2 2 4-4"></path></svg></div>
+        <div><div style="font-weight: 800; font-size: 13px; color: #F2EFE9; line-height: 1.2;">100 % officiel</div><div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-top: 3px; line-height: 1.3;">Vendu par le créateur Lighton</div></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; padding: 18px 20px;">
+        <div style="width: 42px; height: 42px; border-radius: 11px; background: rgba(216,27,96,0.12); color: #FF2E63; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transform: rotate(-3deg);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M3 13a9 9 0 1 0 3-7.7L3 8"></path></svg></div>
+        <div><div style="font-weight: 800; font-size: 13px; color: #F2EFE9; line-height: 1.2;">Retours 14 jours</div><div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-top: 3px; line-height: 1.3;">Produits scellés non ouverts</div></div>
+      </div>
+    </div>
+
+    <dc-import name="The Park - Footer" hint-size="100%,320px" style="display: block; width: 100%; margin-top: 56px;"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { cat: 'all', cartCount: 2 };
+  renderVals() {
+    const cat = this.state.cat;
+    const CATS = [['all','TOUT'],['Displays','DISPLAYS'],['Boosters','BOOSTERS'],['Goodies','GOODIES']];
+    const allProducts = [
+      { id: 'display-mf', cat: 'Displays', name: 'Display Moteur Forgé · 20 boosters', price: '89,90 €', img: 'uploads/mockupdisplay20image.jpg', stock: 'low', tag: 'LIMITÉ', tagBg: '#1A1A1E', tagColor: '#E8B23A' },
+      { id: 'pack-3', cat: 'Boosters', name: 'Pack de 3 boosters scellés', price: '13,90 €', img: 'uploads/BOOSTERS_2.jpg', stock: 'in', tag: '', tagBg: '', tagColor: '' },
+      { id: 'booster-1', cat: 'Boosters', name: 'Booster à l\u2019unité · 5 cartes', price: '4,90 €', img: 'uploads/booster-1.png', stock: 'in', tag: 'POPULAIRE', tagBg: '#D81B60', tagColor: '#fff' },
+      { id: 'stickers', cat: 'Goodies', name: 'Pack stickers holo The Park', price: '9,90 €', img: 'uploads/logo-gold.png', stock: 'in', tag: 'NOUVEAU', tagBg: '#6FE3D0', tagColor: '#1A1A1E' },
+      { id: 'card-068', cat: 'Goodies', name: 'Carte signée Lighton · S13 #068', price: '65,00 €', img: 'uploads/68_NISSAN_S13_LIGHTON.jpg', stock: 'out', tag: 'COLLECTOR', tagBg: '#1A1A1E', tagColor: '#FF2E63' },
+      { id: 'card-069', cat: 'Goodies', name: 'Carte signée Lighton · S13 #069', price: '75,00 €', img: 'uploads/69_NISSAN_S13_LIGHTON_2.jpg', stock: 'low', tag: 'COLLECTOR', tagBg: '#1A1A1E', tagColor: '#FF2E63' }
+    ];
+    const stockMap = {
+      in:  { color: '#5ED99A', label: 'En stock' },
+      low: { color: '#E8945A', label: 'Stock faible' },
+      out: { color: '#8E8E98', label: 'Épuisé' }
+    };
+    const products = allProducts.filter(p => cat === 'all' || p.cat === cat).map(p => ({
+      ...p,
+      stockColor: stockMap[p.stock].color,
+      stockLabel: stockMap[p.stock].label,
+      isOut: p.stock === 'out',
+      outStyle: p.stock === 'out' ? 'opacity: 0.55; filter: grayscale(0.4) drop-shadow(0 14px 22px rgba(0,0,0,0.28));' : ''
+    }));
+    const ic = (d) => '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+    return {
+      cartCount: this.state.cartCount,
+      sortLabel: 'Nouveautés',
+      cats: CATS.map(([k,l]) => ({
+        label: l,
+        bg: cat === k ? (k === 'all' ? '#D81B60' : '#D81B60') : 'transparent',
+        color: cat === k ? '#fff' : '#8E8E98',
+        onClick: () => this.setState({ cat: k })
+      })),
+      products,
+      addHero: (e) => { e.preventDefault(); this.setState(s => ({ cartCount: s.cartCount + 1 })); window.location.href = 'The Park - Boutique Panier.dc.html'; },
+      trust: [
+        { title: 'Paiement sécurisé', sub: 'Stripe · CB, Apple/Google Pay', bg: 'rgba(94,217,154,0.12)', color: '#5ED99A', icon: ic('<rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path>') },
+        { title: 'Expédition suivie', sub: 'France & Europe · 48 h', bg: 'rgba(79,163,255,0.12)', color: '#4FA3FF', icon: ic('<path d="M1 3h15v13H1zM16 8h4l3 3v5h-7"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle>') },
+        { title: '100 % officiel', sub: 'Vendu par le créateur Lighton', bg: 'rgba(232,178,58,0.12)', color: '#E8B23A', icon: ic('<path d="M12 2 4 5v6c0 5 3.4 8.6 8 11 4.6-2.4 8-6 8-11V5z"></path><path d="m9 12 2 2 4-4"></path>') },
+        { title: 'Retours 14 jours', sub: 'Produits scellés non ouverts', bg: 'rgba(216,27,96,0.12)', color: '#FF2E63', icon: ic('<path d="M3 7v6h6"></path><path d="M3 13a9 9 0 1 0 3-7.7L3 8"></path>') }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

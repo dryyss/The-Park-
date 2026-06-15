@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #0E0E11; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes recPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(900%); } }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0E0E11; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+textarea::placeholder, input::placeholder { color: #5A5A64; }
+</style>
+</helmet>
+<div data-screen-label="Litige · arbitrage modération" style="min-height: 100vh; background: #0E0E11; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== ADMIN TOPBAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 18px; height: 60px; padding: 0 24px; background: #141418; border-bottom: 1px solid #232328;">
+    <a href="The Park - Admin.dc.html" style="display: flex; align-items: center; gap: 11px; text-decoration: none;">
+      <div style="width: 36px; height: 36px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-weight: 800; font-size: 8.5px; letter-spacing: 1.5px; color: #6E6E78; margin-top: 4px;">ADMIN · MODÉRATION</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 12px; color: #8E8E98; margin-left: 6px;">
+      <a href="The Park - Admin.dc.html" style="color: #8E8E98; text-decoration: none;" style-hover="color: #D81B60;">Modération</a>
+      <span style="color: #45454E;">/</span>
+      <a href="The Park - Admin.dc.html" style="color: #8E8E98; text-decoration: none;" style-hover="color: #D81B60;">Litiges</a>
+      <span style="color: #45454E;">/</span>
+      <span style="color: #C9C6BE;">L-2412</span>
+    </div>
+    <div style="flex: 1;"></div>
+    <div style="display: flex; align-items: center; gap: 9px; padding: 6px 11px 6px 8px; border-radius: 11px; background: #1C1C21; border: 1px solid #232328;">
+      <span style="width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #635BFF, #3A2F8C); color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 13px;">M</span>
+      <div style="line-height: 1.15;">
+        <div style="font-weight: 700; font-size: 9.5px; color: #6E6E78;">Modérateur</div>
+        <div style="font-weight: 800; font-size: 12px; color: #F2EFE9;">MOD-AKIRA</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width: 1340px; margin: 0 auto; padding: 26px 24px 70px;">
+
+    <!-- ===== HERO ===== -->
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; animation: fadeUp 0.5s ease;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 12px; letter-spacing: 3px; color: #FF6B5E; text-transform: uppercase; margin-bottom: 9px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF6B5E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4M12 17h.01"></path></svg>
+          Dossier auto-constitué · arbitrage par les preuves
+        </div>
+        <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(34px, 4.6vw, 54px); line-height: 0.92; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 4px 4px 0 #D81B60;">Litige L-2412</h1>
+        <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 10px;">Échange <a href="The Park - Échanges.dc.html" style="color: #D81B60; text-decoration: none; font-weight: 800;">E-2412</a> · carte ↔ carte · ouvert le 14/06 à 11:52 par <strong style="color: #C9C6BE;">KENJI-13</strong></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="text-align: right;">
+          <div style="font-weight: 700; font-size: 10px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">Délai de traitement</div>
+          <div style="font-family: 'Anton', sans-serif; font-size: 22px; color: #E8B23A; margin-top: 2px;">46:08 <span style="font-size: 12px; color: #6E6E78;">/ 48 h</span></div>
+        </div>
+        <span style="font-weight: 800; font-size: 11px; letter-spacing: 0.5px; padding: 8px 14px; border-radius: 999px; background: {{ statusBg }}; color: {{ statusColor }}; text-transform: uppercase;">{{ statusLabel }}</span>
+      </div>
+    </div>
+
+    <!-- ===== MAIN GRID ===== -->
+    <div style="display: grid; grid-template-columns: 1fr 384px; gap: 18px; margin-top: 24px; align-items: start;">
+
+      <!-- ===== LEFT : DOSSIER ===== -->
+      <div style="display: flex; flex-direction: column; gap: 16px; animation: fadeUp 0.5s 0.06s ease;">
+
+        <!-- PARTIES -->
+        <div style="display: grid; grid-template-columns: 1fr 44px 1fr; gap: 12px; align-items: stretch;">
+          <!-- sender -->
+          <div style="background: #16161A; border: 1px solid #232328; border-radius: 16px; padding: 17px 18px;">
+            <div style="display: flex; align-items: center; gap: 11px;">
+              <span style="width: 40px; height: 40px; border-radius: 11px; background: linear-gradient(135deg, #B05CFF, #5A1F8C); color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 16px; transform: rotate(-3deg);">S</span>
+              <div>
+                <div style="font-weight: 800; font-size: 14px; color: #F2EFE9;">SARA.S15</div>
+                <div style="font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #B05CFF; text-transform: uppercase; margin-top: 2px;">Expéditrice · mise en cause</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 14px; margin-top: 14px;">
+              <div><div style="font-family: 'Anton', sans-serif; font-size: 18px; color: #5ED99A;">99%</div><div style="font-weight: 700; font-size: 9.5px; color: #6E6E78;">Fiabilité</div></div>
+              <div><div style="font-family: 'Anton', sans-serif; font-size: 18px; color: #F2EFE9;">0</div><div style="font-weight: 700; font-size: 9.5px; color: #6E6E78;">Litige · 73 env.</div></div>
+              <div><div style="font-family: 'Anton', sans-serif; font-size: 18px; color: #E8B23A;">★ 5,0</div><div style="font-weight: 700; font-size: 9.5px; color: #6E6E78;">Avis</div></div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 22px; color: #FF6B5E;">vs</div>
+          <!-- claimant -->
+          <div style="background: #16161A; border: 1px solid rgba(255,107,94,0.3); border-radius: 16px; padding: 17px 18px;">
+            <div style="display: flex; align-items: center; gap: 11px;">
+              <span style="width: 40px; height: 40px; border-radius: 11px; background: linear-gradient(135deg, #D81B60, #7A0F37); color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 16px; transform: rotate(-3deg);">K</span>
+              <div>
+                <div style="font-weight: 800; font-size: 14px; color: #F2EFE9;">KENJI-13</div>
+                <div style="font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #FF6B5E; text-transform: uppercase; margin-top: 2px;">Destinataire · plaignant</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 14px; margin-top: 14px;">
+              <div><div style="font-family: 'Anton', sans-serif; font-size: 18px; color: #5ED99A;">98%</div><div style="font-weight: 700; font-size: 9.5px; color: #6E6E78;">Fiabilité</div></div>
+              <div><div style="font-family: 'Anton', sans-serif; font-size: 18px; color: #F2EFE9;">1</div><div style="font-weight: 700; font-size: 9.5px; color: #6E6E78;">Litige · 50 env.</div></div>
+              <div><div style="font-family: 'Anton', sans-serif; font-size: 18px; color: #E8B23A;">★ 4,8</div><div style="font-weight: 700; font-size: 9.5px; color: #6E6E78;">Avis</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MOTIF -->
+        <div style="background: linear-gradient(150deg, rgba(255,107,94,0.08), #16161A 55%); border: 1px solid rgba(255,107,94,0.28); border-radius: 14px; padding: 15px 18px; display: flex; gap: 13px; align-items: flex-start;">
+          <span style="width: 30px; height: 30px; border-radius: 8px; background: rgba(255,107,94,0.14); color: #FF6B5E; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"></path><path d="m2 7 10 6 10-6"></path></svg></span>
+          <div>
+            <div style="font-weight: 800; font-size: 13px; color: #F2EFE9;">Motif déclaré · « Carte abîmée à réception »</div>
+            <div style="font-weight: 600; font-size: 12px; color: #8E8E98; margin-top: 4px; line-height: 1.55;">« La BMW E30 Touring était annoncée <strong style="color: #C9C6BE;">Neuf</strong> mais présente un pli marqué dans le coin inférieur droit. Visible dès l'ouverture, vidéo à l'appui. »</div>
+          </div>
+        </div>
+
+        <!-- EVIDENCE : VIDEOS -->
+        <div style="display: flex; align-items: center; gap: 11px; margin-top: 2px;">
+          <div style="font-family: 'Anton', sans-serif; font-size: 17px; letter-spacing: 0.8px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Pièces vidéo horodatées</div>
+          <div style="flex: 1; height: 1px; background: #232328;"></div>
+          <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; color: #45454E;">証拠</span>
+        </div>
+
+        <!-- sender proofs -->
+        <div style="background: #16161A; border: 1px solid #232328; border-radius: 16px; padding: 16px 18px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px;">
+            <span style="font-weight: 800; font-size: 12px; color: #B05CFF;">Expéditrice · SARA.S15 — chaîne d'envoi</span>
+            <span style="font-weight: 800; font-size: 10px; letter-spacing: 0.5px; color: #5ED99A; text-transform: uppercase;">4/4 complètes ✓</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 11px;">
+            <sc-for list="{{ senderClips }}" as="c" hint-placeholder-count="4">
+              <div onClick="{{ c.onOpen }}" style="cursor: pointer;">
+                <div style="position: relative; aspect-ratio: 4/5; border-radius: 11px; overflow: hidden; border: 1px solid #2B2B31; background: linear-gradient(160deg, #232329, #131316);" style-hover="border-color: #635BFF;">
+                  <img src="{{ c.img }}" alt="" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.78;">
+                  <div style="position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.55), transparent 55%);"></div>
+                  <span style="position: absolute; top: 8px; left: 8px; font-weight: 800; font-size: 9px; letter-spacing: 0.5px; padding: 3px 7px; border-radius: 5px; background: rgba(0,0,0,0.6); color: #C9C6BE;">{{ c.dur }}</span>
+                  <span style="position: absolute; top: 8px; right: 8px; width: 18px; height: 18px; border-radius: 50%; background: rgba(94,217,154,0.85); color: #0E1A12; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900;">✓</span>
+                  <span style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.5); border: 1.5px solid rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M8 5v14l11-7z"></path></svg></span>
+                  <div style="position: absolute; left: 8px; right: 8px; bottom: 8px;">
+                    <div style="font-weight: 800; font-size: 10px; color: #fff; line-height: 1.25;">{{ c.title }}</div>
+                  </div>
+                </div>
+                <div style="font-weight: 700; font-size: 9.5px; color: #6E6E78; margin-top: 5px;">{{ c.stamp }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- recipient unboxing -->
+        <div style="background: linear-gradient(150deg, rgba(255,107,94,0.06), #16161A 50%); border: 1px solid rgba(255,107,94,0.28); border-radius: 16px; padding: 16px 18px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px;">
+            <span style="font-weight: 800; font-size: 12px; color: #FF6B5E;">Plaignant · KENJI-13 — déballage</span>
+            <span style="font-weight: 800; font-size: 10px; letter-spacing: 0.5px; color: #FF6B5E; text-transform: uppercase;">⚑ Problème signalé</span>
+          </div>
+          <div style="display: flex; gap: 14px; align-items: stretch;">
+            <div onClick="{{ openUnbox }}" style="cursor: pointer; width: 150px; flex-shrink: 0;">
+              <div style="position: relative; aspect-ratio: 4/5; border-radius: 11px; overflow: hidden; border: 1.5px solid rgba(255,107,94,0.5); background: linear-gradient(160deg, #232329, #131316);" style-hover="border-color: #FF6B5E;">
+                <img src="uploads/43_BMW_E30_TOURING.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.82;">
+                <div style="position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.55), transparent 55%);"></div>
+                <span style="position: absolute; top: 8px; left: 8px; font-weight: 800; font-size: 9px; padding: 3px 7px; border-radius: 5px; background: rgba(0,0,0,0.6); color: #C9C6BE;">0:31</span>
+                <span style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(255,107,94,0.85); display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M8 5v14l11-7z"></path></svg></span>
+                <!-- defect marker -->
+                <span style="position: absolute; right: 22px; bottom: 30px; width: 26px; height: 26px; border-radius: 50%; border: 2px solid #FF2E63; box-shadow: 0 0 0 4px rgba(255,46,99,0.25);"></span>
+              </div>
+              <div style="font-weight: 700; font-size: 9.5px; color: #6E6E78; margin-top: 5px;">14/06 · 11:48 · hash ✓</div>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 9px;">
+              <div style="font-weight: 800; font-size: 13px; color: #F2EFE9;">Vidéo continue d'ouverture</div>
+              <div style="font-weight: 600; font-size: 11.5px; color: #8E8E98; line-height: 1.55;">Enveloppe ouverte sans coupure. Le pli apparaît au déballage à <strong style="color: #C9C6BE;">0:24</strong>. Continuité de la vidéo confirmée, aucune coupure détectée.</div>
+              <div style="display: flex; gap: 7px; flex-wrap: wrap; margin-top: 2px;">
+                <span style="font-weight: 700; font-size: 9.5px; color: #C9C6BE; background: #202024; border: 1px solid #2B2B31; border-radius: 6px; padding: 4px 8px;">Continuité ✓</span>
+                <span style="font-weight: 700; font-size: 9.5px; color: #C9C6BE; background: #202024; border: 1px solid #2B2B31; border-radius: 6px; padding: 4px 8px;">Horodatage serveur</span>
+                <span style="font-weight: 700; font-size: 9.5px; color: #C9C6BE; background: #202024; border: 1px solid #2B2B31; border-radius: 6px; padding: 4px 8px;">Hash intègre</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRACKING + VALUES row -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <!-- tracking -->
+          <div style="background: #16161A; border: 1px solid #232328; border-radius: 16px; padding: 16px 18px;">
+            <div style="display: flex; align-items: center; gap: 9px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4FA3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+              <span style="font-weight: 800; font-size: 12.5px; color: #F2EFE9;">Suivi transporteur</span>
+            </div>
+            <div style="margin-top: 13px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-weight: 700; font-size: 11px; color: #8E8E98;">N° suivi</span><span style="font-weight: 800; font-size: 11.5px; color: #C9C6BE;">6A 1234 5678 9</span></div>
+              <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-weight: 700; font-size: 11px; color: #8E8E98;">Statut API</span><span style="font-weight: 800; font-size: 10px; padding: 3px 9px; border-radius: 999px; background: rgba(94,217,154,0.14); color: #5ED99A; text-transform: uppercase;">Livré ✓</span></div>
+              <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-weight: 700; font-size: 11px; color: #8E8E98;">Délai d'acheminement</span><span style="font-weight: 800; font-size: 11.5px; color: #C9C6BE;">2 j · nominal</span></div>
+              <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-weight: 700; font-size: 11px; color: #8E8E98;">Incohérence</span><span style="font-weight: 800; font-size: 11.5px; color: #5ED99A;">Aucune</span></div>
+            </div>
+          </div>
+          <!-- values -->
+          <div style="background: #16161A; border: 1px solid #232328; border-radius: 16px; padding: 16px 18px;">
+            <div style="display: flex; align-items: center; gap: 9px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8B23A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              <span style="font-weight: 800; font-size: 12.5px; color: #F2EFE9;">Valeurs estimées</span>
+            </div>
+            <div style="margin-top: 13px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-weight: 700; font-size: 11px; color: #8E8E98;">Carte en litige</span><span style="font-weight: 800; font-size: 11.5px; color: #C9C6BE;">BMW E30 Touring</span></div>
+              <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-weight: 700; font-size: 11px; color: #8E8E98;">Cote système</span><span style="font-family: 'Anton', sans-serif; font-size: 16px; color: #E8B23A;">8,50 €</span></div>
+              <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-weight: 700; font-size: 11px; color: #8E8E98;">Décote « abîmé »</span><span style="font-weight: 800; font-size: 11.5px; color: #FF6B5E;">− 40 % (≈ 3,40 €)</span></div>
+              <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-weight: 700; font-size: 11px; color: #8E8E98;">Caution mise en cause</span><span style="font-weight: 800; font-size: 11.5px; color: #C9C6BE;">SARA.S15 · 8,50 €</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TIMELINE -->
+        <div style="background: #16161A; border: 1px solid #232328; border-radius: 16px; padding: 16px 20px;">
+          <div style="font-weight: 800; font-size: 12.5px; color: #F2EFE9; margin-bottom: 13px;">Historique horodaté du dossier</div>
+          <sc-for list="{{ history }}" as="h" hint-placeholder-count="5">
+            <div style="position: relative; display: flex; gap: 14px; padding: 8px 0;">
+              <div style="position: relative; display: flex; flex-direction: column; align-items: center; flex-shrink: 0;">
+                <span style="width: 11px; height: 11px; border-radius: 50%; background: {{ h.dot }}; border: 2px solid #16161A; box-shadow: 0 0 0 1.5px {{ h.dot }}; z-index: 1;"></span>
+                <sc-if value="{{ h.showLine }}" hint-placeholder-val="{{ true }}">
+                  <span style="position: absolute; top: 11px; width: 2px; height: 26px; background: #2B2B31;"></span>
+                </sc-if>
+              </div>
+              <div style="flex: 1; min-width: 0; margin-top: -3px; display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                <span style="font-weight: 700; font-size: 11.5px; color: #C9C6BE;">{{ h.text }}</span>
+                <span style="font-weight: 700; font-size: 10.5px; color: #6E6E78; white-space: nowrap; font-variant-numeric: tabular-nums;">{{ h.when }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- ===== RIGHT : DECISION PANEL ===== -->
+      <div style="position: sticky; top: 78px; display: flex; flex-direction: column; gap: 14px; animation: fadeUp 0.5s 0.12s ease;">
+
+        <!-- presumption grid -->
+        <div style="background: #16161A; border: 1px solid #232328; border-radius: 16px; padding: 17px 18px;">
+          <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 0.6px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Grille de décision</div>
+          <div style="font-weight: 700; font-size: 10.5px; color: #6E6E78; margin-top: 4px; line-height: 1.5;">Présomptions appliquées automatiquement d'après les preuves.</div>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 13px;">
+            <sc-for list="{{ rules }}" as="r" hint-placeholder-count="3">
+              <div style="display: flex; gap: 10px; align-items: flex-start; padding: 11px 12px; border-radius: 11px; background: {{ r.bg }}; border: 1px solid {{ r.border }};">
+                <span style="width: 18px; height: 18px; border-radius: 50%; background: {{ r.badgeBg }}; color: {{ r.badgeColor }}; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; flex-shrink: 0; margin-top: 1px;">{{ r.mark }}</span>
+                <div>
+                  <div style="font-weight: 800; font-size: 11.5px; color: {{ r.titleColor }};">{{ r.title }}</div>
+                  <div style="font-weight: 600; font-size: 10.5px; color: #7E7E88; margin-top: 2px; line-height: 1.45;">{{ r.desc }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top: 13px; padding: 11px 13px; border-radius: 11px; background: rgba(232,178,58,0.08); border: 1px dashed rgba(232,178,58,0.4);">
+            <div style="font-weight: 800; font-size: 10px; letter-spacing: 0.5px; color: #E8B23A; text-transform: uppercase;">Synthèse système</div>
+            <div style="font-weight: 600; font-size: 11px; color: #C9C6BE; margin-top: 5px; line-height: 1.5;">Preuves complètes des deux côtés + suivi nominal. La vidéo d'unboxing établit un défaut → <strong style="color: #F2EFE9;">examen requis</strong>, pas de présomption tranchée.</div>
+          </div>
+        </div>
+
+        <!-- DECISION -->
+        <sc-if value="{{ notDecided }}" hint-placeholder-val="{{ true }}">
+          <div style="background: #16161A; border: 1px solid #232328; border-radius: 16px; padding: 17px 18px;">
+            <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 0.6px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Décision</div>
+
+            <div style="font-weight: 800; font-size: 10px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase; margin: 14px 0 9px;">Issue sur les cautions</div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <sc-for list="{{ verdicts }}" as="v" hint-placeholder-count="3">
+                <div onClick="{{ v.onPick }}" style="display: flex; gap: 11px; align-items: flex-start; padding: 12px 13px; border-radius: 12px; cursor: pointer; background: {{ v.bg }}; border: 1.5px solid {{ v.border }}; transition: border-color 0.14s ease, background 0.14s ease;">
+                  <span style="width: 18px; height: 18px; border-radius: 50%; border: 2px solid {{ v.dotBorder }}; background: {{ v.dotBg }}; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center;"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{ v.dotInner }};"></span></span>
+                  <div>
+                    <div style="font-weight: 800; font-size: 12px; color: #F2EFE9;">{{ v.title }}</div>
+                    <div style="font-weight: 600; font-size: 10.5px; color: #8E8E98; margin-top: 2px; line-height: 1.45;">{{ v.desc }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="font-weight: 800; font-size: 10px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase; margin: 16px 0 9px;">Sanctions complémentaires</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 7px;">
+              <sc-for list="{{ sanctions }}" as="s" hint-placeholder-count="4">
+                <div onClick="{{ s.onToggle }}" style="display: flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 999px; cursor: pointer; background: {{ s.bg }}; border: 1.5px solid {{ s.border }}; transition: all 0.14s ease;">
+                  <span style="color: {{ s.iconColor }}; display: flex;">{{ s.icon }}</span>
+                  <span style="font-weight: 800; font-size: 11px; color: {{ s.color }};">{{ s.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <textarea value="{{ note }}" onChange="{{ onNote }}" placeholder="Motivation de la décision (jointe à l'audit, visible des deux parties)…" style="width: 100%; margin-top: 16px; min-height: 76px; resize: vertical; background: #202024; border: 1px solid #2B2B31; border-radius: 11px; padding: 11px 13px; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 12.5px; line-height: 1.5; outline: none;"></textarea>
+
+            <div onClick="{{ onDecide }}" style="margin-top: 13px; font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 1.2px; padding: 14px; text-align: center; background: {{ decideBg }}; color: {{ decideColor }}; border-radius: 11px; cursor: {{ decideCursor }}; transform: skewX(-3deg); box-shadow: {{ decideShadow }}; transition: filter 0.15s ease, transform 0.15s ease;" style-hover="filter: brightness(1.08);">RENDRE LA DÉCISION</div>
+            <div style="display: flex; align-items: center; gap: 7px; margin-top: 11px; padding-top: 11px; border-top: 1px solid #232328;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6E6E78" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              <span style="font-weight: 700; font-size: 10px; color: #6E6E78;">Décision tracée · MOD-AKIRA · audit horodaté</span>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- DECIDED state -->
+        <sc-if value="{{ decided }}" hint-placeholder-val="{{ false }}">
+          <div style="background: linear-gradient(150deg, rgba(94,217,154,0.1), #16161A 55%); border: 1.5px solid rgba(94,217,154,0.45); border-radius: 16px; padding: 20px 18px; animation: pop 0.3s ease;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="width: 42px; height: 42px; border-radius: 12px; background: #5ED99A; color: #0E1A12; display: flex; align-items: center; justify-content: center; transform: rotate(-6deg);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              <div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Décision rendue</div>
+                <div style="font-weight: 700; font-size: 11px; color: #5ED99A; margin-top: 2px;">Litige L-2412 clôturé · notifiée aux 2 parties</div>
+              </div>
+            </div>
+            <div style="margin-top: 16px; padding: 13px 15px; background: #202024; border: 1px solid #2B2B31; border-radius: 12px;">
+              <div style="font-weight: 800; font-size: 10px; letter-spacing: 0.5px; color: #6E6E78; text-transform: uppercase;">Issue</div>
+              <div style="font-weight: 800; font-size: 13px; color: #F2EFE9; margin-top: 4px;">{{ outcomeTitle }}</div>
+              <sc-if value="{{ hasSanctions }}" hint-placeholder-val="{{ false }}">
+                <div style="font-weight: 700; font-size: 11px; color: #E8B23A; margin-top: 6px;">Sanctions : {{ sanctionSummary }}</div>
+              </sc-if>
+            </div>
+            <div style="display: flex; align-items: center; gap: 7px; margin-top: 13px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6E6E78" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"></path><circle cx="12" cy="12" r="9"></circle></svg>
+              <span style="font-weight: 700; font-size: 10px; color: #6E6E78;">Audit · MOD-AKIRA · {{ decidedAt }} · hash {{ auditHash }}</span>
+            </div>
+            <div onClick="{{ onReopen }}" style="margin-top: 14px; font-weight: 800; font-size: 11px; color: #8E8E98; text-align: center; cursor: pointer; padding: 9px; border: 1px solid #2B2B31; border-radius: 9px;" style-hover="color: #C9C6BE;">↺ Revoir la décision (maquette)</div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== VIDEO VIEWER OVERLAY ===== -->
+  <sc-if value="{{ viewerOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeViewer }}" style="position: fixed; inset: 0; z-index: 90; background: rgba(6,6,8,0.92); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; padding: 28px; animation: pop 0.2s ease;">
+      <div onClick="{{ stop }}" style="width: min(900px, 94vw); background: #141418; border: 1px solid #2B2B31; border-radius: 18px; overflow: hidden;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #232328;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-weight: 800; font-size: 10px; letter-spacing: 0.5px; padding: 4px 9px; border-radius: 6px; background: {{ viewerTagBg }}; color: {{ viewerTagColor }}; text-transform: uppercase;">{{ viewerOwner }}</span>
+            <span style="font-weight: 800; font-size: 13.5px; color: #F2EFE9;">{{ viewerTitle }}</span>
+          </div>
+          <div onClick="{{ closeViewer }}" style="width: 32px; height: 32px; border-radius: 50%; background: #202024; color: #C9C6BE; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 15px;" style-hover="background: #D81B60; color: #fff;">✕</div>
+        </div>
+        <div style="position: relative; aspect-ratio: 16/10; background: radial-gradient(circle at 50% 40%, #25252b, #0d0d10 78%); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+          <div style="position: absolute; top: 0; left: 0; right: 0; height: 70px; background: linear-gradient(180deg, rgba(99,91,255,0.16), transparent); animation: scanline 3s linear infinite;"></div>
+          <div style="position: absolute; top: 16px; left: 18px; display: flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 999px; background: rgba(0,0,0,0.55);">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #FF2E63; animation: recPulse 1s infinite;"></span>
+            <span style="font-weight: 800; font-size: 11px; color: #fff;">REC · {{ viewerDur }}</span>
+          </div>
+          <img src="{{ viewerImg }}" alt="" style="max-width: 56%; max-height: 78%; object-fit: contain; border-radius: 10px; box-shadow: 0 24px 60px rgba(0,0,0,0.6);">
+          <div style="position: absolute; left: 18px; right: 18px; bottom: 16px; display: flex; align-items: center; gap: 11px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M8 5v14l11-7z"></path></svg>
+            <div style="flex: 1; height: 4px; border-radius: 999px; background: rgba(255,255,255,0.18);"><div style="width: 38%; height: 100%; border-radius: 999px; background: #fff;"></div></div>
+            <span style="font-weight: 700; font-size: 11px; color: #C9C6BE; font-variant-numeric: tabular-nums;">{{ viewerDur }}</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 18px; flex-wrap: wrap;">
+          <div style="font-weight: 700; font-size: 11px; color: #8E8E98;">{{ viewerMeta }}</div>
+          <div style="display: flex; align-items: center; gap: 7px;">
+            <span style="font-weight: 700; font-size: 10px; color: #5ED99A; background: rgba(94,217,154,0.12); border-radius: 6px; padding: 4px 9px;">Horodatage serveur ✓</span>
+            <span style="font-weight: 700; font-size: 10px; color: #5ED99A; background: rgba(94,217,154,0.12); border-radius: 6px; padding: 4px 9px;">Hash intègre ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    verdict: null,        // 'release' | 'partial' | 'full'
+    sanctions: {},        // {key: true}
+    note: '',
+    decided: false,
+    viewer: null          // proof object or null
+  };
+
+  renderVals() {
+    const st = this.state;
+    const decided = st.decided;
+    const notDecided = !decided;
+
+    const status = decided
+      ? { label: 'Clôturé', bg: 'rgba(94,217,154,0.16)', color: '#5ED99A' }
+      : { label: 'En arbitrage', bg: 'rgba(255,107,94,0.16)', color: '#FF6B5E' };
+
+    // ----- sender clips -----
+    const SC = [
+      { title: 'Présentation carte', dur: '0:28', stamp: '12/06 · 08:52 · jeton 4827', img: 'uploads/43_BMW_E30_TOURING.jpg', meta: 'Recto-verso · jeton du jour 4827 affiché à l\u2019écran' },
+      { title: 'Mise sous enveloppe', dur: '0:22', stamp: '12/06 · 08:55 · continu', img: 'uploads/43_BMW_E30_TOURING.jpg', meta: 'Insertion sleeve + toploader, sans coupure' },
+      { title: 'Fermeture & adresse', dur: '0:19', stamp: '12/06 · 08:57 · adresse OK', img: 'uploads/43_BMW_E30_TOURING.jpg', meta: 'Fermeture enveloppe + adresse destinataire lisible' },
+      { title: 'Dépôt & récépissé', dur: '0:24', stamp: '12/06 · 09:14 · récépissé', img: 'uploads/43_BMW_E30_TOURING.jpg', meta: 'Récépissé La Poste + code-barres de suivi' }
+    ];
+    const senderClips = SC.map((c, i) => ({
+      title: c.title, dur: c.dur, stamp: c.stamp, img: c.img,
+      onOpen: () => this.setState({ viewer: { owner: 'Expéditrice · SARA.S15', title: c.title, dur: c.dur, img: c.img, meta: c.meta, tag: 'sender' } })
+    }));
+
+    // ----- presumption rules -----
+    const rules = [
+      { title: 'Preuves expéditeur complètes + suivi « livré »', desc: 'Présomption favorable à l\u2019expéditeur.', applies: true, partial: true },
+      { title: 'Vidéo unboxing montrant un problème', desc: 'Déclenche un examen au cas par cas.', applies: true, partial: false },
+      { title: 'Preuves manquantes / suivi figé', desc: 'Présomption défavorable à la partie défaillante.', applies: false }
+    ];
+    const ruleVals = rules.map(r => {
+      const active = r.applies;
+      const exam = active && !r.partial;
+      return {
+        title: r.title, desc: r.desc,
+        mark: active ? (exam ? '?' : '✓') : '–',
+        badgeBg: active ? (exam ? 'rgba(232,178,58,0.2)' : 'rgba(94,217,154,0.18)') : '#26262B',
+        badgeColor: active ? (exam ? '#E8B23A' : '#5ED99A') : '#6E6E78',
+        bg: active ? (exam ? 'rgba(232,178,58,0.06)' : 'rgba(94,217,154,0.05)') : 'transparent',
+        border: active ? (exam ? 'rgba(232,178,58,0.3)' : 'rgba(94,217,154,0.22)') : '#232328',
+        titleColor: active ? '#F2EFE9' : '#6E6E78'
+      };
+    });
+
+    // ----- verdict options -----
+    const VD = [
+      { k: 'release', title: 'Annuler les deux cautions', desc: 'Issue normale — aucun débit. Litige non fondé ou résolu à l\u2019amiable.' },
+      { k: 'partial', title: 'Capture partielle · indemniser KENJI-13', desc: 'Prélève la décote (≈ 3,40 €) sur la caution SARA.S15 vers le plaignant.' },
+      { k: 'full', title: 'Capture totale caution SARA.S15', desc: 'Faute caractérisée de l\u2019expéditrice — 8,50 € prélevés à titre d\u2019indemnisation.' }
+    ];
+    const verdicts = VD.map(v => {
+      const on = st.verdict === v.k;
+      return {
+        title: v.title, desc: v.desc,
+        bg: on ? 'rgba(216,27,96,0.1)' : '#202024',
+        border: on ? '#D81B60' : '#2B2B31',
+        dotBorder: on ? '#D81B60' : '#3A3A42',
+        dotBg: 'transparent',
+        dotInner: on ? '#D81B60' : 'transparent',
+        onPick: () => this.setState({ verdict: v.k })
+      };
+    });
+
+    // ----- sanctions -----
+    const warnIcon = React.createElement('svg', { width: 12, height: 12, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M12 9v4M12 17h.01' }), React.createElement('path', { d: 'M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z' }));
+    const banIcon = React.createElement('svg', { width: 12, height: 12, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.4, strokeLinecap: 'round' }, React.createElement('circle', { cx: 12, cy: 12, r: 9 }), React.createElement('path', { d: 'M5 5l14 14' }));
+    const pauseIcon = React.createElement('svg', { width: 12, height: 12, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.4, strokeLinecap: 'round' }, React.createElement('path', { d: 'M10 4v16M14 4v16' }));
+    const repIcon = React.createElement('svg', { width: 12, height: 12, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M12 2 9 9l-7 .6 5.3 4.6L6 21l6-3.3L18 21l-1.3-6.8L22 9.6 15 9z' }));
+    const SA = [
+      { k: 'warn', label: 'Avertissement', icon: warnIcon },
+      { k: 'suspend', label: 'Suspension 7 j', icon: pauseIcon },
+      { k: 'ban', label: 'Bannissement', icon: banIcon },
+      { k: 'rep', label: 'Impact réputation', icon: repIcon }
+    ];
+    const sanctions = SA.map(s => {
+      const on = !!st.sanctions[s.k];
+      return {
+        label: s.label, icon: s.icon,
+        bg: on ? 'rgba(255,107,94,0.12)' : '#202024',
+        border: on ? '#FF6B5E' : '#2B2B31',
+        color: on ? '#FF6B5E' : '#C9C6BE',
+        iconColor: on ? '#FF6B5E' : '#7E7E88',
+        onToggle: () => this.setState(p => ({ sanctions: { ...p.sanctions, [s.k]: !p.sanctions[s.k] } }))
+      };
+    });
+
+    // ----- history -----
+    const HIST = [
+      { text: 'Échange E-2412 accepté · double validation', when: '09/06 · 19:20' },
+      { text: 'Préautorisations Stripe posées (2 parties)', when: '09/06 · 19:21' },
+      { text: 'SARA.S15 — 4/4 preuves filmées + n° suivi', when: '12/06 · 09:14' },
+      { text: 'API transporteur · statut « livré »', when: '14/06 · 11:27' },
+      { text: 'KENJI-13 ouvre un litige + vidéo unboxing', when: '14/06 · 11:52' },
+      { text: 'Dossier auto-constitué → modération', when: '14/06 · 11:52' }
+    ];
+    const history = HIST.map((h, i) => ({
+      text: h.text, when: h.when,
+      dot: i >= HIST.length - 2 ? '#FF6B5E' : '#3A3A42',
+      showLine: i < HIST.length - 1
+    }));
+
+    const canDecide = !!st.verdict;
+    const outcomeMap = {
+      release: 'Cautions annulées — aucun débit',
+      partial: 'Capture partielle 3,40 € → KENJI-13 · solde caution rendu',
+      full: 'Capture totale 8,50 € caution SARA.S15 → KENJI-13'
+    };
+    const sanctionLabels = SA.filter(s => st.sanctions[s.k]).map(s => s.label);
+
+    const v = st.viewer;
+    return {
+      statusLabel: status.label, statusBg: status.bg, statusColor: status.color,
+      senderClips, rules: ruleVals, verdicts, sanctions, history,
+      notDecided, decided,
+
+      note: st.note,
+      onNote: (e) => this.setState({ note: e.target.value }),
+      decideBg: canDecide ? '#D81B60' : '#26262B',
+      decideColor: canDecide ? '#fff' : '#5A5A64',
+      decideCursor: canDecide ? 'pointer' : 'not-allowed',
+      decideShadow: canDecide ? '3px 3px 0 rgba(0,0,0,0.45)' : 'none',
+      onDecide: () => { if (canDecide) this.setState({ decided: true }); },
+      onReopen: () => this.setState({ decided: false }),
+
+      outcomeTitle: outcomeMap[st.verdict] || '',
+      hasSanctions: sanctionLabels.length > 0,
+      sanctionSummary: sanctionLabels.join(' · '),
+      decidedAt: '15/06 · 09:42',
+      auditHash: 'a7f3…e21',
+
+      openUnbox: () => this.setState({ viewer: { owner: 'Plaignant · KENJI-13', title: 'Déballage / unboxing', dur: '0:31', img: 'uploads/43_BMW_E30_TOURING.jpg', meta: '14/06 · 11:48 · défaut visible à 0:24 · continuité confirmée', tag: 'recipient' } }),
+      viewerOpen: !!v,
+      viewerOwner: v ? v.owner : '',
+      viewerTitle: v ? v.title : '',
+      viewerDur: v ? v.dur : '',
+      viewerImg: v ? v.img : '',
+      viewerMeta: v ? v.meta : '',
+      viewerTagBg: v && v.tag === 'recipient' ? 'rgba(255,107,94,0.16)' : 'rgba(176,92,255,0.16)',
+      viewerTagColor: v && v.tag === 'recipient' ? '#FF6B5E' : '#B05CFF',
+      closeViewer: () => this.setState({ viewer: null }),
+      stop: (e) => e.stopPropagation()
+    };
+  }
+}
+</script>
+</body>
+</html>

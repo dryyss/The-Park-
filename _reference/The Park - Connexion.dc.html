@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #0E0E11; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes floaty { 0% { transform: translateY(0) rotate(var(--rot, 0deg)); } 50% { transform: translateY(-10px) rotate(var(--rot, 0deg)); } 100% { transform: translateY(0) rotate(var(--rot, 0deg)); } }
+@keyframes pop { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes sheen { 0% { transform: translateX(-130%) skewX(-18deg); } 60%, 100% { transform: translateX(240%) skewX(-18deg); } }
+::selection { background: #D81B60; color: #fff; }
+input::placeholder { color: #5A5A64; }
+</style>
+</helmet>
+<div data-screen-label="Connexion / Onboarding" style="min-height: 100vh; display: grid; grid-template-columns: 1.05fr 1fr; background: #0E0E11; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow: hidden;">
+
+  <!-- ===== PANNEAU MARQUE ===== -->
+  <div style="position: relative; padding: 54px 56px; background: #131316; border-right: 1px solid #2B2B31; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;">
+    <div style="position: absolute; top: -120px; left: -160px; width: 560px; height: 560px; background: radial-gradient(circle, rgba(216,27,96,0.22), transparent 65%); pointer-events: none;"></div>
+    <div style="position: absolute; bottom: 30px; right: -10px; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 190px; line-height: 1; color: rgba(242,239,233,0.03); pointer-events: none; user-select: none;">駐車場</div>
+
+    <div style="position: relative; display: flex; align-items: center; gap: 13px;">
+      <div style="width: 48px; height: 48px; border-radius: 11px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 12px rgba(0,0,0,0.5); overflow: hidden;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 22px; letter-spacing: 1.5px;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </div>
+
+    <div style="position: relative; animation: fadeUp 0.6s ease both;">
+      <div style="font-weight: 700; font-size: 12px; letter-spacing: 4px; color: #D81B60; text-transform: uppercase; margin-bottom: 16px;">Plateforme de collection · Pocket Drifterz</div>
+      <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(48px, 5.5vw, 78px); line-height: 0.92; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-4deg);">
+        Collectionne<br><span style="color: #D81B60; text-shadow: 4px 4px 0 rgba(242,239,233,0.92);">le drift</span>
+      </h1>
+      <p style="margin: 24px 0 0; max-width: 420px; font-size: 15.5px; line-height: 1.65; color: #A9A9B2;">Gère ton classeur, suis chaque version de chaque carte, échange avec la communauté et chasse les holos de la Saison 1.</p>
+    </div>
+
+    <div style="position: relative; display: flex; gap: 16px;">
+      <div style="width: 122px; --rot: -7deg; animation: floaty 5s ease-in-out infinite;">
+        <div style="position: relative; aspect-ratio: 5/7; border-radius: 12px; overflow: hidden; box-shadow: 0 18px 36px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); opacity: {{ fade }}; transition: opacity 0.45s ease;">
+          <img src="{{ cardA }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+          <div style="position: absolute; inset: 0; overflow: hidden; pointer-events: none;"><div style="position: absolute; top: -20%; left: 0; width: 40%; height: 140%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); animation: sheen 4.5s 0.2s ease-in-out infinite;"></div></div>
+        </div>
+      </div>
+      <div style="width: 122px; --rot: 3deg; margin-top: 24px; animation: floaty 5s 0.7s ease-in-out infinite;">
+        <div style="position: relative; aspect-ratio: 5/7; border-radius: 12px; overflow: hidden; box-shadow: 0 22px 44px rgba(0,0,0,0.7); border: 1px solid rgba(216,27,96,0.3); opacity: {{ fade }}; transition: opacity 0.45s ease;">
+          <img src="{{ cardB }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+          <div style="position: absolute; inset: 0; overflow: hidden; pointer-events: none;"><div style="position: absolute; top: -20%; left: 0; width: 40%; height: 140%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: sheen 4.5s 0.9s ease-in-out infinite;"></div></div>
+        </div>
+      </div>
+      <div style="width: 122px; --rot: 9deg; animation: floaty 5s 1.3s ease-in-out infinite;">
+        <div style="position: relative; aspect-ratio: 5/7; border-radius: 12px; overflow: hidden; box-shadow: 0 18px 36px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); opacity: {{ fade }}; transition: opacity 0.45s ease;">
+          <img src="{{ cardC }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+          <div style="position: absolute; inset: 0; overflow: hidden; pointer-events: none;"><div style="position: absolute; top: -20%; left: 0; width: 40%; height: 140%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); animation: sheen 4.5s 1.6s ease-in-out infinite;"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PANNEAU FORMULAIRE ===== -->
+  <div style="display: flex; align-items: center; justify-content: center; padding: 40px;">
+    <div style="width: min(420px, 100%);">
+
+      <!-- LOGIN / SIGNUP -->
+      <sc-if value="{{ isAuth }}" hint-placeholder-val="{{ true }}">
+        <div style="animation: pop 0.3s ease both;">
+          <div style="display: flex; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 11px; padding: 5px; gap: 3px;">
+            <div onClick="{{ setMode }}" data-m="login" style="flex: 1; text-align: center; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1.5px; padding: 11px; border-radius: 8px; cursor: pointer; background: {{ loginBg }}; color: {{ loginColor }}; transition: background 0.18s ease, color 0.18s ease;">CONNEXION</div>
+            <div onClick="{{ setMode }}" data-m="signup" style="flex: 1; text-align: center; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1.5px; padding: 11px; border-radius: 8px; cursor: pointer; background: {{ signupBg }}; color: {{ signupColor }}; transition: background 0.18s ease, color 0.18s ease;">INSCRIPTION</div>
+          </div>
+
+          <h2 style="margin: 28px 0 4px; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 3px 3px 0 #D81B60;">{{ authTitle }}</h2>
+          <p style="margin: 0 0 22px; font-size: 13.5px; color: #8E8E98;">{{ authSub }}</p>
+
+          <div style="display: flex; flex-direction: column; gap: 13px;">
+            <div>
+              <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 7px;">E-mail</div>
+              <input value="{{ email }}" onChange="{{ onEmail }}" placeholder="kenji@theparkdrift.jp" style="width: 100%; background: #1A1A1E; border: 1.5px solid #2B2B31; border-radius: 11px; padding: 13px 16px; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 14px; outline: none;">
+            </div>
+            <div>
+              <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 7px;">Mot de passe</div>
+              <input type="password" value="{{ pw }}" onChange="{{ onPw }}" placeholder="••••••••" style="width: 100%; background: #1A1A1E; border: 1.5px solid #2B2B31; border-radius: 11px; padding: 13px 16px; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 14px; outline: none;">
+            </div>
+            <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+              <label style="display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 600; color: #A9A9B2; cursor: pointer; margin-top: 2px;">
+                <span style="width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid #3A3A42; background: #1A1A1E; flex-shrink: 0;"></span>
+                J'accepte les conditions et la politique d'expédition de The Park.
+              </label>
+            </sc-if>
+          </div>
+
+          <div onClick="{{ submitAuth }}" style="margin-top: 22px; font-family: 'Anton', sans-serif; font-size: 14.5px; letter-spacing: 1.5px; padding: 15px; text-align: center; background: #D81B60; color: #fff; border-radius: 11px; cursor: pointer; transform: skewX(-3deg); box-shadow: 4px 4px 0 rgba(0,0,0,0.5); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px, -2px); box-shadow: 6px 6px 0 rgba(0,0,0,0.5);">{{ authCta }}</div>
+
+          <div style="display: flex; align-items: center; gap: 12px; margin: 22px 0;">
+            <div style="flex: 1; height: 1px; background: #26262B;"></div>
+            <span style="font-size: 11px; font-weight: 700; color: #5A5A64;">OU</span>
+            <div style="flex: 1; height: 1px; background: #26262B;"></div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <div style="flex: 1; text-align: center; font-weight: 800; font-size: 12.5px; padding: 12px; border: 1.5px solid #2B2B31; border-radius: 11px; color: #C9C6BE; cursor: pointer; transition: border-color 0.15s ease;" style-hover="border-color: #3A3A42;">Google</div>
+            <div style="flex: 1; text-align: center; font-weight: 800; font-size: 12.5px; padding: 12px; border: 1.5px solid #2B2B31; border-radius: 11px; color: #C9C6BE; cursor: pointer; transition: border-color 0.15s ease;" style-hover="border-color: #3A3A42;">Apple</div>
+          </div>
+          <a href="The Park - Accueil.dc.html" style="display: block; text-align: center; margin-top: 22px; font-size: 12.5px; font-weight: 700; color: #6E6E78; text-decoration: none; transition: color 0.15s ease;" style-hover="color: #D81B60;">Continuer en visiteur →</a>
+        </div>
+      </sc-if>
+
+      <!-- ONBOARDING -->
+      <sc-if value="{{ isOnboard }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: pop 0.3s ease both;">
+          <div style="display: flex; gap: 6px; margin-bottom: 22px;">
+            <div style="flex: 1; height: 4px; border-radius: 2px; background: #D81B60;"></div>
+            <div style="flex: 1; height: 4px; border-radius: 2px; background: {{ step2Color }};"></div>
+          </div>
+          <div style="font-weight: 700; font-size: 11.5px; letter-spacing: 3px; color: #D81B60; text-transform: uppercase;">Étape {{ stepNum }} / 2</div>
+          <h2 style="margin: 10px 0 4px; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 3px 3px 0 #D81B60;">{{ onbTitle }}</h2>
+          <p style="margin: 0 0 22px; font-size: 13.5px; color: #8E8E98;">{{ onbSub }}</p>
+
+          <!-- aperçu profil -->
+          <div style="display: flex; align-items: center; gap: 16px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; padding: 16px 18px; margin-bottom: 20px;">
+            <div style="width: 60px; height: 60px; border-radius: 15px; background: {{ avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 26px; color: #fff; transform: rotate(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); flex-shrink: 0;">{{ avIni }}</div>
+            <div style="min-width: 0;">
+              <div style="font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.5px; color: #F2EFE9; text-transform: uppercase;">{{ pseudoShown }}</div>
+              <div style="font-weight: 700; font-size: 11.5px; color: #8E8E98; margin-top: 2px;">Collectionneur · Saison 1 · 0/78</div>
+            </div>
+          </div>
+
+          <!-- étape 1 : pseudo -->
+          <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 7px;">Ton pseudo de pilote</div>
+              <input value="{{ pseudo }}" onChange="{{ onPseudo }}" placeholder="KENJI-13" maxlength="16" style="width: 100%; background: #1A1A1E; border: 1.5px solid #2B2B31; border-radius: 11px; padding: 13px 16px; color: #F2EFE9; font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 1px; text-transform: uppercase; outline: none;">
+              <div style="font-size: 11.5px; font-weight: 600; color: #5A5A64; margin-top: 8px;">Visible sur tes annonces, échanges et le classement. 3 à 16 caractères.</div>
+            </div>
+          </sc-if>
+
+          <!-- étape 2 : avatar -->
+          <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 10px;">Couleur de ton avatar</div>
+              <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px;">
+                <sc-for list="{{ avatars }}" as="a" hint-placeholder-count="6">
+                  <div onClick="{{ pickAv }}" data-i="{{ a.i }}" style="aspect-ratio: 1; border-radius: 13px; background: {{ a.bg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 18px; color: #fff; cursor: pointer; border: 2.5px solid {{ a.border }}; transition: transform 0.15s ease, border-color 0.15s ease;" style-hover="transform: translateY(-2px);">{{ avIni }}</div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="display: flex; gap: 10px; margin-top: 24px;">
+            <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ back }}" style="font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 1.5px; padding: 15px 22px; background: transparent; color: #C9C6BE; border: 1.5px solid #3A3A42; border-radius: 11px; cursor: pointer; transform: skewX(-3deg); transition: border-color 0.16s ease, color 0.16s ease;" style-hover="border-color: #D81B60; color: #fff;">RETOUR</div>
+            </sc-if>
+            <div onClick="{{ nextStep }}" style="flex: 1; font-family: 'Anton', sans-serif; font-size: 14.5px; letter-spacing: 1.5px; padding: 15px; text-align: center; background: {{ nextBg }}; color: {{ nextColor }}; border-radius: 11px; cursor: {{ nextCursor }}; transform: skewX(-3deg); box-shadow: {{ nextShadow }}; transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="filter: brightness(1.08);">{{ nextLabel }}</div>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { mode: 'login', email: '', pw: '', pseudo: '', avIdx: 0, step: 1, cardBase: 0, fade: 1 };
+
+  constructor(props) {
+    super(props);
+    this.AVATARS = [
+      'linear-gradient(135deg, #D81B60, #7A0F37)',
+      'linear-gradient(135deg, #4FA3FF, #1F4E8C)',
+      'linear-gradient(135deg, #B05CFF, #5A1F8C)',
+      'linear-gradient(135deg, #6FE3D0, #1F8C7A)',
+      'linear-gradient(135deg, #E8B23A, #8C641F)',
+      'linear-gradient(135deg, #FF6B5E, #8C2F1F)'
+    ];
+    // pool de cartes mises en avant — défile pour la variété
+    this.POOL = [
+      '76_TOYOTA_COROLLA_TRUENO.jpg', '77_NISSAN_R34_TITAN.jpg', '64_PORSCHE_911_RWB.jpg',
+      '54_NISSAN_S15_ICONIQUE.jpg', '71_NISSAN_R33_MIDNIGHT.jpg', '42_TOYOTA_SUPRA_MK4_rare.jpg',
+      '75_HONDA_NSX_NA1.jpg', '38_MAZDA_RXY_FD.jpg', '66_MERCEDES_DTM_EVOII.jpg',
+      '32_NISSAN_SKYLINE_R32.jpg', '70_Nissan_PS13_Mike.jpg', '57_NISSAN_SKYLINE_R35.jpg',
+      '40_TOYOTA_COROLLA_LEVIN.jpg', '00_NISSAN_LEOPARD_F31_SPECIALE.jpg'
+    ];
+  }
+
+  componentDidMount() {
+    this.cardTimer = setInterval(() => {
+      this.setState({ fade: 0 });
+      setTimeout(() => this.setState(s => ({ cardBase: (s.cardBase + 3) % this.POOL.length, fade: 1 })), 420);
+    }, 3600);
+  }
+  componentWillUnmount() { clearInterval(this.cardTimer); }
+
+  renderVals() {
+    const { mode, email, pw, pseudo, avIdx, step, cardBase, fade } = this.state;
+    const isAuth = mode === 'login' || mode === 'signup';
+    const isSignup = mode === 'signup';
+    const isOnboard = mode === 'onboard';
+    const pseudoClean = (pseudo || '').trim();
+    const ini = (pseudoClean || 'K').charAt(0).toUpperCase();
+    const avatars = this.AVATARS.map((bg, i) => ({ i: String(i), bg, border: i === avIdx ? '#F2EFE9' : 'transparent' }));
+    const canNext = step === 1 ? pseudoClean.length >= 3 : true;
+    const n = this.POOL.length;
+    const cardA = 'uploads/' + this.POOL[cardBase % n];
+    const cardB = 'uploads/' + this.POOL[(cardBase + 1) % n];
+    const cardC = 'uploads/' + this.POOL[(cardBase + 2) % n];
+
+    return {
+      isAuth, isSignup, isOnboard,
+      cardA, cardB, cardC, fade,
+      loginBg: mode === 'login' ? '#D81B60' : 'transparent', loginColor: mode === 'login' ? '#fff' : '#8E8E98',
+      signupBg: mode === 'signup' ? '#D81B60' : 'transparent', signupColor: mode === 'signup' ? '#fff' : '#8E8E98',
+      authTitle: isSignup ? 'Rejoins le park' : 'Content de te revoir',
+      authSub: isSignup ? 'Crée ton compte et commence ta collection.' : 'Connecte-toi pour retrouver ton classeur.',
+      authCta: isSignup ? 'CRÉER MON COMPTE' : 'SE CONNECTER',
+      email, pw,
+      // onboarding
+      stepNum: step, isStep1: step === 1, isStep2: step === 2,
+      step2Color: step === 2 ? '#D81B60' : '#26262B',
+      onbTitle: step === 1 ? 'Choisis ton pseudo' : 'Choisis ton avatar',
+      onbSub: step === 1 ? 'Le nom que la communauté verra.' : 'Une couleur qui te représente — modifiable plus tard.',
+      pseudo, pseudoShown: pseudoClean ? pseudoClean.toUpperCase() : 'TON PSEUDO',
+      avIni: ini, avBg: this.AVATARS[avIdx], avatars,
+      nextLabel: step === 1 ? 'CONTINUER' : 'ENTRER DANS THE PARK',
+      nextBg: canNext ? '#D81B60' : '#26262B', nextColor: canNext ? '#fff' : '#5A5A64',
+      nextCursor: canNext ? 'pointer' : 'not-allowed',
+      nextShadow: canNext ? '4px 4px 0 rgba(0,0,0,0.5)' : 'none',
+      setMode: (e) => this.setState({ mode: e.currentTarget.dataset.m }),
+      onEmail: (e) => this.setState({ email: e.target.value }),
+      onPw: (e) => this.setState({ pw: e.target.value }),
+      submitAuth: () => {
+        if (isSignup) this.setState({ mode: 'onboard', step: 1 });
+        else window.location.href = 'The Park - Accueil.dc.html';
+      },
+      onPseudo: (e) => this.setState({ pseudo: e.target.value }),
+      pickAv: (e) => this.setState({ avIdx: +e.currentTarget.dataset.i }),
+      back: () => this.setState({ step: 1 }),
+      nextStep: () => {
+        if (!canNext) return;
+        if (step === 1) this.setState({ step: 2 });
+        else {
+          try {
+            localStorage.setItem('thepark_pseudo', pseudoClean.toUpperCase());
+            localStorage.setItem('thepark_avatar', String(avIdx));
+          } catch (err) {}
+          window.location.href = 'The Park - Accueil.dc.html';
+        }
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

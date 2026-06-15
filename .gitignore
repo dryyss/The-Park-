@@ -1,0 +1,24 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Éditeurs
+.idea/
+*.swp
+
+# Dépendances / build de l'app (web/ a aussi son propre .gitignore)
+**/node_modules/
+**/.next/
+**/out/
+**/build/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Client Prisma généré
+web/src/generated/

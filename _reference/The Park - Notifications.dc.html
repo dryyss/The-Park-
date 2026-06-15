@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+</style>
+</helmet>
+<div data-screen-label="Notifications" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center;">
+      <a href="The Park - Accueil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ACCUEIL</a>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">COLLECTION</a>
+      <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">MARKETPLACE</a>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ÉCHANGES</a>
+      <a href="The Park - Classements.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">CLASSEMENTS</a>
+      <a href="The Park - Profil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">PROFIL</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Notifications.dc.html" title="Notifications" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a>
+      <a href="The Park - Messages.dc.html" title="Messages" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a><a href="The Park - Panier.dc.html" title="Panier" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #D81B60; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #131316; box-sizing: border-box;">3</span></a><a href="The Park - Vendre.dc.html" style="display: flex; align-items: center; gap: 5px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 8px 13px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.4);"><span style="font-size: 16px; line-height: 1;">+</span>VENDRE</a><a href="The Park - Magasin.dc.html" title="Mon portefeuille" style="display: flex; align-items: center; gap: 10px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 6px 7px 6px 16px; text-decoration: none; color: #F2EFE9; transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;" style-hover="border-color: #D81B60; transform: translateY(-1.5px); box-shadow: 0 6px 14px rgba(216,27,96,0.25);">
+        <span style="font-weight: 800; font-size: 13.5px; letter-spacing: 0.5px;">{{ walletLabel }}</span>
+        <span style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #D81B60; color: #fff; font-weight: 800; font-size: 15px; line-height: 1;">+</span>
+      </a>
+      <a href="The Park - Profil.dc.html" title="KENJI-13 · Profil" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #2B2B31; text-decoration: none; transition: border-color 0.18s ease, transform 0.2s ease;" style-hover="border-color: #D81B60; transform: scale(1.08) rotate(-4deg);">K</a>
+    </div>
+  </div>
+
+  <div style="max-width: 880px; margin: 0 auto; padding: 36px 28px 60px;">
+
+    <!-- header -->
+    <div style="position: relative; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px; animation: fadeUp 0.5s ease both;">
+      <div style="position: absolute; top: -24px; right: 0; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 110px; line-height: 1; color: rgba(242,239,233,0.035); pointer-events: none; user-select: none;">通知</div>
+      <div>
+        <div style="font-weight: 700; font-size: 12px; letter-spacing: 4px; color: #D81B60; text-transform: uppercase; margin-bottom: 10px;">{{ unreadLabel }}</div>
+        <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(40px, 5vw, 60px); line-height: 0.95; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-4deg); text-shadow: 4px 4px 0 #D81B60;">Notifications</h1>
+      </div>
+      <div onClick="{{ markAll }}" style="font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1.5px; padding: 11px 18px; background: transparent; color: #C9C6BE; border: 1.5px solid #3A3A42; border-radius: 9px; cursor: pointer; transform: skewX(-3deg); transition: border-color 0.16s ease, color 0.16s ease;" style-hover="border-color: #D81B60; color: #fff;">TOUT MARQUER LU</div>
+    </div>
+
+    <!-- filtres -->
+    <div style="display: flex; gap: 7px; flex-wrap: wrap; margin: 24px 0 10px; animation: fadeUp 0.5s 0.06s ease both;">
+      <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
+        <div onClick="{{ setFilter }}" data-k="{{ f.k }}" style="display: flex; align-items: center; gap: 7px; padding: 8px 15px; border-radius: 999px; font-weight: 700; font-size: 12.5px; cursor: pointer; border: 1px solid {{ f.border }}; background: {{ f.bg }}; color: {{ f.color }}; transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="transform: translateY(-1.5px);">{{ f.label }} <span style="opacity: 0.6;">{{ f.count }}</span></div>
+      </sc-for>
+    </div>
+
+    <!-- liste -->
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
+      <sc-for list="{{ items }}" as="n" hint-placeholder-count="6">
+        <a href="{{ n.href }}" style="display: flex; align-items: center; gap: 15px; background: {{ n.bg }}; border: 1px solid {{ n.border }}; border-radius: 15px; padding: 15px 18px; text-decoration: none; animation: pop 0.3s ease both; transition: border-color 0.15s ease, transform 0.15s ease;" style-hover="border-color: #D81B60; transform: translateX(3px);">
+        <span style="width: 44px; height: 44px; border-radius: 12px; background: {{ n.iconBg }}; color: {{ n.iconColor }}; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; transform: rotate(-3deg);">{{ n.icon }}</span>
+        <sc-if value="{{ n.hasThumb }}" hint-placeholder-val="{{ false }}">
+          <img src="{{ n.thumb }}" alt="" style="width: 38px; height: 53px; object-fit: cover; border-radius: 7px; display: block; flex-shrink: 0;">
+        </sc-if>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-weight: 800; font-size: 13.5px; color: #F2EFE9; line-height: 1.35;">{{ n.title }}</div>
+          <div style="font-weight: 600; font-size: 12px; color: #8E8E98; margin-top: 3px; line-height: 1.45;">{{ n.body }}</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 7px; flex-shrink: 0;">
+          <span style="font-weight: 700; font-size: 11px; color: #5A5A64; white-space: nowrap;">{{ n.when }}</span>
+          <sc-if value="{{ n.unread }}" hint-placeholder-val="{{ false }}">
+            <span style="width: 9px; height: 9px; border-radius: 50%; background: #D81B60; box-shadow: 0 0 8px rgba(216,27,96,0.7);"></span>
+          </sc-if>
+        </div>
+        </a>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding: 60px 0; text-align: center; color: #5A5A64;">
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 30px; color: #2B2B31;">通知なし</div>
+        <div style="font-weight: 700; font-size: 14px; margin-top: 10px;">Aucune notification dans cette catégorie.</div>
+      </div>
+    </sc-if>
+
+    <dc-import name="The Park - Footer" hint-size="100%,320px" style="display: block; width: 100%;"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { filter: 'all', read: {} };
+
+  constructor(props) {
+    super(props);
+    // type: trade / market / sale / wallet / badge — icon, couleurs, thumb optionnel
+    this.NOTIFS = [
+      { id: 1, type: 'trade', icon: '⇄', title: 'SARA.S15 a validé votre échange', body: 'S13 Kouki ↔ E30 Touring — cartes transférées dans ton classeur.', when: 'à l\'instant', href: 'The Park - Échanges.dc.html', thumb: '43_BMW_E30_TOURING.jpg' },
+      { id: 2, type: 'market', icon: '◈', title: 'Une carte recherchée est en vente', body: 'NISSAN R32 FANTÔME (Ultra Rare) listée par TOUGE_HUNTER à 45,00 €.', when: 'il y a 12 min', href: 'The Park - Carte.dc.html?carte=56', thumb: '56_NISSAN_SKYLINE_R32_fantôme.jpg' },
+      { id: 3, type: 'trade', icon: '⇄', title: 'Nouvelle proposition d\'échange', body: 'DRIFT_KING_06 propose Camaro SS contre ta Skyline R33 + 2 €.', when: 'il y a 40 min', href: 'The Park - Échanges.dc.html', thumb: '33_Nissan_R33_nismo.jpg' },
+      { id: 4, type: 'sale', icon: '€', title: 'Ta vente a été expédiée', body: 'BMW E30 325i envoyée à TOUGE_HUNTER — suivi communiqué à l\'acheteur.', when: 'il y a 2 h', href: 'The Park - Profil.dc.html', thumb: '13-BMW_E30_325i.jpg' },
+      { id: 5, type: 'wallet', icon: '財', title: 'Portefeuille rechargé', body: '+50,00 € ajoutés par carte **** 4421. Solde disponible immédiatement.', when: 'il y a 5 h', href: 'The Park - Magasin.dc.html', thumb: null },
+      { id: 6, type: 'badge', icon: '75', title: 'Badge débloqué — 75 Club', body: 'Tu as complété 75 % de la Saison 1. Plus que 19 cartes !', when: 'il y a 1 j', href: 'The Park - Profil.dc.html', thumb: null },
+      { id: 7, type: 'market', icon: '◆', title: 'Baisse de prix sur ta liste de suivi', body: 'TOYOTA SUPRA MK4 passe de 24,00 € à 19,90 € chez DRIFT_KING_06.', when: 'il y a 1 j', href: 'The Park - Carte.dc.html?carte=42', thumb: '42_TOYOTA_SUPRA_MK4_rare.jpg' },
+      { id: 8, type: 'sale', icon: '★', title: 'Nouvel avis reçu', body: 'SARA.S15 t\'a laissé 5 étoiles : « Échange nickel, envoi le jour même ! »', when: 'il y a 2 j', href: 'The Park - Profil.dc.html', thumb: null },
+      { id: 9, type: 'trade', icon: '✕', title: 'Échange refusé', body: 'TOUGE_HUNTER a décliné — sa R31 reste dans son classeur.', when: 'il y a 3 j', href: 'The Park - Échanges.dc.html', thumb: null }
+    ];
+    // les 4 premiers non lus par défaut
+    this.UNREAD0 = { 1: true, 2: true, 3: true, 4: true };
+  }
+
+  styleOf(type) {
+    const S = {
+      trade: { iconBg: 'rgba(79,163,255,0.12)', iconColor: '#4FA3FF' },
+      market: { iconBg: 'rgba(216,27,96,0.12)', iconColor: '#FF2E63' },
+      sale: { iconBg: 'rgba(94,217,154,0.12)', iconColor: '#5ED99A' },
+      wallet: { iconBg: 'rgba(232,178,58,0.12)', iconColor: '#E8B23A' },
+      badge: { iconBg: 'rgba(176,92,255,0.12)', iconColor: '#B05CFF' }
+    };
+    return S[type] || S.trade;
+  }
+
+  isRead(id) {
+    if (this.state.read[id] !== undefined) return this.state.read[id];
+    return !this.UNREAD0[id];
+  }
+
+  renderVals() {
+    const { filter } = this.state;
+    const FILTERS = [
+      { k: 'all', label: 'Toutes' },
+      { k: 'trade', label: 'Échanges' },
+      { k: 'market', label: 'Marketplace' },
+      { k: 'sale', label: 'Ventes & avis' },
+      { k: 'wallet', label: 'Portefeuille' }
+    ];
+    const counts = { all: this.NOTIFS.length };
+    this.NOTIFS.forEach(n => { counts[n.type] = (counts[n.type] || 0) + 1; });
+    counts.sale = (counts.sale || 0);
+
+    const filters = FILTERS.map(f => ({
+      ...f, count: f.k === 'all' ? counts.all : (counts[f.k] || 0),
+      border: filter === f.k ? '#D81B60' : '#2B2B31',
+      bg: filter === f.k ? 'rgba(216,27,96,0.12)' : '#1A1A1E',
+      color: filter === f.k ? '#F2EFE9' : '#8E8E98'
+    }));
+
+    const shown = this.NOTIFS.filter(n => filter === 'all' || n.type === filter);
+    const items = shown.map(n => {
+      const s = this.styleOf(n.type);
+      const unread = !this.isRead(n.id);
+      return {
+        title: n.title, body: n.body, when: n.when, href: n.href,
+        icon: n.icon, iconBg: s.iconBg, iconColor: s.iconColor,
+        hasThumb: !!n.thumb, thumb: n.thumb ? 'uploads/' + n.thumb : '',
+        unread,
+        bg: unread ? '#1C1A1F' : '#181819',
+        border: unread ? 'rgba(216,27,96,0.3)' : '#26262B'
+      };
+    });
+    const unreadCount = this.NOTIFS.filter(n => !this.isRead(n.id)).length;
+
+    return {
+      walletLabel: (v => (isNaN(v) ? 128.5 : v).toFixed(2).replace('.', ',') + ' €')(parseFloat(localStorage.getItem('thepark_wallet'))),
+      filters, items, empty: items.length === 0,
+      unreadLabel: unreadCount > 0 ? unreadCount + ' non lues · centre d\'alertes' : 'Tout est à jour · centre d\'alertes',
+      setFilter: (e) => this.setState({ filter: e.currentTarget.dataset.k }),
+      markAll: () => { const read = {}; this.NOTIFS.forEach(n => read[n.id] = true); this.setState({ read }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

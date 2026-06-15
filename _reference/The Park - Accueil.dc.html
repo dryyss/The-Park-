@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes floaty { 0% { transform: translateY(0) rotate(var(--rot, 0deg)); } 50% { transform: translateY(-8px) rotate(var(--rot, 0deg)); } 100% { transform: translateY(0) rotate(var(--rot, 0deg)); } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+</style>
+</helmet>
+<div data-screen-label="Accueil" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center;">
+      <div style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; background: #D81B60; color: #fff; border-radius: 7px; transform: rotate(-1.5deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); cursor: default;">ACCUEIL</div>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">COLLECTION</a>
+      <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">MARKETPLACE</a>
+      <a href="The Park - Boutique.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #E8B23A; border-radius: 7px; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #FFD479; background: #202024; transform: translateY(-1.5px);">BOUTIQUE <span style="font-size: 9px;">✔</span></a>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ÉCHANGES</a>
+      <a href="The Park - Classements.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">CLASSEMENTS</a>
+      <a href="The Park - Profil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">PROFIL</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="The Park - Multilingue.dc.html" title="Langue · FR / 日本語 / EN" style="display: flex; align-items: center; gap: 6px; height: 35px; padding: 0 11px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg><span style="font-weight: 800; font-size: 11px;">FR</span></a>
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Notifications.dc.html" title="Notifications" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a>
+      <a href="The Park - Messages.dc.html" title="Messages" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a><a href="The Park - Panier.dc.html" title="Panier" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #D81B60; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #131316; box-sizing: border-box;">3</span></a><a href="The Park - Vendre.dc.html" style="display: flex; align-items: center; gap: 5px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 8px 13px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.4);"><span style="font-size: 16px; line-height: 1;">+</span>VENDRE</a><a href="The Park - Magasin.dc.html" title="Mon portefeuille" style="display: flex; align-items: center; gap: 10px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 6px 7px 6px 16px; text-decoration: none; color: #F2EFE9; transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;" style-hover="border-color: #D81B60; transform: translateY(-1.5px); box-shadow: 0 6px 14px rgba(216,27,96,0.25);">
+        <span style="font-weight: 800; font-size: 13.5px; letter-spacing: 0.5px;">{{ walletLabel }}</span>
+        <span style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #D81B60; color: #fff; font-weight: 800; font-size: 15px; line-height: 1;">+</span>
+      </a>
+      <a href="The Park - Profil.dc.html" title="KENJI-13 · Profil" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #2B2B31; text-decoration: none; transition: border-color 0.18s ease, transform 0.2s ease;" style-hover="border-color: #D81B60; transform: scale(1.08) rotate(-4deg);">K</a>
+    </div>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <div style="position: relative; max-width: 1320px; margin: 0 auto; padding: 70px 28px 50px; display: grid; grid-template-columns: 1.05fr 1fr; gap: 40px; align-items: center;">
+    <div style="position: absolute; top: 10px; right: 0; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 210px; line-height: 1; color: rgba(242,239,233,0.03); pointer-events: none; user-select: none;">駐車場</div>
+    <div style="position: absolute; top: -120px; left: -180px; width: 560px; height: 560px; background: radial-gradient(circle, rgba(216,27,96,0.22), transparent 65%); pointer-events: none;"></div>
+
+    <div style="position: relative; animation: fadeUp 0.6s ease both;">
+      <div style="font-weight: 700; font-size: 12px; letter-spacing: 4px; color: #D81B60; text-transform: uppercase; margin-bottom: 16px;">Plateforme de collection · Pocket Drifterz</div>
+      <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(52px, 6.5vw, 88px); line-height: 0.95; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-4deg); color: #F2EFE9;">
+        Collectionne<br>
+        <span style="color: #D81B60; text-shadow: 4px 4px 0 rgba(242,239,233,0.92);">le drift</span>
+      </h1>
+      <p style="margin: 22px 0 0; max-width: 480px; font-size: 16.5px; line-height: 1.65; color: #A9A9B2;">
+        Gère ton classeur, suis chaque version de chaque carte, échange avec la communauté et chasse les holos de la <strong style="color: #F2EFE9;">Saison 1 · Moteur Forgé</strong>.
+      </p>
+      <div style="display: flex; gap: 12px; margin-top: 30px; flex-wrap: wrap;">
+        <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1.5px; padding: 15px 26px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 4px 4px 0 rgba(0,0,0,0.5); display: inline-block; transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px, -2px); box-shadow: 6px 6px 0 rgba(0,0,0,0.5);">MA COLLECTION</a>
+        <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1.5px; padding: 15px 26px; background: transparent; color: #F2EFE9; border: 1.5px solid #3A3A42; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); display: inline-block; transition: border-color 0.16s ease, color 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="border-color: #D81B60; color: #fff; transform: skewX(-3deg) translate(-2px, -2px); box-shadow: 4px 4px 0 rgba(216,27,96,0.3);">EXPLORER LE MARKETPLACE</a>
+      </div>
+      <div style="display: flex; gap: 28px; margin-top: 38px; flex-wrap: wrap;">
+        <div><div style="font-family: 'Anton', sans-serif; font-size: 26px; color: #F2EFE9;">78</div><div style="font-size: 11.5px; font-weight: 700; letter-spacing: 1.5px; color: #6E6E78; text-transform: uppercase;">Cartes</div></div>
+        <div><div style="font-family: 'Anton', sans-serif; font-size: 26px; color: #F2EFE9;">6</div><div style="font-size: 11.5px; font-weight: 700; letter-spacing: 1.5px; color: #6E6E78; text-transform: uppercase;">Raretés</div></div>
+        <div><div style="font-family: 'Anton', sans-serif; font-size: 26px; color: #F2EFE9;">3</div><div style="font-size: 11.5px; font-weight: 700; letter-spacing: 1.5px; color: #6E6E78; text-transform: uppercase;">Versions / carte</div></div>
+        <div><div style="font-family: 'Anton', sans-serif; font-size: 26px; color: #D81B60;">1</div><div style="font-size: 11.5px; font-weight: 700; letter-spacing: 1.5px; color: #6E6E78; text-transform: uppercase;">Carte unique</div></div>
+      </div>
+    </div>
+
+    <div style="position: relative; height: 480px; animation: fadeUp 0.6s 0.1s ease both;">
+      <div style="position: absolute; left: 4%; top: 60px; width: 215px; --rot: -9deg; animation: floaty 5s ease-in-out infinite; z-index: 1;">
+        <div onMouseMove="{{ cardMove }}" onMouseLeave="{{ cardLeave }}" data-tilt="7" data-holo="0.7" style="aspect-ratio: 5/7; border-radius: 13px; overflow: hidden; box-shadow: 0 24px 50px rgba(0,0,0,0.6); transition: transform 0.18s ease-out; will-change: transform; position: relative;">
+          <img src="uploads/64_PORSCHE_911_RWB.jpg" alt="Porsche 911 RWB" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+          <div style="position: absolute; inset: 0; pointer-events: none; opacity: var(--ho, 0); transition: opacity 0.25s ease; mix-blend-mode: overlay; background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.5), rgba(255,255,255,0) 42%), conic-gradient(from 30deg at var(--mx, 50%) var(--my, 50%), rgba(255,46,99,0.4), rgba(255,209,102,0.4), rgba(111,227,208,0.4), rgba(79,163,255,0.4), rgba(176,92,255,0.4), rgba(255,46,99,0.4));"></div>
+        </div>
+      </div>
+      <div style="position: absolute; left: 31%; top: 8px; width: 240px; --rot: 1deg; animation: floaty 5s 0.6s ease-in-out infinite; z-index: 3;">
+        <div onMouseMove="{{ cardMove }}" onMouseLeave="{{ cardLeave }}" data-tilt="8" data-holo="0.85" style="aspect-ratio: 5/7; border-radius: 13px; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.7); transition: transform 0.18s ease-out; will-change: transform; position: relative;">
+          <img src="uploads/77_NISSAN_R34_TITAN.jpg" alt="Nissan R34 Titanesque" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+          <div style="position: absolute; inset: 0; pointer-events: none; opacity: var(--ho, 0); transition: opacity 0.25s ease; mix-blend-mode: overlay; background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.5), rgba(255,255,255,0) 42%), conic-gradient(from 30deg at var(--mx, 50%) var(--my, 50%), rgba(255,46,99,0.4), rgba(255,209,102,0.4), rgba(111,227,208,0.4), rgba(79,163,255,0.4), rgba(176,92,255,0.4), rgba(255,46,99,0.4));"></div>
+        </div>
+        <div style="position: absolute; top: -12px; right: -14px; font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 1.5px; padding: 6px 13px; background: #D81B60; color: #fff; border-radius: 6px; transform: rotate(4deg); box-shadow: 2px 2px 0 rgba(0,0,0,0.5);">CARTE UNIQUE ✪</div>
+      </div>
+      <div style="position: absolute; left: 62%; top: 80px; width: 215px; --rot: 10deg; animation: floaty 5s 1.2s ease-in-out infinite; z-index: 2;">
+        <div onMouseMove="{{ cardMove }}" onMouseLeave="{{ cardLeave }}" data-tilt="8" data-holo="0.85" style="aspect-ratio: 5/7; border-radius: 13px; overflow: hidden; box-shadow: 0 24px 50px rgba(0,0,0,0.6); transition: transform 0.18s ease-out; will-change: transform; position: relative;">
+          <img src="uploads/76_TOYOTA_COROLLA_TRUENO.jpg" alt="Toyota AE86 Trueno Gold" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+          <div style="position: absolute; inset: 0; pointer-events: none; opacity: var(--ho, 0); transition: opacity 0.25s ease; mix-blend-mode: screen; background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,236,170,0.7), rgba(232,178,58,0.15) 55%), linear-gradient(115deg, rgba(232,178,58,0.3), rgba(255,255,255,0.08));"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width: 1320px; margin: 0 auto; padding: 10px 28px 60px;">
+
+    <!-- ===== RARITY STRIP ===== -->
+    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; animation: fadeUp 0.5s 0.15s ease both;">
+      <sc-for list="{{ rarities }}" as="r" hint-placeholder-count="6">
+        <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px;" style-hover="border-color: #3A3A42;">
+          <div style="font-size: 20px; color: {{ r.color }};">{{ r.glyph }}</div>
+          <div style="font-weight: 800; font-size: 12.5px; letter-spacing: 1px; text-transform: uppercase; color: #F2EFE9;">{{ r.label }}</div>
+          <div style="font-size: 11.5px; font-weight: 700; color: #6E6E78;">{{ r.count }} cartes</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- ===== CARTES VEDETTES ===== -->
+    <div style="margin-top: 56px;">
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 18px;">
+        <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 2px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; text-shadow: 3px 3px 0 #D81B60;">Cartes vedettes</h2>
+        <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 13px; color: #5A5A64; letter-spacing: 2px;">注目カード</span>
+        <div style="flex: 1;"></div>
+        <a href="The Park - Ma Collection.dc.html" style="font-weight: 800; font-size: 13px; color: #D81B60; text-decoration: none; display: inline-block; transition: color 0.15s ease, transform 0.15s ease;" style-hover="color: #F0246F; transform: translateX(3px);">Voir toute la collection →</a>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px;">
+        <sc-for list="{{ featured }}" as="f" hint-placeholder-count="5">
+          <div style="animation: fadeUp 0.5s ease both;">
+            <div onMouseMove="{{ cardMove }}" onMouseLeave="{{ cardLeave }}" data-tilt="{{ f.tilt }}" data-holo="{{ f.holo }}" style="position: relative; aspect-ratio: 5/7; border-radius: 12px; overflow: hidden; background: #202024; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 24px rgba(0,0,0,0.45); transition: transform 0.18s ease-out; will-change: transform; cursor: pointer;">
+              <img src="{{ f.src }}" alt="{{ f.name }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+              <div style="position: absolute; inset: 0; pointer-events: none; opacity: var(--ho, 0); transition: opacity 0.25s ease; mix-blend-mode: {{ f.blend }}; background: {{ f.bg }};"></div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 9px; padding: 0 3px;">
+              <span style="font-weight: 800; font-size: 11.5px; color: #C9C6BE;">{{ f.name }}</span>
+              <span style="font-size: 12px; color: {{ f.color }};">{{ f.glyph }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- ===== SAISON 1 / BOOSTER ===== -->
+    <div style="display: grid; grid-template-columns: 1fr 1.1fr; gap: 0; margin-top: 60px; border: 1px solid #2B2B31; border-radius: 20px; overflow: hidden; animation: fadeUp 0.5s ease both;">
+      <div style="background: #F2EFE9; display: flex; align-items: center; justify-content: center; padding: 26px; min-height: 320px;">
+        <img src="uploads/BOOSTERS_2.jpg" alt="Boosters Moteur Forgé" style="max-width: 100%; max-height: 330px; object-fit: contain; display: block;">
+      </div>
+      <div style="background: #1A1A1E; padding: 40px 44px; display: flex; flex-direction: column; justify-content: center; position: relative;">
+        <div style="position: absolute; bottom: 10px; right: 18px; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 64px; color: rgba(242,239,233,0.04); pointer-events: none;">鍛造エンジン</div>
+        <div style="font-weight: 700; font-size: 11.5px; letter-spacing: 4px; color: #D81B60; text-transform: uppercase;">Saison 1 · disponible</div>
+        <h2 style="margin: 12px 0 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 42px; line-height: 1; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Moteur Forgé</h2>
+        <p style="margin: 16px 0 0; max-width: 440px; font-size: 14.5px; line-height: 1.65; color: #A9A9B2;">
+          La première édition Pocket Drifterz : <strong style="color: #F2EFE9;">67 cartes numérotées</strong>, des secrètes Légendaires et Gold, et chaque carte en versions Standard, Reverse et Alternative.
+        </p>
+        <div style="display: flex; gap: 10px; margin-top: 24px;">
+          <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 13.5px; letter-spacing: 1.5px; padding: 12px 20px; background: #F2EFE9; color: #131316; border-radius: 9px; text-decoration: none; transform: rotate(-1deg); box-shadow: 3px 3px 0 #D81B60; display: inline-block; transition: transform 0.16s ease, box-shadow 0.16s ease;" style-hover="transform: rotate(-1deg) translate(-2px, -2px); box-shadow: 5px 5px 0 #D81B60;">SUIVRE MA COMPLÉTION</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DERNIÈRES ANNONCES ===== -->
+    <div style="margin-top: 60px; animation: fadeUp 0.5s ease both;">
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 18px;">
+        <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 2px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; text-shadow: 3px 3px 0 #D81B60;">Fraîchement listées</h2>
+        <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 13px; color: #5A5A64; letter-spacing: 2px;">出品</span>
+        <div style="flex: 1;"></div>
+        <a href="The Park - Marketplace.dc.html" style="font-weight: 800; font-size: 13px; color: #D81B60; text-decoration: none; display: inline-block; transition: color 0.15s ease, transform 0.15s ease;" style-hover="color: #F0246F; transform: translateX(3px);">Tout le marketplace →</a>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px;">
+        <sc-for list="{{ latest }}" as="l" hint-placeholder-count="6">
+          <a href="The Park - Carte.dc.html?carte={{ l.num }}" style="text-decoration: none; animation: fadeUp 0.5s ease both;">
+            <div onMouseMove="{{ cardMove }}" onMouseLeave="{{ cardLeave }}" data-tilt="{{ l.tilt }}" data-holo="{{ l.holo }}" style="position: relative; aspect-ratio: 5/7; border-radius: 11px; overflow: hidden; background: #202024; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 8px 20px rgba(0,0,0,0.45); transition: transform 0.18s ease-out; will-change: transform;">
+              <img src="{{ l.src }}" alt="{{ l.name }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+              <div style="position: absolute; inset: 0; pointer-events: none; opacity: var(--ho, 0); transition: opacity 0.25s ease; mix-blend-mode: {{ l.blend }}; background: {{ l.bg }};"></div>
+              <span style="position: absolute; left: 6px; bottom: 6px; font-weight: 800; font-size: 10px; padding: 3px 8px; border-radius: 5px; background: rgba(0,0,0,0.74); color: #F2EFE9; backdrop-filter: blur(3px);">{{ l.price }}</span>
+              <span style="position: absolute; right: 6px; top: 6px; font-size: 11px; color: {{ l.color }};">{{ l.glyph }}</span>
+            </div>
+            <div style="font-weight: 800; font-size: 10.5px; color: #C9C6BE; margin-top: 7px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ l.name }}</div>
+            <div style="font-weight: 700; font-size: 9.5px; color: #6E6E78; margin-top: 1px;">{{ l.seller }}</div>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- ===== ACTIVITÉ + TOP COLLECTIONNEURS ===== -->
+    <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 18px; margin-top: 60px; align-items: start; animation: fadeUp 0.5s ease both;">
+
+      <!-- activité communauté -->
+      <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 24px 26px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+          <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 22px; letter-spacing: 1.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Activité du park</h2>
+          <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 11px; color: #5A5A64; letter-spacing: 2px;">活動</span>
+          <span style="display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 11px; color: #5ED99A;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #5ED99A; box-shadow: 0 0 8px rgba(94,217,154,0.8);"></span>EN DIRECT</span>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          <sc-for list="{{ activity }}" as="a" hint-placeholder-count="5">
+            <div style="display: flex; align-items: center; gap: 13px; padding: 12px 0; border-bottom: 1px solid #232328;">
+              <span style="width: 38px; height: 38px; border-radius: 10px; background: {{ a.iconBg }}; color: {{ a.iconColor }}; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; transform: rotate(-3deg);">{{ a.icon }}</span>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 700; font-size: 12.5px; color: #C9C6BE; line-height: 1.4;">{{ a.text }}</div>
+              </div>
+              <span style="font-weight: 700; font-size: 10.5px; color: #5A5A64; white-space: nowrap;">{{ a.when }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- top collectionneurs -->
+      <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 24px 26px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+          <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 22px; letter-spacing: 1.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Top collectionneurs</h2>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <sc-for list="{{ topCollectors }}" as="c" hint-placeholder-count="5">
+            <a href="The Park - Collectionneur.dc.html?m={{ c.k }}" style="display: flex; align-items: center; gap: 12px; padding: 9px 8px; border-radius: 11px; text-decoration: none; transition: background 0.15s ease;" style-hover="background: #202024;">
+              <span style="font-family: 'Anton', sans-serif; font-size: 16px; color: {{ c.rankColor }}; width: 22px; text-align: center; flex-shrink: 0;">{{ c.rank }}</span>
+              <span style="width: 36px; height: 36px; border-radius: 50%; background: {{ c.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 14px; color: #fff; flex-shrink: 0;">{{ c.ini }}</span>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 800; font-size: 12.5px; color: #F2EFE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ c.k }}</div>
+                <div style="font-weight: 700; font-size: 10.5px; color: #8E8E98;">{{ c.owned }} cartes · {{ c.pct }}</div>
+              </div>
+              <div style="width: 54px; height: 5px; border-radius: 3px; background: #26262B; overflow: hidden; flex-shrink: 0;"><div style="height: 100%; width: {{ c.pct }}; background: linear-gradient(90deg, #D81B60, #FF2E63); border-radius: 3px;"></div></div>
+            </a>
+          </sc-for>
+        </div>
+        <a href="The Park - Classements.dc.html" style="display: block; text-align: center; margin-top: 14px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1.5px; padding: 11px; background: transparent; color: #C9C6BE; border: 1.5px solid #3A3A42; border-radius: 10px; text-decoration: none; transition: border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-2px);">VOIR LE CLASSEMENT COMPLET</a>
+      </div>
+    </div>
+
+    <dc-import name="The Park - Footer" hint-size="100%,320px" style="display: block; width: 100%;"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const glare = "radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.5), rgba(255,255,255,0) 42%)";
+    const rainbow = "conic-gradient(from 30deg at var(--mx, 50%) var(--my, 50%), rgba(255,46,99,0.4), rgba(255,209,102,0.4), rgba(111,227,208,0.4), rgba(79,163,255,0.4), rgba(176,92,255,0.4), rgba(255,46,99,0.4))";
+    const gold = "radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,236,170,0.7), rgba(232,178,58,0.15) 55%), linear-gradient(115deg, rgba(232,178,58,0.3), rgba(255,255,255,0.08))";
+    return {
+      walletLabel: (v => (isNaN(v) ? 128.5 : v).toFixed(2).replace('.', ',') + ' €')(parseFloat(localStorage.getItem('thepark_wallet'))),
+      rarities: [
+        { glyph: '◆', label: 'Communes', count: 30, color: '#9BA3B2' },
+        { glyph: '◈', label: 'Rares Holo', count: 20, color: '#4FA3FF' },
+        { glyph: '✦', label: 'Ultra Rares', count: 17, color: '#B05CFF' },
+        { glyph: '❀', label: 'Légendaires', count: 7, color: '#FF2E63' },
+        { glyph: '✸', label: 'Gold', count: 2, color: '#E8B23A' },
+        { glyph: '✪', label: 'Uniques', count: 2, color: '#6FE3D0' }
+      ],
+      featured: [
+        { src: 'uploads/54_NISSAN_S15_ICONIQUE.jpg', name: 'NISSAN S15 ULTIME', glyph: '✦', color: '#B05CFF', tilt: '6', holo: '0.65', bg: glare + ', ' + rainbow, blend: 'overlay' },
+        { src: 'uploads/57_NISSAN_SKYLINE_R35.jpg', name: 'SKYLINE GTR R35', glyph: '✦', color: '#B05CFF', tilt: '6', holo: '0.65', bg: glare + ', ' + rainbow, blend: 'overlay' },
+        { src: 'uploads/71_NISSAN_R33_MIDNIGHT.jpg', name: 'R33 MIDNIGHT', glyph: '❀', color: '#FF2E63', tilt: '8', holo: '0.8', bg: glare + ', ' + rainbow, blend: 'overlay' },
+        { src: 'uploads/66_MERCEDES_DTM_EVOII.jpg', name: '190E EVO II DTM', glyph: '✦', color: '#B05CFF', tilt: '6', holo: '0.65', bg: glare + ', ' + rainbow, blend: 'overlay' },
+        { src: 'uploads/75_HONDA_NSX_NA1.jpg', name: 'HONDA NSX TYPE-R', glyph: '✸', color: '#E8B23A', tilt: '8', holo: '0.85', bg: gold, blend: 'screen' }
+      ],
+      latest: [
+        { num: 42, src: 'uploads/42_TOYOTA_SUPRA_MK4_rare.jpg', name: 'SUPRA MK4', seller: 'DRIFT_KING_06', price: '19,90 €', glyph: '◈', color: '#4FA3FF', tilt: '5', holo: '0.5', bg: glare + ', ' + rainbow, blend: 'overlay' },
+        { num: 64, src: 'uploads/64_PORSCHE_911_RWB.jpg', name: 'PORSCHE 911 RWB', seller: 'MIDNIGHT_PURPLE', price: '39,90 €', glyph: '✦', color: '#B05CFF', tilt: '6', holo: '0.65', bg: glare + ', ' + rainbow, blend: 'overlay' },
+        { num: 35, src: 'uploads/35_NISSAN_S13_KOUKI.jpg', name: 'S13 KOUKI', seller: 'SARA.S15', price: '14,50 €', glyph: '◈', color: '#4FA3FF', tilt: '5', holo: '0.5', bg: glare + ', ' + rainbow, blend: 'overlay' },
+        { num: 60, src: 'uploads/60_SUBARU_WRX.jpg', name: 'IMPREZA WRX STI', seller: 'TOUGE_HUNTER', price: '26,00 €', glyph: '✦', color: '#B05CFF', tilt: '6', holo: '0.65', bg: glare + ', ' + rainbow, blend: 'overlay' },
+        { num: 68, src: 'uploads/68_NISSAN_S13_LIGHTON.jpg', name: 'S13 DU CRÉATEUR', seller: 'LIGHTON_FACTORY', price: '65,00 €', glyph: '❀', color: '#FF2E63', tilt: '8', holo: '0.8', bg: glare + ', ' + rainbow, blend: 'overlay' },
+        { num: 38, src: 'uploads/38_MAZDA_RXY_FD.jpg', name: 'MAZDA RX7 FD', seller: 'LIGHTON_FACTORY', price: '12,90 €', glyph: '◈', color: '#4FA3FF', tilt: '5', holo: '0.5', bg: glare + ', ' + rainbow, blend: 'overlay' }
+      ],
+      activity: [
+        { icon: '⇄', iconBg: 'rgba(79,163,255,0.12)', iconColor: '#4FA3FF', text: 'SARA.S15 a échangé une S14 ZENKI contre une BMW E30 TOURING avec MIDNIGHT_PURPLE', when: 'à l\'instant' },
+        { icon: '€', iconBg: 'rgba(94,217,154,0.12)', iconColor: '#5ED99A', text: 'DRIFT_KING_06 a vendu une TOYOTA SUPRA MK4 pour 19,90 €', when: '2 min' },
+        { icon: '✸', iconBg: 'rgba(232,178,58,0.12)', iconColor: '#E8B23A', text: 'MIDNIGHT_PURPLE a complété la série Gold — badge débloqué', when: '14 min' },
+        { icon: '◈', iconBg: 'rgba(216,27,96,0.12)', iconColor: '#FF2E63', text: 'LIGHTON_FACTORY a mis en vente la S13 DU CRÉATEUR (Légendaire)', when: '32 min' },
+        { icon: '★', iconBg: 'rgba(176,92,255,0.12)', iconColor: '#B05CFF', text: 'HACHI_ROKU a reçu un avis 5★ après un échange', when: '1 h' }
+      ],
+      topCollectors: [
+        { k: 'LIGHTON_FACTORY', ini: 'L', avBg: 'linear-gradient(135deg, #D81B60, #7A0F37)', owned: '78/78', pct: '100%', rank: '1', rankColor: '#E8B23A' },
+        { k: 'MIDNIGHT_PURPLE', ini: 'M', avBg: 'linear-gradient(135deg, #6FE3D0, #1F8C7A)', owned: '72/78', pct: '92%', rank: '2', rankColor: '#C9C6BE' },
+        { k: 'DRIFT_KING_06', ini: 'D', avBg: 'linear-gradient(135deg, #4FA3FF, #1F4E8C)', owned: '69/78', pct: '88%', rank: '3', rankColor: '#E8945A' },
+        { k: 'SARA.S15', ini: 'S', avBg: 'linear-gradient(135deg, #B05CFF, #5A1F8C)', owned: '63/78', pct: '81%', rank: '4', rankColor: '#6E6E78' },
+        { k: 'HACHI_ROKU', ini: 'H', avBg: 'linear-gradient(135deg, #FF6B5E, #8C2F1F)', owned: '48/78', pct: '62%', rank: '5', rankColor: '#6E6E78' }
+      ],
+      cardMove: (e) => {
+        const el = e.currentTarget;
+        const rect = el.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width;
+        const py = (e.clientY - rect.top) / rect.height;
+        el.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+        el.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+        const t = +el.dataset.tilt || 5;
+        el.style.transform = 'perspective(900px) rotateY(' + ((px - 0.5) * 2 * t).toFixed(2) + 'deg) rotateX(' + (-(py - 0.5) * 2 * t).toFixed(2) + 'deg) scale(1.04)';
+        el.style.setProperty('--ho', el.dataset.holo || '0.5');
+      },
+      cardLeave: (e) => {
+        const el = e.currentTarget;
+        el.style.transform = '';
+        el.style.setProperty('--ho', '0');
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+input::placeholder { color: #5A5A64; }
+</style>
+</helmet>
+<div data-screen-label="Recherche globale" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center;">
+      <a href="The Park - Accueil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ACCUEIL</a>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">COLLECTION</a>
+      <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">MARKETPLACE</a>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ÉCHANGES</a>
+      <a href="The Park - Classements.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">CLASSEMENTS</a>
+      <a href="The Park - Profil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">PROFIL</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Notifications.dc.html" title="Notifications" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a>
+      <a href="The Park - Messages.dc.html" title="Messages" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a><a href="The Park - Panier.dc.html" title="Panier" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #D81B60; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #131316; box-sizing: border-box;">3</span></a><a href="The Park - Vendre.dc.html" style="display: flex; align-items: center; gap: 5px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 8px 13px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.4);"><span style="font-size: 16px; line-height: 1;">+</span>VENDRE</a><a href="The Park - Magasin.dc.html" title="Mon portefeuille" style="display: flex; align-items: center; gap: 10px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 6px 7px 6px 16px; text-decoration: none; color: #F2EFE9; transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;" style-hover="border-color: #D81B60; transform: translateY(-1.5px); box-shadow: 0 6px 14px rgba(216,27,96,0.25);">
+        <span style="font-weight: 800; font-size: 13.5px; letter-spacing: 0.5px;">{{ walletLabel }}</span>
+        <span style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #D81B60; color: #fff; font-weight: 800; font-size: 15px; line-height: 1;">+</span>
+      </a>
+      <a href="The Park - Profil.dc.html" title="KENJI-13 · Profil" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #2B2B31; text-decoration: none; transition: border-color 0.18s ease, transform 0.2s ease;" style-hover="border-color: #D81B60; transform: scale(1.08) rotate(-4deg);">K</a>
+    </div>
+  </div>
+
+  <div style="max-width: 1200px; margin: 0 auto; padding: 36px 28px 60px;">
+
+    <!-- barre de recherche -->
+    <div style="position: relative; animation: fadeUp 0.5s ease both;">
+      <div style="position: absolute; top: -26px; right: 0; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 120px; line-height: 1; color: rgba(242,239,233,0.035); pointer-events: none; user-select: none;">検索</div>
+      <h1 style="margin: 0 0 18px; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(36px, 4.5vw, 54px); line-height: 0.95; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-4deg); text-shadow: 4px 4px 0 #D81B60;">Recherche</h1>
+      <div style="display: flex; align-items: center; gap: 12px; background: #1A1A1E; border: 1.5px solid #2B2B31; border-radius: 14px; padding: 4px 4px 4px 20px; transition: border-color 0.18s ease;" style-hover="border-color: #3A3A42;">
+        <span style="font-size: 19px; color: #6E6E78;">⌕</span>
+        <input value="{{ q }}" onChange="{{ onQ }}" placeholder="Cartes, membres, annonces, n° de carte…" autofocus style="flex: 1; background: transparent; border: none; padding: 14px 0; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 15.5px; outline: none;">
+        <sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ clearQ }}" title="Effacer" style="width: 40px; height: 40px; border-radius: 10px; background: #26262B; color: #C9C6BE; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.15s ease, color 0.15s ease;" style-hover="background: #D81B60; color: #fff;">✕</div>
+        </sc-if>
+      </div>
+    </div>
+
+    <!-- onglets de portée -->
+    <div style="display: flex; gap: 7px; flex-wrap: wrap; margin: 22px 0 6px; animation: fadeUp 0.5s 0.05s ease both;">
+      <sc-for list="{{ scopes }}" as="s" hint-placeholder-count="4">
+        <div onClick="{{ setScope }}" data-k="{{ s.k }}" style="display: flex; align-items: center; gap: 7px; padding: 8px 15px; border-radius: 999px; font-weight: 700; font-size: 12.5px; cursor: pointer; border: 1px solid {{ s.border }}; background: {{ s.bg }}; color: {{ s.color }}; transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="transform: translateY(-1.5px);">{{ s.label }} <span style="opacity: 0.6;">{{ s.count }}</span></div>
+      </sc-for>
+    </div>
+
+    <!-- suggestions quand vide -->
+    <sc-if value="{{ showSuggest }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top: 26px; animation: fadeUp 0.5s 0.1s ease both;">
+        <div style="font-size: 11px; font-weight: 800; letter-spacing: 2.5px; color: #6E6E78; text-transform: uppercase; margin-bottom: 12px;">Recherches populaires</div>
+        <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ suggestions }}" as="sg" hint-placeholder-count="6">
+            <div onClick="{{ pickSuggest }}" data-q="{{ sg }}" style="font-weight: 700; font-size: 13px; padding: 10px 16px; border-radius: 999px; background: #1A1A1E; border: 1px solid #2B2B31; color: #C9C6BE; cursor: pointer; transition: border-color 0.15s ease, transform 0.15s ease;" style-hover="border-color: #D81B60; transform: translateY(-2px);">{{ sg }}</div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ===== RÉSULTATS ===== -->
+    <sc-if value="{{ showResults }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <!-- cartes -->
+        <sc-if value="{{ showCards }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 30px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+              <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 21px; letter-spacing: 2px; text-transform: uppercase; transform: skewX(-3deg);">Cartes</h2>
+              <span style="font-weight: 800; font-size: 12px; padding: 4px 11px; border-radius: 999px; background: #1A1A1E; border: 1px solid #2B2B31; color: #D81B60;">{{ cardCount }}</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px;">
+              <sc-for list="{{ cards }}" as="c" hint-placeholder-count="5">
+                <a href="The Park - Carte.dc.html?carte={{ c.num }}" style="text-decoration: none; animation: pop 0.3s ease both;">
+                  <div onMouseMove="{{ cardMove }}" onMouseLeave="{{ cardLeave }}" data-tilt="{{ c.tilt }}" data-holo="{{ c.holo }}" style="position: relative; aspect-ratio: 5/7; border-radius: 11px; overflow: hidden; background: #202024; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 22px rgba(0,0,0,0.45); transition: transform 0.18s ease-out; will-change: transform;">
+                    <img src="{{ c.src }}" alt="{{ c.name }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                    <div style="position: absolute; inset: 0; pointer-events: none; opacity: var(--ho, 0); transition: opacity 0.25s ease; mix-blend-mode: {{ c.holoBlend }}; background: {{ c.holoBg }};"></div>
+                    <span style="position: absolute; right: 7px; top: 7px; font-size: 12px; color: {{ c.color }};">{{ c.glyph }}</span>
+                  </div>
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 7px; gap: 6px;">
+                    <span style="font-weight: 800; font-size: 11px; color: #C9C6BE; line-height: 1.25;">{{ c.name }}</span>
+                    <span style="font-weight: 800; font-size: 11px; color: #8E8E98; white-space: nowrap;">{{ c.numLabel }}</span>
+                  </div>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- membres -->
+        <sc-if value="{{ showMembers }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 34px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+              <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 21px; letter-spacing: 2px; text-transform: uppercase; transform: skewX(-3deg);">Membres</h2>
+              <span style="font-weight: 800; font-size: 12px; padding: 4px 11px; border-radius: 999px; background: #1A1A1E; border: 1px solid #2B2B31; color: #D81B60;">{{ memberCount }}</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px;">
+              <sc-for list="{{ members }}" as="m" hint-placeholder-count="3">
+                <a href="The Park - Collectionneur.dc.html?m={{ m.k }}" style="display: flex; align-items: center; gap: 13px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 14px; padding: 14px 16px; text-decoration: none; animation: pop 0.3s ease both; transition: border-color 0.15s ease, transform 0.15s ease;" style-hover="border-color: #D81B60; transform: translateY(-2px);">
+                  <span style="width: 42px; height: 42px; border-radius: 11px; background: {{ m.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 17px; color: #fff; transform: rotate(-3deg); flex-shrink: 0;">{{ m.ini }}</span>
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="font-weight: 800; font-size: 13.5px; color: #F2EFE9;">{{ m.k }}</div>
+                    <div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-top: 2px;">{{ m.role }} · {{ m.owned }}</div>
+                  </div>
+                  <span style="font-weight: 800; font-size: 11.5px; color: #E8B23A; white-space: nowrap;">★ {{ m.rating }}</span>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- annonces -->
+        <sc-if value="{{ showListings }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 34px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+              <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 21px; letter-spacing: 2px; text-transform: uppercase; transform: skewX(-3deg);">Annonces</h2>
+              <span style="font-weight: 800; font-size: 12px; padding: 4px 11px; border-radius: 999px; background: #1A1A1E; border: 1px solid #2B2B31; color: #D81B60;">{{ listingCount }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 9px;">
+              <sc-for list="{{ listings }}" as="l" hint-placeholder-count="3">
+                <a href="The Park - Marketplace.dc.html" style="display: flex; align-items: center; gap: 14px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 13px; padding: 11px 15px; text-decoration: none; animation: pop 0.3s ease both; transition: border-color 0.15s ease, transform 0.15s ease;" style-hover="border-color: #D81B60; transform: translateX(3px);">
+                  <img src="{{ l.src }}" alt="{{ l.name }}" style="width: 38px; height: 53px; object-fit: cover; border-radius: 7px; display: block; flex-shrink: 0;">
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="font-weight: 800; font-size: 13px; color: #F2EFE9;">{{ l.name }}</div>
+                    <div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-top: 2px;">{{ l.seller }} · {{ l.version }} · {{ l.etat }}</div>
+                  </div>
+                  <div style="font-family: 'Anton', sans-serif; font-size: 18px; color: #F2EFE9; white-space: nowrap;">{{ l.price }}</div>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 60px 0; text-align: center; color: #5A5A64;">
+            <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 30px; color: #2B2B31;">該当なし</div>
+            <div style="font-weight: 700; font-size: 14px; margin-top: 10px;">Aucun résultat pour « {{ q }} ».</div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <dc-import name="The Park - Footer" hint-size="100%,320px" style="display: block; width: 100%;"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { q: '', scope: 'all', db: null };
+
+  constructor(props) {
+    super(props);
+    try {
+      const qp = new URLSearchParams(window.location.search).get('q');
+      if (qp) this.state = { ...this.state, q: qp };
+    } catch (e) {}
+    this.MEMBERS = {
+      'SARA.S15': ['S', 'linear-gradient(135deg, #B05CFF, #5A1F8C)', '5,0', 'Collectionneuse', '63/78'],
+      'DRIFT_KING_06': ['D', 'linear-gradient(135deg, #4FA3FF, #1F4E8C)', '4,7', 'Collectionneur', '69/78'],
+      'MIDNIGHT_PURPLE': ['M', 'linear-gradient(135deg, #6FE3D0, #1F8C7A)', '4,8', 'Top échangeur', '72/78'],
+      'TOUGE_HUNTER': ['T', 'linear-gradient(135deg, #E8B23A, #8C641F)', '4,4', 'Collectionneur', '42/78'],
+      'LIGHTON_FACTORY': ['L', 'linear-gradient(135deg, #D81B60, #7A0F37)', '4,9', 'Marchand vérifié', '78/78'],
+      'HACHI_ROKU': ['H', 'linear-gradient(135deg, #FF6B5E, #8C2F1F)', '4,6', 'Collectionneur', '48/78']
+    };
+    this.SUGGEST = ['Skyline', 'AE86', 'Silvia S15', 'BMW', 'LIGHTON_FACTORY', 'Gold', 'RX7', 'Supra'];
+  }
+
+  async componentDidMount() {
+    try {
+      const mod = await import('./cards-data.js');
+      this.META = mod.META;
+      this.setState({ db: mod.CARDS });
+    } catch (e) { console.error('cards-data', e); }
+  }
+
+  holoOf(rk) {
+    const glare = "radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.5), rgba(255,255,255,0) 42%)";
+    const rainbow = "conic-gradient(from 30deg at var(--mx, 50%) var(--my, 50%), rgba(255,46,99,0.4), rgba(255,209,102,0.4), rgba(111,227,208,0.4), rgba(79,163,255,0.4), rgba(176,92,255,0.4), rgba(255,46,99,0.4))";
+    const gold = "radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,236,170,0.7), rgba(232,178,58,0.15) 55%), linear-gradient(115deg, rgba(232,178,58,0.3), rgba(255,255,255,0.08))";
+    if (rk === 'g') return { holoBg: gold, holoBlend: 'screen' };
+    if (rk === 'c') return { holoBg: glare, holoBlend: 'soft-light' };
+    return { holoBg: glare + ', ' + rainbow, holoBlend: 'overlay' };
+  }
+
+  renderVals() {
+    const { q, scope, db } = this.state;
+    const walletLabel = (v => (isNaN(v) ? 128.5 : v).toFixed(2).replace('.', ',') + ' €')(parseFloat(localStorage.getItem('thepark_wallet')));
+    const ql = q.trim().toLowerCase();
+    const hasQ = ql.length > 0;
+    const base = {
+      walletLabel, q, hasQ,
+      onQ: (e) => this.setState({ q: e.target.value }),
+      clearQ: () => this.setState({ q: '' }),
+      pickSuggest: (e) => this.setState({ q: e.currentTarget.dataset.q }),
+      setScope: (e) => this.setState({ scope: e.currentTarget.dataset.k }),
+      suggestions: this.SUGGEST,
+      cardMove: (e) => {
+        const el = e.currentTarget; const rect = el.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width; const py = (e.clientY - rect.top) / rect.height;
+        el.style.setProperty('--mx', (px * 100).toFixed(1) + '%'); el.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+        const t = +el.dataset.tilt || 5;
+        el.style.transform = 'perspective(900px) rotateY(' + ((px - 0.5) * 2 * t).toFixed(2) + 'deg) rotateX(' + (-(py - 0.5) * 2 * t).toFixed(2) + 'deg) scale(1.03)';
+        el.style.setProperty('--ho', el.dataset.holo || '0.5');
+      },
+      cardLeave: (e) => { const el = e.currentTarget; el.style.transform = ''; el.style.setProperty('--ho', '0'); }
+    };
+
+    if (!db || !hasQ) {
+      return { ...base, showSuggest: !hasQ, showResults: false, scopes: [
+        { k: 'all', label: 'Tout', count: '', border: '#D81B60', bg: 'rgba(216,27,96,0.12)', color: '#F2EFE9' },
+        { k: 'cards', label: 'Cartes', count: '', border: '#2B2B31', bg: '#1A1A1E', color: '#8E8E98' },
+        { k: 'members', label: 'Membres', count: '', border: '#2B2B31', bg: '#1A1A1E', color: '#8E8E98' },
+        { k: 'listings', label: 'Annonces', count: '', border: '#2B2B31', bg: '#1A1A1E', color: '#8E8E98' }
+      ], cards: [], members: [], listings: [] };
+    }
+
+    // CARTES
+    const matchCards = db.filter(c => c.name.toLowerCase().includes(ql) || String(c.num).padStart(2, '0').includes(ql) || this.META[c.r].label.toLowerCase().includes(ql));
+    const cards = matchCards.slice(0, 18).map(c => {
+      const m = this.META[c.r]; const h = this.holoOf(c.r);
+      return { num: c.num, name: c.name, src: 'uploads/' + c.img, glyph: m.glyph, color: m.color, tilt: m.tilt, holo: m.holo, holoBg: h.holoBg, holoBlend: h.holoBlend, numLabel: c.r === 'p' ? 'PROMO' : String(c.num).padStart(2, '0') + '/67' };
+    });
+
+    // MEMBRES
+    const matchMembers = Object.keys(this.MEMBERS).filter(k => k.toLowerCase().includes(ql) || this.MEMBERS[k][3].toLowerCase().includes(ql));
+    const members = matchMembers.map(k => { const v = this.MEMBERS[k]; return { k, ini: v[0], avBg: v[1], rating: v[2], role: v[3], owned: v[4] }; });
+
+    // ANNONCES (dérivées des cartes correspondantes, échantillon)
+    const sellerKeys = Object.keys(this.MEMBERS);
+    const etats = ['Neuf', 'Très bon', 'Bon']; const vers = ['Standard', 'Reverse', 'Alternative'];
+    const listings = matchCards.slice(0, 8).map((c, i) => {
+      const sk = sellerKeys[(c.num + i) % sellerKeys.length];
+      const price = Math.max(2, c.val * (0.85 + ((c.num + i) % 8) * 0.05));
+      return { name: c.name, src: 'uploads/' + c.img, seller: sk, version: vers[c.num % 3], etat: etats[i % 3], price: price.toFixed(2).replace('.', ',') + ' €' };
+    });
+
+    const cc = cards.length, mc = members.length, lc = listings.length;
+    const scopes = [
+      { k: 'all', label: 'Tout', count: cc + mc + lc },
+      { k: 'cards', label: 'Cartes', count: cc },
+      { k: 'members', label: 'Membres', count: mc },
+      { k: 'listings', label: 'Annonces', count: lc }
+    ].map(s => ({ ...s, border: scope === s.k ? '#D81B60' : '#2B2B31', bg: scope === s.k ? 'rgba(216,27,96,0.12)' : '#1A1A1E', color: scope === s.k ? '#F2EFE9' : '#8E8E98' }));
+
+    const showCards = (scope === 'all' || scope === 'cards') && cc > 0;
+    const showMembers = (scope === 'all' || scope === 'members') && mc > 0;
+    const showListings = (scope === 'all' || scope === 'listings') && lc > 0;
+
+    return {
+      ...base, scopes, showSuggest: false, showResults: true,
+      cards, members, listings,
+      cardCount: cc, memberCount: mc, listingCount: lc,
+      showCards, showMembers, showListings,
+      noResults: !showCards && !showMembers && !showListings
+    };
+  }
+}
+</script>
+</body>
+</html>

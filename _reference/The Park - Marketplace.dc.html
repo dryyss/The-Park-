@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+@keyframes slideIn { from { transform: translateX(46px); opacity: 0; } to { transform: none; opacity: 1; } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+</style>
+</helmet>
+<div data-screen-label="Marketplace" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center;">
+      <a href="The Park - Accueil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ACCUEIL</a>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">COLLECTION</a>
+      <div style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; background: #D81B60; color: #fff; border-radius: 7px; transform: rotate(-1.5deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); cursor: default;">MARKETPLACE</div>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ÉCHANGES</a>
+      <a href="The Park - Classements.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">CLASSEMENTS</a>
+      <a href="The Park - Profil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">PROFIL</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Notifications.dc.html" title="Notifications" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a>
+      <a href="The Park - Messages.dc.html" title="Messages" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a><a href="The Park - Panier.dc.html" title="Panier" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #D81B60; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #131316; box-sizing: border-box;">3</span></a><a href="The Park - Vendre.dc.html" style="display: flex; align-items: center; gap: 5px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 8px 13px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.4);"><span style="font-size: 16px; line-height: 1;">+</span>VENDRE</a><a href="The Park - Magasin.dc.html" title="Mon portefeuille" style="display: flex; align-items: center; gap: 10px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 6px 7px 6px 16px; text-decoration: none; color: #F2EFE9; transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;" style-hover="border-color: #D81B60; transform: translateY(-1.5px); box-shadow: 0 6px 14px rgba(216,27,96,0.25);">
+        <span style="font-weight: 800; font-size: 13.5px; letter-spacing: 0.5px;">{{ walletLabel }}</span>
+        <span style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #D81B60; color: #fff; font-weight: 800; font-size: 15px; line-height: 1;">+</span>
+      </a>
+      <a href="The Park - Profil.dc.html" title="KENJI-13 · Profil" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #2B2B31; text-decoration: none; transition: border-color 0.18s ease, transform 0.2s ease;" style-hover="border-color: #D81B60; transform: scale(1.08) rotate(-4deg);">K</a>
+    </div>
+  </div>
+
+  <div style="max-width: 1320px; margin: 0 auto; padding: 36px 28px 60px;">
+
+    <!-- ===== HEADER ===== -->
+    <div style="position: relative; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 20px; animation: fadeUp 0.5s ease both;">
+      <div style="position: absolute; top: -26px; right: 0; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 130px; line-height: 1; color: rgba(242,239,233,0.035); pointer-events: none; user-select: none;">市場</div>
+      <div>
+        <div style="font-weight: 700; font-size: 12px; letter-spacing: 4px; color: #D81B60; text-transform: uppercase; margin-bottom: 10px;">Achète · Vends · Échange entre membres</div>
+        <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(44px, 6vw, 74px); line-height: 0.95; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-4deg); color: #F2EFE9; text-shadow: 4px 4px 0 #D81B60;">Marketplace</h1>
+      </div>
+      <div style="display: flex; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 11px; padding: 5px; gap: 3px; margin-bottom: 4px;">
+        <div onClick="{{ setIntent }}" data-i="sell" style="font-family: 'Anton', sans-serif; font-size: 13.5px; letter-spacing: 1.5px; padding: 11px 20px; border-radius: 8px; cursor: pointer; background: {{ sellBg }}; color: {{ sellColor }}; transition: background 0.18s ease, color 0.18s ease;">ON PROPOSE 〜 {{ sellCount }}</div>
+        <div onClick="{{ setIntent }}" data-i="want" style="font-family: 'Anton', sans-serif; font-size: 13.5px; letter-spacing: 1.5px; padding: 11px 20px; border-radius: 8px; cursor: pointer; background: {{ wantBg }}; color: {{ wantColor }}; transition: background 0.18s ease, color 0.18s ease;">ON CHERCHE 〜 {{ wantCount }}</div>
+      </div>
+    </div>
+
+    <!-- ===== BANNIÈRE ENCHÈRES ===== -->
+    <a href="The Park - Encheres.dc.html" style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 22px; background: linear-gradient(120deg, #1F141A, #1A1A1E); border: 1px solid #2B2B31; border-radius: 16px; padding: 16px 22px; text-decoration: none; animation: fadeUp 0.5s 0.05s ease both; transition: border-color 0.16s ease, transform 0.16s ease;" style-hover="border-color: #D81B60; transform: translateY(-2px);">
+      <span style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 12px; background: rgba(216,27,96,0.14); font-size: 22px; transform: rotate(-4deg); flex-shrink: 0;">🔨</span>
+      <div style="flex: 1; min-width: 200px;">
+        <div style="display: flex; align-items: center; gap: 9px;"><span style="font-family: 'Anton', sans-serif; font-size: 18px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Salle des enchères</span><span style="display: flex; align-items: center; gap: 5px; font-weight: 800; font-size: 9.5px; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 5px; background: rgba(216,27,96,0.16); color: #FF2E63;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #FF2E63;"></span>LIVE</span></div>
+        <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 3px;">Fais monter les prix ou vends au plus offrant — enchère auto, prix de réserve, prolongation anti-snipe.</div>
+      </div>
+      <span style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.5px; padding: 12px 20px; background: #D81B60; color: #fff; border-radius: 10px; transform: skewX(-3deg); white-space: nowrap;">ENTRER →</span>
+    </a>
+
+    <!-- ===== FILTERS ===== -->
+    <div style="display: flex; flex-direction: column; gap: 10px; margin: 26px 0 6px; animation: fadeUp 0.5s 0.08s ease both;">
+      <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <sc-for list="{{ rchips }}" as="c" hint-placeholder-count="7">
+            <div onClick="{{ setRar }}" data-k="{{ c.k }}" style="display: flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 999px; font-weight: 700; font-size: 12px; cursor: pointer; border: 1px solid {{ c.border }}; background: {{ c.bg }}; color: {{ c.color }}; white-space: nowrap; transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;" style-hover="transform: translateY(-1.5px);">
+              <span style="color: {{ c.glyphColor }};">{{ c.glyph }}</span>{{ c.label }}
+            </div>
+          </sc-for>
+        </div>
+        <div style="flex: 1; min-width: 180px; display: flex; justify-content: flex-end;">
+          <input value="{{ search }}" onChange="{{ onSearch }}" placeholder="Rechercher une carte, un n°, un membre…" style="width: min(300px, 100%); background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 10px 18px; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 13px; outline: none;">
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 7px;">
+          <span style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase;">État</span>
+          <sc-for list="{{ echips }}" as="c" hint-placeholder-count="5">
+            <div onClick="{{ setEtat }}" data-k="{{ c.k }}" style="padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 11.5px; cursor: pointer; border: 1px solid {{ c.border }}; background: {{ c.bg }}; color: {{ c.color }}; white-space: nowrap; transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;" style-hover="transform: translateY(-1.5px);">{{ c.label }}</div>
+          </sc-for>
+        </div>
+        <div style="display: flex; align-items: center; gap: 7px;">
+          <span style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase;">Version</span>
+          <sc-for list="{{ vchips }}" as="c" hint-placeholder-count="4">
+            <div onClick="{{ setVer }}" data-k="{{ c.k }}" style="padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 11.5px; cursor: pointer; border: 1px solid {{ c.border }}; background: {{ c.bg }}; color: {{ c.color }}; white-space: nowrap; transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;" style-hover="transform: translateY(-1.5px);">{{ c.label }}</div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LISTINGS ===== -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(228px, 1fr)); gap: 18px; margin-top: 22px;">
+      <sc-for list="{{ listings }}" as="l" hint-placeholder-count="8">
+        <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; overflow: hidden; animation: pop 0.3s ease both; display: flex; flex-direction: column;" style-hover="border-color: #3A3A42;">
+          <div style="position: relative; padding: 14px 14px 0;">
+            <div onMouseMove="{{ cardMove }}" onMouseLeave="{{ cardLeave }}" data-tilt="{{ l.tilt }}" data-holo="{{ l.holo }}" style="position: relative; aspect-ratio: 5/7; border-radius: 11px; overflow: hidden; background: #202024; box-shadow: 0 10px 22px rgba(0,0,0,0.4); transition: transform 0.18s ease-out; will-change: transform;">
+              <img src="{{ l.src }}" alt="{{ l.name }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+              <div style="position: absolute; inset: 0; pointer-events: none; opacity: var(--ho, 0); transition: opacity 0.25s ease; mix-blend-mode: {{ l.blend }}; background: {{ l.bg }};"></div>
+            </div>
+            <span style="position: absolute; top: 24px; right: 24px; font-weight: 800; font-size: 10.5px; letter-spacing: 1px; padding: 4px 10px; border-radius: 6px; background: rgba(0,0,0,0.72); color: {{ l.etatColor }}; backdrop-filter: blur(4px); text-transform: uppercase;">{{ l.etatLabel }}</span>
+            <sc-if value="{{ l.isWant }}" hint-placeholder-val="{{ false }}">
+              <span style="position: absolute; top: 24px; left: 8px; font-family: 'Anton', sans-serif; font-size: 10px; letter-spacing: 1.5px; padding: 5px 11px; background: #F2EFE9; color: #131316; transform: rotate(-4deg); box-shadow: 2px 2px 0 rgba(216,27,96,0.9);">RECHERCHÉE</span>
+            </sc-if>
+          </div>
+          <div style="padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 9px; flex: 1;">
+            <div>
+              <div style="font-weight: 800; font-size: 13px; color: #F2EFE9; line-height: 1.25;">{{ l.name }}</div>
+              <div style="display: flex; align-items: center; gap: 7px; margin-top: 4px; font-weight: 700; font-size: 11px; color: #8E8E98;">
+                <span style="color: {{ l.rarColor }};">{{ l.glyph }}</span>{{ l.numLabel }}
+                <span style="padding: 2px 8px; border-radius: 5px; background: #26262B; color: #A9A9B2; font-size: 10.5px;">{{ l.version }}</span>
+              </div>
+            </div>
+            <a href="The Park - Collectionneur.dc.html?m={{ l.seller }}" title="Voir le profil public du membre" style="display: flex; align-items: center; gap: 8px; text-decoration: none; padding: 7px 9px; border-radius: 9px; background: #202024; border: 1px solid #26262B; transition: border-color 0.15s ease;" style-hover="border-color: #D81B60;">
+              <span style="width: 24px; height: 24px; border-radius: 50%; background: {{ l.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 10.5px; color: #fff; flex-shrink: 0;">{{ l.avIni }}</span>
+              <span style="font-weight: 700; font-size: 11.5px; color: #C9C6BE; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ l.seller }}</span>
+              <span style="font-weight: 800; font-size: 11px; color: #E8B23A; white-space: nowrap;">★ {{ l.rating }}</span>
+              <span style="font-weight: 700; font-size: 10.5px; color: #5A5A64;">({{ l.reviews }})</span>
+            </a>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto;">
+              <div>
+                <div style="font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; color: #6E6E78; text-transform: uppercase;">{{ l.priceCaption }}</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 21px; color: #F2EFE9; line-height: 1.1;">{{ l.price }}</div>
+              </div>
+              <div onClick="{{ actBtn }}" data-k="{{ l.k }}" style="font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 1px; padding: 10px 13px; background: {{ l.btnBg }}; color: {{ l.btnColor }}; border: 1.5px solid {{ l.btnBorder }}; border-radius: 8px; cursor: pointer; white-space: nowrap; transform: skewX(-3deg); transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;" style-hover="filter: brightness(1.15); transform: skewX(-3deg) translateY(-2px); box-shadow: 0 8px 16px rgba(216,27,96,0.3);">{{ l.btnLabel }}</div>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding: 70px 0; text-align: center; color: #5A5A64;">
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 34px; color: #2B2B31;">何もない</div>
+        <div style="font-weight: 700; font-size: 14px; margin-top: 10px;">Aucune annonce ne correspond à ces filtres.</div>
+      </div>
+    </sc-if>
+
+    <dc-import name="The Park - Footer" hint-size="100%,320px" style="display: block; width: 100%;"></dc-import>
+  </div>
+
+  <!-- ===== PANIER FLOTTANT ===== -->
+  <sc-if value="{{ hasCart }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ openCart }}" style="position: fixed; right: 26px; bottom: 26px; z-index: 55; display: flex; align-items: center; gap: 12px; font-family: 'Anton', sans-serif; font-size: 13.5px; letter-spacing: 1.5px; padding: 15px 22px; background: #D81B60; color: #fff; border-radius: 999px; cursor: pointer; box-shadow: 0 14px 30px rgba(216,27,96,0.45); transition: transform 0.16s ease, background 0.16s ease; animation: pop 0.25s ease both;" style-hover="background: #F0246F; transform: translateY(-3px);">
+      PANIER <span style="background: rgba(0,0,0,0.3); border-radius: 999px; padding: 3px 10px; font-size: 12px;">{{ cartCount }}</span> {{ cartTotalLabel }}
+    </div>
+  </sc-if>
+
+  <!-- ===== PANNEAU PANIER ===== -->
+  <sc-if value="{{ cartOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeCart }}" style="position: fixed; inset: 0; z-index: 60; background: rgba(10,10,12,0.62); backdrop-filter: blur(6px); animation: pop 0.2s ease both;">
+      <div style="position: absolute; top: 0; right: 0; bottom: 0; width: min(432px, 94vw); background: #1A1A1E; border-left: 1px solid #2F2F36; padding: 24px; overflow: auto; animation: slideIn 0.28s ease both;">
+        <div onClick="{{ closeCart }}" title="Fermer" style="position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-radius: 50%; background: #26262B; color: #C9C6BE; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.15s ease, color 0.15s ease, transform 0.25s ease;" style-hover="background: #D81B60; color: #fff; transform: rotate(90deg) scale(1.08);">✕</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 22px; letter-spacing: 2px; text-transform: uppercase; color: #F2EFE9; transform: skewX(-3deg); text-shadow: 2px 2px 0 #D81B60;">Panier</h2>
+          <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 11px; color: #5A5A64; letter-spacing: 2px;">カート</span>
+          <span style="font-weight: 800; font-size: 11.5px; padding: 3px 10px; border-radius: 999px; background: #D81B60; color: #fff;">{{ cartCount }}</span>
+        </div>
+        <div style="font-weight: 700; font-size: 11.5px; color: #8E8E98; margin-top: 6px;">{{ sellerCount }} · livraison facturée par vendeur, offerte dès 50 € chez un même vendeur</div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 18px;">
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="1">
+            <div style="background: #202024; border: 1px solid #26262B; border-radius: 14px; padding: 14px;">
+              <div style="display: flex; align-items: center; gap: 9px;">
+                <span style="width: 26px; height: 26px; border-radius: 50%; background: {{ g.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 11px; color: #fff; flex-shrink: 0;">{{ g.avIni }}</span>
+                <span style="font-weight: 800; font-size: 12px; color: #F2EFE9; flex: 1;">{{ g.seller }}</span>
+                <span style="font-weight: 800; font-size: 10.5px; color: #E8B23A;">★ {{ g.rating }}</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 11px;">
+                <sc-for list="{{ g.items }}" as="ci" hint-placeholder-count="1">
+                  <div style="display: flex; align-items: center; gap: 10px; background: #1A1A1E; border: 1px solid #26262B; border-radius: 10px; padding: 7px;">
+                    <img src="{{ ci.src }}" alt="{{ ci.name }}" style="width: 34px; height: 48px; object-fit: cover; border-radius: 6px; display: block; flex-shrink: 0;">
+                    <div style="flex: 1; min-width: 0;">
+                      <div style="font-weight: 800; font-size: 11.5px; color: #F2EFE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ ci.name }}</div>
+                      <div style="font-weight: 700; font-size: 10px; color: #8E8E98; margin-top: 2px;">{{ ci.meta }}</div>
+                    </div>
+                    <div style="font-family: 'Anton', sans-serif; font-size: 13.5px; color: #F2EFE9; white-space: nowrap;">{{ ci.priceLabel }}</div>
+                    <div onClick="{{ removeFromCart }}" data-k="{{ ci.k }}" title="Retirer" style="width: 24px; height: 24px; border-radius: 6px; background: #26262B; color: #8E8E98; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; cursor: pointer; flex-shrink: 0; transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;" style-hover="background: #D81B60; color: #fff; transform: scale(1.15);">✕</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: 10px; font-weight: 700; font-size: 11.5px; color: #8E8E98;"><span>Livraison suivie</span><span style="color: {{ g.shipColor }};">{{ g.shipLabel }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed #2F2F36; display: flex; flex-direction: column; gap: 7px; font-size: 12.5px; font-weight: 700;">
+          <div style="display: flex; justify-content: space-between; color: #8E8E98;"><span>Sous-total cartes</span><span style="color: #F2EFE9;">{{ subAllLabel }}</span></div>
+          <div style="display: flex; justify-content: space-between; color: #8E8E98;"><span>Livraisons</span><span style="color: #F2EFE9;">{{ shipAllLabel }}</span></div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 4px;"><span style="font-weight: 800; letter-spacing: 1px; text-transform: uppercase; font-size: 11px; color: #C9C6BE;">Total</span><span style="font-family: 'Anton', sans-serif; font-size: 24px; color: #F2EFE9;">{{ totalLabel }}</span></div>
+        </div>
+        <div style="margin-top: 14px; background: #202024; border: 1px solid #26262B; border-radius: 11px; padding: 12px 14px; display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700;">
+          <div style="display: flex; justify-content: space-between; color: #8E8E98;"><span>Portefeuille</span><span style="color: #F2EFE9;">{{ walletLabel }}</span></div>
+          <div style="display: flex; justify-content: space-between; color: #8E8E98;"><span>Solde après achat</span><span style="color: {{ afterColor }};">{{ afterLabel }}</span></div>
+        </div>
+        <sc-if value="{{ insufficient }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 12px; font-size: 12px; font-weight: 700; color: #FF6B5E; background: rgba(255,107,94,0.08); border: 1px solid rgba(255,107,94,0.35); border-radius: 10px; padding: 10px 12px;">Solde insuffisant — recharge ton portefeuille pour finaliser.</div>
+          <a href="The Park - Magasin.dc.html" style="display: block; margin-top: 10px; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1.5px; padding: 13px; text-align: center; background: #F2EFE9; color: #131316; border-radius: 10px; cursor: pointer; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 #D81B60; transition: transform 0.16s ease, box-shadow 0.16s ease;" style-hover="transform: skewX(-3deg) translate(-2px, -2px); box-shadow: 5px 5px 0 #D81B60;">RECHARGER LE PORTEFEUILLE</a>
+        </sc-if>
+        <sc-if value="{{ canPay }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ pay }}" style="margin-top: 14px; font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 1.5px; padding: 14px; text-align: center; background: #D81B60; color: #fff; border-radius: 10px; cursor: pointer; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px, -2px); box-shadow: 5px 5px 0 rgba(0,0,0,0.45);">PAYER AVEC LE PORTEFEUILLE</div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===== CONFIRMATION ACHAT ===== -->
+  <sc-if value="{{ payDone }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePay }}" style="position: fixed; inset: 0; z-index: 65; background: rgba(10,10,12,0.78); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 24px; animation: pop 0.22s ease both;">
+      <div style="position: relative; width: min(480px, 94vw); background: #1A1A1E; border: 1px solid #2F2F36; border-radius: 20px; padding: 32px;">
+        <div style="width: 58px; height: 58px; border-radius: 16px; background: rgba(94,217,154,0.12); border: 1px solid rgba(94,217,154,0.4); color: #5ED99A; display: flex; align-items: center; justify-content: center; font-size: 26px; transform: rotate(-3deg);">✓</div>
+        <h2 style="margin: 18px 0 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 28px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; text-shadow: 3px 3px 0 #D81B60;">Commande confirmée</h2>
+        <p style="margin: 12px 0 0; font-size: 13.5px; line-height: 1.6; color: #A9A9B2;">{{ lastCountLabel }} pour <strong style="color: #F2EFE9;">{{ lastTotalLabel }}</strong> auprès de <strong style="color: #F2EFE9;">{{ lastSellers }}</strong>. Chaque vendeur expédie séparément avec suivi. Nouveau solde : <strong style="color: #5ED99A;">{{ walletLabel }}</strong>.</p>
+        <div onClick="{{ closePay }}" style="margin-top: 24px; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1.5px; padding: 13px; text-align: center; background: #D81B60; color: #fff; border-radius: 10px; cursor: pointer; transform: skewX(-3deg); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px, -2px); box-shadow: 4px 4px 0 rgba(0,0,0,0.4);">PARFAIT</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===== PROPOSITION SUR UNE RECHERCHE ===== -->
+  <sc-if value="{{ propOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeProp }}" style="position: fixed; inset: 0; z-index: 65; background: rgba(10,10,12,0.78); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 24px; animation: pop 0.22s ease both;">
+      <div style="position: relative; width: min(880px, 94vw); max-height: 90vh; overflow: auto; background: #1A1A1E; border: 1px solid #2F2F36; border-radius: 20px; padding: 28px 30px;">
+        <div onClick="{{ closeProp }}" title="Fermer" style="position: absolute; top: 14px; right: 14px; z-index: 2; width: 34px; height: 34px; border-radius: 50%; background: #26262B; color: #C9C6BE; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.15s ease, color 0.15s ease, transform 0.25s ease;" style-hover="background: #D81B60; color: #fff; transform: rotate(90deg) scale(1.08);">✕</div>
+
+        <sc-if value="{{ propFormVis }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; align-items: baseline; gap: 13px; flex-wrap: wrap;">
+            <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 28px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; text-shadow: 3px 3px 0 #D81B60;">Proposer ma carte</h2>
+            <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 13px; color: #5A5A64; letter-spacing: 2px;">提案</span>
+          </div>
+          <p style="margin: 8px 0 0; font-size: 13px; line-height: 1.6; color: #8E8E98;"><strong style="color: #F2EFE9;">{{ propWho }}</strong> recherche cette carte — budget max <strong style="color: #F2EFE9;">{{ propBudget }}</strong>, état minimum {{ propEtat }}.</p>
+          <div style="display: grid; grid-template-columns: 215px 1fr; gap: 26px; margin-top: 20px; align-items: start;">
+            <div>
+              <div style="position: relative; aspect-ratio: 5/7; border-radius: 12px; overflow: hidden; border: 1.5px dashed #3A3A42; box-shadow: 0 14px 28px rgba(0,0,0,0.5);">
+                <img src="{{ propSrc }}" alt="{{ propName }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                <span style="position: absolute; left: -4px; top: 10px; font-family: 'Anton', sans-serif; font-size: 9.5px; letter-spacing: 1.5px; padding: 4px 10px 4px 12px; background: #F2EFE9; color: #131316; transform: rotate(-3deg); box-shadow: 2px 2px 0 rgba(216,27,96,0.9);">RECHERCHÉE</span>
+              </div>
+              <div style="font-weight: 800; font-size: 12px; color: #F2EFE9; margin-top: 9px; line-height: 1.3;">{{ propName }}</div>
+            </div>
+            <div>
+              <div style="font-size: 10px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 10px;">Choisis la carte que tu proposes</div>
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                <sc-for list="{{ propTiles }}" as="c" hint-placeholder-count="8">
+                  <div onClick="{{ pickProp }}" data-i="{{ c.i }}" style="cursor: pointer;">
+                    <div style="position: relative; aspect-ratio: 5/7; border-radius: 10px; overflow: hidden; border: 2px solid {{ c.border }}; box-shadow: {{ c.shadow }}; transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;" style-hover="transform: translateY(-3px);">
+                      <img src="{{ c.src }}" alt="{{ c.name }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                      <span style="position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 50%; background: #D81B60; color: #fff; display: {{ c.chk }}; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; box-shadow: 0 2px 6px rgba(0,0,0,0.5);">✓</span>
+                      <span style="position: absolute; left: 6px; bottom: 6px; font-weight: 800; font-size: 10px; padding: 3px 7px; border-radius: 5px; background: rgba(0,0,0,0.72); color: #F2EFE9; backdrop-filter: blur(3px);">{{ c.valLabel }}</span>
+                    </div>
+                    <div style="font-weight: 800; font-size: 10px; color: #C9C6BE; margin-top: 5px; line-height: 1.25;">{{ c.name }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display: flex; gap: 10px; margin-top: 16px;">
+                <input value="{{ propMsg }}" onChange="{{ onPropMsg }}" placeholder="Message à {{ propWho }} (optionnel)…" style="flex: 1; background: #202024; border: 1px solid #2B2B31; border-radius: 999px; padding: 12px 18px; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 13px; outline: none;">
+                <div onClick="{{ propSend }}" style="font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1.5px; padding: 13px 22px; background: {{ propSendBg }}; color: {{ propSendColor }}; border-radius: 10px; cursor: {{ propSendCursor }}; transform: skewX(-3deg); transition: background 0.16s ease, filter 0.16s ease;" style-hover="filter: brightness(1.1);">ENVOYER</div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ propSentVis }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align: center; padding: 26px 10px 14px;">
+            <div style="width: 58px; height: 58px; margin: 0 auto; border-radius: 16px; background: rgba(94,217,154,0.12); border: 1px solid rgba(94,217,154,0.4); color: #5ED99A; display: flex; align-items: center; justify-content: center; font-size: 26px; transform: rotate(-3deg);">✓</div>
+            <h2 style="margin: 18px 0 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 28px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; text-shadow: 3px 3px 0 #D81B60;">Proposition envoyée</h2>
+            <p style="margin: 12px auto 0; max-width: 420px; font-size: 13.5px; line-height: 1.6; color: #A9A9B2;"><strong style="color: #F2EFE9;">{{ propWho }}</strong> a reçu ta proposition. Vous finaliserez l'échange après sa double validation.</p>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 22px;">
+              <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1.5px; padding: 13px 20px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; display: inline-block; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px, -2px); box-shadow: 5px 5px 0 rgba(0,0,0,0.45);">VOIR MES ÉCHANGES</a>
+              <div onClick="{{ closeProp }}" style="font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1.5px; padding: 13px 20px; background: transparent; color: #C9C6BE; border: 1.5px solid #3A3A42; border-radius: 10px; cursor: pointer; transform: skewX(-3deg); transition: border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;" style-hover="border-color: #D81B60; color: #fff;">FERMER</div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { intent: 'sell', rar: 'all', etat: 'all', ver: 'all', search: '', cart: {}, cartOpen: false, payDone: false, lastTotal: 0, lastCount: 0, lastSellers: '', propK: null, propPick: -1, propMsg: '', propSent: false, wallet: (v => (isNaN(v) ? 128.5 : v))(parseFloat(localStorage.getItem('thepark_wallet'))) };
+
+  constructor(props) {
+    super(props);
+    this.RARS = {
+      c: { glyph: '◆', color: '#9BA3B2', label: 'Communes', tilt: 3, holo: '0.3' },
+      r: { glyph: '◈', color: '#4FA3FF', label: 'Rares Holo', tilt: 5, holo: '0.5' },
+      u: { glyph: '✦', color: '#B05CFF', label: 'Ultra Rares', tilt: 6, holo: '0.65' },
+      l: { glyph: '❀', color: '#FF2E63', label: 'Légendaires', tilt: 8, holo: '0.8' },
+      g: { glyph: '✸', color: '#E8B23A', label: 'Gold', tilt: 8, holo: '0.85' },
+      p: { glyph: '✪', color: '#6FE3D0', label: 'Uniques', tilt: 9, holo: '0.9' }
+    };
+    this.ETATS = {
+      neuf: { label: 'Neuf', color: '#5ED99A' },
+      tbon: { label: 'Très bon', color: '#4FA3FF' },
+      bon: { label: 'Bon', color: '#E8B23A' },
+      abime: { label: 'Abîmé', color: '#FF6B5E' }
+    };
+    this.SELLERS = {
+      LIGHTON_FACTORY: { rating: '4,9', reviews: 231, av: 'L', avBg: 'linear-gradient(135deg, #D81B60, #7A0F37)' },
+      'DRIFT_KING_06': { rating: '4,7', reviews: 88, av: 'D', avBg: 'linear-gradient(135deg, #4FA3FF, #1F4E8C)' },
+      'SARA.S15': { rating: '5,0', reviews: 54, av: 'S', avBg: 'linear-gradient(135deg, #B05CFF, #5A1F8C)' },
+      TOUGE_HUNTER: { rating: '4,4', reviews: 19, av: 'T', avBg: 'linear-gradient(135deg, #E8B23A, #8C641F)' },
+      MIDNIGHT_PURPLE: { rating: '4,8', reviews: 143, av: 'M', avBg: 'linear-gradient(135deg, #6FE3D0, #1F8C7A)' },
+      HACHI_ROKU: { rating: '4,6', reviews: 31, av: 'H', avBg: 'linear-gradient(135deg, #FF6B5E, #8C2F1F)' }
+    };
+    // type, num, name, rarity, img, version, état, price, seller
+    this.LIST = [
+      ['sell', 35, 'NISSAN SILVIA S13 KOUKI', 'r', '35_NISSAN_S13_KOUKI.jpg', 'Reverse', 'tbon', '14,50 €', 'LIGHTON_FACTORY'],
+      ['sell', 42, 'TOYOTA SUPRA MK4', 'r', '42_TOYOTA_SUPRA_MK4_rare.jpg', 'Standard', 'neuf', '19,90 €', 'DRIFT_KING_06'],
+      ['sell', 54, 'NISSAN SILVIA S15 ULTIME', 'u', '54_NISSAN_S15_ICONIQUE.jpg', 'Standard', 'neuf', '32,00 €', 'SARA.S15'],
+      ['sell', 76, 'TOYOTA COROLLA AE86 TRUENO', 'g', '76_TOYOTA_COROLLA_TRUENO.jpg', 'Standard', 'neuf', '149,00 €', 'LIGHTON_FACTORY'],
+      ['sell', 27, 'CHEVROLET CORVETTE C5', 'c', '27-CHEVROLET_CORVETTE_C5.jpg', 'Alternative', 'bon', '6,50 €', 'TOUGE_HUNTER'],
+      ['sell', 64, 'PORSCHE 911 RWB', 'u', '64_PORSCHE_911_RWB.jpg', 'Reverse', 'tbon', '39,90 €', 'MIDNIGHT_PURPLE'],
+      ['sell', 11, 'TOYOTA CHASER JZX100', 'c', '11-TOYOTA_CHASER_JZX100.jpg', 'Standard', 'abime', '2,90 €', 'TOUGE_HUNTER'],
+      ['sell', 70, 'NISSAN SILVIA PS13 DE MIKE', 'l', '70_Nissan_PS13_Mike.jpg', 'Standard', 'neuf', '89,00 €', 'SARA.S15'],
+      ['sell', 33, 'NISSAN SKYLINE R33', 'r', '33_Nissan_R33_nismo.jpg', 'Standard', 'bon', '9,90 €', 'DRIFT_KING_06'],
+      ['sell', 59, 'TOYOTA SUPRA MK4 SECRÈTE', 'u', '59_TOYOTA_SUPRA_MK4_SECRET.jpg', 'Standard', 'tbon', '54,00 €', 'MIDNIGHT_PURPLE'],
+      ['sell', 13, 'BMW E30 325I', 'c', '13-BMW_E30_325i.jpg', 'Reverse', 'tbon', '4,50 €', 'LIGHTON_FACTORY'],
+      ['sell', 74, "DMC DELOREAN D'ALEXANDRE", 'l', '74_DMC_DELOREAN.jpg', 'Standard', 'neuf', '120,00 €', 'SARA.S15'],
+      ['want', 56, 'NISSAN SKYLINE R32 FANTÔME', 'u', '56_NISSAN_SKYLINE_R32_fantôme.jpg', 'Standard', 'tbon', '45,00 €', 'TOUGE_HUNTER'],
+      ['want', 75, 'HONDA NSX TYPE-R NA1', 'g', '75_HONDA_NSX_NA1.jpg', 'Standard', 'neuf', '120,00 €', 'HACHI_ROKU'],
+      ['want', 71, 'NISSAN SKYLINE R33 MIDNIGHT', 'l', '71_NISSAN_R33_MIDNIGHT.jpg', 'Standard', 'tbon', '60,00 €', 'MIDNIGHT_PURPLE'],
+      ['want', 40, 'TOYOTA COROLLA AE86 LEVIN', 'r', '40_TOYOTA_COROLLA_LEVIN.jpg', 'Reverse', 'bon', '8,00 €', 'HACHI_ROKU'],
+      ['want', 22, 'PORSCHE CAYMAN', 'c', '22-PORSCHE_CAYMAN.jpg', 'Alternative', 'bon', '5,00 €', 'DRIFT_KING_06'],
+      ['want', 77, 'NISSAN SKYLINE R34 TITANESQUE', 'p', '77_NISSAN_R34_TITAN.jpg', 'Standard', 'neuf', '300,00 €', 'SARA.S15']
+    ];
+    // mes cartes proposables sur une annonce "recherche"
+    this.MYCARDS = [
+      { img: '35_NISSAN_S13_KOUKI.jpg', name: 'NISSAN S13 KOUKI', val: 14.5 },
+      { img: '66_MERCEDES_DTM_EVOII.jpg', name: 'MERCEDES 190E EVO II DTM', val: 28 },
+      { img: '52_Nissan_S14A_preparee.jpg', name: 'NISSAN S14 KOUKI', val: 24 },
+      { img: '38_MAZDA_RXY_FD.jpg', name: 'MAZDA RX7 FD', val: 12.9 },
+      { img: '32_NISSAN_SKYLINE_R32.jpg', name: 'NISSAN SKYLINE R32', val: 7.9 },
+      { img: '26-CHEVROLET_CAMARO_SS.jpg', name: 'CHEVROLET CAMARO SS', val: 6.5 },
+      { img: '13-BMW_E30_325i.jpg', name: 'BMW E30 325I', val: 4.5 },
+      { img: '11-TOYOTA_CHASER_JZX100.jpg', name: 'TOYOTA CHASER JZX100', val: 2.9 }
+    ];
+  }
+
+  renderVals() {
+    const { intent, rar, etat, ver, search, cart, cartOpen, payDone, propK, propPick, propMsg, propSent, wallet } = this.state;
+    const q = search.trim().toLowerCase();
+    const glare = "radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.5), rgba(255,255,255,0) 42%)";
+    const rainbow = "conic-gradient(from 30deg at var(--mx, 50%) var(--my, 50%), rgba(255,46,99,0.4), rgba(255,209,102,0.4), rgba(111,227,208,0.4), rgba(79,163,255,0.4), rgba(176,92,255,0.4), rgba(255,46,99,0.4))";
+    const gold = "radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,236,170,0.7), rgba(232,178,58,0.15) 55%), linear-gradient(115deg, rgba(232,178,58,0.3), rgba(255,255,255,0.08))";
+
+    const all = this.LIST.map((x, idx) => {
+      const [type, num, name, r, img, version, et, price, seller] = x;
+      const m = this.RARS[r];
+      const e = this.ETATS[et];
+      const s = this.SELLERS[seller];
+      const isWant = type === 'want';
+      let bg = glare, blend = 'soft-light';
+      if (r === 'g') { bg = gold; blend = 'screen'; }
+      else if (r !== 'c') { bg = glare + ', ' + rainbow; blend = 'overlay'; }
+      return {
+        type, num, name, r, version, etatKey: et,
+        k: String(idx), priceNum: parseFloat(price.replace(',', '.')),
+        src: 'uploads/' + img,
+        numLabel: r === 'p' ? String(num).padStart(2, '0') + ' · PROMO' : String(num).padStart(2, '0') + '/67',
+        glyph: m.glyph, rarColor: m.color, tilt: String(m.tilt), holo: m.holo, bg, blend,
+        etatLabel: isWant ? 'min. ' + e.label : e.label, etatColor: e.color,
+        seller, rating: s.rating, reviews: s.reviews, avIni: s.av, avBg: s.avBg,
+        price,
+        priceCaption: isWant ? 'Budget max' : 'Prix',
+        isWant,
+        btnLabel: isWant ? 'PROPOSER LA MIENNE' : (cart[idx] ? '✓ DANS LE PANIER' : 'AJOUTER AU PANIER'),
+        btnBg: isWant || cart[idx] ? 'transparent' : '#D81B60',
+        btnColor: isWant ? '#F2EFE9' : (cart[idx] ? '#5ED99A' : '#fff'),
+        btnBorder: isWant ? '#3A3A42' : (cart[idx] ? 'rgba(94,217,154,0.45)' : '#D81B60')
+      };
+    });
+
+    const match = (l) => {
+      if (l.type !== intent) return false;
+      if (rar !== 'all' && l.r !== rar) return false;
+      if (etat !== 'all' && l.etatKey !== etat) return false;
+      if (ver !== 'all' && l.version !== ver) return false;
+      if (q && !(l.name.toLowerCase().includes(q) || String(l.num).padStart(2, '0').includes(q) || l.seller.toLowerCase().includes(q))) return false;
+      return true;
+    };
+    const listings = all.filter(match);
+
+    const chip = (active, accent) => ({
+      border: active ? accent : '#2B2B31',
+      bg: active ? 'rgba(216,27,96,0.12)' : '#1A1A1E',
+      color: active ? '#F2EFE9' : '#8E8E98'
+    });
+
+    const rchips = [{ k: 'all', label: 'Toutes raretés', glyph: '☰', glyphColor: '#8E8E98' }]
+      .concat(Object.entries(this.RARS).map(([k, m]) => ({ k, label: m.label, glyph: m.glyph, glyphColor: m.color })))
+      .map(c => ({ ...c, ...chip(rar === c.k, c.k === 'all' ? '#D81B60' : c.glyphColor) }));
+
+    const echips = [{ k: 'all', label: 'Tous' }]
+      .concat(Object.entries(this.ETATS).map(([k, e]) => ({ k, label: e.label })))
+      .map(c => ({ ...c, ...chip(etat === c.k, '#D81B60') }));
+
+    const vchips = [{ k: 'all', label: 'Toutes' }, { k: 'Standard', label: 'Standard' }, { k: 'Reverse', label: 'Reverse' }, { k: 'Alternative', label: 'Alternative' }]
+      .map(c => ({ ...c, ...chip(ver === c.k, '#D81B60') }));
+
+    const fmt = (n) => n.toFixed(2).replace('.', ',') + ' €';
+    const cartItems = all.filter(l => l.type === 'sell' && cart[l.k]);
+    const bySeller = {};
+    cartItems.forEach(l => { (bySeller[l.seller] = bySeller[l.seller] || []).push(l); });
+    const groups = Object.keys(bySeller).map(s => {
+      const its = bySeller[s];
+      const sub = its.reduce((a, c) => a + c.priceNum, 0);
+      const ship = sub >= 50 ? 0 : 2.9;
+      const sd = this.SELLERS[s];
+      return {
+        seller: s, avIni: sd.av, avBg: sd.avBg, rating: sd.rating, sub, ship,
+        items: its.map(l => ({ k: l.k, src: l.src, name: l.name, meta: l.etatLabel + ' · ' + l.version, priceLabel: l.price })),
+        subLabel: fmt(sub),
+        shipLabel: ship === 0 ? 'Offerte' : fmt(ship),
+        shipColor: ship === 0 ? '#5ED99A' : '#C9C6BE'
+      };
+    });
+    const subAll = groups.reduce((a, g) => a + g.sub, 0);
+    const shipAll = groups.reduce((a, g) => a + g.ship, 0);
+    const total = subAll + shipAll;
+    const insufficient = total > wallet;
+    const propL = propK !== null ? all[propK] : null;
+    const propTiles = this.MYCARDS.map((c, i) => ({
+      i: String(i), src: 'uploads/' + c.img, name: c.name, valLabel: fmt(c.val),
+      border: propPick === i ? '#D81B60' : 'rgba(255,255,255,0.1)',
+      shadow: propPick === i ? '0 8px 20px rgba(216,27,96,0.35)' : '0 6px 14px rgba(0,0,0,0.4)',
+      chk: propPick === i ? 'flex' : 'none'
+    }));
+    const canProp = propPick >= 0;
+
+    return {
+      walletLabel: fmt(wallet),
+      listings, rchips, echips, vchips, search,
+      empty: listings.length === 0,
+      sellCount: all.filter(l => l.type === 'sell').length,
+      wantCount: all.filter(l => l.type === 'want').length,
+      sellBg: intent === 'sell' ? '#D81B60' : 'transparent',
+      sellColor: intent === 'sell' ? '#fff' : '#8E8E98',
+      wantBg: intent === 'want' ? '#D81B60' : 'transparent',
+      wantColor: intent === 'want' ? '#fff' : '#8E8E98',
+      hasCart: cartItems.length > 0, cartOpen, cartCount: cartItems.length, groups,
+      cartTotalLabel: fmt(total),
+      sellerCount: groups.length > 1 ? groups.length + ' vendeurs' : '1 vendeur',
+      subAllLabel: fmt(subAll),
+      shipAllLabel: shipAll === 0 ? 'Offerte' : fmt(shipAll),
+      totalLabel: fmt(total),
+      afterLabel: fmt(wallet - total), afterColor: insufficient ? '#FF6B5E' : '#5ED99A',
+      insufficient, canPay: !insufficient && cartItems.length > 0,
+      payDone,
+      lastCountLabel: this.state.lastCount > 1 ? this.state.lastCount + ' cartes achetées' : '1 carte achetée',
+      lastTotalLabel: fmt(this.state.lastTotal),
+      lastSellers: this.state.lastSellers,
+      propOpen: propL !== null,
+      propFormVis: propL !== null && !propSent,
+      propSentVis: propL !== null && propSent,
+      propWho: propL ? propL.seller : '',
+      propBudget: propL ? propL.price : '',
+      propEtat: propL ? propL.etatLabel.replace('min. ', '') : '',
+      propSrc: propL ? propL.src : '', propName: propL ? propL.name : '',
+      propTiles, propMsg,
+      propSendBg: canProp ? '#D81B60' : '#26262B',
+      propSendColor: canProp ? '#fff' : '#5A5A64',
+      propSendCursor: canProp ? 'pointer' : 'not-allowed',
+      actBtn: (e) => {
+        const k = e.currentTarget.dataset.k;
+        const l = all[+k];
+        if (!l) return;
+        if (l.isWant) {
+          this.setState({ propK: +k, propPick: -1, propMsg: '', propSent: false });
+        } else {
+          const c = { ...this.state.cart };
+          if (c[k]) delete c[k]; else c[k] = 1;
+          this.setState({ cart: c });
+        }
+      },
+      removeFromCart: (e) => {
+        const c = { ...this.state.cart };
+        delete c[e.currentTarget.dataset.k];
+        this.setState({ cart: c });
+      },
+      openCart: () => this.setState({ cartOpen: true }),
+      closeCart: (e) => { if (e.target === e.currentTarget) this.setState({ cartOpen: false }); },
+      pay: () => {
+        if (insufficient || cartItems.length === 0) return;
+        const w = wallet - total;
+        localStorage.setItem('thepark_wallet', String(w));
+        this.setState({ wallet: w, cart: {}, cartOpen: false, payDone: true, lastTotal: total, lastCount: cartItems.length, lastSellers: groups.map(g => g.seller).join(', ') });
+      },
+      closePay: (e) => { if (e.target === e.currentTarget) this.setState({ payDone: false }); },
+      closeProp: (e) => { if (e.target === e.currentTarget) this.setState({ propK: null, propSent: false }); },
+      pickProp: (e) => this.setState({ propPick: +e.currentTarget.dataset.i }),
+      onPropMsg: (e) => this.setState({ propMsg: e.target.value }),
+      propSend: () => { if (canProp) this.setState({ propSent: true }); },
+      setIntent: (e) => this.setState({ intent: e.currentTarget.dataset.i }),
+      setRar: (e) => this.setState({ rar: e.currentTarget.dataset.k }),
+      setEtat: (e) => this.setState({ etat: e.currentTarget.dataset.k }),
+      setVer: (e) => this.setState({ ver: e.currentTarget.dataset.k }),
+      onSearch: (e) => this.setState({ search: e.target.value }),
+      cardMove: (e) => {
+        const el = e.currentTarget;
+        const rect = el.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width;
+        const py = (e.clientY - rect.top) / rect.height;
+        el.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+        el.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+        const t = +el.dataset.tilt || 5;
+        el.style.transform = 'perspective(900px) rotateY(' + ((px - 0.5) * 2 * t).toFixed(2) + 'deg) rotateX(' + (-(py - 0.5) * 2 * t).toFixed(2) + 'deg) scale(1.03)';
+        el.style.setProperty('--ho', el.dataset.holo || '0.5');
+      },
+      cardLeave: (e) => {
+        const el = e.currentTarget;
+        el.style.transform = '';
+        el.style.setProperty('--ho', '0');
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

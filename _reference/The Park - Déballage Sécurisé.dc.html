@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes recPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.82); } }
+@keyframes ringPulse { 0% { transform: scale(0.85); opacity: 0.8; } 100% { transform: scale(1.8); opacity: 0; } }
+@keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(800%); } }
+@keyframes stampIn { 0% { opacity: 0; transform: scale(2.4) rotate(-18deg); } 55% { opacity: 1; } 100% { opacity: 1; transform: scale(1) rotate(-7deg); } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+input::placeholder { color: #5A5A64; }
+</style>
+</helmet>
+<div data-screen-label="Déballage sécurisé" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center;">
+      <a href="The Park - Accueil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.6px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ACCUEIL</a>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.6px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">COLLECTION</a>
+      <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.6px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">MARKETPLACE</a>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.6px; padding: 8px 13px; background: #D81B60; color: #fff; border-radius: 7px; transform: rotate(-1.5deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); text-decoration: none;">ÉCHANGES</a>
+      <a href="The Park - Classements.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.6px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">CLASSEMENTS</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 36px; height: 36px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Messages.dc.html" title="Messages" style="position: relative; width: 36px; height: 36px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a>
+      <a href="The Park - Profil.dc.html" title="KENJI-13 · Profil" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #2B2B31; text-decoration: none; transition: border-color 0.18s ease, transform 0.2s ease;" style-hover="border-color: #D81B60; transform: scale(1.08) rotate(-4deg);">K</a>
+    </div>
+  </div>
+
+  <div style="position: relative; max-width: 1280px; margin: 0 auto; padding: 30px 28px 70px;">
+
+    <!-- kanji watermark -->
+    <div style="position: absolute; top: 8px; right: 14px; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 150px; line-height: 1; color: rgba(242,239,233,0.03); pointer-events: none; user-select: none;">開封</div>
+
+    <!-- breadcrumb -->
+    <div style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 12px; color: #8E8E98;">
+      <a href="The Park - Échanges.dc.html" style="color: #8E8E98; text-decoration: none;" style-hover="color: #D81B60;">Échanges</a>
+      <span style="color: #45454E;">/</span>
+      <a href="The Park - Échanges.dc.html" style="color: #8E8E98; text-decoration: none;" style-hover="color: #D81B60;">E-2412 · SARA.S15</a>
+      <span style="color: #45454E;">/</span>
+      <span style="color: #C9C6BE;">Déballage</span>
+    </div>
+
+    <!-- ===== HERO HEADER ===== -->
+    <div style="display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; margin-top: 14px;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 12px; letter-spacing: 3px; color: #4FA3FF; text-transform: uppercase; margin-bottom: 10px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4FA3FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><path d="m3.3 7 8.7 5 8.7-5M12 22V12"></path></svg>
+          Colis livré · à toi de confirmer
+        </div>
+        <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(38px, 5.4vw, 64px); line-height: 0.92; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 4px 4px 0 #D81B60;">Déballage sécurisé</h1>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; padding: 8px 13px; border-radius: 10px; background: linear-gradient(135deg, rgba(79,163,255,0.14), rgba(79,163,255,0.04)); border: 1px solid rgba(79,163,255,0.4); margin-bottom: 8px;">
+        <span style="width: 9px; height: 9px; border-radius: 50%; background: #4FA3FF;"></span>
+        <span style="font-weight: 800; font-size: 11.5px; color: #4FA3FF;">SARA.S15 a tout filmé · 4/4 preuves</span>
+      </div>
+    </div>
+    <p style="max-width: 760px; margin: 16px 0 0; font-size: 13.5px; line-height: 1.65; color: #8E8E98; animation: fadeUp 0.5s 0.05s ease;">Le transporteur a marqué le colis <strong style="color: #C9C6BE;">« livré »</strong>. Confirme la réception pour clôturer l'échange et <strong style="color: #C9C6BE;">libérer les cautions</strong>. Un souci ? Filme le déballage en continu — ta vidéo devient la preuve qui arbitre le litige.</p>
+
+    <!-- ===== STATE MACHINE STEPPER ===== -->
+    <div style="margin-top: 26px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 26px 30px 22px; animation: fadeUp 0.5s 0.08s ease;">
+      <div style="display: flex; align-items: flex-start;">
+        <sc-for list="{{ nodes }}" as="n" hint-placeholder-count="6">
+          <div style="position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center;">
+            <sc-if value="{{ n.showLine }}" hint-placeholder-val="{{ true }}">
+              <div style="position: absolute; top: 17px; left: -50%; width: 100%; height: 3px; background: {{ n.lineColor }}; z-index: 0;"></div>
+            </sc-if>
+            <sc-if value="{{ n.pulse }}" hint-placeholder-val="{{ false }}">
+              <div style="position: absolute; top: 0; width: 36px; height: 36px; border-radius: 50%; border: 2px solid {{ n.pulseColor }}; animation: ringPulse 1.4s ease-out infinite; z-index: 0;"></div>
+            </sc-if>
+            <div style="position: relative; z-index: 1; width: 36px; height: 36px; border-radius: 50%; background: {{ n.circleBg }}; border: 2px solid {{ n.circleBorder }}; color: {{ n.circleColor }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px;">{{ n.icon }}</div>
+            <div style="font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 0.6px; color: {{ n.labelColor }}; margin-top: 10px; text-transform: uppercase;">{{ n.label }}</div>
+            <div style="font-weight: 700; font-size: 10.5px; color: #6E6E78; margin-top: 3px;">{{ n.sub }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- ===== MAIN GRID ===== -->
+    <div style="display: grid; grid-template-columns: 1fr 358px; gap: 18px; margin-top: 18px; align-items: start;">
+
+      <!-- ===== LEFT ===== -->
+      <div style="display: flex; flex-direction: column; gap: 14px; animation: fadeUp 0.5s 0.1s ease;">
+
+        <!-- ====== DECISION CARD (open) ====== -->
+        <sc-if value="{{ isOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="position: relative; background: #1A1A1E; border: 1.5px solid #2B2B31; border-radius: 18px; padding: 22px 24px; overflow: hidden;">
+            <div style="position: absolute; inset: 0; background: radial-gradient(circle at 92% 0%, rgba(79,163,255,0.1), transparent 55%); pointer-events: none;"></div>
+
+            <div style="position: relative; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8B23A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+                <div style="font-family: 'Anton', sans-serif; font-size: 17px; letter-spacing: 0.6px; color: #F2EFE9;">Fenêtre de confirmation</div>
+              </div>
+              <div style="margin-left: auto; display: flex; align-items: baseline; gap: 9px;">
+                <span style="font-family: 'Anton', sans-serif; font-size: 30px; letter-spacing: 1.5px; color: #E8B23A; font-variant-numeric: tabular-nums;">{{ countdown }}</span>
+                <span style="font-weight: 800; font-size: 11px; color: #6E6E78; text-transform: uppercase; letter-spacing: 1px;">restantes</span>
+              </div>
+            </div>
+            <div style="position: relative; height: 7px; border-radius: 999px; background: #26262B; margin-top: 14px; overflow: hidden;">
+              <div style="height: 100%; width: {{ barPct }}; border-radius: 999px; background: linear-gradient(90deg, #E8B23A, #D81B60);"></div>
+            </div>
+            <div style="position: relative; display: flex; justify-content: space-between; margin-top: 7px; font-weight: 700; font-size: 10.5px; color: #6E6E78;">
+              <span>Livré le {{ deliveredAt }}</span>
+              <span>Clôture auto le {{ autoCloseAt }}</span>
+            </div>
+
+            <!-- what you receive -->
+            <div style="position: relative; display: flex; align-items: center; gap: 15px; margin-top: 20px; padding: 14px 16px; background: #202024; border: 1px solid #2B2B31; border-radius: 14px;">
+              <img src="uploads/43_BMW_E30_TOURING.jpg" alt="BMW E30 Touring" style="width: 52px; aspect-ratio: 5/7; object-fit: cover; border-radius: 8px; box-shadow: 0 8px 18px rgba(0,0,0,0.5);">
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; color: #6E6E78; text-transform: uppercase;">Tu reçois de SARA.S15</div>
+                <div style="font-weight: 800; font-size: 14.5px; color: #F2EFE9; margin-top: 3px;">BMW E30 Touring</div>
+                <div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-top: 2px;">◈ Rare · Standard · annoncée « Neuf » · cote 8,50 €</div>
+              </div>
+              <a href="The Park - Carte.dc.html" style="font-weight: 800; font-size: 11px; color: #D81B60; text-decoration: none; white-space: nowrap;" style-hover="color: #F0246F;">Voir la fiche →</a>
+            </div>
+
+            <!-- TWO PATHS -->
+            <div style="position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+              <!-- confirm -->
+              <div style="display: flex; flex-direction: column; background: #202024; border: 1.5px solid rgba(94,217,154,0.4); border-radius: 14px; padding: 16px 16px 17px;">
+                <div style="display: flex; align-items: center; gap: 9px;">
+                  <span style="width: 28px; height: 28px; border-radius: 8px; background: rgba(94,217,154,0.14); color: #5ED99A; display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+                  <div style="font-weight: 800; font-size: 13.5px; color: #F2EFE9;">Tout est conforme</div>
+                </div>
+                <div style="font-weight: 600; font-size: 11.5px; color: #8E8E98; margin-top: 8px; line-height: 1.5; flex: 1;">La carte reçue correspond à l'annonce et à son état. La clôture libère les deux cautions immédiatement.</div>
+                <div onClick="{{ onConfirm }}" style="margin-top: 14px; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1px; padding: 12px; text-align: center; background: #5ED99A; color: #0E1A12; border-radius: 10px; cursor: pointer; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;" style-hover="transform: skewX(-3deg) translate(-2px,-2px); filter: brightness(1.06); box-shadow: 5px 5px 0 rgba(0,0,0,0.4);">CONFIRMER LA RÉCEPTION</div>
+              </div>
+              <!-- problem -->
+              <div style="display: flex; flex-direction: column; background: #202024; border: 1.5px solid rgba(255,107,94,0.4); border-radius: 14px; padding: 16px 16px 17px;">
+                <div style="display: flex; align-items: center; gap: 9px;">
+                  <span style="width: 28px; height: 28px; border-radius: 8px; background: rgba(255,107,94,0.12); color: #FF6B5E; display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4M12 17h.01"></path></svg></span>
+                  <div style="font-weight: 800; font-size: 13.5px; color: #F2EFE9;">Il y a un problème</div>
+                </div>
+                <div style="font-weight: 600; font-size: 11.5px; color: #8E8E98; margin-top: 8px; line-height: 1.5; flex: 1;">Carte abîmée, fausse ou absente. Filme l'ouverture <strong style="color: #C9C6BE;">en continu</strong> : la vidéo ouvre un litige et sert de preuve.</div>
+                <div onClick="{{ onFilm }}" style="margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1px; padding: 12px; background: transparent; color: #FF6B5E; border: 1.5px solid #FF6B5E; border-radius: 10px; cursor: pointer; transform: skewX(-3deg); transition: transform 0.15s ease, background 0.15s ease;" style-hover="transform: skewX(-3deg) translate(-2px,-2px); background: rgba(255,107,94,0.08);"><span style="width: 8px; height: 8px; border-radius: 50%; background: #FF6B5E;"></span>FILMER LE DÉBALLAGE</div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ====== CONFIRMED (closed OK) ====== -->
+        <sc-if value="{{ isConfirmed }}" hint-placeholder-val="{{ false }}">
+          <div style="position: relative; background: linear-gradient(150deg, rgba(94,217,154,0.1), #1A1A1E 55%); border: 1.5px solid rgba(94,217,154,0.45); border-radius: 18px; padding: 26px 24px; overflow: hidden; animation: pop 0.3s ease;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <span style="width: 50px; height: 50px; border-radius: 14px; background: #5ED99A; color: #0E1A12; display: flex; align-items: center; justify-content: center; transform: rotate(-6deg); box-shadow: 0 10px 22px rgba(94,217,154,0.3);"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              <div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 26px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Réception confirmée</div>
+                <div style="font-weight: 700; font-size: 12.5px; color: #5ED99A; margin-top: 3px;">Échange E-2412 clôturé · cartes transférées dans vos classeurs</div>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-top: 20px;">
+              <div style="background: #202024; border: 1px solid #2B2B31; border-radius: 12px; padding: 13px 15px;">
+                <div style="font-weight: 700; font-size: 10px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">Ta caution</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 18px; color: #5ED99A; margin-top: 4px;">Libérée ✓</div>
+                <div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; margin-top: 2px;">14,50 € — rien n'a été prélevé.</div>
+              </div>
+              <div style="background: #202024; border: 1px solid #2B2B31; border-radius: 12px; padding: 13px 15px;">
+                <div style="font-weight: 700; font-size: 10px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">Caution SARA.S15</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 18px; color: #5ED99A; margin-top: 4px;">Libérée ✓</div>
+                <div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; margin-top: 2px;">8,50 € — rien n'a été prélevé.</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap;">
+              <a href="The Park - Classeur.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1px; padding: 11px 18px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4);">VOIR MON CLASSEUR</a>
+              <div onClick="{{ onReview }}" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1px; padding: 11px 18px; background: transparent; color: #E8B23A; border: 1.5px solid #E8B23A; border-radius: 10px; cursor: pointer; transform: skewX(-3deg);">★ NOTER SARA.S15</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ====== DISPUTED (problem filmed) ====== -->
+        <sc-if value="{{ isDisputed }}" hint-placeholder-val="{{ false }}">
+          <div style="position: relative; background: linear-gradient(150deg, rgba(255,107,94,0.1), #1A1A1E 55%); border: 1.5px solid rgba(255,107,94,0.45); border-radius: 18px; padding: 24px; overflow: hidden; animation: pop 0.3s ease;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <span style="width: 50px; height: 50px; border-radius: 14px; background: rgba(255,107,94,0.16); color: #FF6B5E; display: flex; align-items: center; justify-content: center; transform: rotate(-6deg);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4M12 17h.01"></path></svg></span>
+              <div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 24px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Déballage filmé · litige ouvert</div>
+                <div style="font-weight: 700; font-size: 12.5px; color: #FF6B5E; margin-top: 3px;">Dossier L-2412 transmis à la modération · réponse sous 48 h</div>
+              </div>
+            </div>
+            <div style="font-weight: 600; font-size: 12.5px; color: #8E8E98; margin-top: 16px; line-height: 1.6; max-width: 620px;">Ta vidéo d'ouverture a été <strong style="color: #C9C6BE;">horodatée et chiffrée</strong>, puis jointe aux 4 preuves de SARA.S15 et au suivi transporteur. Les cautions restent <strong style="color: #E8B23A;">bloquées</strong> jusqu'à la décision. Tu peux suivre l'arbitrage dans le dossier.</div>
+            <a href="The Park - Litige Arbitrage.dc.html" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1px; padding: 12px 20px; background: #FF6B5E; color: #1A0F0D; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4);">SUIVRE LE DOSSIER DE LITIGE →</a>
+          </div>
+        </sc-if>
+
+        <!-- ====== CARRIER TRACKING TIMELINE ====== -->
+        <div style="display: flex; align-items: center; gap: 11px; margin-top: 6px;">
+          <div style="font-family: 'Anton', sans-serif; font-size: 18px; letter-spacing: 0.8px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Suivi transporteur</div>
+          <div style="flex: 1; height: 1px; background: #26262B;"></div>
+          <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; color: #45454E;">追跡</span>
+        </div>
+
+        <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; padding: 18px 20px;">
+          <!-- header -->
+          <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 15px; border-bottom: 1px solid #26262B;">
+            <div style="width: 38px; height: 38px; border-radius: 10px; background: #202024; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #4FA3FF; flex-shrink: 0;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 9px; flex-wrap: wrap;">
+                <span style="font-weight: 800; font-size: 13px; color: #F2EFE9;">Colissimo suivi recommandé</span>
+                <span style="font-family: 'Hanken Grotesk', sans-serif; font-weight: 800; font-size: 11.5px; letter-spacing: 1px; color: #C9C6BE; background: #202024; border: 1px solid #2B2B31; border-radius: 6px; padding: 3px 8px;">6A 1234 5678 9</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 7px; margin-top: 5px; font-weight: 700; font-size: 10.5px; color: #6E6E78;">
+                <span style="display: inline-flex; align-items: center; gap: 5px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #5ED99A;"></span>Synchronisé via API La Poste</span>
+                <span style="color: #45454E;">·</span>
+                <span>actualisé il y a 4 min</span>
+              </div>
+            </div>
+            <span style="font-weight: 800; font-size: 10px; letter-spacing: 0.5px; padding: 6px 12px; border-radius: 999px; background: rgba(94,217,154,0.14); color: #5ED99A; text-transform: uppercase; white-space: nowrap;">Livré ✓</span>
+          </div>
+
+          <!-- timeline -->
+          <div style="margin-top: 6px;">
+            <sc-for list="{{ track }}" as="e" hint-placeholder-count="4">
+              <div style="position: relative; display: flex; gap: 15px; padding: 11px 0 11px 4px;">
+                <div style="position: relative; display: flex; flex-direction: column; align-items: center; flex-shrink: 0;">
+                  <span style="width: 15px; height: 15px; border-radius: 50%; background: {{ e.dotBg }}; border: 3px solid #1A1A1E; box-shadow: 0 0 0 1.5px {{ e.ring }}; z-index: 1;"></span>
+                  <sc-if value="{{ e.showLine }}" hint-placeholder-val="{{ true }}">
+                    <span style="position: absolute; top: 15px; width: 2px; height: 36px; background: {{ e.lineColor }};"></span>
+                  </sc-if>
+                </div>
+                <div style="flex: 1; min-width: 0; margin-top: -2px;">
+                  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                    <span style="font-weight: 800; font-size: 12.5px; color: {{ e.titleColor }};">{{ e.label }}</span>
+                    <span style="font-weight: 700; font-size: 11px; color: #6E6E78; white-space: nowrap; font-variant-numeric: tabular-nums;">{{ e.when }}</span>
+                  </div>
+                  <div style="font-weight: 600; font-size: 11px; color: #8E8E98; margin-top: 2px;">{{ e.place }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- machine-check footnote -->
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 13px; border-top: 1px solid #26262B;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5ED99A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            <span style="font-weight: 700; font-size: 10.5px; color: #8E8E98;">Le statut « livré » de l'API a ouvert ta fenêtre de confirmation automatiquement.</span>
+          </div>
+        </div>
+
+        <!-- sender proofs recap -->
+        <div style="background: #16161a; border: 1px solid #232328; border-radius: 16px; padding: 16px 20px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-weight: 800; font-size: 12.5px; color: #C9C6BE;">Preuves de SARA.S15 jointes au dossier</div>
+            <span style="font-weight: 800; font-size: 10px; letter-spacing: 0.5px; color: #5ED99A; text-transform: uppercase;">4/4 horodatées</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; margin-top: 12px;">
+            <sc-for list="{{ senderProofs }}" as="p" hint-placeholder-count="4">
+              <div style="background: #202024; border: 1px solid #2B2B31; border-radius: 10px; padding: 10px;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <span style="width: 18px; height: 18px; border-radius: 50%; background: rgba(94,217,154,0.16); color: #5ED99A; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900;">✓</span>
+                  <span style="font-weight: 700; font-size: 9.5px; color: #6E6E78;">{{ p.tag }}</span>
+                </div>
+                <div style="font-weight: 800; font-size: 11px; color: #F2EFE9; margin-top: 7px; line-height: 1.3;">{{ p.title }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== RIGHT SIDEBAR ===== -->
+      <div style="position: sticky; top: 90px; display: flex; flex-direction: column; gap: 14px; animation: fadeUp 0.5s 0.14s ease;">
+
+        <!-- caution status -->
+        <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 20px 20px 22px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.8px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Cautions</div>
+            <span style="font-weight: 800; font-size: 9.5px; letter-spacing: 0.5px; padding: 5px 10px; border-radius: 6px; background: {{ cautionTagBg }}; color: {{ cautionTagColor }}; text-transform: uppercase;">{{ cautionTagLabel }}</span>
+          </div>
+          <div style="font-weight: 700; font-size: 11px; color: #6E6E78; margin-top: 4px; line-height: 1.5;">{{ cautionNote }}</div>
+          <div style="display: flex; flex-direction: column; gap: 9px; margin-top: 15px;">
+            <sc-for list="{{ cautions }}" as="c" hint-placeholder-count="2">
+              <div style="background: #202024; border: 1.5px solid {{ c.border }}; border-radius: 12px; padding: 13px 14px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-weight: 800; font-size: 12px; color: {{ c.whoColor }};">{{ c.who }}</span>
+                  <span style="font-family: 'Anton', sans-serif; font-size: 19px; color: #E8B23A;">{{ c.amount }}</span>
+                </div>
+                <div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; margin-top: 3px;">{{ c.card }}</div>
+                <div style="display: flex; align-items: center; gap: 6px; margin-top: 9px;">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background: {{ c.dot }};"></span>
+                  <span style="font-weight: 800; font-size: 9.5px; letter-spacing: 0.4px; color: {{ c.stColor }}; text-transform: uppercase;">{{ c.stLabel }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #26262B;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635BFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span style="font-weight: 700; font-size: 10.5px; color: #8E8E98;">Préautorisations gérées par <strong style="color: #635BFF;">Stripe</strong></span>
+          </div>
+        </div>
+
+        <!-- auto-confirmation -->
+        <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; padding: 17px 18px;">
+          <div style="display: flex; align-items: center; gap: 9px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E8B23A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+            <div style="font-weight: 800; font-size: 13px; color: #F2EFE9;">Clôture automatique</div>
+          </div>
+          <div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-top: 8px; line-height: 1.55;">Sans action de ta part sous <strong style="color: #C9C6BE;">72 h</strong>, avec suivi « livré » + preuves expéditeur complètes, l'échange est <strong style="color: #C9C6BE;">clôturé en faveur de SARA.S15</strong>. Ça évite la rétention abusive — confirme dès que tu as vérifié la carte.</div>
+        </div>
+
+        <!-- reliability (recipient) -->
+        <div style="background: linear-gradient(150deg, rgba(94,217,154,0.08), #1A1A1E 60%); border: 1px solid rgba(94,217,154,0.28); border-radius: 16px; padding: 17px 18px;">
+          <span style="display: inline-flex; align-items: center; gap: 5px; font-weight: 800; font-size: 10px; letter-spacing: 0.5px; padding: 4px 9px; border-radius: 6px; background: rgba(94,217,154,0.15); color: #5ED99A; text-transform: uppercase;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>SARA.S15 · Expéditrice vérifiée</span>
+          <div style="display: flex; align-items: flex-end; gap: 14px; margin-top: 13px;">
+            <div>
+              <div style="font-family: 'Anton', sans-serif; font-size: 30px; color: #F2EFE9; line-height: 1;">99<span style="font-size: 16px; color: #5ED99A;">%</span></div>
+              <div style="font-weight: 700; font-size: 10px; color: #6E6E78; margin-top: 3px;">Fiabilité d'envoi</div>
+            </div>
+            <div style="width: 1px; height: 34px; background: #2B2B31;"></div>
+            <div>
+              <div style="font-family: 'Anton', sans-serif; font-size: 30px; color: #F2EFE9; line-height: 1;">0</div>
+              <div style="font-weight: 700; font-size: 10px; color: #6E6E78; margin-top: 3px;">Litige · 73 envois</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- help -->
+        <div style="display: flex; align-items: center; justify-content: space-between; background: #16161a; border: 1px solid #2B2B31; border-radius: 13px; padding: 13px 16px;">
+          <div style="display: flex; align-items: center; gap: 9px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8E8E98" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"></path></svg>
+            <span style="font-weight: 700; font-size: 11.5px; color: #8E8E98;">Comment ça marche ?</span>
+          </div>
+          <a href="The Park - Aide.dc.html" style="font-weight: 800; font-size: 11px; color: #D81B60; text-decoration: none;" style-hover="color: #F0246F;">Aide →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- legal note -->
+    <div style="margin-top: 22px; display: flex; align-items: flex-start; gap: 10px; background: #16161a; border: 1px solid #232328; border-radius: 12px; padding: 14px 16px; max-width: 900px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6E6E78" stroke-width="2.2" stroke-linecap="round" style="flex-shrink: 0; margin-top: 1px;"><path d="M12 16v-4M12 8h.01"></path><circle cx="12" cy="12" r="9"></circle></svg>
+      <span style="font-weight: 600; font-size: 11px; color: #6E6E78; line-height: 1.6;">La vidéo de déballage est une donnée personnelle, conservée de façon horodatée et chiffrée, accessible uniquement à la modération en cas de litige, puis purgée (RGPD). Le statut de suivi provient de l'API du transporteur ; la plateforme n'assure pas le colis lui-même et recommande l'envoi suivi/recommandé pour les fortes valeurs.</span>
+    </div>
+
+    <dc-import name="The Park - Footer" hint-size="100%,320px" style="display: block; width: 100%; margin-top: 50px;"></dc-import>
+  </div>
+
+  <!-- ===== UNBOXING CAPTURE OVERLAY ===== -->
+  <sc-if value="{{ captureOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onClose }}" style="position: fixed; inset: 0; z-index: 90; background: rgba(8,8,10,0.92); backdrop-filter: blur(14px); display: flex; align-items: center; justify-content: center; gap: 40px; padding: 24px; animation: pop 0.22s ease;">
+
+      <!-- caption -->
+      <div style="max-width: 270px; display: flex; flex-direction: column; gap: 18px;">
+        <div>
+          <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 12px; letter-spacing: 4px; color: #FF6B5E;">開封録画 · UNBOXING</div>
+          <div style="font-family: 'Anton', sans-serif; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; text-shadow: 3px 3px 0 #FF6B5E; margin-top: 8px;">Déballage filmé</div>
+          <div style="font-weight: 600; font-size: 12.5px; color: #8E8E98; margin-top: 10px; line-height: 1.6;">Filme l'ouverture de l'enveloppe <strong style="color: #C9C6BE;">sans coupure</strong>, jusqu'à voir la carte et son état. Cette vidéo prouve ce que tu as réellement reçu.</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 11.5px; color: #C9C6BE;"><span style="width: 22px; height: 22px; border-radius: 6px; background: rgba(94,217,154,0.14); color: #5ED99A; display: flex; align-items: center; justify-content: center; font-size: 11px;">✓</span>Commence avant d'ouvrir l'enveloppe</div>
+          <div style="display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 11.5px; color: #C9C6BE;"><span style="width: 22px; height: 22px; border-radius: 6px; background: rgba(94,217,154,0.14); color: #5ED99A; display: flex; align-items: center; justify-content: center; font-size: 11px;">✓</span>Montre l'adresse + le contenu</div>
+          <div style="display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 11.5px; color: #C9C6BE;"><span style="width: 22px; height: 22px; border-radius: 6px; background: rgba(94,217,154,0.14); color: #5ED99A; display: flex; align-items: center; justify-content: center; font-size: 11px;">✓</span>Horodatage serveur + hash</div>
+        </div>
+      </div>
+
+      <!-- phone -->
+      <div onClick="{{ stop }}" style="position: relative; width: 304px; height: 624px; border-radius: 46px; background: #050506; border: 2px solid #2B2B31; box-shadow: 0 40px 90px rgba(0,0,0,0.7); padding: 11px; flex-shrink: 0;">
+        <div style="position: absolute; top: 22px; left: 50%; transform: translateX(-50%); width: 96px; height: 26px; background: #050506; border-radius: 14px; z-index: 6;"></div>
+        <div style="position: relative; width: 100%; height: 100%; border-radius: 36px; overflow: hidden; background: radial-gradient(circle at 50% 38%, #2a2a30, #0d0d10 75%);">
+          <div style="position: absolute; top: 0; left: 0; right: 0; height: 64px; background: linear-gradient(180deg, rgba(255,107,94,0.18), transparent); animation: scanline 2.6s linear infinite; pointer-events: none; z-index: 1;"></div>
+          <div style="position: absolute; top: 0; left: 0; right: 0; z-index: 4; display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 0;">
+            <div style="display: flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 999px; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);">
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #FF2E63; animation: recPulse 1s ease-in-out infinite;"></span>
+              <span style="font-weight: 800; font-size: 12px; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: 0.5px;">{{ capRec }}</span>
+            </div>
+            <div style="padding: 5px 11px; border-radius: 999px; background: rgba(255,46,99,0.85); font-weight: 800; font-size: 10px; letter-spacing: 1px; color: #fff;">CONTINU</div>
+          </div>
+          <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 2;">
+            <div style="position: relative; width: 168px; height: 120px;">
+              <div style="position: absolute; top: -10px; left: -10px; width: 30px; height: 30px; border-top: 3px solid #FF6B5E; border-left: 3px solid #FF6B5E; border-radius: 4px 0 0 0;"></div>
+              <div style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-top: 3px solid #FF6B5E; border-right: 3px solid #FF6B5E; border-radius: 0 4px 0 0;"></div>
+              <div style="position: absolute; bottom: -10px; left: -10px; width: 30px; height: 30px; border-bottom: 3px solid #FF6B5E; border-left: 3px solid #FF6B5E; border-radius: 0 0 0 4px;"></div>
+              <div style="position: absolute; bottom: -10px; right: -10px; width: 30px; height: 30px; border-bottom: 3px solid #FF6B5E; border-right: 3px solid #FF6B5E; border-radius: 0 0 4px 0;"></div>
+              <div style="width: 100%; height: 100%; border-radius: 10px; background: linear-gradient(155deg, #C9A87A, #8C7048); border: 1px solid #6b5536; display: flex; align-items: center; justify-content: center; box-shadow: 0 18px 40px rgba(0,0,0,0.55);">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"></path><path d="M2 7l10 6 10-6"></path></svg>
+              </div>
+            </div>
+          </div>
+          <div style="position: absolute; left: 0; right: 0; bottom: 92px; text-align: center; z-index: 4;">
+            <span style="font-weight: 700; font-size: 11px; color: #C9C6BE; background: rgba(0,0,0,0.5); padding: 5px 13px; border-radius: 999px;">Ouvre l'enveloppe dans le cadre</span>
+          </div>
+          <div style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; padding: 18px 22px 26px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(0deg, rgba(0,0,0,0.55), transparent);">
+            <div onClick="{{ onClose }}" style="font-weight: 800; font-size: 12px; color: #C9C6BE; cursor: pointer;">Annuler</div>
+            <div onClick="{{ onValidate }}" style="display: flex; align-items: center; gap: 8px; font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 1px; padding: 12px 18px; background: #FF6B5E; color: #1A0F0D; border-radius: 999px; cursor: pointer; box-shadow: 0 8px 20px rgba(255,107,94,0.3); transition: transform 0.15s ease, filter 0.15s ease;" style-hover="transform: translateY(-2px); filter: brightness(1.06);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>ENVOYER LA PREUVE
+            </div>
+            <div style="width: 18px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    mode: 'open',        // 'open' | 'confirmed' | 'disputed'
+    captureOpen: false,
+    recSec: 0,
+    secsLeft: 71 * 3600 + 38 * 60 + 12   // ~71h38m left in the 72h window
+  };
+
+  componentDidMount() {
+    this._tick = setInterval(() => {
+      this.setState(s => ({ secsLeft: Math.max(0, s.secsLeft - 1) }));
+    }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this._tick); clearInterval(this._rec); }
+
+  startRec() {
+    clearInterval(this._rec);
+    this.setState({ recSec: 0 });
+    this._rec = setInterval(() => this.setState(s => ({ recSec: s.recSec + 1 })), 1000);
+  }
+  stopRec() { clearInterval(this._rec); }
+
+  fmtRec(n) {
+    const m = Math.floor(n / 60), s = n % 60;
+    return m + ':' + String(s).padStart(2, '0');
+  }
+  fmtCountdown(n) {
+    const h = Math.floor(n / 3600);
+    const m = Math.floor((n % 3600) / 60);
+    const s = n % 60;
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
+  renderVals() {
+    const mode = this.state.mode;
+    const isOpen = mode === 'open';
+    const isConfirmed = mode === 'confirmed';
+    const isDisputed = mode === 'disputed';
+
+    const TOTAL = 72 * 3600;
+    const left = this.state.secsLeft;
+    const elapsedPct = Math.min(100, Math.max(0, ((TOTAL - left) / TOTAL) * 100));
+
+    // ----- state machine -----
+    const closedState = isConfirmed ? 'done' : (isDisputed ? 'dispute' : 'todo');
+    const NS = [
+      { label: 'Proposition', sub: 'acceptée', state: 'done' },
+      { label: 'Cautions', sub: 'bloquées', state: 'done' },
+      { label: 'Preuves & envoi', sub: '4/4 filmées', state: 'done' },
+      { label: 'Expédié', sub: 'pris en charge', state: 'done' },
+      { label: 'Livré', sub: isOpen ? 'fenêtre 72 h' : (isDisputed ? 'litige' : 'confirmé'), state: isOpen ? 'active' : (isDisputed ? 'dispute' : 'done') },
+      { label: 'Clôturé', sub: isConfirmed ? 'cautions libérées' : (isDisputed ? 'en arbitrage' : 'à venir'), state: closedState }
+    ];
+    const colorFor = (st) => st === 'dispute' ? '#FF6B5E' : (st === 'active' ? '#4FA3FF' : '#5ED99A');
+    const nodes = NS.map((n, i) => {
+      const prev = i > 0 ? NS[i - 1].state : null;
+      return {
+        label: n.label, sub: n.sub,
+        showLine: i > 0,
+        lineColor: prev === 'done' ? '#5ED99A' : (prev === 'dispute' ? '#FF6B5E' : '#2B2B31'),
+        circleBg: n.state === 'done' ? '#5ED99A' : (n.state === 'active' ? '#4FA3FF' : (n.state === 'dispute' ? '#FF6B5E' : '#16161a')),
+        circleBorder: n.state === 'todo' ? '#2B2B31' : colorFor(n.state),
+        circleColor: n.state === 'todo' ? '#6E6E78' : '#fff',
+        icon: n.state === 'done' ? '✓' : (n.state === 'dispute' ? '!' : String(i + 1)),
+        labelColor: n.state === 'todo' ? '#6E6E78' : '#F2EFE9',
+        pulse: n.state === 'active' || n.state === 'dispute',
+        pulseColor: n.state === 'dispute' ? '#FF6B5E' : '#4FA3FF'
+      };
+    });
+
+    // ----- carrier tracking timeline -----
+    const TRK = [
+      { label: 'Livré', when: '14/06 · 11:27', place: 'Remis en boîte aux lettres · 13006 Marseille', cur: true },
+      { label: 'En cours de livraison', when: '14/06 · 08:02', place: 'Tournée du facteur · Marseille Centre' },
+      { label: 'En transit', when: '12/06 · 21:40', place: 'Plateforme de tri · Vitrolles (13)' },
+      { label: 'Pris en charge', when: '12/06 · 09:14', place: 'Bureau de poste · Lyon Part-Dieu (69)' }
+    ];
+    const track = TRK.map((e, i) => ({
+      label: e.label, when: e.when, place: e.place,
+      dotBg: e.cur ? '#5ED99A' : '#3A3A42',
+      ring: e.cur ? 'rgba(94,217,154,0.3)' : 'transparent',
+      titleColor: e.cur ? '#5ED99A' : '#C9C6BE',
+      showLine: i < TRK.length - 1,
+      lineColor: i === 0 ? '#5ED99A' : '#2B2B31'
+    }));
+
+    // ----- sender proofs recap -----
+    const senderProofs = [
+      { tag: 'Étape 1', title: 'Présentation carte' },
+      { tag: 'Étape 2', title: 'Mise sous enveloppe' },
+      { tag: 'Étape 3', title: 'Fermeture & adresse' },
+      { tag: 'Étape 4', title: 'Dépôt & récépissé' }
+    ];
+
+    // ----- cautions -----
+    const released = isConfirmed;
+    const cautions = [
+      { who: 'TOI · KENJI-13', whoColor: '#F2EFE9', card: 'Nissan S13 Kouki · ◈ Rare', amount: '14,50 €',
+        border: released ? 'rgba(94,217,154,0.4)' : '#2B2B31',
+        dot: released ? '#5ED99A' : (isDisputed ? '#E8B23A' : '#5ED99A'),
+        stColor: released ? '#5ED99A' : (isDisputed ? '#E8B23A' : '#5ED99A'),
+        stLabel: released ? 'Libérée' : (isDisputed ? 'Gelée · litige' : 'Bloquée') },
+      { who: 'SARA.S15', whoColor: '#C9C6BE', card: 'BMW E30 Touring · ◈ Rare', amount: '8,50 €',
+        border: '#2B2B31',
+        dot: released ? '#5ED99A' : (isDisputed ? '#E8B23A' : '#5ED99A'),
+        stColor: released ? '#5ED99A' : (isDisputed ? '#E8B23A' : '#5ED99A'),
+        stLabel: released ? 'Libérée' : (isDisputed ? 'Gelée · litige' : 'Bloquée') }
+    ];
+    const cautionTag = released
+      ? { label: 'Libérées ✓', bg: 'rgba(94,217,154,0.14)', color: '#5ED99A' }
+      : (isDisputed ? { label: 'Gelées', bg: 'rgba(232,178,58,0.14)', color: '#E8B23A' }
+                    : { label: 'Bloquées', bg: 'rgba(94,217,154,0.14)', color: '#5ED99A' });
+    const cautionNote = released
+      ? 'Les deux préautorisations ont été annulées — aucun débit.'
+      : (isDisputed ? "Maintenues bloquées jusqu'à la décision de la modération."
+                    : 'Préautorisations Stripe, non débitées. Libérées à la confirmation.');
+
+    return {
+      isOpen, isConfirmed, isDisputed,
+      nodes, track, senderProofs, cautions,
+      countdown: this.fmtCountdown(left),
+      barPct: elapsedPct.toFixed(1) + '%',
+      deliveredAt: '14/06 · 11:27',
+      autoCloseAt: '17/06 · 11:27',
+      cautionTagLabel: cautionTag.label, cautionTagBg: cautionTag.bg, cautionTagColor: cautionTag.color,
+      cautionNote,
+
+      onConfirm: () => this.setState({ mode: 'confirmed' }),
+      onReview: () => {},
+      onFilm: () => { this.setState({ captureOpen: true }); this.startRec(); },
+
+      captureOpen: this.state.captureOpen,
+      capRec: this.fmtRec(this.state.recSec),
+      stop: (e) => { e.stopPropagation(); },
+      onClose: () => { this.stopRec(); this.setState({ captureOpen: false }); },
+      onValidate: () => { this.stopRec(); this.setState({ captureOpen: false, mode: 'disputed' }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

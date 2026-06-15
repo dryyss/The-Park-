@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #0E0E11; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes ddIn { from { opacity: 0; transform: translateY(-6px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0E0E11; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+input::placeholder { color: #5A5A64; }
+</style>
+</helmet>
+<div data-screen-label="Back-office admin" style="min-height: 100vh; display: grid; grid-template-columns: 248px 1fr; background: #0E0E11; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif;">
+
+  <!-- ===== SIDEBAR ===== -->
+  <div style="background: #141418; border-right: 1px solid #232328; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto;">
+    <div style="display: flex; align-items: center; gap: 11px; padding: 18px 18px 16px; border-bottom: 1px solid #232328; position: sticky; top: 0; background: #141418; z-index: 2;">
+      <div style="width: 38px; height: 38px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="line-height: 1; flex: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-weight: 800; font-size: 8.5px; letter-spacing: 1.5px; color: #6E6E78; margin-top: 4px;">ADMIN CONSOLE</div>
+      </div>
+    </div>
+
+    <div style="padding: 12px 12px 24px;">
+      <sc-for list="{{ navGroups }}" as="g" hint-placeholder-count="5">
+        <div style="font-weight: 800; font-size: 9px; letter-spacing: 1.5px; color: #4A4A52; text-transform: uppercase; padding: 14px 10px 7px;">{{ g.title }}</div>
+        <sc-for list="{{ g.items }}" as="n" hint-placeholder-count="3">
+          <div onClick="{{ n.onClick }}" title="{{ n.lockTitle }}" style="display: flex; align-items: center; gap: 11px; padding: 9px 11px; margin-bottom: 2px; border-radius: 9px; background: {{ n.bg }}; cursor: {{ n.cursor }}; opacity: {{ n.opacity }}; transition: background 0.14s ease;" style-hover="background: {{ n.hoverBg }}">
+            <span style="display: flex; color: {{ n.iconColor }}; flex-shrink: 0;">{{ n.icon }}</span>
+            <span style="flex: 1; font-weight: {{ n.weight }}; font-size: 12.5px; color: {{ n.color }};">{{ n.label }}</span>
+            <sc-if value="{{ n.locked }}" hint-placeholder-val="{{ false }}">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4A4A52" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </sc-if>
+            <sc-if value="{{ n.badge }}" hint-placeholder-val="{{ false }}">
+              <span style="min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: {{ n.badgeBg }}; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center;">{{ n.badge }}</span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </sc-for>
+    </div>
+    <div style="flex: 1;"></div>
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 10px; margin: 12px; padding: 11px 12px; border-radius: 10px; background: #1C1C21; color: #8E8E98; text-decoration: none; font-weight: 700; font-size: 12px; transition: color 0.15s ease;" style-hover="color: #E8B23A;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"></path></svg>Retour au site</a>
+  </div>
+
+  <!-- ===== MAIN ===== -->
+  <div style="min-width: 0; display: flex; flex-direction: column;">
+
+    <!-- ===== TOPBAR ===== -->
+    <div style="display: flex; align-items: center; gap: 16px; padding: 12px 24px; border-bottom: 1px solid #232328; background: #141418; position: sticky; top: 0; z-index: 30;">
+      <div style="display: flex; align-items: center; gap: 9px; background: #1C1C21; border: 1px solid #232328; border-radius: 10px; padding: 9px 13px; width: 320px; max-width: 38vw;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5A5A64" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+        <input placeholder="Rechercher un membre, une carte, une commande…" style="flex: 1; min-width: 0; background: transparent; border: none; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 12.5px; outline: none;">
+        <span style="font-weight: 700; font-size: 10px; color: #5A5A64; border: 1px solid #2B2B31; border-radius: 5px; padding: 2px 6px;">⌘K</span>
+      </div>
+      <div style="flex: 1;"></div>
+
+      <button title="Notifications" style="position: relative; width: 38px; height: 38px; border-radius: 10px; background: #1C1C21; border: 1px solid #232328; color: #C9C6BE; cursor: pointer; display: flex; align-items: center; justify-content: center;" style-hover="border-color: #3A3A42;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span style="position: absolute; top: 6px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: #FF5A6E; border: 2px solid #141418;"></span></button>
+
+      <!-- SÉLECTEUR DE RÔLE -->
+      <div style="position: relative;">
+        <div onClick="{{ toggleRoleDd }}" style="display: flex; align-items: center; gap: 11px; padding: 6px 11px 6px 8px; border-radius: 11px; background: #1C1C21; border: 1px solid {{ roleDdBorder }}; cursor: pointer; transition: border-color 0.15s ease;" style-hover="border-color: #D81B60;">
+          <span style="width: 30px; height: 30px; border-radius: 8px; background: {{ roleColor }}; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">{{ roleIcon }}</span>
+          <div style="line-height: 1.15; text-align: left;">
+            <div style="font-weight: 700; font-size: 9.5px; color: #6E6E78;">Connecté en tant que</div>
+            <div style="font-weight: 800; font-size: 12.5px; color: #F2EFE9;">{{ roleLabel }}</div>
+          </div>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8E8E98" stroke-width="2.6" stroke-linecap="round" style="transform: {{ roleDdRot }}; transition: transform 0.2s ease;"><path d="m6 9 6 6 6-6"></path></svg>
+        </div>
+        <sc-if value="{{ roleDdOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; top: 50px; right: 0; width: 290px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 14px; box-shadow: 0 20px 44px rgba(0,0,0,0.6); padding: 8px; z-index: 60; animation: ddIn 0.16s ease both;">
+            <div style="font-weight: 800; font-size: 9px; letter-spacing: 1px; color: #5A5A64; text-transform: uppercase; padding: 8px 10px 7px;">Aperçu maquette · changer de rôle</div>
+            <sc-for list="{{ roleOptions }}" as="r" hint-placeholder-count="5">
+              <div onClick="{{ r.onClick }}" style="display: flex; align-items: center; gap: 11px; padding: 10px; border-radius: 10px; cursor: pointer; background: {{ r.bg }}; transition: background 0.13s ease;" style-hover="background: #232328;">
+                <span style="width: 30px; height: 30px; border-radius: 8px; background: {{ r.color }}; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">{{ r.icon }}</span>
+                <div style="flex: 1; min-width: 0;"><div style="font-weight: 800; font-size: 12.5px; color: #F2EFE9;">{{ r.label }}</div><div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; line-height: 1.3;">{{ r.scope }}</div></div>
+                <sc-if value="{{ r.active }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D81B60" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <!-- ===== CONTENU ===== -->
+    <div style="padding: 24px 28px 56px; min-width: 0;">
+
+      <!-- bandeau rôle restreint -->
+      <sc-if value="{{ showRestrictBanner }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; align-items: center; gap: 11px; margin-bottom: 20px; padding: 13px 17px; background: rgba(232,178,58,0.08); border: 1px solid rgba(232,178,58,0.32); border-radius: 13px; animation: fadeUp 0.3s ease both;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8B23A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <div style="font-weight: 700; font-size: 12.5px; color: #E8C97A; line-height: 1.4;"><strong style="color: #F2EFE9;">Vue restreinte — {{ roleLabel }}.</strong> {{ restrictText }} Les modules non autorisés sont grisés et verrouillés dans la barre latérale.</div>
+        </div>
+      </sc-if>
+
+      <!-- ============ DASHBOARD ============ -->
+      <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px;">
+            <div>
+              <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Tableau de bord</h1>
+              <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">{{ todayLabel }} · {{ dashScope }}</div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 7px; padding: 9px 13px; border-radius: 9px; background: #141418; border: 1px solid #232328; font-weight: 800; font-size: 11.5px; color: #C9C6BE;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #5ED99A; animation: pulseDot 1.8s ease infinite;"></span>Plateforme · OK</div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(186px, 1fr)); gap: 14px;">
+            <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="6">
+              <div style="background: #141418; border: 1px solid #232328; border-radius: 15px; padding: 17px 19px; position: relative; overflow: hidden;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="width: 34px; height: 34px; border-radius: 9px; background: {{ k.iconBg }}; color: {{ k.iconColor }}; display: flex; align-items: center; justify-content: center;">{{ k.icon }}</span>
+                  <span style="font-weight: 800; font-size: 11px; color: {{ k.trendColor }};">{{ k.trend }}</span>
+                </div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 30px; color: #F2EFE9; margin-top: 13px; line-height: 1;">{{ k.value }}</div>
+                <div style="font-weight: 700; font-size: 11.5px; color: #8E8E98; margin-top: 5px;">{{ k.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+            <sc-for list="{{ queues }}" as="q" hint-placeholder-count="2">
+              <div style="background: #141418; border: 1px solid {{ q.border }}; border-radius: 16px; padding: 20px 22px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                  <span style="width: 32px; height: 32px; border-radius: 9px; background: {{ q.iconBg }}; color: {{ q.iconColor }}; display: flex; align-items: center; justify-content: center;">{{ q.icon }}</span>
+                  <div style="flex: 1;"><div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">{{ q.title }}</div></div>
+                  <span style="font-family: 'Anton', sans-serif; font-size: 22px; color: {{ q.countColor }};">{{ q.count }}</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{ q.rows }}" as="r" hint-placeholder-count="3">
+                    <div style="display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 10px; background: {{ r.rowBg }}; border: 1px solid {{ r.rowBorder }};">
+                      <sc-if value="{{ r.flag }}" hint-placeholder-val="{{ false }}"><span style="font-weight: 900; font-size: 8.5px; letter-spacing: 0.5px; padding: 3px 7px; border-radius: 5px; background: #FF5A6E; color: #fff; flex-shrink: 0;">MINEUR</span></sc-if>
+                      <div style="flex: 1; min-width: 0;"><div style="font-weight: 800; font-size: 12px; color: #F2EFE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ r.title }}</div><div style="font-weight: 700; font-size: 10.5px; color: #8E8E98;">{{ r.meta }}</div></div>
+                      <span style="font-weight: 700; font-size: 10.5px; color: #6E6E78; white-space: nowrap;">{{ r.when }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <button onClick="{{ q.onClick }}" style="width: 100%; margin-top: 13px; font-family: 'Anton', sans-serif; font-size: 11.5px; letter-spacing: 1px; padding: 11px; background: transparent; color: #C9C6BE; border: 1.5px solid #2B2B31; border-radius: 10px; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease;" style-hover="border-color: {{ q.iconColor }}; color: #fff;">{{ q.cta }}</button>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px; margin-top: 16px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;"><div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Activité récente</div><span style="display: flex; align-items: center; gap: 5px; font-weight: 800; font-size: 10px; color: #5ED99A;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #5ED99A;"></span>EN DIRECT</span></div>
+            <sc-for list="{{ activity }}" as="a" hint-placeholder-count="5">
+              <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #1C1C21;">
+                <span style="width: 30px; height: 30px; border-radius: 8px; background: {{ a.bg }}; color: {{ a.color }}; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;">{{ a.icon }}</span>
+                <div style="flex: 1; font-weight: 700; font-size: 12.5px; color: #C9C6BE; line-height: 1.4;">{{ a.text }}</div>
+                <span style="font-weight: 700; font-size: 10.5px; color: #5A5A64; white-space: nowrap;">{{ a.when }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ UTILISATEURS ============ -->
+      <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px;">
+            <div>
+              <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Utilisateurs</h1>
+              <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">8 942 membres · 47 nouveaux cette semaine{{ usersReadNote }}</div>
+            </div>
+            <button style="display: flex; align-items: center; gap: 8px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 10px 16px; background: #1C1C21; color: #C9C6BE; border: 1px solid #2B2B31; border-radius: 10px; cursor: pointer;" style-hover="border-color: #3A3A42;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>EXPORTER CSV</button>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 14px;">
+            <sc-for list="{{ userFilters }}" as="f" hint-placeholder-count="5">
+              <button onClick="{{ f.onClick }}" style="display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 9px; border: 1px solid {{ f.border }}; background: {{ f.bg }}; color: {{ f.color }}; font-weight: 800; font-size: 11.5px; cursor: pointer; transition: all 0.14s ease;"><sc-if value="{{ f.dot }}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{ f.dotColor }};"></span></sc-if>{{ f.label }} <span style="color: #6E6E78;">{{ f.count }}</span></button>
+            </sc-for>
+          </div>
+
+          <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 30px 2.2fr 1fr 1.1fr 0.9fr 1fr 0.7fr; gap: 12px; padding: 12px 18px; border-bottom: 1px solid #232328; font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase; align-items: center;">
+              <span style="width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid #3A3A42;"></span>
+              <div>Membre</div><div>Statut</div><div>Réputation</div><div>Âge</div><div>Inscrit</div><div></div>
+            </div>
+            <sc-for list="{{ users }}" as="u" hint-placeholder-count="8">
+              <div style="display: grid; grid-template-columns: 30px 2.2fr 1fr 1.1fr 0.9fr 1fr 0.7fr; gap: 12px; padding: 12px 18px; border-bottom: 1px solid #1C1C21; align-items: center; transition: background 0.12s ease;" style-hover="background: #18181C;">
+                <span style="width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid #3A3A42; cursor: pointer;"></span>
+                <div style="display: flex; align-items: center; gap: 11px; min-width: 0;">
+                  <span style="width: 34px; height: 34px; border-radius: 50%; background: {{ u.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 13px; color: #fff; flex-shrink: 0;">{{ u.ini }}</span>
+                  <div style="min-width: 0;"><div style="font-weight: 800; font-size: 12.5px; color: #F2EFE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ u.pseudo }}</div><div style="font-weight: 700; font-size: 10.5px; color: #6E6E78; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ u.email }}</div></div>
+                </div>
+                <div><span style="display: inline-flex; align-items: center; gap: 5px; font-weight: 800; font-size: 10.5px; padding: 4px 9px; border-radius: 7px; background: {{ u.statusBg }}; color: {{ u.statusColor }};"><span style="width: 6px; height: 6px; border-radius: 50%; background: {{ u.statusColor }};"></span>{{ u.status }}</span></div>
+                <div style="display: flex; align-items: center; gap: 7px;"><div style="width: 42px; height: 5px; border-radius: 3px; background: #26262B; overflow: hidden;"><div style="height: 100%; width: {{ u.repPct }}; background: {{ u.repColor }};"></div></div><span style="font-weight: 800; font-size: 11px; color: #A9A9B2;">{{ u.rep }}</span></div>
+                <div><span style="font-weight: 800; font-size: 10.5px; padding: 4px 9px; border-radius: 7px; background: {{ u.ageBg }}; color: {{ u.ageColor }};">{{ u.age }}</span></div>
+                <div style="font-weight: 700; font-size: 11.5px; color: #8E8E98;">{{ u.joined }}</div>
+                <div style="text-align: right;"><button style="width: 30px; height: 30px; border-radius: 8px; background: #1C1C21; border: 1px solid #232328; color: #8E8E98; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" style-hover="border-color: #D81B60; color: #fff;"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="12" cy="19" r="1.6"></circle></svg></button></div>
+              </div>
+            </sc-for>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 13px 18px; font-weight: 700; font-size: 11.5px; color: #8E8E98;">
+              <span>1–8 sur 8 942</span>
+              <div style="display: flex; gap: 5px;">
+                <span style="width: 30px; height: 30px; border-radius: 8px; background: #1C1C21; border: 1px solid #232328; display: flex; align-items: center; justify-content: center; color: #5A5A64;">‹</span>
+                <span style="width: 30px; height: 30px; border-radius: 8px; background: #D81B60; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800;">1</span>
+                <span style="width: 30px; height: 30px; border-radius: 8px; background: #1C1C21; border: 1px solid #232328; display: flex; align-items: center; justify-content: center; color: #C9C6BE;">2</span>
+                <span style="width: 30px; height: 30px; border-radius: 8px; background: #1C1C21; border: 1px solid #232328; display: flex; align-items: center; justify-content: center; color: #C9C6BE;">3</span>
+                <span style="width: 30px; height: 30px; border-radius: 8px; background: #1C1C21; border: 1px solid #232328; display: flex; align-items: center; justify-content: center; color: #C9C6BE;">›</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ MODÉRATION ============ -->
+      <sc-if value="{{ isModeration }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="margin-bottom: 18px;">
+            <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Modération</h1>
+            <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">5 signalements ouverts · <strong style="color: #FF5A6E;">2 impliquent un mineur — priorité absolue</strong></div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 370px 1fr; gap: 16px; align-items: start;">
+            <!-- file priorisée -->
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; align-items: center; gap: 8px; background: #1C1C21; border: 1px solid #232328; border-radius: 10px; padding: 8px 12px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5A5A64" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+                <input placeholder="Filtrer par mot-clé, pseudo…" style="flex: 1; min-width: 0; background: transparent; border: none; color: #F2EFE9; font-size: 12px; outline: none;">
+              </div>
+              <sc-for list="{{ reports }}" as="r" hint-placeholder-count="5">
+                <div onClick="{{ r.onClick }}" style="background: {{ r.cardBg }}; border: 1.5px solid {{ r.cardBorder }}; border-radius: 13px; padding: 14px 15px; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.14s ease, transform 0.14s ease;" style-hover="transform: translateY(-1px);">
+                  <sc-if value="{{ r.minor }}" hint-placeholder-val="{{ false }}"><div style="position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #FF5A6E;"></div></sc-if>
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <sc-if value="{{ r.minor }}" hint-placeholder-val="{{ false }}"><span style="font-weight: 900; font-size: 8.5px; letter-spacing: 0.5px; padding: 3px 7px; border-radius: 5px; background: #FF5A6E; color: #fff;">⚠ MINEUR</span></sc-if>
+                    <span style="font-weight: 800; font-size: 9.5px; letter-spacing: 0.4px; padding: 3px 8px; border-radius: 5px; background: {{ r.typeBg }}; color: {{ r.typeColor }};">{{ r.type }}</span>
+                    <div style="flex: 1;"></div>
+                    <span style="font-weight: 700; font-size: 10px; color: #6E6E78;">{{ r.when }}</span>
+                  </div>
+                  <div style="font-weight: 800; font-size: 13px; color: #F2EFE9; line-height: 1.3;">{{ r.title }}</div>
+                  <div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-top: 4px;">Signalé par {{ r.by }} · cible {{ r.target }}</div>
+                </div>
+              </sc-for>
+            </div>
+
+            <!-- détail signalement -->
+            <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; overflow: hidden;">
+              <div style="padding: 18px 22px; border-bottom: 1px solid #232328; background: {{ sel.headBg }};">
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                  <sc-if value="{{ sel.minor }}" hint-placeholder-val="{{ true }}"><span style="font-weight: 900; font-size: 9.5px; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 6px; background: #FF5A6E; color: #fff;">⚠ MINEUR IMPLIQUÉ · PRIORITÉ</span></sc-if>
+                  <span style="font-weight: 800; font-size: 10px; padding: 4px 10px; border-radius: 6px; background: {{ sel.typeBg }}; color: {{ sel.typeColor }};">{{ sel.type }}</span>
+                  <span style="font-weight: 700; font-size: 11px; color: #6E6E78;">Réf. {{ sel.ref }} · ouvert {{ sel.when }}</span>
+                </div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 21px; letter-spacing: 0.5px; transform: skewX(-2deg); color: #F2EFE9; margin-top: 12px;">{{ sel.title }}</div>
+              </div>
+              <div style="padding: 20px 22px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+                  <div style="background: #1C1C21; border: 1px solid #232328; border-radius: 12px; padding: 14px 16px;">
+                    <div style="font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase; margin-bottom: 9px;">Signalé par</div>
+                    <div style="display: flex; align-items: center; gap: 9px;"><span style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#4FA3FF,#1F4E8C); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 12px; color: #fff;">{{ sel.byIni }}</span><div><div style="font-weight: 800; font-size: 12px; color: #F2EFE9;">{{ sel.by }}</div><div style="font-weight: 700; font-size: 10px; color: #6E6E78;">{{ sel.byMeta }}</div></div></div>
+                  </div>
+                  <div style="background: #1C1C21; border: 1px solid {{ sel.targetBorder }}; border-radius: 12px; padding: 14px 16px;">
+                    <div style="font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase; margin-bottom: 9px;">Utilisateur ciblé</div>
+                    <div style="display: flex; align-items: center; gap: 9px;"><span style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#FF6B5E,#8C2F1F); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 12px; color: #fff;">{{ sel.targetIni }}</span><div><div style="font-weight: 800; font-size: 12px; color: #F2EFE9;">{{ sel.target }}</div><div style="font-weight: 700; font-size: 10px; color: {{ sel.targetMetaColor }};">{{ sel.targetMeta }}</div></div></div>
+                  </div>
+                </div>
+
+                <div style="font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase; margin-bottom: 9px;">Conversation liée à l'échange</div>
+                <div style="background: #0E0E11; border: 1px solid #232328; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 9px; margin-bottom: 18px;">
+                  <sc-for list="{{ sel.chat }}" as="c" hint-placeholder-count="3">
+                    <div style="display: flex; {{ c.justify }}"><div style="max-width: 78%; padding: 9px 13px; border-radius: 12px; background: {{ c.bg }}; border: 1px solid {{ c.border }};"><div style="font-weight: 800; font-size: 10px; color: {{ c.nameColor }}; margin-bottom: 3px;">{{ c.name }}</div><div style="font-weight: 600; font-size: 12px; color: #E6E3DC; line-height: 1.4;">{{ c.msg }}</div></div></div>
+                  </sc-for>
+                </div>
+
+                <div style="font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase; margin-bottom: 10px;">Actions rapides</div>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <button style="display: flex; align-items: center; gap: 7px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 0.8px; padding: 12px 17px; background: #FF5A6E; color: #fff; border: none; border-radius: 10px; cursor: pointer; box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: transform 0.14s ease;" style-hover="transform: translate(-1px,-1px);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="m5.6 5.6 12.8 12.8"></path></svg>BLOQUER IMMÉDIATEMENT</button>
+                  <button style="display: flex; align-items: center; gap: 7px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 0.8px; padding: 12px 17px; background: #1C1C21; color: #FF8A3D; border: 1.5px solid rgba(255,138,61,0.4); border-radius: 10px; cursor: pointer;" style-hover="background: rgba(255,138,61,0.1);">BANNIR</button>
+                  <button style="display: flex; align-items: center; gap: 7px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 0.8px; padding: 12px 17px; background: #1C1C21; color: #B05CFF; border: 1.5px solid rgba(176,92,255,0.4); border-radius: 10px; cursor: pointer;" style-hover="background: rgba(176,92,255,0.1);">ESCALADER À L'OWNER</button>
+                  <button style="display: flex; align-items: center; gap: 7px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 0.8px; padding: 12px 17px; background: #1C1C21; color: #8E8E98; border: 1.5px solid #2B2B31; border-radius: 10px; cursor: pointer;" style-hover="color: #fff;">CLASSER SANS SUITE</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ ADMINISTRATEURS ============ -->
+      <sc-if value="{{ isAdmins }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px;">
+            <div>
+              <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Administrateurs</h1>
+              <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">5 comptes admin · réservé à l'Owner</div>
+            </div>
+            <button style="display: flex; align-items: center; gap: 8px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 11px 17px; background: #D81B60; color: #fff; border: none; border-radius: 10px; cursor: pointer; box-shadow: 3px 3px 0 rgba(0,0,0,0.45);" style-hover="background: #F0246F;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M19 8v6M22 11h-6"></path></svg>INVITER UN ADMIN</button>
+          </div>
+          <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 2.2fr 1.6fr 1fr 1.1fr 0.8fr; gap: 12px; padding: 12px 18px; border-bottom: 1px solid #232328; font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">
+              <div>Administrateur</div><div>Rôle</div><div>Statut</div><div>Dernière connexion</div><div></div>
+            </div>
+            <sc-for list="{{ admins }}" as="a" hint-placeholder-count="5">
+              <div style="display: grid; grid-template-columns: 2.2fr 1.6fr 1fr 1.1fr 0.8fr; gap: 12px; padding: 13px 18px; border-bottom: 1px solid #1C1C21; align-items: center;" style-hover="background: #18181C;">
+                <div style="display: flex; align-items: center; gap: 11px; min-width: 0;">
+                  <span style="width: 34px; height: 34px; border-radius: 50%; background: {{ a.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 13px; color: #fff; flex-shrink: 0;">{{ a.ini }}</span>
+                  <div style="min-width: 0;"><div style="font-weight: 800; font-size: 12.5px; color: #F2EFE9;">{{ a.name }} <sc-if value="{{ a.me }}" hint-placeholder-val="{{ false }}"><span style="font-weight: 800; font-size: 9px; color: #D81B60;">· toi</span></sc-if></div><div style="font-weight: 700; font-size: 10.5px; color: #6E6E78;">{{ a.email }}</div></div>
+                </div>
+                <div><span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: 11px; color: #F2EFE9;"><span style="width: 8px; height: 8px; border-radius: 3px; background: {{ a.roleColor }};"></span>{{ a.role }}</span></div>
+                <div><span style="display: inline-flex; align-items: center; gap: 5px; font-weight: 800; font-size: 10.5px; padding: 4px 9px; border-radius: 7px; background: {{ a.statusBg }}; color: {{ a.statusColor }};"><span style="width: 6px; height: 6px; border-radius: 50%; background: {{ a.statusColor }};"></span>{{ a.status }}</span></div>
+                <div style="font-weight: 700; font-size: 11.5px; color: #8E8E98;">{{ a.last }}</div>
+                <div style="display: flex; gap: 6px; justify-content: flex-end;">
+                  <button style="width: 30px; height: 30px; border-radius: 8px; background: #1C1C21; border: 1px solid #232328; color: #8E8E98; cursor: pointer; display: flex; align-items: center; justify-content: center;" style-hover="border-color: #4FA3FF; color: #fff;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+                  <button title="Révoquer" style="width: 30px; height: 30px; border-radius: 8px; background: #1C1C21; border: 1px solid #232328; color: #8E8E98; cursor: pointer; display: flex; align-items: center; justify-content: center;" style-hover="border-color: #FF5A6E; color: #FF5A6E;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg></button>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ RÔLES & PERMISSIONS ============ -->
+      <sc-if value="{{ isRoles }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 8px;">
+            <div>
+              <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Rôles &amp; permissions</h1>
+              <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">Matrice des accès · rôles en lignes, modules en colonnes</div>
+            </div>
+            <button style="display: flex; align-items: center; gap: 8px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 11px 17px; background: #D81B60; color: #fff; border: none; border-radius: 10px; cursor: pointer; box-shadow: 3px 3px 0 rgba(0,0,0,0.45);" style-hover="background: #F0246F;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>CRÉER UN SOUS-RÔLE</button>
+          </div>
+          <div style="display: flex; gap: 16px; margin: 14px 0 16px; flex-wrap: wrap; font-weight: 800; font-size: 11px;">
+            <span style="display: flex; align-items: center; gap: 7px; color: #5ED99A;"><span style="width: 18px; height: 18px; border-radius: 5px; background: rgba(94,217,154,0.12); display: flex; align-items: center; justify-content: center;">✓</span>Accès complet</span>
+            <span style="display: flex; align-items: center; gap: 7px; color: #4FA3FF;"><span style="width: 18px; height: 18px; border-radius: 5px; background: rgba(79,163,255,0.12); display: flex; align-items: center; justify-content: center;">◐</span>Lecture seule</span>
+            <span style="display: flex; align-items: center; gap: 7px; color: #6E6E78;"><span style="width: 18px; height: 18px; border-radius: 5px; display: flex; align-items: center; justify-content: center;">—</span>Aucun accès</span>
+          </div>
+          <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; overflow-x: auto;">
+            <div style="min-width: 920px;">
+              <div style="display: grid; grid-template-columns: 168px repeat(10, 1fr); border-bottom: 1px solid #232328;">
+                <div style="padding: 14px 16px; font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">Rôle ＼ Module</div>
+                <sc-for list="{{ permModules }}" as="m" hint-placeholder-count="10">
+                  <div style="padding: 14px 4px; text-align: center; font-weight: 800; font-size: 9.5px; letter-spacing: 0.3px; color: #8E8E98; border-left: 1px solid #1C1C21;">{{ m }}</div>
+                </sc-for>
+              </div>
+              <sc-for list="{{ permRows }}" as="r" hint-placeholder-count="5">
+                <div style="display: grid; grid-template-columns: 168px repeat(10, 1fr); border-bottom: 1px solid #1C1C21; background: {{ r.owner }};" style-hover="background: #18181C;">
+                  <div style="padding: 14px 16px; display: flex; align-items: center; gap: 9px;"><span style="width: 9px; height: 9px; border-radius: 3px; background: {{ r.color }};"></span><span style="font-weight: 800; font-size: 12px; color: #F2EFE9;">{{ r.label }}</span></div>
+                  <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="10">
+                    <div style="border-left: 1px solid #1C1C21; display: flex; align-items: center; justify-content: center; padding: 12px 0;"><span style="width: 26px; height: 26px; border-radius: 7px; background: {{ c.bg }}; color: {{ c.color }}; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px;">{{ c.mark }}</span></div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 9px; margin-top: 14px; padding: 13px 15px; background: rgba(216,27,96,0.06); border: 1px solid rgba(216,27,96,0.25); border-radius: 12px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D81B60" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;"><path d="M12 16v-4M12 8h.01"></path><circle cx="12" cy="12" r="9"></circle></svg>
+            <span style="font-weight: 700; font-size: 11.5px; color: #C9C6BE; line-height: 1.5;">Seul l'<strong style="color: #F2EFE9;">Owner</strong> peut éditer cette matrice et créer des sous-rôles personnalisés. Les cellules sont cochables ligne par ligne lors de l'édition d'un rôle.</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ CONFORMITÉ & JOURNAUX ============ -->
+      <sc-if value="{{ isCompliance }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="margin-bottom: 18px;">
+            <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Conformité &amp; journaux</h1>
+            <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">Obligations LCEN · RGPD · traçabilité des actions admin</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;">
+            <!-- RGPD -->
+            <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px;">
+              <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 14px;"><span style="width: 30px; height: 30px; border-radius: 8px; background: rgba(79,163,255,0.13); color: #4FA3FF; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.6 8 11 4.6-2.4 8-6 8-11V5z"></path></svg></span><div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Demandes RGPD</div></div>
+              <sc-for list="{{ gdpr }}" as="g" hint-placeholder-count="3">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #1C1C21;">
+                  <div style="flex: 1; min-width: 0;"><div style="font-weight: 800; font-size: 12px; color: #F2EFE9;">{{ g.type }}</div><div style="font-weight: 700; font-size: 10.5px; color: #6E6E78;">{{ g.ref }} · {{ g.user }} · {{ g.when }}</div></div>
+                  <span style="font-weight: 800; font-size: 10.5px; padding: 4px 9px; border-radius: 7px; background: rgba(255,255,255,0.05); color: {{ g.sColor }};">{{ g.status }}</span>
+                </div>
+              </sc-for>
+              <button style="width: 100%; margin-top: 13px; font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 1px; padding: 10px; background: transparent; color: #C9C6BE; border: 1.5px solid #2B2B31; border-radius: 9px; cursor: pointer;" style-hover="border-color: #4FA3FF; color: #fff;">TRAITER UNE NOUVELLE DEMANDE</button>
+            </div>
+            <!-- logs connexion -->
+            <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px;">
+              <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 14px;"><span style="width: 30px; height: 30px; border-radius: 8px; background: rgba(142,142,152,0.13); color: #A9A9B2; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M9 13h6 M9 17h6"></path></svg></span><div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Journaux de connexion</div></div>
+              <div style="font-weight: 700; font-size: 11.5px; color: #A9A9B2; line-height: 1.7;">Conservation des logs <strong style="color: #F2EFE9;">12 mois</strong> (LCEN).<br>IP, horodatage et user-agent enregistrés à chaque connexion.</div>
+              <div style="margin-top: 14px; background: #0E0E11; border: 1px solid #232328; border-radius: 11px; padding: 12px 14px; font-family: monospace; font-size: 10.5px; color: #6FE3D0; line-height: 1.7;">15/06 11:02 · 92.168.x.x · login OK · Yuna K.<br>15/06 09:14 · 88.120.x.x · login OK · Marco T.<br>14/06 23:47 · 41.203.x.x · <span style="color: #FF5A6E;">login REFUSÉ ×3</span><br>14/06 18:30 · 92.168.x.x · login OK · Lighton</div>
+              <button style="width: 100%; margin-top: 13px; font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 1px; padding: 10px; background: transparent; color: #C9C6BE; border: 1.5px solid #2B2B31; border-radius: 9px; cursor: pointer;" style-hover="border-color: #6FE3D0; color: #fff;">EXPORTER LES JOURNAUX</button>
+            </div>
+          </div>
+          <!-- audit -->
+          <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px; margin-top: 16px;">
+            <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 14px;"><span style="width: 30px; height: 30px; border-radius: 8px; background: rgba(216,27,96,0.13); color: #D81B60; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"></path><circle cx="12" cy="12" r="9"></circle></svg></span><div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Traçabilité des actions admin</div></div>
+            <sc-for list="{{ auditLog }}" as="l" hint-placeholder-count="5">
+              <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #1C1C21;">
+                <span style="width: 8px; height: 8px; border-radius: 3px; background: {{ l.color }}; flex-shrink: 0;"></span>
+                <div style="flex: 1;"><span style="font-weight: 800; font-size: 12px; color: #F2EFE9;">{{ l.who }}</span> <span style="font-weight: 700; font-size: 11px; color: #6E6E78;">· {{ l.role }}</span> <span style="font-weight: 700; font-size: 12px; color: #C9C6BE;">{{ l.action }}</span></div>
+                <span style="font-weight: 700; font-size: 10.5px; color: #5A5A64; white-space: nowrap;">{{ l.when }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ RÉGLAGES PLATEFORME (Owner) ============ -->
+      <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap;">
+            <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Réglages plateforme</h1>
+            <span style="display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 10px; letter-spacing: 0.5px; padding: 5px 11px; border-radius: 8px; background: rgba(216,27,96,0.13); color: #D81B60;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>OWNER UNIQUEMENT</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;">
+            <!-- intégrations -->
+            <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px;">
+              <div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; margin-bottom: 16px;">Intégrations</div>
+              <div style="display: flex; flex-direction: column; gap: 11px;">
+                <sc-for list="{{ integrations }}" as="i" hint-placeholder-count="4">
+                  <div style="display: flex; align-items: center; gap: 13px; padding: 13px 15px; background: #1C1C21; border: 1px solid #232328; border-radius: 12px;">
+                    <span style="width: 38px; height: 38px; border-radius: 10px; background: {{ i.bg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 13px; color: #fff; flex-shrink: 0;">{{ i.letter }}</span>
+                    <div style="flex: 1; min-width: 0;"><div style="font-weight: 800; font-size: 13px; color: #F2EFE9;">{{ i.name }}</div><div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; line-height: 1.3;">{{ i.desc }}</div></div>
+                    <span style="display: flex; align-items: center; gap: 5px; font-weight: 800; font-size: 10.5px; color: {{ i.color }};"><span style="width: 6px; height: 6px; border-radius: 50%; background: {{ i.color }};"></span>{{ i.status }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <!-- général + modération -->
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px;">
+                <div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; margin-bottom: 14px;">Paramètres généraux</div>
+                <sc-for list="{{ genToggles }}" as="t" hint-placeholder-count="3">
+                  <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #1C1C21;">
+                    <div style="flex: 1;"><div style="font-weight: 800; font-size: 12.5px; color: #F2EFE9;">{{ t.label }}</div><div style="font-weight: 700; font-size: 10.5px; color: #6E6E78;">{{ t.desc }}</div></div>
+                    <span style="display: inline-flex; align-items: center; width: 40px; height: 23px; border-radius: 12px; background: {{ t.bg }}; padding: 2px;"><span style="width: 19px; height: 19px; border-radius: 50%; background: #fff; transform: translateX({{ t.x }});"></span></span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="background: #141418; border: 1px solid rgba(255,90,110,0.25); border-radius: 16px; padding: 20px 22px;">
+                <div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; margin-bottom: 6px;">Seuils d'alerte modération</div>
+                <div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-bottom: 14px;">Déclenchent une alerte prioritaire automatique.</div>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-weight: 800; font-size: 12px; color: #C9C6BE;">Signalements avant blocage auto</span><span style="font-family: 'Anton', sans-serif; font-size: 17px; color: #FF5A6E;">3</span></div>
+                  <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-weight: 800; font-size: 12px; color: #C9C6BE;">Mot-clé mineur → priorité absolue</span><span style="font-weight: 800; font-size: 11px; color: #5ED99A;">ACTIVÉ</span></div>
+                  <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-weight: 800; font-size: 12px; color: #C9C6BE;">Contact hors-plateforme → flag</span><span style="font-weight: 800; font-size: 11px; color: #5ED99A;">ACTIVÉ</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ CATALOGUE & CARTES ============ -->
+      <sc-if value="{{ isCatalogue }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
+            <div>
+              <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Cartes &amp; saisons</h1>
+              <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">Saison 1 · Moteur Forgé — 78 cartes · 3 versions / carte</div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button onClick="{{ goImport }}" style="display: flex; align-items: center; gap: 7px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 11px 16px; background: #1C1C21; color: #C9C6BE; border: 1px solid #2B2B31; border-radius: 10px; cursor: pointer;" style-hover="border-color: #4FA3FF;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>IMPORTER CSV</button>
+              <button style="display: flex; align-items: center; gap: 7px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 11px 16px; background: #D81B60; color: #fff; border: none; border-radius: 10px; cursor: pointer; box-shadow: 3px 3px 0 rgba(0,0,0,0.45);" style-hover="background: #F0246F;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>NOUVELLE CARTE</button>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 16px;">
+            <sc-for list="{{ rarities }}" as="r" hint-placeholder-count="6">
+              <div style="background: #141418; border: 1px solid #232328; border-radius: 12px; padding: 13px 14px;">
+                <div style="font-size: 17px; color: {{ r.color }};">{{ r.glyph }}</div>
+                <div style="font-weight: 800; font-size: 11px; color: #F2EFE9; margin-top: 4px;">{{ r.label }}</div>
+                <div style="font-weight: 700; font-size: 10.5px; color: #6E6E78; margin-top: 1px;">{{ r.count }} cartes</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 60px 2.4fr 1.2fr 1.1fr 1.1fr 0.9fr 0.6fr; gap: 12px; padding: 12px 18px; border-bottom: 1px solid #232328; font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase; align-items: center;">
+              <div>N°</div><div>Carte</div><div>Rareté</div><div>Version</div><div>Langues</div><div>Valeur</div><div></div>
+            </div>
+            <sc-for list="{{ cards }}" as="c" hint-placeholder-count="6">
+              <div style="display: grid; grid-template-columns: 60px 2.4fr 1.2fr 1.1fr 1.1fr 0.9fr 0.6fr; gap: 12px; padding: 11px 18px; border-bottom: 1px solid #1C1C21; align-items: center;" style-hover="background: #18181C;">
+                <div style="font-family: 'Anton', sans-serif; font-size: 14px; color: #6E6E78;">{{ c.num }}</div>
+                <div style="display: flex; align-items: center; gap: 11px; min-width: 0;">
+                  <div style="width: 30px; height: 42px; border-radius: 6px; overflow: hidden; flex-shrink: 0; border: 1px solid #2B2B31;"><img src="{{ c.img }}" alt="{{ c.name }}" style="width: 100%; height: 100%; object-fit: cover;"></div>
+                  <div style="min-width: 0;"><div style="font-weight: 800; font-size: 12.5px; color: #F2EFE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ c.name }}</div><div style="font-weight: 700; font-size: 10.5px; color: #6E6E78;">{{ c.brand }}</div></div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 6px;"><span style="font-size: 14px; color: {{ c.rColor }};">{{ c.glyph }}</span><span style="font-weight: 800; font-size: 11px; color: #C9C6BE;">{{ c.rarity }}</span></div>
+                <div style="font-weight: 700; font-size: 11.5px; color: #A9A9B2;">{{ c.version }}</div>
+                <div style="font-weight: 700; font-size: 11px; color: #8E8E98;">{{ c.lang }}</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 13px; color: #F2EFE9;">{{ c.value }}</div>
+                <div style="display: flex; gap: 6px; justify-content: flex-end; align-items: center;">
+                  <span title="Visibilité" style="width: 8px; height: 8px; border-radius: 50%; background: {{ c.visDot }};"></span>
+                  <button style="width: 28px; height: 28px; border-radius: 7px; background: #1C1C21; border: 1px solid #232328; color: #8E8E98; cursor: pointer; display: flex; align-items: center; justify-content: center;" style-hover="border-color: #4FA3FF; color: #fff;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ IMPORT ============ -->
+      <sc-if value="{{ isImport }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="margin-bottom: 18px;">
+            <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Import / mise à jour</h1>
+            <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">Mise à jour en masse des cartes via Excel / CSV ou API</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 16px; align-items: start;">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <!-- dropzone -->
+              <div style="background: #141418; border: 1.5px dashed #3A3A42; border-radius: 16px; padding: 30px; text-align: center;">
+                <div style="width: 52px; height: 52px; margin: 0 auto; border-radius: 13px; background: rgba(79,163,255,0.12); color: #4FA3FF; display: flex; align-items: center; justify-content: center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg></div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 18px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; margin-top: 14px;">Glisse ton fichier ici</div>
+                <div style="font-weight: 700; font-size: 12px; color: #8E8E98; margin-top: 6px;">CSV, XLSX · jusqu'à 5 000 lignes</div>
+                <div style="display: inline-flex; align-items: center; gap: 9px; margin-top: 16px; padding: 11px 16px; background: #1C1C21; border: 1px solid #2B2B31; border-radius: 10px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5ED99A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6"></path></svg>
+                  <span style="font-weight: 800; font-size: 12px; color: #F2EFE9;">saison1_maj_juin.csv</span>
+                  <span style="font-weight: 700; font-size: 11px; color: #6E6E78;">· 78 lignes</span>
+                </div>
+              </div>
+              <!-- mapping -->
+              <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px;">
+                <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; margin-bottom: 14px;">Mapping des colonnes</div>
+                <sc-for list="{{ importCols }}" as="m" hint-placeholder-count="8">
+                  <div style="display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid #1C1C21;">
+                    <span style="font-family: monospace; font-size: 11.5px; color: #6FE3D0; min-width: 110px;">{{ m.csv }}</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5A5A64" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+                    <span style="flex: 1; font-weight: 700; font-size: 12px; color: {{ m.fieldColor }};">{{ m.field }}</span>
+                    <span style="width: 18px; height: 18px; border-radius: 50%; background: {{ m.okBg }}; color: {{ m.okColor }}; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900;">{{ m.okMark }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <!-- preview + rapport -->
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px;">
+                <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; margin-bottom: 14px;">Aperçu (3 premières lignes)</div>
+                <div style="background: #0E0E11; border: 1px solid #232328; border-radius: 11px; padding: 12px; font-family: monospace; font-size: 10.5px; color: #C9C6BE; overflow-x: auto; line-height: 1.8; white-space: nowrap;">
+                  <div style="color: #6E6E78;">id · name_fr · brand · rarity · value</div>
+                  <div>77 · Skyline R34 Titan · Nissan · <span style="color:#FF2E63;">❀</span> · 340€</div>
+                  <div>64 · Porsche 911 RWB · Porsche · <span style="color:#B05CFF;">✦</span> · 39,90€</div>
+                  <div>75 · Honda NSX Type-R · Honda · <span style="color:#E8B23A;">✸</span> · 120€</div>
+                </div>
+              </div>
+              <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px;">
+                <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; margin-bottom: 14px;">Rapport d'import</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                  <div style="background: rgba(94,217,154,0.08); border: 1px solid rgba(94,217,154,0.3); border-radius: 11px; padding: 13px; text-align: center;"><div style="font-family: 'Anton', sans-serif; font-size: 24px; color: #5ED99A;">74</div><div style="font-weight: 800; font-size: 9.5px; color: #8E8E98; text-transform: uppercase; letter-spacing: 0.5px;">Mises à jour</div></div>
+                  <div style="background: rgba(79,163,255,0.08); border: 1px solid rgba(79,163,255,0.3); border-radius: 11px; padding: 13px; text-align: center;"><div style="font-family: 'Anton', sans-serif; font-size: 24px; color: #4FA3FF;">4</div><div style="font-weight: 800; font-size: 9.5px; color: #8E8E98; text-transform: uppercase; letter-spacing: 0.5px;">Créées</div></div>
+                  <div style="background: rgba(255,90,110,0.08); border: 1px solid rgba(255,90,110,0.3); border-radius: 11px; padding: 13px; text-align: center;"><div style="font-family: 'Anton', sans-serif; font-size: 24px; color: #FF5A6E;">2</div><div style="font-weight: 800; font-size: 9.5px; color: #8E8E98; text-transform: uppercase; letter-spacing: 0.5px;">Erreurs</div></div>
+                </div>
+                <div style="margin-top: 12px; padding: 11px 13px; background: rgba(255,90,110,0.06); border: 1px solid rgba(255,90,110,0.25); border-radius: 10px; font-weight: 700; font-size: 11px; color: #FFA0AC; line-height: 1.5;">Ligne 51 : rareté « ULTRA » inconnue · Ligne 63 : valeur manquante</div>
+                <button style="width: 100%; margin-top: 14px; font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1px; padding: 13px; background: #D81B60; color: #fff; border: none; border-radius: 11px; cursor: pointer; box-shadow: 3px 3px 0 rgba(0,0,0,0.45);" style-hover="background: #F0246F;">CONFIRMER L'IMPORT (78 LIGNES)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ GAMIFICATION ============ -->
+      <sc-if value="{{ isGamification }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="margin-bottom: 18px;">
+            <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Classements &amp; badges</h1>
+            <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">Gère les classements et les conditions de déblocage des badges</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 16px; align-items: start;">
+            <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;"><div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Classement global</div><span style="font-weight: 800; font-size: 9.5px; padding: 3px 8px; border-radius: 5px; background: #1C1C21; color: #8E8E98;">SAISON 1</span></div>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <sc-for list="{{ rankings }}" as="r" hint-placeholder-count="4">
+                  <div style="display: flex; align-items: center; gap: 11px; padding: 9px 8px; border-radius: 10px;" style-hover="background: #1C1C21;">
+                    <span style="font-family: 'Anton', sans-serif; font-size: 15px; color: {{ r.rankColor }}; width: 20px; text-align: center;">{{ r.rank }}</span>
+                    <span style="width: 32px; height: 32px; border-radius: 50%; background: {{ r.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 12px; color: #fff;">{{ r.ini }}</span>
+                    <div style="flex: 1; min-width: 0;"><div style="font-weight: 800; font-size: 12px; color: #F2EFE9;">{{ r.k }}</div><div style="font-weight: 700; font-size: 10px; color: #6E6E78;">{{ r.owned }} cartes</div></div>
+                    <span style="font-family: 'Anton', sans-serif; font-size: 14px; color: #C9C6BE;">{{ r.pct }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px;">
+              <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; margin-bottom: 16px;">Badges</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 11px;">
+                <sc-for list="{{ badges }}" as="b" hint-placeholder-count="6">
+                  <div style="display: flex; align-items: center; gap: 11px; padding: 13px 14px; background: #1C1C21; border: 1px solid #232328; border-radius: 12px;">
+                    <span style="width: 36px; height: 36px; border-radius: 10px; background: {{ b.iconBg }}; color: {{ b.color }}; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;">{{ b.icon }}</span>
+                    <div style="flex: 1; min-width: 0;"><div style="font-weight: 800; font-size: 12px; color: #F2EFE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ b.name }}</div><div style="font-weight: 700; font-size: 10px; color: #6E6E78; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ b.cond }}</div><div style="font-weight: 700; font-size: 10px; color: #8E8E98; margin-top: 2px;">{{ b.holders }} membres</div></div>
+                    <span style="display: inline-flex; align-items: center; width: 34px; height: 20px; border-radius: 10px; background: {{ b.tgBg }}; padding: 2px; flex-shrink: 0;"><span style="width: 16px; height: 16px; border-radius: 50%; background: #fff; transform: translateX({{ b.tgX }});"></span></span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ MULTILINGUE ============ -->
+      <sc-if value="{{ isMultilingue }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="margin-bottom: 18px;">
+            <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Langues</h1>
+            <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">État des traductions d'interface · repérage des chaînes manquantes</div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px;">
+            <sc-for list="{{ languages }}" as="l" hint-placeholder-count="3">
+              <div style="background: #141418; border: 1px solid #232328; border-radius: 15px; padding: 18px 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                  <div style="display: flex; align-items: center; gap: 10px;"><span style="width: 36px; height: 28px; border-radius: 7px; background: #1C1C21; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; color: #F2EFE9; font-family: {{ l.font }};">{{ l.code }}</span><span style="font-weight: 800; font-size: 14px; color: #F2EFE9; font-family: {{ l.font }};">{{ l.native }}</span></div>
+                  <span style="display: inline-flex; align-items: center; width: 36px; height: 21px; border-radius: 11px; background: {{ l.tgBg }}; padding: 2px;"><span style="width: 17px; height: 17px; border-radius: 50%; background: #fff; transform: translateX({{ l.tgX }});"></span></span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px;"><span style="font-weight: 700; font-size: 11px; color: #8E8E98;">{{ l.status }}</span><span style="font-family: 'Anton', sans-serif; font-size: 16px; color: {{ l.pctColor }};">{{ l.pctLabel }}</span></div>
+                <div style="height: 6px; border-radius: 3px; background: #26262B; overflow: hidden;"><div style="height: 100%; width: {{ l.pctLabel }}; background: {{ l.pctColor }}; border-radius: 3px;"></div></div>
+                <div style="font-weight: 700; font-size: 10.5px; color: {{ l.missColor }}; margin-top: 8px;">{{ l.missLabel }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; overflow: hidden;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #232328;"><div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Chaînes manquantes</div><span style="font-weight: 800; font-size: 11px; color: #E8945A;">95 à traduire</span></div>
+            <div style="display: grid; grid-template-columns: 1.6fr 1.4fr 1fr; gap: 12px; padding: 11px 18px; border-bottom: 1px solid #232328; font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;"><div>Clé</div><div>Texte source (FR)</div><div>Manque en</div></div>
+            <sc-for list="{{ missingStrings }}" as="s" hint-placeholder-count="4">
+              <div style="display: grid; grid-template-columns: 1.6fr 1.4fr 1fr; gap: 12px; padding: 11px 18px; border-bottom: 1px solid #1C1C21; align-items: center;" style-hover="background: #18181C;">
+                <span style="font-family: monospace; font-size: 11px; color: #6FE3D0;">{{ s.key }}</span>
+                <span style="font-weight: 700; font-size: 12px; color: #C9C6BE;">{{ s.fr }}</span>
+                <span style="font-weight: 800; font-size: 11px; color: #E8945A;">{{ s.miss }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ MARKETPLACE & ÉCHANGES (supervision) ============ -->
+      <sc-if value="{{ isMarketplace }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="margin-bottom: 18px;">
+            <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Marketplace &amp; échanges</h1>
+            <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">Supervision uniquement — la marketplace entre membres reste <strong style="color: #C9C6BE;">sans paiement</strong>, l'admin n'encaisse pas</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1.4fr; gap: 16px; align-items: start;">
+            <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px;">
+              <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; margin-bottom: 16px;">Magasins membres</div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <sc-for list="{{ shops }}" as="s" hint-placeholder-count="3">
+                  <div style="display: flex; align-items: center; gap: 11px; padding: 11px 12px; background: #1C1C21; border: 1px solid #232328; border-radius: 12px;">
+                    <span style="width: 32px; height: 32px; border-radius: 50%; background: {{ s.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 12px; color: #fff;">{{ s.ini }}</span>
+                    <div style="flex: 1; min-width: 0;"><div style="font-weight: 800; font-size: 12px; color: #F2EFE9;">{{ s.name }}</div><div style="font-weight: 700; font-size: 10px; color: #6E6E78;">{{ s.listings }} annonces · {{ s.rating }}</div></div>
+                    <span style="font-weight: 800; font-size: 10px; padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.05); color: {{ s.sColor }};">{{ s.status }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 20px 22px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;"><div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Échanges en cours</div><span style="font-weight: 800; font-size: 11px; color: #FF5A6E;">2 litiges</span></div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <sc-for list="{{ trades }}" as="t" hint-placeholder-count="3">
+                  <div style="padding: 13px 15px; background: {{ t.bg }}; border: 1px solid {{ t.border }}; border-radius: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 7px;">
+                      <span style="font-weight: 800; font-size: 12px; color: #F2EFE9;">{{ t.a }}</span>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8E8E98" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                      <span style="font-weight: 800; font-size: 12px; color: #F2EFE9;">{{ t.b }}</span>
+                      <div style="flex: 1;"></div>
+                      <span style="font-weight: 700; font-size: 10px; color: #6E6E78;">{{ t.when }}</span>
+                    </div>
+                    <div style="font-weight: 700; font-size: 11.5px; color: #A9A9B2; margin-bottom: 9px;">{{ t.items }}</div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                      <span style="font-weight: 800; font-size: 10.5px; padding: 4px 9px; border-radius: 6px; background: rgba(255,255,255,0.05); color: {{ t.sColor }};">{{ t.status }}</span>
+                      <sc-if value="{{ t.litige }}" hint-placeholder-val="{{ false }}">
+                        <button style="display: flex; align-items: center; gap: 6px; font-family: 'Anton', sans-serif; font-size: 10.5px; letter-spacing: 0.5px; padding: 7px 12px; background: #1C1C21; color: #FF8A3D; border: 1px solid rgba(255,138,61,0.4); border-radius: 8px; cursor: pointer;" style-hover="background: rgba(255,138,61,0.1);">VOIR L'HISTORIQUE HORODATÉ</button>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ BOUTIQUE · PRODUITS ============ -->
+      <sc-if value="{{ isShopProducts }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px;">
+            <div>
+              <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Produits</h1>
+              <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">Boutique officielle · 6 références · 1 épuisée · 1 masquée</div>
+            </div>
+            <button style="display: flex; align-items: center; gap: 8px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 11px 17px; background: #D81B60; color: #fff; border: none; border-radius: 10px; cursor: pointer; box-shadow: 3px 3px 0 rgba(0,0,0,0.45);" style-hover="background: #F0246F;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>NOUVEAU PRODUIT</button>
+          </div>
+          <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 2.6fr 1fr 0.9fr 1.2fr 1fr 0.6fr; gap: 12px; padding: 12px 18px; border-bottom: 1px solid #232328; font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">
+              <div>Produit</div><div>Catégorie</div><div>Prix</div><div>Stock</div><div>Visibilité</div><div></div>
+            </div>
+            <sc-for list="{{ shopProducts }}" as="p" hint-placeholder-count="6">
+              <div style="display: grid; grid-template-columns: 2.6fr 1fr 0.9fr 1.2fr 1fr 0.6fr; gap: 12px; padding: 12px 18px; border-bottom: 1px solid #1C1C21; align-items: center;" style-hover="background: #18181C;">
+                <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+                  <div style="width: 40px; height: 40px; border-radius: 9px; background: radial-gradient(circle at 50% 42%, #FFFFFF, #ECE6E8 85%); display: flex; align-items: center; justify-content: center; padding: 6px; flex-shrink: 0;"><img src="{{ p.img }}" alt="{{ p.name }}" style="max-width: 100%; max-height: 100%; object-fit: contain;"></div>
+                  <div style="min-width: 0;"><div style="font-weight: 800; font-size: 12.5px; color: #F2EFE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ p.name }}</div><div style="font-weight: 700; font-size: 10.5px; color: #6E6E78;">{{ p.ref }}</div></div>
+                </div>
+                <div style="font-weight: 700; font-size: 12px; color: #A9A9B2;">{{ p.cat }}</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 15px; color: #F2EFE9;">{{ p.price }}</div>
+                <div style="display: flex; align-items: center; gap: 7px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{ p.sColor }};"></span><span style="font-weight: 800; font-size: 11.5px; color: {{ p.sColor }};">{{ p.stock }}</span></div>
+                <div style="display: flex; align-items: center; gap: 7px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{ p.visDot }};"></span><span style="font-weight: 800; font-size: 11.5px; color: #C9C6BE;">{{ p.visLabel }}</span></div>
+                <div style="text-align: right;"><button style="width: 30px; height: 30px; border-radius: 8px; background: #1C1C21; border: 1px solid #232328; color: #8E8E98; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" style-hover="border-color: #E8B23A; color: #fff;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ BOUTIQUE · COMMANDES ============ -->
+      <sc-if value="{{ isShopOrders }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="margin-bottom: 18px;">
+            <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Commandes</h1>
+            <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">Boutique officielle · <strong style="color: #E8B23A;">2 à expédier aujourd'hui</strong></div>
+          </div>
+          <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1.2fr 1.4fr 0.9fr 0.8fr 1.1fr 1.1fr; gap: 12px; padding: 12px 18px; border-bottom: 1px solid #232328; font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">
+              <div>Commande</div><div>Client</div><div>Date</div><div>Total</div><div>Statut</div><div></div>
+            </div>
+            <sc-for list="{{ shopOrders }}" as="o" hint-placeholder-count="5">
+              <div style="display: grid; grid-template-columns: 1.2fr 1.4fr 0.9fr 0.8fr 1.1fr 1.1fr; gap: 12px; padding: 13px 18px; border-bottom: 1px solid #1C1C21; align-items: center;" style-hover="background: #18181C;">
+                <div style="font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 0.3px; color: #F2EFE9;">{{ o.num }}</div>
+                <div style="display: flex; align-items: center; gap: 9px; min-width: 0;"><span style="width: 28px; height: 28px; border-radius: 50%; background: {{ o.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 11px; color: #fff; flex-shrink: 0;">{{ o.ini }}</span><span style="font-weight: 700; font-size: 12px; color: #C9C6BE; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ o.client }}</span></div>
+                <div style="font-weight: 700; font-size: 11.5px; color: #8E8E98;">{{ o.date }}</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 14px; color: #F2EFE9;">{{ o.total }}</div>
+                <div><span style="display: inline-flex; align-items: center; gap: 5px; font-weight: 800; font-size: 10.5px; padding: 4px 9px; border-radius: 7px; background: {{ o.sBg }}; color: {{ o.sColor }};"><span style="width: 6px; height: 6px; border-radius: 50%; background: {{ o.sColor }};"></span>{{ o.status }}</span></div>
+                <div style="text-align: right;">
+                  <sc-if value="{{ o.toShip }}" hint-placeholder-val="{{ false }}">
+                    <button style="display: inline-flex; align-items: center; gap: 6px; font-family: 'Anton', sans-serif; font-size: 10.5px; letter-spacing: 0.5px; padding: 8px 13px; background: #D81B60; color: #fff; border: none; border-radius: 8px; cursor: pointer;" style-hover="background: #F0246F;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>EXPÉDIER</button>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ BOUTIQUE · PAIEMENTS STRIPE ============ -->
+      <sc-if value="{{ isShopPayments }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap;">
+            <div>
+              <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Paiements Stripe</h1>
+              <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">Vue lecture seule des transactions · aucune manipulation comptable</div>
+            </div>
+            <div style="flex: 1;"></div>
+            <span style="display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 9px; background: rgba(99,91,255,0.1); border: 1px solid rgba(99,91,255,0.3); font-weight: 800; font-size: 11px; color: #635BFF;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #635BFF;"></span>Connecté à Stripe · lecture seule</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 16px;">
+            <sc-for list="{{ stripeKpis }}" as="k" hint-placeholder-count="4">
+              <div style="background: #141418; border: 1px solid #232328; border-radius: 14px; padding: 16px 18px;"><div style="font-weight: 800; font-size: 10.5px; letter-spacing: 0.8px; color: #6E6E78; text-transform: uppercase;">{{ k.label }}</div><div style="font-family: 'Anton', sans-serif; font-size: 27px; color: {{ k.color }}; margin-top: 6px;">{{ k.value }}</div></div>
+            </sc-for>
+          </div>
+          <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1.2fr 1.3fr 0.9fr 1.2fr 1.1fr 0.9fr; gap: 12px; padding: 12px 18px; border-bottom: 1px solid #232328; font-weight: 800; font-size: 9.5px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">
+              <div>Transaction</div><div>Client</div><div>Montant</div><div>Moyen</div><div>Date</div><div>Statut</div>
+            </div>
+            <sc-for list="{{ stripeTx }}" as="t" hint-placeholder-count="5">
+              <div style="display: grid; grid-template-columns: 1.2fr 1.3fr 0.9fr 1.2fr 1.1fr 0.9fr; gap: 12px; padding: 12px 18px; border-bottom: 1px solid #1C1C21; align-items: center;" style-hover="background: #18181C;">
+                <span style="font-family: monospace; font-size: 11.5px; color: #635BFF;">{{ t.id }}</span>
+                <span style="font-weight: 700; font-size: 12px; color: #C9C6BE;">{{ t.client }}</span>
+                <span style="font-family: 'Anton', sans-serif; font-size: 13px; color: #F2EFE9;">{{ t.amount }}</span>
+                <span style="font-weight: 700; font-size: 11.5px; color: #A9A9B2;">{{ t.method }}</span>
+                <span style="font-weight: 700; font-size: 11px; color: #8E8E98;">{{ t.date }}</span>
+                <span style="display: inline-flex; align-items: center; gap: 5px; font-weight: 800; font-size: 10.5px; color: {{ t.sColor }};"><span style="width: 6px; height: 6px; border-radius: 50%; background: {{ t.sColor }};"></span>{{ t.status }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ MODULE GÉNÉRIQUE (placeholder léger) ============ -->
+      <sc-if value="{{ showGeneric }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.35s ease both;">
+          <h1 style="margin: 0 0 4px; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 30px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">{{ moduleTitle }}</h1>
+        </div>
+      </sc-if>
+
+      <!-- @@MODULES@@ -->
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { module: 'dashboard', role: 'owner', roleDdOpen: false, userFilter: 'all', report: 0 };
+
+  ROLES = {
+    owner:   { label: 'Owner', color: 'linear-gradient(135deg,#D81B60,#7A0F37)', scope: 'Accès total · gère les admins, finances, réglages', icon: 'crown' },
+    mod:     { label: 'Modérateur', color: 'linear-gradient(135deg,#FF6B5E,#8C2F1F)', scope: 'Utilisateurs, modération, litiges marketplace', icon: 'shield' },
+    catalog: { label: 'Gestionnaire catalogue', color: 'linear-gradient(135deg,#4FA3FF,#1F4E8C)', scope: 'Saisons, cartes, raretés, imports', icon: 'layers' },
+    shop:    { label: 'Créateur / Boutique', color: 'linear-gradient(135deg,#E8B23A,#8C6A1F)', scope: 'Produits, stock, commandes, livraisons', icon: 'bag' },
+    support: { label: 'Support', color: 'linear-gradient(135deg,#6FE3D0,#1F8C7A)', scope: 'Lecture seule + traitement des demandes', icon: 'help' }
+  };
+  // access[module] = roles allowed
+  ACCESS = {
+    dashboard: ['owner','mod','catalog','shop','support'],
+    users: ['owner','mod','support'],
+    moderation: ['owner','mod','support'],
+    marketplace: ['owner','mod','support'],
+    catalogue: ['owner','catalog'],
+    import: ['owner','catalog'],
+    shop_products: ['owner','shop'],
+    shop_orders: ['owner','shop'],
+    shop_payments: ['owner','shop'],
+    gamification: ['owner','catalog'],
+    multilingue: ['owner','catalog'],
+    admins: ['owner'],
+    roles: ['owner'],
+    compliance: ['owner','support'],
+    settings: ['owner']
+  };
+  GROUPS = [
+    { title: 'Pilotage', items: [['dashboard','Tableau de bord']] },
+    { title: 'Communauté', items: [['users','Utilisateurs'],['moderation','Modération'],['marketplace','Marketplace & échanges']] },
+    { title: 'Catalogue', items: [['catalogue','Cartes & saisons'],['import','Import / mise à jour']] },
+    { title: 'Boutique officielle', items: [['shop_products','Produits'],['shop_orders','Commandes'],['shop_payments','Paiements Stripe']] },
+    { title: 'Engagement', items: [['gamification','Classements & badges']] },
+    { title: 'Système', items: [['multilingue','Langues'],['admins','Administrateurs'],['roles','Rôles & permissions'],['compliance','Conformité & journaux'],['settings','Réglages plateforme']] }
+  ];
+  BADGES = { moderation: '5', shop_orders: '3' };
+  PERM_COLS = [['dashboard','Tableau'],['users','Utilisateurs'],['moderation','Modération'],['marketplace','Marketplace'],['catalogue','Catalogue'],['shop','Boutique'],['gamification','Gamif.'],['multilingue','Langues'],['compliance','Conformité'],['settings','Réglages']];
+  PERM = {
+    owner:   { dashboard:'full', users:'full', moderation:'full', marketplace:'full', catalogue:'full', shop:'full', gamification:'full', multilingue:'full', compliance:'full', settings:'full' },
+    mod:     { dashboard:'full', users:'full', moderation:'full', marketplace:'full', catalogue:'none', shop:'none', gamification:'none', multilingue:'none', compliance:'read', settings:'none' },
+    catalog: { dashboard:'full', users:'none', moderation:'none', marketplace:'none', catalogue:'full', shop:'none', gamification:'full', multilingue:'full', compliance:'none', settings:'none' },
+    shop:    { dashboard:'full', users:'none', moderation:'none', marketplace:'none', catalogue:'none', shop:'full', gamification:'none', multilingue:'none', compliance:'none', settings:'none' },
+    support: { dashboard:'read', users:'read', moderation:'full', marketplace:'read', catalogue:'none', shop:'none', gamification:'none', multilingue:'none', compliance:'read', settings:'none' }
+  };
+  get PERM_MODS() { return this.PERM_COLS.map(c => c[1]); }
+  permRows() {
+    const roleList = [['owner','Owner','#D81B60'],['mod','Modérateur','#FF6B5E'],['catalog','Gest. catalogue','#4FA3FF'],['shop','Créateur / Boutique','#E8B23A'],['support','Support','#6FE3D0']];
+    return roleList.map(([key, label, color]) => ({
+      label, color, owner: key === 'owner',
+      cells: this.PERM_COLS.map(([m]) => {
+        const lvl = this.PERM[key][m];
+        if (lvl === 'full') return { lvl, mark: '✓', color: '#5ED99A', bg: 'rgba(94,217,154,0.12)' };
+        if (lvl === 'read') return { lvl, mark: '◐', color: '#4FA3FF', bg: 'rgba(79,163,255,0.12)' };
+        return { lvl, mark: '—', color: '#4A4A52', bg: 'transparent' };
+      })
+    }));
+  }
+
+  svg(d, sw) { return React.createElement('svg', { width: 17, height: 17, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: sw || 2, strokeLinecap: 'round', strokeLinejoin: 'round' }, (Array.isArray(d) ? d : [d]).map((p, i) => React.createElement('path', { key: i, d: p }))); }
+  icons = {
+    dashboard: 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z',
+    users: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75',
+    moderation: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',
+    marketplace: 'M3 9l1-5h16l1 5 M5 9v11h14V9 M9 22V12h6v10',
+    catalogue: 'M12 2 2 7l10 5 10-5z M2 17l10 5 10-5 M2 12l10 5 10-5',
+    import: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3',
+    shop_products: 'M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z M3 6h18 M16 10a4 4 0 0 1-8 0',
+    shop_orders: 'M9 2 7 6H3v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6h-4l-2-4z M3 6h18',
+    shop_payments: 'M2 5h20v14H2z M2 10h20',
+    gamification: 'M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2 M18 9h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2 M6 3h12v6a6 6 0 0 1-12 0z M9 21h6 M12 15v6',
+    multilingue: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M3 12h18 M12 3a14 14 0 0 1 0 18 M12 3a14 14 0 0 0 0 18',
+    admins: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M19 8v6 M22 11h-6',
+    roles: 'M9 12l2 2 4-4 M21 12c0 5-3.5 7.5-8.2 9.4a1 1 0 0 1-.7 0C7.5 19.5 4 17 4 12V6a1 1 0 0 1 .6-.9l7-3a1 1 0 0 1 .8 0l7 3A1 1 0 0 1 20 6z',
+    compliance: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M9 13h6 M9 17h6',
+    settings: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 0 1-4 0v-.1A1.7 1.7 0 0 0 6 19.4l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H2a2 2 0 0 1 0-4h.1A1.7 1.7 0 0 0 4.6 6l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2V2a2 2 0 0 1 4 0v.1A1.7 1.7 0 0 0 18 4.6l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9H22a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-2.5 1.6z'
+  };
+  roleIcons = {
+    crown: 'M2 7l5 4 5-7 5 7 5-4-2 12H4z',
+    shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',
+    layers: 'M12 2 2 7l10 5 10-5z M2 17l10 5 10-5 M2 12l10 5 10-5',
+    bag: 'M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z M3 6h18 M16 10a4 4 0 0 1-8 0',
+    help: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3 M12 17h.01'
+  };
+
+  go(mod) {
+    if (!this.ACCESS[mod].includes(this.state.role)) return;
+    this.setState({ module: mod });
+  }
+  setRole(role) {
+    const allowed = this.ACCESS[this.state.module] && this.ACCESS[this.state.module].includes(role);
+    this.setState({ role, roleDdOpen: false, module: allowed ? this.state.module : 'dashboard' });
+  }
+
+  renderVals() {
+    const role = this.state.role;
+    const mod = this.state.module;
+    const roleMeta = this.ROLES[role];
+    const navGroups = this.GROUPS.map(g => ({
+      title: g.title,
+      items: g.items.map(([key, label]) => {
+        const allowed = this.ACCESS[key].includes(role);
+        const active = mod === key;
+        const badge = this.BADGES[key] && allowed ? this.BADGES[key] : '';
+        return {
+          label, icon: this.svg(this.icons[key], 2),
+          locked: !allowed, badge,
+          badgeBg: key === 'moderation' ? '#FF5A6E' : '#D81B60',
+          bg: active ? '#D81B60' : 'transparent',
+          hoverBg: active ? '#D81B60' : (allowed ? '#1C1C21' : 'transparent'),
+          color: active ? '#fff' : (allowed ? '#C9C6BE' : '#4A4A52'),
+          iconColor: active ? '#fff' : (allowed ? '#7E7E88' : '#3A3A42'),
+          weight: active ? 800 : 700,
+          opacity: allowed ? '1' : '0.55',
+          cursor: allowed ? 'pointer' : 'not-allowed',
+          lockTitle: allowed ? '' : 'Non autorisé pour le rôle ' + roleMeta.label,
+          onClick: () => this.go(key)
+        };
+      })
+    }));
+
+    const restrictByRole = {
+      mod: 'Tu peux gérer la communauté et la modération, mais pas le catalogue, la boutique ni les réglages.',
+      catalog: 'Tu gères le catalogue et les imports, sans accès à la modération ni à la boutique.',
+      shop: 'Tu pilotes la boutique officielle uniquement — pas de modération communautaire ni de réglages.',
+      support: 'Accès en lecture et traitement des demandes, sans configuration de la plateforme.'
+    };
+
+    // KPIs adaptés au rôle
+    const K = {
+      members: { label: 'Membres actifs (7j)', value: '3 218', icon: this.svg(this.icons.users, 2), iconBg: 'rgba(79,163,255,0.13)', iconColor: '#4FA3FF', trend: '▲ +6 %', trendColor: '#5ED99A' },
+      signups: { label: 'Nouvelles inscriptions (24h)', value: '47', icon: this.svg('M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M19 8v6 M22 11h-6', 2), iconBg: 'rgba(94,217,154,0.13)', iconColor: '#5ED99A', trend: '▲ +12', trendColor: '#5ED99A' },
+      trades: { label: 'Échanges en cours', value: '184', icon: this.svg('M17 1l4 4-4 4 M3 11V9a4 4 0 0 1 4-4h14 M7 23l-4-4 4-4 M21 13v2a4 4 0 0 1-4 4H3', 2), iconBg: 'rgba(176,92,255,0.13)', iconColor: '#B05CFF', trend: '34 à valider', trendColor: '#8E8E98' },
+      reports: { label: 'Signalements ouverts', value: '5', icon: this.svg('M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z M12 9v4 M12 17h.01', 2), iconBg: 'rgba(255,90,110,0.13)', iconColor: '#FF5A6E', trend: '⚠ 2 mineurs', trendColor: '#FF5A6E' },
+      orders: { label: 'Commandes du jour', value: '23', icon: this.svg(this.icons.shop_orders, 2), iconBg: 'rgba(232,178,58,0.13)', iconColor: '#E8B23A', trend: '7 à expédier', trendColor: '#E8B23A' },
+      revenue: { label: 'CA boutique (jour)', value: '878 €', icon: this.svg('M12 1v22 M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6', 2), iconBg: 'rgba(94,217,154,0.13)', iconColor: '#5ED99A', trend: '▲ +18 %', trendColor: '#5ED99A' }
+    };
+    const kpiByRole = {
+      owner: ['members','signups','trades','reports','orders','revenue'],
+      mod: ['members','signups','trades','reports'],
+      support: ['members','reports','trades'],
+      catalog: ['members','signups','trades'],
+      shop: ['orders','revenue','members']
+    };
+    const kpis = (kpiByRole[role] || kpiByRole.owner).map(k => K[k]);
+
+    // work queues (selon rôle)
+    const qReports = {
+      title: 'Signalements à traiter', icon: this.svg('M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', 2), iconBg: 'rgba(255,90,110,0.13)', iconColor: '#FF5A6E',
+      count: '5', countColor: '#FF5A6E', border: 'rgba(255,90,110,0.3)', cta: 'OUVRIR LA FILE DE MODÉRATION', onClick: () => this.go('moderation'),
+      rows: [
+        { flag: true, title: 'Échange suspect impliquant un mineur', meta: 'NIGHT_RIDER_03 → cible KOUKI_KID (15 ans)', when: '4 min', rowBg: 'rgba(255,90,110,0.07)', rowBorder: 'rgba(255,90,110,0.3)' },
+        { flag: true, title: 'Messages déplacés en MP', meta: 'cible AE86_FAN (16 ans)', when: '22 min', rowBg: 'rgba(255,90,110,0.07)', rowBorder: 'rgba(255,90,110,0.3)' },
+        { flag: false, title: 'Avis frauduleux sur un magasin', meta: 'magasin DRIFT_KING_06', when: '1 h', rowBg: '#1C1C21', rowBorder: '#232328' }
+      ]
+    };
+    const qOrders = {
+      title: 'Commandes à expédier', icon: this.svg(this.icons.shop_orders, 2), iconBg: 'rgba(232,178,58,0.13)', iconColor: '#E8B23A',
+      count: '7', countColor: '#E8B23A', border: '#232328', cta: 'OUVRIR LES COMMANDES', onClick: () => this.go('shop_orders'),
+      rows: [
+        { flag: false, title: 'TP-2026-04817 · Display Moteur Forgé', meta: 'Kenji Tanaka · payé', when: 'aujourd\u2019hui', rowBg: '#1C1C21', rowBorder: '#232328' },
+        { flag: false, title: 'TP-2026-04816 · Pack de 3 boosters', meta: 'Sara Lemoine · payé', when: 'aujourd\u2019hui', rowBg: '#1C1C21', rowBorder: '#232328' },
+        { flag: false, title: 'TP-2026-04812 · Booster à l\u2019unité', meta: 'Tom Bianchi · payé', when: 'hier', rowBg: '#1C1C21', rowBorder: '#232328' }
+      ]
+    };
+    let queues = [qReports, qOrders];
+    if (role === 'shop') queues = [qOrders];
+    else if (role === 'catalog') queues = [{ ...qReports, title: 'Imports récents', icon: this.svg(this.icons.import,2), iconBg:'rgba(79,163,255,0.13)', iconColor:'#4FA3FF', count:'2', countColor:'#4FA3FF', border:'#232328', cta:'OUVRIR LES IMPORTS', onClick:()=>this.go('import'), rows:[{flag:false,title:'Saison 1 · 12 cartes mises à jour',meta:'import CSV · 0 erreur',when:'2 h',rowBg:'#1C1C21',rowBorder:'#232328'},{flag:false,title:'Visuels HD · 8 fichiers',meta:'upload terminé',when:'hier',rowBg:'#1C1C21',rowBorder:'#232328'}] }];
+    else if (role === 'support' || role === 'mod') queues = [qReports];
+
+    const reportsData = [
+      { ref: 'SG-2291', minor: true, type: 'Échange · contact', typeBg: 'rgba(255,90,110,0.13)', typeColor: '#FF5A6E', when: '4 min', title: 'Demande de contact hors plateforme', by: 'SARA.S15', byIni: 'S', byMeta: 'Réputation 92 · témoin', target: 'NIGHT_RIDER_03', targetIni: 'N', targetMeta: '3 signalements · majeur', targetMetaColor: '#FF8A3D', targetBorder: 'rgba(255,90,110,0.35)' },
+      { ref: 'SG-2288', minor: true, type: 'Messages privés', typeBg: 'rgba(255,90,110,0.13)', typeColor: '#FF5A6E', when: '22 min', title: 'Messages déplacés vers un mineur', by: 'AE86_FAN', byIni: 'A', byMeta: 'Réputation 78 · 16 ans', target: 'TOURGE_GHOST', targetIni: 'T', targetMeta: '1 signalement · majeur', targetMetaColor: '#FF8A3D', targetBorder: 'rgba(255,90,110,0.35)' },
+      { ref: 'SG-2284', minor: false, type: 'Avis magasin', typeBg: 'rgba(79,163,255,0.13)', typeColor: '#4FA3FF', when: '1 h', title: 'Avis frauduleux suspecté', by: 'DRIFT_KING_06', byIni: 'D', byMeta: 'Magasin vérifié', target: 'FAKE_REVIEW_X', targetIni: 'F', targetMeta: 'Compte récent', targetMetaColor: '#8E8E98', targetBorder: '#232328' },
+      { ref: 'SG-2280', minor: false, type: 'Contenu', typeBg: 'rgba(232,178,58,0.13)', typeColor: '#E8B23A', when: '3 h', title: 'Image inappropriée sur un profil', by: 'MIDNIGHT_PURPLE', byIni: 'M', byMeta: 'Réputation 88', target: 'GRAFF_99', targetIni: 'G', targetMeta: 'Majeur', targetMetaColor: '#8E8E98', targetBorder: '#232328' },
+      { ref: 'SG-2275', minor: false, type: 'Spam', typeBg: 'rgba(142,142,152,0.13)', typeColor: '#A9A9B2', when: '5 h', title: 'Spam de liens dans le chat', by: 'HACHI_ROKU', byIni: 'H', byMeta: 'Réputation 64', target: 'PROMO_BOT_7', targetIni: 'P', targetMeta: 'Bot suspecté', targetMetaColor: '#8E8E98', targetBorder: '#232328' }
+    ];
+    const selR = reportsData[this.state.report];
+
+    return {
+      // topbar role
+      roleLabel: roleMeta.label, roleColor: roleMeta.color, roleIcon: this.svg(this.roleIcons[roleMeta.icon], 2),
+      roleDdOpen: this.state.roleDdOpen, roleDdBorder: this.state.roleDdOpen ? '#D81B60' : '#232328',
+      roleDdRot: this.state.roleDdOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+      toggleRoleDd: () => this.setState(s => ({ roleDdOpen: !s.roleDdOpen })),
+      roleOptions: Object.keys(this.ROLES).map(k => ({
+        label: this.ROLES[k].label, color: this.ROLES[k].color, scope: this.ROLES[k].scope,
+        icon: this.svg(this.roleIcons[this.ROLES[k].icon], 2), active: k === role,
+        bg: k === role ? 'rgba(216,27,96,0.1)' : 'transparent',
+        onClick: () => this.setRole(k)
+      })),
+      navGroups,
+      showRestrictBanner: role !== 'owner',
+      restrictText: restrictByRole[role] || '',
+      isDashboard: mod === 'dashboard', isUsers: mod === 'users', isModeration: mod === 'moderation',
+      isAdmins: mod === 'admins', isRoles: mod === 'roles', isCompliance: mod === 'compliance', isSettings: mod === 'settings',
+      isCatalogue: mod === 'catalogue', isImport: mod === 'import', isGamification: mod === 'gamification', isMultilingue: mod === 'multilingue',
+      isMarketplace: mod === 'marketplace', isShopProducts: mod === 'shop_products', isShopOrders: mod === 'shop_orders', isShopPayments: mod === 'shop_payments',
+      moduleTitle: ({ marketplace: 'Marketplace & échanges', catalogue: 'Cartes & saisons', import: 'Import / mise à jour', shop_products: 'Produits', shop_orders: 'Commandes', shop_payments: 'Paiements Stripe', gamification: 'Classements & badges', multilingue: 'Langues' })[mod] || '',
+      showGeneric: false,
+      goImport: () => this.go('import'),
+      // CATALOGUE
+      rarities: [
+        { glyph: '◆', label: 'Communes', color: '#9BA3B2', count: 30 },
+        { glyph: '◈', label: 'Rares holo', color: '#4FA3FF', count: 20 },
+        { glyph: '✦', label: 'Ultra rares', color: '#B05CFF', count: 17 },
+        { glyph: '❀', label: 'Légendaires', color: '#FF2E63', count: 7 },
+        { glyph: '✸', label: 'Gold', color: '#E8B23A', count: 2 },
+        { glyph: '✪', label: 'Uniques 01/01', color: '#6FE3D0', count: 2 }
+      ],
+      cards: [
+        { num: '77', name: 'Nissan Skyline R34 Titanesque', brand: 'Nissan', glyph: '❀', rColor: '#FF2E63', rarity: 'Légendaire', version: 'Alternative', lang: 'FR · JP · EN', value: '340 €', img: 'uploads/77_NISSAN_R34_TITAN.jpg', visible: true },
+        { num: '64', name: 'Porsche 911 RWB', brand: 'Porsche', glyph: '✦', rColor: '#B05CFF', rarity: 'Ultra rare', version: 'Reverse', lang: 'FR · JP · EN', value: '39,90 €', img: 'uploads/64_PORSCHE_911_RWB.jpg', visible: true },
+        { num: '68', name: 'S13 du créateur', brand: 'Nissan', glyph: '❀', rColor: '#FF2E63', rarity: 'Légendaire', version: 'Édition spéciale', lang: 'FR · JP', value: '65 €', img: 'uploads/68_NISSAN_S13_LIGHTON.jpg', visible: true },
+        { num: '54', name: 'Nissan S15 Ultime', brand: 'Nissan', glyph: '✦', rColor: '#B05CFF', rarity: 'Ultra rare', version: 'Standard', lang: 'FR · JP · EN', value: '28 €', img: 'uploads/54_NISSAN_S15_ICONIQUE.jpg', visible: true },
+        { num: '75', name: 'Honda NSX Type-R', brand: 'Honda', glyph: '✸', rColor: '#E8B23A', rarity: 'Gold', version: 'Alternative', lang: 'FR · JP · EN', value: '120 €', img: 'uploads/75_HONDA_NSX_NA1.jpg', visible: true },
+        { num: '42', name: 'Toyota Supra MK4', brand: 'Toyota', glyph: '◈', rColor: '#4FA3FF', rarity: 'Rare holo', version: 'Standard', lang: 'FR · JP · EN', value: '19,90 €', img: 'uploads/42_TOYOTA_SUPRA_MK4_rare.jpg', visible: false }
+      ].map(c => ({ ...c, visDot: c.visible ? '#5ED99A' : '#6E6E78' })),
+      // IMPORT mapping
+      importCols: [
+        { csv: 'card_id', field: 'Numéro de carte', ok: true },
+        { csv: 'name_fr', field: 'Nom (FR)', ok: true },
+        { csv: 'brand_model', field: 'Marque / Modèle', ok: true },
+        { csv: 'rarity_code', field: 'Rareté', ok: true },
+        { csv: 'version', field: 'Version', ok: true },
+        { csv: 'hp_value', field: 'Puissance', ok: true },
+        { csv: 'price_eur', field: 'Valeur (€)', ok: true },
+        { csv: 'extra_note', field: '— ignorée —', ok: false }
+      ].map(m => ({ ...m, fieldColor: m.ok ? '#A9A9B2' : '#5A5A64', okBg: m.ok ? '#5ED99A' : '#3A3A42', okColor: m.ok ? '#0E0E11' : '#8E8E98', okMark: m.ok ? '✓' : '–' })),
+      // GAMIFICATION rankings + badges
+      rankings: [
+        { rank: '1', k: 'LIGHTON_FACTORY', ini: 'L', avBg: 'linear-gradient(135deg,#D81B60,#7A0F37)', pct: '100%', owned: '78/78', rankColor: '#E8B23A' },
+        { rank: '2', k: 'MIDNIGHT_PURPLE', ini: 'M', avBg: 'linear-gradient(135deg,#6FE3D0,#1F8C7A)', pct: '92%', owned: '72/78', rankColor: '#C9C6BE' },
+        { rank: '3', k: 'DRIFT_KING_06', ini: 'D', avBg: 'linear-gradient(135deg,#4FA3FF,#1F4E8C)', pct: '88%', owned: '69/78', rankColor: '#E8945A' },
+        { rank: '4', k: 'SARA.S15', ini: 'S', avBg: 'linear-gradient(135deg,#B05CFF,#5A1F8C)', pct: '81%', owned: '63/78', rankColor: '#6E6E78' }
+      ],
+      badges: [
+        { icon: '◈', color: '#4FA3FF', name: 'Première holo', cond: 'Obtenir 1 carte Rare holo', holders: '4 218', on: true },
+        { icon: '✸', color: '#E8B23A', name: 'Set Gold complété', cond: 'Posséder les 2 cartes Gold', holders: '142', on: true },
+        { icon: '✪', color: '#6FE3D0', name: 'Carte unique', cond: 'Détenir une carte 01/01', holders: '2', on: true },
+        { icon: '⇄', color: '#B05CFF', name: 'Premier échange', cond: 'Réaliser 1 échange validé', holders: '6 904', on: true },
+        { icon: '€', color: '#5ED99A', name: 'Première vente', cond: 'Vendre 1 carte sur la marketplace', holders: '3 110', on: true },
+        { icon: '❀', color: '#FF2E63', name: 'Chasseur de légendes', cond: 'Réunir les 7 Légendaires', holders: '38', on: false }
+      ].map(b => ({ ...b, iconBg: 'rgba(255,255,255,0.06)', tgBg: b.on ? '#5ED99A' : '#3A3A42', tgX: b.on ? '14px' : '0px' })),
+      // MULTILINGUE
+      languages: [
+        { code: 'FR', native: 'Français', pct: 100, missing: 0, status: 'Active · défaut', sColor: '#5ED99A', on: true, jp: false },
+        { code: 'EN', native: 'English', pct: 96, missing: 24, status: 'Active', sColor: '#5ED99A', on: true, jp: false },
+        { code: '日本語', native: '日本語', pct: 88, missing: 71, status: 'Active', sColor: '#5ED99A', on: true, jp: true }
+      ].map(l => ({ ...l, font: l.jp ? "'Noto Sans JP', sans-serif" : "'Hanken Grotesk', sans-serif", tgBg: l.on ? '#5ED99A' : '#3A3A42', tgX: l.on ? '15px' : '0px', pctColor: l.pct >= 95 ? '#5ED99A' : (l.pct >= 85 ? '#E8B23A' : '#E8945A'), pctLabel: l.pct + '%', missColor: l.missing === 0 ? '#5ED99A' : '#E8945A', missLabel: l.missing === 0 ? 'Aucune chaîne manquante' : l.missing + ' chaînes manquantes' })),
+      missingStrings: [
+        { key: 'shop.checkout.tax_notice', fr: 'TVA incluse', miss: 'EN · 日本語' },
+        { key: 'profile.badges.legend_hunter', fr: 'Chasseur de légendes', miss: '日本語' },
+        { key: 'moderation.report.escalate', fr: 'Escalader à l\u2019Owner', miss: 'EN · 日本語' },
+        { key: 'trade.offer.counter', fr: 'Faire une contre-offre', miss: '日本語' }
+      ],
+      // MARKETPLACE supervision
+      shops: [
+        { name: 'DRIFT_KING_06', ini: 'D', avBg: 'linear-gradient(135deg,#4FA3FF,#1F4E8C)', listings: 42, rating: '4,9★', status: 'Vérifié', sColor: '#5ED99A' },
+        { name: 'MIDNIGHT_PURPLE', ini: 'M', avBg: 'linear-gradient(135deg,#6FE3D0,#1F8C7A)', listings: 31, rating: '4,8★', status: 'Vérifié', sColor: '#5ED99A' },
+        { name: 'NIGHT_RIDER_03', ini: 'N', avBg: 'linear-gradient(135deg,#FF6B5E,#8C2F1F)', listings: 8, rating: '3,1★', status: 'Sous surveillance', sColor: '#FF8A3D' }
+      ],
+      trades: [
+        { a: 'SARA.S15', b: 'MIDNIGHT_PURPLE', items: 'S14 Zenki ⇄ BMW E30 Touring', status: 'En cours', sColor: '#4FA3FF', when: '12 min', litige: false },
+        { a: 'HACHI_ROKU', b: 'DRIFT_KING_06', items: 'AE86 Trueno ⇄ Supra MK4', status: 'Litige ouvert', sColor: '#FF5A6E', when: '1 h', litige: true },
+        { a: 'KOUKI_KID', b: 'NIGHT_RIDER_03', items: 'R34 Titan ⇄ (annulé)', status: 'Bloqué · modération', sColor: '#FF8A3D', when: '2 h', litige: true }
+      ].map(t => ({ ...t, bg: t.litige ? 'rgba(255,90,110,0.06)' : '#1C1C21', border: t.litige ? 'rgba(255,90,110,0.3)' : '#232328' })),
+      genToggles: [
+        { label: 'Inscriptions ouvertes', desc: 'Autoriser les nouveaux comptes', on: true },
+        { label: 'Vérification d\u2019âge obligatoire', desc: 'Consentement parental si mineur', on: true },
+        { label: 'Mode maintenance', desc: 'Coupe l\u2019accès public au site', on: false }
+      ].map(t => ({ ...t, bg: t.on ? '#5ED99A' : '#3A3A42', x: t.on ? '17px' : '0px' })),
+      admins: [
+        { name: 'Lighton', email: 'lighton@thepark.gg', ini: 'L', avBg: 'linear-gradient(135deg,#D81B60,#7A0F37)', role: 'Owner', roleColor: '#D81B60', status: 'Actif', statusBg: 'rgba(94,217,154,0.14)', statusColor: '#5ED99A', last: 'À l\u2019instant', me: true },
+        { name: 'Yuna K.', email: 'yuna@thepark.gg', ini: 'Y', avBg: 'linear-gradient(135deg,#FF6B5E,#8C2F1F)', role: 'Modérateur', roleColor: '#FF6B5E', status: 'Actif', statusBg: 'rgba(94,217,154,0.14)', statusColor: '#5ED99A', last: 'Il y a 12 min', me: false },
+        { name: 'Marco T.', email: 'marco@thepark.gg', ini: 'M', avBg: 'linear-gradient(135deg,#4FA3FF,#1F4E8C)', role: 'Gestionnaire catalogue', roleColor: '#4FA3FF', status: 'Actif', statusBg: 'rgba(94,217,154,0.14)', statusColor: '#5ED99A', last: 'Il y a 2 h', me: false },
+        { name: 'Atelier Sud', email: 'atelier@thepark.gg', ini: 'A', avBg: 'linear-gradient(135deg,#E8B23A,#8C6A1F)', role: 'Créateur / Boutique', roleColor: '#E8B23A', status: 'Actif', statusBg: 'rgba(94,217,154,0.14)', statusColor: '#5ED99A', last: 'Hier', me: false },
+        { name: 'Léna B.', email: 'lena@thepark.gg', ini: 'L', avBg: 'linear-gradient(135deg,#6FE3D0,#1F8C7A)', role: 'Support', roleColor: '#6FE3D0', status: 'Suspendu', statusBg: 'rgba(232,148,90,0.14)', statusColor: '#E8945A', last: 'Il y a 8 j', me: false }
+      ],
+      permRoles: [
+        { key: 'owner', label: 'Owner' }, { key: 'mod', label: 'Modérateur' }, { key: 'catalog', label: 'Gest. catalogue' }, { key: 'shop', label: 'Créateur / Boutique' }, { key: 'support', label: 'Support' }
+      ],
+      permModules: this.PERM_MODS,
+      permRows: this.permRows(),
+      shopProducts: [
+        { name: 'Display Moteur Forgé · 20 boosters', ref: 'PD-S1-DISPLAY', cat: 'Displays', price: '89,90 €', img: 'uploads/mockupdisplay20image.jpg', stock: 'Stock faible · 12', sColor: '#E8945A', vis: true },
+        { name: 'Pack de 3 boosters scellés', ref: 'PD-S1-BST3', cat: 'Boosters', price: '13,90 €', img: 'uploads/BOOSTERS_2.jpg', stock: '240', sColor: '#5ED99A', vis: true },
+        { name: 'Booster à l\u2019unité · 5 cartes', ref: 'PD-S1-BST1', cat: 'Boosters', price: '4,90 €', img: 'uploads/booster-1.png', stock: '980', sColor: '#5ED99A', vis: true },
+        { name: 'Pack stickers holo The Park', ref: 'PD-GOOD-STK', cat: 'Goodies', price: '9,90 €', img: 'uploads/logo-gold.png', stock: '64', sColor: '#5ED99A', vis: true },
+        { name: 'Carte signée Lighton · S13 #068', ref: 'PD-COL-068', cat: 'Goodies', price: '65,00 €', img: 'uploads/68_NISSAN_S13_LIGHTON.jpg', stock: 'Épuisé', sColor: '#FF5A6E', vis: true },
+        { name: 'Carte signée Lighton · S13 #069', ref: 'PD-COL-069', cat: 'Goodies', price: '75,00 €', img: 'uploads/69_NISSAN_S13_LIGHTON_2.jpg', stock: 'Stock faible · 3', sColor: '#E8945A', vis: false }
+      ].map(p => ({ ...p, visDot: p.vis ? '#5ED99A' : '#6E6E78', visLabel: p.vis ? 'Visible' : 'Masqué' })),
+      shopOrders: [
+        { num: 'TP-2026-04817', client: 'Kenji Tanaka', ini: 'K', avBg: 'linear-gradient(135deg,#D81B60,#7A0F37)', total: '127,60 €', date: '15 juin', status: 'Payée', toShip: true },
+        { num: 'TP-2026-04816', client: 'Sara Lemoine', ini: 'S', avBg: 'linear-gradient(135deg,#B05CFF,#5A1F8C)', total: '27,80 €', date: '15 juin', status: 'En préparation', toShip: true },
+        { num: 'TP-2026-04812', client: 'Tom Bianchi', ini: 'T', avBg: 'linear-gradient(135deg,#E8B23A,#8C6A1F)', total: '13,90 €', date: '12 juin', status: 'Expédiée', toShip: false },
+        { num: 'TP-2026-04790', client: 'Yuki Mori', ini: 'Y', avBg: 'linear-gradient(135deg,#4FA3FF,#1F4E8C)', total: '49,80 €', date: '8 juin', status: 'Livrée', toShip: false },
+        { num: 'TP-2026-04755', client: 'Léa Garnier', ini: 'L', avBg: 'linear-gradient(135deg,#FF6B5E,#8C2F1F)', total: '89,90 €', date: '2 juin', status: 'Remboursée', toShip: false }
+      ].map(o => {
+        const st = { 'Payée': '#B05CFF', 'En préparation': '#E8B23A', 'Expédiée': '#4FA3FF', 'Livrée': '#5ED99A', 'Remboursée': '#8E8E98' }[o.status];
+        return { ...o, sColor: st, sBg: 'rgba(255,255,255,0.05)' };
+      }),
+      stripeKpis: [
+        { label: 'Encaissé (30j)', value: '4 280 €', color: '#5ED99A' },
+        { label: 'Transactions', value: '112', color: '#F2EFE9' },
+        { label: 'Remboursements', value: '2', color: '#E8945A' },
+        { label: 'Litiges Stripe', value: '0', color: '#5ED99A' }
+      ],
+      stripeTx: [
+        { id: 'pi_3Qk…8421', client: 'Kenji Tanaka', amount: '127,60 €', method: 'Visa ···4242', date: '15 juin · 14:10', status: 'Réussi', sColor: '#5ED99A' },
+        { id: 'pi_3Qk…8420', client: 'Sara Lemoine', amount: '27,80 €', method: 'Mastercard ···5510', date: '15 juin · 11:42', status: 'Réussi', sColor: '#5ED99A' },
+        { id: 'pi_3Qk…8402', client: 'Yuki Mori', amount: '9,90 €', method: 'Apple Pay', date: '14 juin · 19:30', status: 'Réussi', sColor: '#5ED99A' },
+        { id: 'pi_3Qk…8377', client: 'Léa Garnier', amount: '89,90 €', method: 'Visa ···0091', date: '2 juin · 16:05', status: 'Remboursé', sColor: '#E8945A' },
+        { id: 'pi_3Qk…8351', client: 'Marc Dubois', amount: '13,90 €', method: 'Google Pay', date: '12 juin · 09:14', status: 'En attente', sColor: '#4FA3FF' }
+      ],
+      // settings integrations
+      integrations: [
+        { name: 'Auth0', desc: 'Authentification & gestion des comptes', status: 'Connecté', color: '#5ED99A', letter: 'A0', bg: 'linear-gradient(135deg,#EB5424,#A02B12)' },
+        { name: 'Stripe', desc: 'Paiements boutique officielle', status: 'Connecté', color: '#5ED99A', letter: 'S', bg: 'linear-gradient(135deg,#635BFF,#3A33B5)' },
+        { name: 'Resend', desc: 'E-mails transactionnels (confirmations, suivi)', status: 'Connecté', color: '#5ED99A', letter: 'R', bg: 'linear-gradient(135deg,#1A1A1E,#000)' },
+        { name: 'Cloudinary', desc: 'Hébergement des visuels HD de cartes', status: 'À configurer', color: '#E8945A', letter: 'C', bg: 'linear-gradient(135deg,#3448C5,#1F2E8C)' }
+      ],
+      auditLog: [
+        { who: 'Yuna K.', role: 'Modérateur', action: 'a banni le compte FAKE_REVIEW_X', when: '15 juin · 11:02', color: '#FF5A6E' },
+        { who: 'Marco T.', role: 'Gest. catalogue', action: 'a importé 12 cartes Saison 1 (CSV)', when: '15 juin · 09:14', color: '#4FA3FF' },
+        { who: 'Lighton', role: 'Owner', action: 'a modifié les seuils d\u2019alerte de modération', when: '14 juin · 18:30', color: '#D81B60' },
+        { who: 'Atelier Sud', role: 'Boutique', action: 'a marqué 5 commandes comme expédiées', when: '14 juin · 16:45', color: '#E8B23A' },
+        { who: 'Léna B.', role: 'Support', action: 'a traité la demande RGPD #RG-118', when: '13 juin · 10:20', color: '#6FE3D0' }
+      ],
+      gdpr: [
+        { ref: 'RG-120', type: 'Suppression de compte', user: 'OLD_DRIFTER_22', when: '15 juin', status: 'En cours', sColor: '#E8B23A' },
+        { ref: 'RG-119', type: 'Export des données', user: 'SARA.S15', when: '14 juin', status: 'Terminé', sColor: '#5ED99A' },
+        { ref: 'RG-118', type: 'Suppression de compte', user: 'GHOST_S14', when: '13 juin', status: 'Terminé', sColor: '#5ED99A' }
+      ],
+      // dashboard
+      todayLabel: 'Lundi 15 juin 2026', dashScope: role === 'owner' ? 'Vue complète plateforme' : 'Vue ' + roleMeta.label,
+      kpis, queues,
+      activity: [
+        { icon: '⚠', bg: 'rgba(255,90,110,0.13)', color: '#FF5A6E', text: 'Nouveau signalement priorité mineur sur l\u2019échange #SG-2291', when: '4 min' },
+        { icon: '€', bg: 'rgba(94,217,154,0.13)', color: '#5ED99A', text: 'Commande TP-2026-04817 payée — Display Moteur Forgé (89,90 €)', when: '12 min' },
+        { icon: '◈', bg: 'rgba(79,163,255,0.13)', color: '#4FA3FF', text: 'Gestionnaire catalogue a importé 12 cartes Saison 1 (0 erreur)', when: '2 h' },
+        { icon: '✸', bg: 'rgba(232,178,58,0.13)', color: '#E8B23A', text: 'Badge « Set Gold complété » débloqué par MIDNIGHT_PURPLE', when: '3 h' },
+        { icon: '⛔', bg: 'rgba(255,138,61,0.13)', color: '#FF8A3D', text: 'Compte PROMO_BOT_7 suspendu automatiquement (spam)', when: '5 h' }
+      ],
+      // users
+      usersReadNote: (role === 'support') ? ' · lecture seule' : '',
+      userFilters: [
+        { key: 'all', label: 'Tous', count: '8 942' },
+        { key: 'minors', label: 'Mineurs', count: '612', dot: true, dotColor: '#FF8A3D' },
+        { key: 'reported', label: 'Signalés', count: '23', dot: true, dotColor: '#FF5A6E' },
+        { key: 'suspended', label: 'Suspendus', count: '8', dot: true, dotColor: '#E8945A' },
+        { key: 'banned', label: 'Bannis', count: '14', dot: true, dotColor: '#6E6E78' }
+      ].map(f => ({
+        ...f,
+        bg: this.state.userFilter === f.key ? '#D81B60' : '#141418',
+        border: this.state.userFilter === f.key ? '#D81B60' : '#232328',
+        color: this.state.userFilter === f.key ? '#fff' : '#C9C6BE',
+        onClick: () => this.setState({ userFilter: f.key })
+      })),
+      users: [
+        { pseudo: 'MIDNIGHT_PURPLE', email: 'midnight@mail.com', ini: 'M', avBg: 'linear-gradient(135deg,#6FE3D0,#1F8C7A)', status: 'Actif', statusBg: 'rgba(94,217,154,0.14)', statusColor: '#5ED99A', rep: '88', repPct: '88%', repColor: '#5ED99A', age: 'Majeur', ageBg: 'rgba(142,142,152,0.13)', ageColor: '#A9A9B2', joined: '12 mars 2025' },
+        { pseudo: 'KOUKI_KID', email: 'kouki.kid@mail.com', ini: 'K', avBg: 'linear-gradient(135deg,#4FA3FF,#1F4E8C)', status: 'Actif', statusBg: 'rgba(94,217,154,0.14)', statusColor: '#5ED99A', rep: '71', repPct: '71%', repColor: '#4FA3FF', age: 'Mineur · 15', ageBg: 'rgba(255,138,61,0.14)', ageColor: '#FF8A3D', joined: '3 janv. 2026' },
+        { pseudo: 'NIGHT_RIDER_03', email: 'nightrider@mail.com', ini: 'N', avBg: 'linear-gradient(135deg,#FF6B5E,#8C2F1F)', status: 'Signalé', statusBg: 'rgba(255,90,110,0.14)', statusColor: '#FF5A6E', rep: '34', repPct: '34%', repColor: '#FF5A6E', age: 'Majeur', ageBg: 'rgba(142,142,152,0.13)', ageColor: '#A9A9B2', joined: '28 mai 2026' },
+        { pseudo: 'DRIFT_KING_06', email: 'drift.king@mail.com', ini: 'D', avBg: 'linear-gradient(135deg,#4FA3FF,#1F4E8C)', status: 'Actif', statusBg: 'rgba(94,217,154,0.14)', statusColor: '#5ED99A', rep: '95', repPct: '95%', repColor: '#5ED99A', age: 'Majeur', ageBg: 'rgba(142,142,152,0.13)', ageColor: '#A9A9B2', joined: '8 oct. 2024' },
+        { pseudo: 'AE86_FAN', email: 'ae86.fan@mail.com', ini: 'A', avBg: 'linear-gradient(135deg,#B05CFF,#5A1F8C)', status: 'Actif', statusBg: 'rgba(94,217,154,0.14)', statusColor: '#5ED99A', rep: '78', repPct: '78%', repColor: '#5ED99A', age: 'Mineur · 16', ageBg: 'rgba(255,138,61,0.14)', ageColor: '#FF8A3D', joined: '19 févr. 2026' },
+        { pseudo: 'PROMO_BOT_7', email: 'promo7@spam.net', ini: 'P', avBg: 'linear-gradient(135deg,#6E6E78,#3A3A42)', status: 'Suspendu', statusBg: 'rgba(232,148,90,0.14)', statusColor: '#E8945A', rep: '4', repPct: '4%', repColor: '#E8945A', age: '—', ageBg: 'rgba(142,142,152,0.1)', ageColor: '#6E6E78', joined: '14 juin 2026' },
+        { pseudo: 'FAKE_REVIEW_X', email: 'x@temp.io', ini: 'F', avBg: 'linear-gradient(135deg,#6E6E78,#3A3A42)', status: 'Banni', statusBg: 'rgba(142,142,152,0.16)', statusColor: '#8E8E98', rep: '0', repPct: '6%', repColor: '#6E6E78', age: 'Majeur', ageBg: 'rgba(142,142,152,0.13)', ageColor: '#A9A9B2', joined: '2 juin 2026' },
+        { pseudo: 'HACHI_ROKU', email: 'hachiroku@mail.com', ini: 'H', avBg: 'linear-gradient(135deg,#FF6B5E,#8C2F1F)', status: 'Actif', statusBg: 'rgba(94,217,154,0.14)', statusColor: '#5ED99A', rep: '64', repPct: '64%', repColor: '#4FA3FF', age: 'Majeur', ageBg: 'rgba(142,142,152,0.13)', ageColor: '#A9A9B2', joined: '21 juil. 2025' }
+      ],
+      // moderation
+      reports: reportsData.map((r, i) => ({
+        ...r,
+        cardBg: i === this.state.report ? '#1F1418' : '#141418',
+        cardBorder: i === this.state.report ? '#D81B60' : (r.minor ? 'rgba(255,90,110,0.3)' : '#232328'),
+        onClick: () => this.setState({ report: i })
+      })),
+      sel: {
+        ...selR,
+        headBg: selR.minor ? 'rgba(255,90,110,0.06)' : '#161619',
+        chat: [
+          { name: selR.target, msg: 'Slt, t\u2019as bien la R34 Titanesque en double ?', justify: '', bg: '#1C1C21', border: '#232328', nameColor: '#FF8A3D' },
+          { name: selR.by, msg: 'Oui mais on échange sur la plateforme hein', justify: 'justify-content: flex-end;', bg: 'rgba(79,163,255,0.1)', border: 'rgba(79,163,255,0.25)', nameColor: '#4FA3FF' },
+          { name: selR.target, msg: 'Passe-moi plutôt ton snap, on règle ça direct 👀', justify: '', bg: 'rgba(255,90,110,0.08)', border: 'rgba(255,90,110,0.3)', nameColor: '#FF8A3D' }
+        ]
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

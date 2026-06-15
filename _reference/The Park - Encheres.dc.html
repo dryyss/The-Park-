@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+@keyframes pulseGlow { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+@keyframes flashBid { 0% { background: rgba(94,217,154,0.25); } 100% { background: transparent; } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+input::placeholder { color: #5A5A64; }
+</style>
+</helmet>
+<div data-screen-label="Enchères" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center;">
+      <a href="The Park - Accueil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ACCUEIL</a>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">COLLECTION</a>
+      <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">MARKETPLACE</a>
+      <a href="The Park - Encheres.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; background: #D81B60; color: #fff; border-radius: 7px; text-decoration: none; transform: rotate(-1.5deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45);">ENCHÈRES</a>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ÉCHANGES</a>
+      <a href="The Park - Profil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">PROFIL</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Notifications.dc.html" title="Notifications" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a>
+      <a href="The Park - Messages.dc.html" title="Messages" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a><a href="The Park - Panier.dc.html" title="Panier" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #D81B60; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #131316; box-sizing: border-box;">3</span></a><a href="The Park - Vendre.dc.html" style="display: flex; align-items: center; gap: 5px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 8px 13px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.4);"><span style="font-size: 16px; line-height: 1;">+</span>VENDRE</a><a href="The Park - Magasin.dc.html" title="Mon portefeuille" style="display: flex; align-items: center; gap: 10px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 6px 7px 6px 16px; text-decoration: none; color: #F2EFE9; transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;" style-hover="border-color: #D81B60; transform: translateY(-1.5px); box-shadow: 0 6px 14px rgba(216,27,96,0.25);">
+        <span style="font-weight: 800; font-size: 13.5px; letter-spacing: 0.5px;">{{ walletLabel }}</span>
+        <span style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #D81B60; color: #fff; font-weight: 800; font-size: 15px; line-height: 1;">+</span>
+      </a>
+      <a href="The Park - Profil.dc.html" title="KENJI-13 · Profil" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #2B2B31; text-decoration: none; transition: border-color 0.18s ease, transform 0.2s ease;" style-hover="border-color: #D81B60; transform: scale(1.08) rotate(-4deg);">K</a>
+    </div>
+  </div>
+
+  <div style="max-width: 1320px; margin: 0 auto; padding: 32px 28px 0;">
+    <!-- header + bascule de vue -->
+    <div style="position: relative; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 20px; animation: fadeUp 0.5s ease both;">
+      <div style="position: absolute; top: -28px; right: 0; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 130px; line-height: 1; color: rgba(242,239,233,0.035); pointer-events: none; user-select: none;">競売</div>
+      <div>
+        <div style="font-weight: 700; font-size: 12px; letter-spacing: 4px; color: #D81B60; text-transform: uppercase; margin-bottom: 10px;">Salle des enchères · live</div>
+        <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(40px, 5vw, 62px); line-height: 0.95; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-4deg); text-shadow: 4px 4px 0 #D81B60;">Enchères</h1>
+      </div>
+      <div style="display: flex; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 12px; padding: 5px; gap: 3px;">
+        <div onClick="{{ setView }}" data-v="bidder" style="display: flex; align-items: center; gap: 8px; font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1px; padding: 11px 18px; border-radius: 8px; cursor: pointer; background: {{ bidderBg }}; color: {{ bidderColor }}; transition: background 0.18s ease, color 0.18s ease;">🙋 ENCHÉRISSEUR</div>
+        <div onClick="{{ setView }}" data-v="seller" style="display: flex; align-items: center; gap: 8px; font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1px; padding: 11px 18px; border-radius: 8px; cursor: pointer; background: {{ sellerBg }}; color: {{ sellerColor }}; transition: background 0.18s ease, color 0.18s ease;">🔨 VENDEUR</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= VUE ENCHÉRISSEUR ================= -->
+  <sc-if value="{{ isBidder }}" hint-placeholder-val="{{ true }}">
+    <div style="max-width: 1320px; margin: 0 auto; padding: 26px 28px 0;">
+      <div style="display: grid; grid-template-columns: 340px 1fr; gap: 22px; align-items: start; animation: fadeUp 0.5s 0.06s ease both;">
+
+        <!-- carte en vente -->
+        <div style="position: sticky; top: 90px;">
+          <div style="position: relative; aspect-ratio: 5/7; border-radius: 16px; overflow: hidden; border: 1.5px solid {{ feat.frame }}; box-shadow: 0 24px 50px rgba(0,0,0,0.6);">
+            <img src="{{ feat.src }}" alt="{{ feat.name }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            <div style="position: absolute; inset: 0; pointer-events: none; opacity: 0.55; mix-blend-mode: overlay; background: radial-gradient(circle at 35% 25%, rgba(255,255,255,0.4), transparent 45%), conic-gradient(from 30deg at 50% 50%, rgba(255,46,99,0.35), rgba(255,209,102,0.35), rgba(111,227,208,0.35), rgba(79,163,255,0.35), rgba(176,92,255,0.35), rgba(255,46,99,0.35));"></div>
+            <span style="position: absolute; left: -4px; top: 14px; font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 1.5px; padding: 5px 12px 5px 14px; background: #D81B60; color: #fff; transform: rotate(-3deg); box-shadow: 2px 2px 0 rgba(0,0,0,0.4);">{{ feat.glyph }} {{ feat.rar }}</span>
+          </div>
+          <div style="text-align: center; margin-top: 12px;">
+            <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 0.5px; color: #F2EFE9;">{{ feat.name }}</div>
+            <div style="font-weight: 700; font-size: 12px; color: #8E8E98; margin-top: 3px;">{{ feat.meta }} · vendue par <a href="The Park - Collectionneur.dc.html?m=MIDNIGHT_PURPLE" style="color: #D81B60; text-decoration: none;">{{ feat.seller }}</a></div>
+          </div>
+        </div>
+
+        <!-- panneau d'enchère -->
+        <div style="display: flex; flex-direction: column; gap: 18px;">
+          <div style="position: relative; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 26px 28px; overflow: hidden;">
+            <div style="position: absolute; inset: 0; background: radial-gradient(circle at 96% 0%, rgba(216,27,96,0.14), transparent 55%); pointer-events: none;"></div>
+            <div style="position: relative; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 11px; letter-spacing: 1.5px; color: #FF2E63; text-transform: uppercase;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #FF2E63; animation: pulseGlow 1.4s ease-in-out infinite;"></span>Enchère en cours</div>
+                <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-top: 14px;">Meilleure offre actuelle</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 52px; line-height: 1; color: #F2EFE9; margin-top: 4px;">{{ currentLabel }}</div>
+                <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 6px;">par <strong style="color: {{ leadColor }};">{{ leader }}</strong> · {{ bidCount }} enchères</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase;">Clôture dans</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 30px; color: {{ clockColor }}; margin-top: 4px;">{{ clock }}</div>
+                <div style="font-weight: 700; font-size: 11px; color: {{ reserveColor }}; margin-top: 8px;">{{ reserveLabel }}</div>
+              </div>
+            </div>
+
+            <!-- état "tu mènes / surenchéri" -->
+            <div style="position: relative; margin-top: 18px; padding: 12px 16px; border-radius: 12px; background: {{ statusBg }}; border: 1px solid {{ statusBorder }};">
+              <div style="font-weight: 800; font-size: 13px; color: {{ statusColor }};">{{ statusText }}</div>
+            </div>
+
+            <!-- saisie d'enchère -->
+            <div style="position: relative; margin-top: 18px;">
+              <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 9px;">Enchère rapide</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <sc-for list="{{ quickBids }}" as="q" hint-placeholder-count="3">
+                  <div onClick="{{ quickBid }}" data-v="{{ q.v }}" style="font-family: 'Anton', sans-serif; font-size: 14px; padding: 12px 18px; border-radius: 10px; cursor: pointer; border: 1.5px solid #2B2B31; background: #202024; color: #F2EFE9; transition: border-color 0.15s ease, transform 0.15s ease;" style-hover="border-color: #D81B60; transform: translateY(-2px);">{{ q.label }}</div>
+                </sc-for>
+              </div>
+              <div style="display: flex; gap: 10px; margin-top: 12px;">
+                <div style="flex: 1; display: flex; align-items: center; gap: 8px; background: #202024; border: 1.5px solid #2B2B31; border-radius: 11px; padding: 0 16px;">
+                  <span style="font-family: 'Anton', sans-serif; font-size: 18px; color: #6E6E78;">€</span>
+                  <input value="{{ bidInput }}" onChange="{{ onBidInput }}" inputmode="decimal" placeholder="{{ minNextLabel }}" style="flex: 1; background: transparent; border: none; padding: 14px 0; color: #F2EFE9; font-family: 'Anton', sans-serif; font-size: 18px; outline: none;">
+                </div>
+                <div onClick="{{ placeBid }}" style="font-family: 'Anton', sans-serif; font-size: 14.5px; letter-spacing: 1.5px; padding: 0 26px; display: flex; align-items: center; background: {{ bidBtnBg }}; color: {{ bidBtnColor }}; border-radius: 11px; cursor: {{ bidBtnCursor }}; transform: skewX(-3deg); box-shadow: {{ bidBtnShadow }}; transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="filter: brightness(1.08);">ENCHÉRIR</div>
+              </div>
+              <div style="font-weight: 700; font-size: 11.5px; color: #6E6E78; margin-top: 8px;">Enchère minimale : <strong style="color: #C9C6BE;">{{ minNextLabel }}</strong> (palier {{ stepLabel }})</div>
+            </div>
+
+            <!-- enchère max auto -->
+            <div style="position: relative; margin-top: 16px; padding: 14px 16px; border-radius: 12px; background: #202024; border: 1px solid #26262B;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="flex: 1;">
+                  <div style="font-weight: 800; font-size: 13px; color: #F2EFE9;">Enchère automatique</div>
+                  <div style="font-weight: 600; font-size: 11.5px; color: #8E8E98; margin-top: 2px;">On enchérit pour toi par paliers jusqu'à ton plafond. Tu ne paies que le minimum nécessaire pour mener.</div>
+                </div>
+                <div onClick="{{ toggleAuto }}" style="width: 46px; height: 26px; border-radius: 999px; background: {{ autoTrack }}; position: relative; cursor: pointer; flex-shrink: 0; transition: background 0.2s ease;"><span style="position: absolute; top: 3px; left: {{ autoKnob }}; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: left 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.4);"></span></div>
+              </div>
+              <sc-if value="{{ autoOn }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; gap: 10px; margin-top: 13px;">
+                  <div style="flex: 1; display: flex; align-items: center; gap: 8px; background: #1A1A1E; border: 1.5px solid #2B2B31; border-radius: 10px; padding: 0 14px;">
+                    <span style="font-family: 'Anton', sans-serif; font-size: 16px; color: #6E6E78;">€</span>
+                    <input value="{{ maxInput }}" onChange="{{ onMaxInput }}" inputmode="decimal" placeholder="Plafond max" style="flex: 1; background: transparent; border: none; padding: 12px 0; color: #F2EFE9; font-family: 'Anton', sans-serif; font-size: 16px; outline: none;">
+                  </div>
+                  <div onClick="{{ setAutoMax }}" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1px; padding: 0 20px; display: flex; align-items: center; background: #2A2A30; color: #F2EFE9; border-radius: 10px; cursor: pointer; transition: background 0.15s ease;" style-hover="background: #D81B60;">ACTIVER</div>
+                </div>
+                <sc-if value="{{ hasAutoMax }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-weight: 700; font-size: 11.5px; color: #5ED99A; margin-top: 9px;">✓ Enchère auto active jusqu'à {{ autoMaxLabel }}</div>
+                </sc-if>
+              </sc-if>
+            </div>
+          </div>
+
+          <!-- historique des enchères -->
+          <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 22px 24px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+              <div style="font-family: 'Anton', sans-serif; font-size: 17px; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-3deg);">Historique</div>
+              <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 11px; color: #5A5A64; letter-spacing: 2px;">入札履歴</span>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <sc-for list="{{ history }}" as="h" hint-placeholder-count="5">
+                <div style="display: flex; align-items: center; gap: 13px; padding: 11px 10px; border-bottom: 1px solid #232328; border-radius: 8px; animation: {{ h.anim }};">
+                  <span style="width: 32px; height: 32px; border-radius: 50%; background: {{ h.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 12px; color: #fff; flex-shrink: 0;">{{ h.ini }}</span>
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="font-weight: 800; font-size: 12.5px; color: {{ h.nameColor }};">{{ h.who }}</div>
+                    <div style="font-weight: 700; font-size: 10.5px; color: #6E6E78;">{{ h.when }}</div>
+                  </div>
+                  <div style="font-family: 'Anton', sans-serif; font-size: 16px; color: {{ h.amtColor }};">{{ h.amt }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- autres enchères live -->
+      <div style="margin-top: 40px; animation: fadeUp 0.5s 0.12s ease both;">
+        <div style="display: flex; align-items: center; gap: 13px; margin-bottom: 16px;">
+          <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 24px; letter-spacing: 2px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 2px 2px 0 #D81B60;">Autres enchères live</h2>
+          <span style="font-weight: 800; font-size: 12px; padding: 4px 11px; border-radius: 999px; background: #1A1A1E; border: 1px solid #2B2B31; color: #D81B60;">{{ otherCount }}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px;">
+          <sc-for list="{{ others }}" as="o" hint-placeholder-count="4">
+            <div onClick="{{ pickAuction }}" data-i="{{ o.i }}" style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 14px; padding: 12px; cursor: pointer; transition: border-color 0.15s ease, transform 0.15s ease;" style-hover="border-color: #D81B60; transform: translateY(-3px);">
+              <div style="position: relative; aspect-ratio: 5/7; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 18px rgba(0,0,0,0.45);">
+                <img src="{{ o.src }}" alt="{{ o.name }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                <span style="position: absolute; right: 7px; top: 7px; font-weight: 800; font-size: 9.5px; padding: 3px 8px; border-radius: 5px; background: rgba(0,0,0,0.75); color: {{ o.clockColor }}; backdrop-filter: blur(3px);">⏱ {{ o.clock }}</span>
+              </div>
+              <div style="font-weight: 800; font-size: 11.5px; color: #F2EFE9; margin-top: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ o.name }}</div>
+              <div style="display: flex; align-items: baseline; justify-content: space-between; margin-top: 5px;">
+                <span style="font-family: 'Anton', sans-serif; font-size: 17px; color: #D81B60;">{{ o.current }}</span>
+                <span style="font-weight: 700; font-size: 10.5px; color: #6E6E78;">{{ o.bids }} ench.</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ================= VUE VENDEUR ================= -->
+  <sc-if value="{{ isSeller }}" hint-placeholder-val="{{ false }}">
+    <div style="max-width: 1320px; margin: 0 auto; padding: 26px 28px 0; animation: fadeUp 0.5s 0.06s ease both;">
+      <!-- KPIs vendeur -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;">
+        <sc-for list="{{ sellerKpis }}" as="k" hint-placeholder-count="4">
+          <div style="position: relative; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; padding: 20px 22px; overflow: hidden;">
+            <div style="position: absolute; inset: 0; background: radial-gradient(circle at 90% 0%, {{ k.glow }}, transparent 60%); pointer-events: none;"></div>
+            <div style="position: relative; font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase;">{{ k.label }}</div>
+            <div style="position: relative; font-family: 'Anton', sans-serif; font-size: 32px; line-height: 1; color: #F2EFE9; margin-top: 8px;">{{ k.value }}</div>
+            <div style="position: relative; font-weight: 700; font-size: 11.5px; color: {{ k.subColor }}; margin-top: 6px;">{{ k.sub }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- créer une enchère -->
+      <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 18px; background: linear-gradient(120deg, #1F141A, #1A1A1E); border: 1px solid #2B2B31; border-radius: 16px; padding: 18px 24px;">
+        <div style="flex: 1; min-width: 240px;">
+          <div style="font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg);">Mettre une carte aux enchères</div>
+          <div style="font-weight: 700; font-size: 12.5px; color: #8E8E98; margin-top: 4px;">Prix de départ, prix de réserve, durée — tu gardes la main, les enchérisseurs font monter.</div>
+        </div>
+        <div onClick="{{ openCreate }}" style="font-family: 'Anton', sans-serif; font-size: 13.5px; letter-spacing: 1.5px; padding: 14px 24px; background: #D81B60; color: #fff; border-radius: 11px; cursor: pointer; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px,-2px); box-shadow: 5px 5px 0 rgba(0,0,0,0.45);">+ NOUVELLE ENCHÈRE</div>
+      </div>
+
+      <!-- mes enchères actives -->
+      <div style="margin-top: 28px;">
+        <div style="display: flex; align-items: center; gap: 13px; margin-bottom: 16px;">
+          <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 24px; letter-spacing: 2px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 2px 2px 0 #D81B60;">Mes ventes aux enchères</h2>
+          <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 12px; color: #5A5A64; letter-spacing: 2px;">出品中</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ myAuctions }}" as="a" hint-placeholder-count="3">
+            <div style="display: grid; grid-template-columns: 60px 1.4fr 1fr 1fr 1fr auto; gap: 18px; align-items: center; background: #1A1A1E; border: 1px solid {{ a.border }}; border-radius: 15px; padding: 14px 18px;">
+              <img src="{{ a.src }}" alt="{{ a.name }}" style="width: 60px; aspect-ratio: 5/7; object-fit: cover; border-radius: 8px; display: block; box-shadow: 0 6px 14px rgba(0,0,0,0.45);">
+              <div style="min-width: 0;">
+                <div style="font-weight: 800; font-size: 13.5px; color: #F2EFE9; line-height: 1.3;">{{ a.name }}</div>
+                <div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-top: 3px;">{{ a.meta }}</div>
+                <div style="display: flex; align-items: center; gap: 6px; margin-top: 6px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: {{ a.liveColor }};"></span><span style="font-weight: 800; font-size: 10px; letter-spacing: 0.5px; color: {{ a.liveColor }}; text-transform: uppercase;">{{ a.liveLabel }}</span></div>
+              </div>
+              <div>
+                <div style="font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; color: #6E6E78; text-transform: uppercase;">Offre actuelle</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 22px; color: #F2EFE9; margin-top: 3px;">{{ a.current }}</div>
+                <div style="font-weight: 700; font-size: 10.5px; color: #8E8E98; margin-top: 2px;">{{ a.bids }} enchères · {{ a.watchers }} suivis</div>
+              </div>
+              <div>
+                <div style="font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; color: #6E6E78; text-transform: uppercase;">Réserve</div>
+                <div style="font-weight: 800; font-size: 13px; color: {{ a.reserveColor }}; margin-top: 5px;">{{ a.reserveText }}</div>
+              </div>
+              <div>
+                <div style="font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; color: #6E6E78; text-transform: uppercase;">Clôture</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 17px; color: {{ a.clockColor }}; margin-top: 4px;">{{ a.clock }}</div>
+              </div>
+              <div onClick="{{ openManage }}" data-i="{{ a.i }}" style="font-family: 'Anton', sans-serif; font-size: 11.5px; letter-spacing: 1px; padding: 11px 16px; background: transparent; color: #C9C6BE; border: 1.5px solid #3A3A42; border-radius: 9px; cursor: pointer; transform: skewX(-3deg); white-space: nowrap; transition: border-color 0.16s ease, color 0.16s ease;" style-hover="border-color: #D81B60; color: #fff;">GÉRER</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="max-width: 1320px; margin: 0 auto; padding: 0 28px;">
+    <dc-import name="The Park - Footer" hint-size="100%,320px" style="display: block; width: 100%;"></dc-import>
+  </div>
+
+  <!-- ===== MODALE GÉRER / CRÉER (vendeur) ===== -->
+  <sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position: fixed; inset: 0; z-index: 70; background: rgba(10,10,12,0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 24px; animation: pop 0.22s ease both;">
+      <div style="position: relative; width: min(540px, 96vw); max-height: 92vh; overflow: auto; background: #1A1A1E; border: 1px solid #2F2F36; border-radius: 20px; padding: 28px 30px;">
+        <div onClick="{{ closeModal }}" title="Fermer" style="position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border-radius: 50%; background: #26262B; color: #C9C6BE; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.15s ease, color 0.15s ease, transform 0.25s ease;" style-hover="background: #D81B60; color: #fff; transform: rotate(90deg) scale(1.08);">✕</div>
+        <div style="display: flex; align-items: baseline; gap: 12px;">
+          <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 26px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 3px 3px 0 #D81B60;">{{ modalTitle }}</h2>
+        </div>
+        <p style="margin: 8px 0 0; font-size: 13px; line-height: 1.6; color: #8E8E98;">{{ modalSub }}</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px;">
+          <div><div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 7px;">Prix de départ</div><input value="5,00 €" style="width: 100%; background: #131316; border: 1.5px solid #2B2B31; border-radius: 10px; padding: 12px 14px; color: #F2EFE9; font-family: 'Anton', sans-serif; font-size: 15px; outline: none;"></div>
+          <div><div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 7px;">Prix de réserve</div><input value="20,00 €" style="width: 100%; background: #131316; border: 1.5px solid #2B2B31; border-radius: 10px; padding: 12px 14px; color: #F2EFE9; font-family: 'Anton', sans-serif; font-size: 15px; outline: none;"></div>
+          <div><div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 7px;">Palier d'enchère</div><input value="1,00 €" style="width: 100%; background: #131316; border: 1.5px solid #2B2B31; border-radius: 10px; padding: 12px 14px; color: #F2EFE9; font-family: 'Anton', sans-serif; font-size: 15px; outline: none;"></div>
+          <div><div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 7px;">Durée</div><input value="3 jours" style="width: 100%; background: #131316; border: 1.5px solid #2B2B31; border-radius: 10px; padding: 12px 14px; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 14px; outline: none;"></div>
+        </div>
+        <label style="display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 700; color: #A9A9B2; cursor: pointer; margin-top: 16px;">
+          <span style="width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid #D81B60; background: #D81B60; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; flex-shrink: 0;">✓</span>
+          Prolongation anti-snipe (+2 min si enchère dans les 2 dernières minutes)
+        </label>
+        <div onClick="{{ closeModal }}" style="margin-top: 22px; font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 1.5px; padding: 14px; text-align: center; background: #D81B60; color: #fff; border-radius: 11px; cursor: pointer; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px,-2px); box-shadow: 5px 5px 0 rgba(0,0,0,0.45);">{{ modalCta }}</div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    view: 'bidder',
+    current: 42, leader: 'DRIFT_KING_06', bidCount: 17,
+    bidInput: '', autoOn: false, maxInput: '', autoMax: 0,
+    youLead: false, lastWasYou: false,
+    history: null, modal: null, now: Date.now()
+  };
+
+  constructor(props) {
+    super(props);
+    this.STEP = 2; // palier €
+    this.feat = { src: 'uploads/59_TOYOTA_SUPRA_MK4_SECRET.jpg', name: 'SUPRA MK4 SECRÈTE', rar: 'Ultra Rare', glyph: '✦', meta: 'Standard · Très bon', seller: 'MIDNIGHT_PURPLE', frame: '#B05CFF' };
+    this.AV = {
+      'DRIFT_KING_06': ['D', 'linear-gradient(135deg, #4FA3FF, #1F4E8C)'],
+      'SARA.S15': ['S', 'linear-gradient(135deg, #B05CFF, #5A1F8C)'],
+      'TOUGE_HUNTER': ['T', 'linear-gradient(135deg, #E8B23A, #8C641F)'],
+      'KENJI-13': ['K', 'linear-gradient(135deg, #D81B60, #7A0F37)'],
+      'HACHI_ROKU': ['H', 'linear-gradient(135deg, #FF6B5E, #8C2F1F)']
+    };
+    this.RESERVE = 38;
+    this.endAt = Date.now() + (2 * 3600 + 14 * 60 + 8) * 1000;
+    this.history0 = [
+      { who: 'DRIFT_KING_06', amt: 42, when: 'il y a 2 min' },
+      { who: 'SARA.S15', amt: 40, when: 'il y a 5 min' },
+      { who: 'TOUGE_HUNTER', amt: 36, when: 'il y a 11 min' },
+      { who: 'DRIFT_KING_06', amt: 32, when: 'il y a 18 min' },
+      { who: 'HACHI_ROKU', amt: 28, when: 'il y a 26 min' }
+    ];
+    this.OTHERS = [
+      { src: 'uploads/71_NISSAN_R33_MIDNIGHT.jpg', name: 'R33 MIDNIGHT', current: 56, bids: 23, secs: 3680 },
+      { src: 'uploads/64_PORSCHE_911_RWB.jpg', name: 'PORSCHE 911 RWB', current: 31, bids: 12, secs: 920 },
+      { src: 'uploads/75_HONDA_NSX_NA1.jpg', name: 'HONDA NSX TYPE-R', current: 64, bids: 19, secs: 14200 },
+      { src: 'uploads/54_NISSAN_S15_ICONIQUE.jpg', name: 'NISSAN S15 ULTIME', current: 27, bids: 8, secs: 320 }
+    ];
+    this.MYAUCTIONS = [
+      { src: 'uploads/68_NISSAN_S13_LIGHTON.jpg', name: 'S13 DU CRÉATEUR', meta: '❀ Légendaire · Neuf', current: 58, bids: 21, watchers: 44, reserve: 50, secs: 5400 },
+      { src: 'uploads/42_TOYOTA_SUPRA_MK4_rare.jpg', name: 'TOYOTA SUPRA MK4', meta: '◈ Rare · Très bon', current: 17, bids: 6, watchers: 12, reserve: 25, secs: 96000 },
+      { src: 'uploads/66_MERCEDES_DTM_EVOII.jpg', name: '190E EVO II DTM', meta: '✦ Ultra Rare · Neuf', current: 44, bids: 14, watchers: 28, reserve: 30, secs: 600 }
+    ];
+  }
+
+  componentDidMount() { this.timer = setInterval(() => this.setState({ now: Date.now() }), 1000); }
+  componentWillUnmount() { clearInterval(this.timer); }
+
+  fmt(n) { return n.toFixed(2).replace('.', ',') + ' €'; }
+  clockFmt(secs) {
+    if (secs <= 0) return 'Terminé';
+    const d = Math.floor(secs / 86400); const h = Math.floor((secs % 86400) / 3600);
+    const m = Math.floor((secs % 3600) / 60); const s = Math.floor(secs % 60);
+    if (d > 0) return d + 'j ' + h + 'h';
+    if (h > 0) return h + 'h ' + String(m).padStart(2, '0') + 'm';
+    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
+  renderVals() {
+    const st = this.state;
+    const walletLabel = this.fmt((v => (isNaN(v) ? 128.5 : v))(parseFloat(localStorage.getItem('thepark_wallet'))));
+    const history = st.history || this.history0;
+    const minNext = st.current + this.STEP;
+    const secsLeft = Math.max(0, Math.round((this.endAt - st.now) / 1000));
+    const reserveMet = st.current >= this.RESERVE;
+
+    const parseBid = (s) => parseFloat(String(s).replace(',', '.').replace(/[^0-9.]/g, ''));
+    const inputVal = parseBid(st.bidInput);
+    const canBid = !isNaN(inputVal) && inputVal >= minNext;
+
+    let statusText, statusColor, statusBg, statusBorder;
+    if (st.youLead) {
+      statusText = '✓ Tu mènes l\'enchère — reste à l\'affût jusqu\'à la clôture.';
+      statusColor = '#5ED99A'; statusBg = 'rgba(94,217,154,0.08)'; statusBorder = 'rgba(94,217,154,0.35)';
+    } else if (st.lastWasYou) {
+      statusText = '⚠ Tu as été surenchéri ! Repositionne-toi pour reprendre la tête.';
+      statusColor = '#FF6B5E'; statusBg = 'rgba(255,107,94,0.08)'; statusBorder = 'rgba(255,107,94,0.35)';
+    } else {
+      statusText = 'Place ta première enchère pour entrer dans la course.';
+      statusColor = '#C9C6BE'; statusBg = '#202024'; statusBorder = '#26262B';
+    }
+
+    const histRows = history.map((h, i) => {
+      const av = this.AV[h.who] || ['?', '#2B2B31'];
+      const you = h.who === 'KENJI-13';
+      return { who: you ? 'Toi' : h.who, ini: av[0], avBg: av[1], when: h.when, amt: this.fmt(h.amt),
+        nameColor: you ? '#5ED99A' : '#F2EFE9', amtColor: i === 0 ? '#D81B60' : '#C9C6BE',
+        anim: (i === 0 && st.lastWasYou !== null && st.history) ? 'flashBid 1.2s ease' : 'none' };
+    });
+
+    const others = this.OTHERS.map((o, i) => {
+      const s = Math.max(0, o.secs - 0);
+      return { i: String(i), src: o.src, name: o.name, current: this.fmt(o.current), bids: o.bids,
+        clock: this.clockFmt(o.secs), clockColor: o.secs < 600 ? '#FF6B5E' : '#C9C6BE' };
+    });
+
+    // ---- vendeur ----
+    const myAuctions = this.MYAUCTIONS.map((a, i) => {
+      const met = a.current >= a.reserve;
+      const live = a.secs > 0;
+      return { i: String(i), src: a.src, name: a.name, meta: a.meta,
+        current: this.fmt(a.current), bids: a.bids, watchers: a.watchers,
+        reserveText: met ? '✓ Atteinte' : 'Non atteinte (' + this.fmt(a.reserve) + ')',
+        reserveColor: met ? '#5ED99A' : '#E8B23A',
+        clock: this.clockFmt(a.secs), clockColor: a.secs < 1800 ? '#FF6B5E' : '#C9C6BE',
+        liveLabel: live ? 'En cours' : 'Terminée', liveColor: live ? '#5ED99A' : '#6E6E78',
+        border: a.secs < 1800 ? 'rgba(216,27,96,0.3)' : '#2B2B31' };
+    });
+    const totalBids = this.MYAUCTIONS.reduce((s, a) => s + a.bids, 0);
+    const estRevenue = this.MYAUCTIONS.reduce((s, a) => s + a.current, 0);
+    const sellerKpis = [
+      { label: 'Enchères actives', value: String(this.MYAUCTIONS.length), sub: 'en salle live', subColor: '#8E8E98', glow: 'rgba(216,27,96,0.18)' },
+      { label: 'Offres reçues', value: String(totalBids), sub: '▲ +8 aujourd\'hui', subColor: '#5ED99A', glow: 'rgba(79,163,255,0.16)' },
+      { label: 'Valeur en jeu', value: this.fmt(estRevenue), sub: 'somme des meilleures offres', subColor: '#8E8E98', glow: 'rgba(232,178,58,0.16)' },
+      { label: 'Suiveurs', value: String(this.MYAUCTIONS.reduce((s, a) => s + a.watchers, 0)), sub: 'sur tes ventes', subColor: '#8E8E98', glow: 'rgba(176,92,255,0.16)' }
+    ];
+
+    return {
+      walletLabel,
+      isBidder: st.view === 'bidder', isSeller: st.view === 'seller',
+      bidderBg: st.view === 'bidder' ? '#D81B60' : 'transparent', bidderColor: st.view === 'bidder' ? '#fff' : '#8E8E98',
+      sellerBg: st.view === 'seller' ? '#D81B60' : 'transparent', sellerColor: st.view === 'seller' ? '#fff' : '#8E8E98',
+      setView: (e) => this.setState({ view: e.currentTarget.dataset.v }),
+
+      feat: this.feat,
+      currentLabel: this.fmt(st.current), leader: st.youLead ? 'Toi' : st.leader, leadColor: st.youLead ? '#5ED99A' : '#F2EFE9',
+      bidCount: st.bidCount,
+      clock: this.clockFmt(secsLeft), clockColor: secsLeft < 600 ? '#FF6B5E' : '#F2EFE9',
+      reserveLabel: reserveMet ? '✓ Prix de réserve atteint' : 'Réserve non atteinte',
+      reserveColor: reserveMet ? '#5ED99A' : '#E8B23A',
+      statusText, statusColor, statusBg, statusBorder,
+      minNextLabel: this.fmt(minNext), stepLabel: this.fmt(this.STEP),
+      quickBids: [0, this.STEP, this.STEP * 3].map((extra, i) => ({ v: String(minNext + extra), label: this.fmt(minNext + extra) })),
+      bidInput: st.bidInput,
+      bidBtnBg: canBid ? '#D81B60' : '#26262B', bidBtnColor: canBid ? '#fff' : '#5A5A64',
+      bidBtnCursor: canBid ? 'pointer' : 'not-allowed', bidBtnShadow: canBid ? '3px 3px 0 rgba(0,0,0,0.45)' : 'none',
+      autoOn: st.autoOn, autoTrack: st.autoOn ? '#D81B60' : '#2E2E35', autoKnob: st.autoOn ? '23px' : '3px',
+      maxInput: st.maxInput, hasAutoMax: st.autoMax > 0, autoMaxLabel: this.fmt(st.autoMax),
+      history: histRows,
+      others, otherCount: others.length + ' live',
+
+      sellerKpis, myAuctions,
+      modalOpen: !!st.modal,
+      modalTitle: st.modal === 'create' ? 'Nouvelle enchère' : 'Gérer l\'enchère',
+      modalSub: st.modal === 'create' ? 'Choisis tes paramètres de vente. La carte est bloquée dans ton classeur le temps de l\'enchère.' : 'Ajuste la réserve ou prolonge la durée. Les enchères déjà placées restent valables.',
+      modalCta: st.modal === 'create' ? 'LANCER L\'ENCHÈRE' : 'ENREGISTRER',
+
+      onBidInput: (e) => this.setState({ bidInput: e.target.value }),
+      quickBid: (e) => this.setState({ bidInput: this.fmt(parseFloat(e.currentTarget.dataset.v)) }),
+      placeBid: () => {
+        if (!canBid) return;
+        const amt = Math.round(inputVal * 100) / 100;
+        const hist = [{ who: 'KENJI-13', amt, when: 'à l\'instant' }, ...history];
+        this.setState({ current: amt, leader: 'KENJI-13', youLead: true, lastWasYou: false, bidCount: st.bidCount + 1, bidInput: '', history: hist });
+        // contre-enchère auto d'un rival après 2,5s (sauf si enchère auto couvre)
+        clearTimeout(this._rival);
+        this._rival = setTimeout(() => {
+          const s = this.state;
+          if (!s.youLead) return;
+          const rivalBid = s.current + this.STEP;
+          if (s.autoMax >= rivalBid + this.STEP) {
+            // ton agent auto reprend la tête
+            const reprise = rivalBid + this.STEP;
+            this.setState({ current: reprise, youLead: true, leader: 'KENJI-13', bidCount: s.bidCount + 2,
+              history: [{ who: 'KENJI-13', amt: reprise, when: 'auto' }, { who: 'DRIFT_KING_06', amt: rivalBid, when: 'à l\'instant' }, ...s.history] });
+          } else {
+            this.setState({ current: rivalBid, youLead: false, lastWasYou: true, leader: 'DRIFT_KING_06', bidCount: s.bidCount + 1,
+              history: [{ who: 'DRIFT_KING_06', amt: rivalBid, when: 'à l\'instant' }, ...s.history] });
+          }
+        }, 2500);
+      },
+      toggleAuto: () => this.setState(s => ({ autoOn: !s.autoOn })),
+      onMaxInput: (e) => this.setState({ maxInput: e.target.value }),
+      setAutoMax: () => { const v = parseBid(st.maxInput); if (!isNaN(v) && v >= minNext) this.setState({ autoMax: Math.round(v * 100) / 100 }); },
+      pickAuction: () => {},
+      openCreate: () => this.setState({ modal: 'create' }),
+      openManage: () => this.setState({ modal: 'manage' }),
+      closeModal: (e) => { if (!e || e.target === e.currentTarget || e.currentTarget.dataset === undefined || e.currentTarget.tagName === 'DIV') { if (!e || e.target === e.currentTarget || !e.currentTarget.dataset.i) this.setState({ modal: null }); } }
+    };
+  }
+}
+</script>
+</body>
+</html>

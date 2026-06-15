@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #0E0E11; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0E0E11; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+input::placeholder { color: #5A5A64; }
+</style>
+</helmet>
+<div data-screen-label="Boutique officielle — Back-office créateur" style="min-height: 100vh; display: grid; grid-template-columns: 236px 1fr; background: #0E0E11; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif;">
+
+  <!-- ===== SIDEBAR ===== -->
+  <div style="background: #141418; border-right: 1px solid #232328; display: flex; flex-direction: column; padding: 20px 16px; position: sticky; top: 0; height: 100vh;">
+    <div style="display: flex; align-items: center; gap: 11px; padding: 0 6px 18px; border-bottom: 1px solid #232328;">
+      <div style="width: 38px; height: 38px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #F2EFE9;">THE PARK</div>
+        <div style="display: inline-flex; align-items: center; gap: 4px; margin-top: 5px; font-weight: 900; font-size: 8px; letter-spacing: 1px; padding: 2px 6px; border-radius: 4px; background: #D81B60; color: #fff;">ADMIN CRÉATEUR</div>
+      </div>
+    </div>
+
+    <div style="font-weight: 800; font-size: 9.5px; letter-spacing: 1.5px; color: #5A5A64; text-transform: uppercase; padding: 18px 10px 8px;">Gestion boutique</div>
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="3">
+      <button onClick="{{ n.onClick }}" style="display: flex; align-items: center; gap: 11px; padding: 11px 12px; margin-bottom: 3px; border: none; border-radius: 10px; background: {{ n.bg }}; color: {{ n.color }}; cursor: pointer; text-align: left; font-family: 'Hanken Grotesk', sans-serif; font-weight: 800; font-size: 13px; transition: background 0.15s ease, color 0.15s ease;">
+        <span style="display: flex; color: {{ n.iconColor }};">{{ n.icon }}</span>
+        {{ n.label }}
+        <sc-if value="{{ n.badge }}" hint-placeholder-val="{{ false }}">
+          <span style="margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #D81B60; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center;">{{ n.badge }}</span>
+        </sc-if>
+      </button>
+    </sc-for>
+
+    <div style="flex: 1;"></div>
+    <a href="The Park - Boutique.dc.html" style="display: flex; align-items: center; gap: 9px; padding: 11px 12px; border-radius: 10px; color: #8E8E98; text-decoration: none; font-weight: 700; font-size: 12px; transition: background 0.15s ease, color 0.15s ease;" style-hover="background: #1C1C21; color: #E8B23A;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"></path></svg>Voir la boutique</a>
+    <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px; padding: 11px 10px; background: #1C1C21; border-radius: 11px;">
+      <span style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 14px; color: #fff; flex-shrink: 0;">L</span>
+      <div style="line-height: 1.2; min-width: 0;"><div style="font-weight: 800; font-size: 12px; color: #F2EFE9;">Lighton</div><div style="font-weight: 700; font-size: 10px; color: #5ED99A;">Créateur · vérifié ✔</div></div>
+    </div>
+  </div>
+
+  <!-- ===== MAIN ===== -->
+  <div style="min-width: 0; display: flex; flex-direction: column;">
+    <!-- topbar -->
+    <div style="display: flex; align-items: center; gap: 16px; padding: 18px 28px; border-bottom: 1px solid #232328; background: #141418; position: sticky; top: 0; z-index: 10;">
+      <div>
+        <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 25px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">{{ pageTitle }}</h1>
+        <div style="font-weight: 700; font-size: 11.5px; color: #6E6E78; margin-top: 2px;">{{ pageSub }}</div>
+      </div>
+      <div style="flex: 1;"></div>
+      <div style="display: flex; align-items: center; gap: 8px; background: #1C1C21; border: 1px solid #232328; border-radius: 10px; padding: 9px 13px; width: 230px;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5A5A64" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+        <input placeholder="Rechercher…" style="flex: 1; min-width: 0; background: transparent; border: none; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; font-size: 12.5px; outline: none;">
+      </div>
+      <sc-if value="{{ isProducts }}" hint-placeholder-val="{{ true }}">
+        <button style="display: flex; align-items: center; gap: 8px; font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1px; padding: 11px 17px; background: #D81B60; color: #fff; border: none; border-radius: 10px; cursor: pointer; box-shadow: 3px 3px 0 rgba(0,0,0,0.45); transition: background 0.15s ease, transform 0.15s ease;" style-hover="background: #F0246F; transform: translate(-1px,-1px);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>NOUVEAU PRODUIT</button>
+      </sc-if>
+    </div>
+
+    <div style="padding: 24px 28px 50px; min-width: 0;">
+
+      <!-- ===== PRODUITS ===== -->
+      <sc-if value="{{ isProducts }}" hint-placeholder-val="{{ true }}">
+        <div style="animation: fadeUp 0.4s ease both;">
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px;">
+            <sc-for list="{{ prodStats }}" as="s" hint-placeholder-count="4">
+              <div style="background: #141418; border: 1px solid #232328; border-radius: 14px; padding: 16px 18px;">
+                <div style="font-weight: 800; font-size: 10.5px; letter-spacing: 0.8px; color: #6E6E78; text-transform: uppercase;">{{ s.label }}</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 27px; color: {{ s.color }}; margin-top: 6px;">{{ s.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 2.6fr 1fr 0.9fr 1.1fr 0.9fr 0.5fr; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #232328; font-weight: 800; font-size: 10px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">
+              <div>Produit</div><div>Catégorie</div><div>Prix</div><div>Stock</div><div>Visibilité</div><div></div>
+            </div>
+            <sc-for list="{{ products }}" as="p" hint-placeholder-count="6">
+              <div style="display: grid; grid-template-columns: 2.6fr 1fr 0.9fr 1.1fr 0.9fr 0.5fr; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #1C1C21; align-items: center; transition: background 0.12s ease;" style-hover="background: #18181C;">
+                <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+                  <div style="width: 42px; height: 42px; border-radius: 9px; background: radial-gradient(circle at 50% 42%, #FFFFFF, #ECE6E8 85%); display: flex; align-items: center; justify-content: center; padding: 6px; flex-shrink: 0;"><img src="{{ p.img }}" alt="{{ p.name }}" style="max-width: 100%; max-height: 100%; object-fit: contain;"></div>
+                  <div style="min-width: 0;"><div style="font-weight: 800; font-size: 12.5px; color: #F2EFE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ p.name }}</div><div style="font-weight: 700; font-size: 10.5px; color: #6E6E78;">{{ p.ref }}</div></div>
+                </div>
+                <div style="font-weight: 700; font-size: 12px; color: #A9A9B2;">{{ p.cat }}</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 15px; color: #F2EFE9;">{{ p.price }}</div>
+                <div style="display: flex; align-items: center; gap: 7px;"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{ p.stockColor }};"></span><span style="font-weight: 800; font-size: 12px; color: {{ p.stockColor }};">{{ p.stock }}</span></div>
+                <div><span onClick="{{ p.toggle }}" style="display: inline-flex; align-items: center; width: 38px; height: 21px; border-radius: 11px; background: {{ p.visBg }}; cursor: pointer; padding: 2px; transition: background 0.18s ease;"><span style="width: 17px; height: 17px; border-radius: 50%; background: #fff; transform: translateX({{ p.visX }}); transition: transform 0.18s ease;"></span></span></div>
+                <div style="text-align: right;"><button style="width: 30px; height: 30px; border-radius: 8px; background: #1C1C21; border: 1px solid #232328; color: #8E8E98; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: border-color 0.15s ease, color 0.15s ease;" style-hover="border-color: #E8B23A; color: #fff;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== COMMANDES ===== -->
+      <sc-if value="{{ isOrders }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.4s ease both;">
+          <div style="display: flex; gap: 9px; margin-bottom: 18px; flex-wrap: wrap;">
+            <sc-for list="{{ orderFilters }}" as="f" hint-placeholder-count="4">
+              <div style="display: flex; align-items: center; gap: 7px; padding: 9px 14px; border-radius: 9px; background: #141418; border: 1px solid #232328; font-weight: 800; font-size: 11.5px; color: #C9C6BE;"><span style="width: 7px; height: 7px; border-radius: 50%; background: {{ f.color }};"></span>{{ f.label }} <span style="color: #6E6E78;">{{ f.count }}</span></div>
+            </sc-for>
+          </div>
+          <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1.1fr 1.4fr 1fr 0.8fr 1.4fr; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #232328; font-weight: 800; font-size: 10px; letter-spacing: 1px; color: #6E6E78; text-transform: uppercase;">
+              <div>Commande</div><div>Client</div><div>Date</div><div>Total</div><div>Statut · faire évoluer</div>
+            </div>
+            <sc-for list="{{ adminOrders }}" as="o" hint-placeholder-count="6">
+              <div style="display: grid; grid-template-columns: 1.1fr 1.4fr 1fr 0.8fr 1.4fr; gap: 12px; padding: 14px 20px; border-bottom: 1px solid #1C1C21; align-items: center; transition: background 0.12s ease;" style-hover="background: #18181C;">
+                <div style="font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 0.5px; color: #F2EFE9;">{{ o.num }}</div>
+                <div style="display: flex; align-items: center; gap: 9px; min-width: 0;"><span style="width: 28px; height: 28px; border-radius: 50%; background: {{ o.avBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 11px; color: #fff; flex-shrink: 0;">{{ o.ini }}</span><span style="font-weight: 700; font-size: 12px; color: #C9C6BE; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ o.client }}</span></div>
+                <div style="font-weight: 700; font-size: 11.5px; color: #8E8E98;">{{ o.date }}</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 14px; color: #F2EFE9;">{{ o.total }}</div>
+                <div><button onClick="{{ o.advance }}" title="Cliquer pour faire évoluer le statut" style="display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 8px; border: 1px solid {{ o.statusColor }}; background: {{ o.statusBg }}; color: {{ o.statusColor }}; font-weight: 800; font-size: 11px; cursor: pointer; transition: transform 0.12s ease;" style-hover="transform: translateY(-1px);"><span style="width: 6px; height: 6px; border-radius: 50%; background: {{ o.statusColor }};"></span>{{ o.status }}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button></div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font-weight: 700; font-size: 11.5px; color: #6E6E78; margin-top: 12px; display: flex; align-items: center; gap: 7px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6E6E78" stroke-width="2.2" stroke-linecap="round"><path d="M12 16v-4M12 8h.01"></path><circle cx="12" cy="12" r="9"></circle></svg>Astuce : clique sur un statut pour le faire passer à l'étape suivante (préparation → expédiée → livrée).</div>
+        </div>
+      </sc-if>
+
+      <!-- ===== VENTES ===== -->
+      <sc-if value="{{ isSales }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: fadeUp 0.4s ease both;">
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;">
+            <sc-for list="{{ salesKpis }}" as="k" hint-placeholder-count="4">
+              <div style="background: #141418; border: 1px solid #232328; border-radius: 15px; padding: 18px 20px;">
+                <div style="font-weight: 800; font-size: 10.5px; letter-spacing: 0.8px; color: #6E6E78; text-transform: uppercase;">{{ k.label }}</div>
+                <div style="font-family: 'Anton', sans-serif; font-size: 30px; color: #F2EFE9; margin-top: 7px;">{{ k.value }}</div>
+                <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px; font-weight: 800; font-size: 11px; color: {{ k.trendColor }};">{{ k.trend }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-top: 16px;">
+            <!-- bar chart 7 jours -->
+            <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 22px 24px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;">
+                <div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9;">Ventes · 7 derniers jours</div>
+                <div style="font-weight: 800; font-size: 12px; color: #5ED99A;">+18 %</div>
+              </div>
+              <div style="display: flex; align-items: flex-end; gap: 12px; height: 150px;">
+                <sc-for list="{{ bars }}" as="b" hint-placeholder-count="7">
+                  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; justify-content: flex-end;">
+                    <div style="width: 100%; height: {{ b.h }}; background: linear-gradient(180deg, #D81B60, #7A0F37); border-radius: 6px 6px 0 0; position: relative;" style-hover="background: linear-gradient(180deg, #F0246F, #D81B60);"><span style="position: absolute; top: -19px; left: 0; right: 0; text-align: center; font-weight: 800; font-size: 9.5px; color: #8E8E98;">{{ b.val }}</span></div>
+                    <span style="font-weight: 700; font-size: 10px; color: #6E6E78;">{{ b.day }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <!-- best-sellers -->
+            <div style="background: #141418; border: 1px solid #232328; border-radius: 16px; padding: 22px 24px;">
+              <div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); color: #F2EFE9; margin-bottom: 18px;">Meilleures ventes</div>
+              <div style="display: flex; flex-direction: column; gap: 14px;">
+                <sc-for list="{{ bestSellers }}" as="b" hint-placeholder-count="4">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 11px; margin-bottom: 7px;">
+                      <div style="width: 34px; height: 34px; border-radius: 8px; background: radial-gradient(circle at 50% 42%, #FFFFFF, #ECE6E8 85%); display: flex; align-items: center; justify-content: center; padding: 5px; flex-shrink: 0;"><img src="{{ b.img }}" alt="{{ b.name }}" style="max-width: 100%; max-height: 100%; object-fit: contain;"></div>
+                      <div style="flex: 1; min-width: 0;"><div style="font-weight: 800; font-size: 12px; color: #F2EFE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ b.name }}</div></div>
+                      <div style="font-weight: 800; font-size: 12px; color: #C9C6BE;">{{ b.units }}</div>
+                    </div>
+                    <div style="height: 6px; border-radius: 3px; background: #1C1C21; overflow: hidden;"><div style="height: 100%; width: {{ b.pct }}; background: linear-gradient(90deg, #E8B23A, #FFD479); border-radius: 3px;"></div></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    tab: 'products',
+    vis: [true, true, true, true, false, true],
+    orderStatus: [1, 2, 0, 4, 2, 4]
+  };
+  STATUS_FLOW = ['Payée', 'En préparation', 'Expédiée', 'En transit', 'Livrée'];
+  STATUS_STYLE = {
+    'Payée': { bg: 'rgba(176,92,255,0.13)', color: '#B05CFF' },
+    'En préparation': { bg: 'rgba(232,178,58,0.13)', color: '#E8B23A' },
+    'Expédiée': { bg: 'rgba(79,163,255,0.13)', color: '#4FA3FF' },
+    'En transit': { bg: 'rgba(111,227,208,0.13)', color: '#6FE3D0' },
+    'Livrée': { bg: 'rgba(94,217,154,0.13)', color: '#5ED99A' }
+  };
+  PRODUCTS = [
+    { name: 'Display Moteur Forgé', ref: 'PD-S1-DISPLAY', cat: 'Displays', price: 89.9, stockN: 12 },
+    { name: 'Pack de 3 boosters scellés', ref: 'PD-S1-BST3', cat: 'Boosters', price: 13.9, stockN: 240 },
+    { name: 'Booster à l\u2019unité', ref: 'PD-S1-BST1', cat: 'Boosters', price: 4.9, stockN: 980 },
+    { name: 'Pack stickers holo', ref: 'PD-GOOD-STK', cat: 'Goodies', price: 9.9, stockN: 64 },
+    { name: 'Carte signée Lighton · S13 #068', ref: 'PD-COL-068', cat: 'Goodies', price: 65.0, stockN: 0 },
+    { name: 'Carte signée Lighton · S13 #069', ref: 'PD-COL-069', cat: 'Goodies', price: 75.0, stockN: 3 }
+  ];
+  IMGS = ['uploads/mockupdisplay20image.jpg', 'uploads/BOOSTERS_2.jpg', 'uploads/booster-1.png', 'uploads/logo-gold.png', 'uploads/68_NISSAN_S13_LIGHTON.jpg', 'uploads/69_NISSAN_S13_LIGHTON_2.jpg'];
+  ORDERS = [
+    { num: 'TP-...4817', client: 'Kenji Tanaka', ini: 'K', avBg: 'linear-gradient(135deg,#D81B60,#7A0F37)', date: '15 juin 2026', total: 127.6 },
+    { num: 'TP-...4816', client: 'Sara Lemoine', ini: 'S', avBg: 'linear-gradient(135deg,#B05CFF,#5A1F8C)', date: '15 juin 2026', total: 27.8 },
+    { num: 'TP-...4815', client: 'Marc Dubois', ini: 'M', avBg: 'linear-gradient(135deg,#6FE3D0,#1F8C7A)', date: '14 juin 2026', total: 89.9 },
+    { num: 'TP-...4814', client: 'Yuki Mori', ini: 'Y', avBg: 'linear-gradient(135deg,#4FA3FF,#1F4E8C)', date: '14 juin 2026', total: 9.9 },
+    { num: 'TP-...4813', client: 'Léa Garnier', ini: 'L', avBg: 'linear-gradient(135deg,#FF6B5E,#8C2F1F)', date: '13 juin 2026', total: 165.6 },
+    { num: 'TP-...4812', client: 'Tom Bianchi', ini: 'T', avBg: 'linear-gradient(135deg,#E8B23A,#8C6A1F)', date: '12 juin 2026', total: 13.9 }
+  ];
+  BARS = [['L', 60, '8'], ['M', 95, '13'], ['M', 78, '11'], ['J', 130, '18'], ['V', 110, '15'], ['S', 175, '24'], ['D', 150, '21']];
+  fmt(n) { return n.toFixed(2).replace('.', ',') + ' €'; }
+  stockMeta(n) {
+    if (n === 0) return { label: 'Épuisé', color: '#FF5A6E' };
+    if (n <= 15) return { label: n + ' · faible', color: '#E8945A' };
+    return { label: String(n), color: '#5ED99A' };
+  }
+  renderVals() {
+    const tab = this.state.tab;
+    const ic = (d) => React.createElement('svg', { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.1, strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d }));
+    const NAV = [
+      { key: 'products', label: 'Produits', icon: ic('M20 7 12 3 4 7v10l8 4 8-4z M4 7l8 4 8-4 M12 21V11'), badge: '' },
+      { key: 'orders', label: 'Commandes', icon: ic('M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z M3 6h18 M16 10a4 4 0 0 1-8 0'), badge: '3' },
+      { key: 'sales', label: 'Ventes', icon: ic('M3 3v18h18 M7 14l4-4 4 4 5-6'), badge: '' }
+    ];
+    const titles = {
+      products: ['Produits', this.PRODUCTS.length + ' références · 1 épuisée · 1 masquée'],
+      orders: ['Commandes', 'Vente directe · 3 à préparer aujourd\u2019hui'],
+      sales: ['Ventes', 'Synthèse de la boutique officielle · juin 2026']
+    };
+    const newToday = this.STATUS_FLOW;
+    return {
+      pageTitle: titles[tab][0],
+      pageSub: titles[tab][1],
+      isProducts: tab === 'products', isOrders: tab === 'orders', isSales: tab === 'sales',
+      navItems: NAV.map(n => ({
+        label: n.label, icon: n.icon, badge: n.badge,
+        bg: tab === n.key ? '#D81B60' : 'transparent',
+        color: tab === n.key ? '#fff' : '#A9A9B2',
+        iconColor: tab === n.key ? '#fff' : '#6E6E78',
+        onClick: () => this.setState({ tab: n.key })
+      })),
+      prodStats: [
+        { label: 'Références', value: '6', color: '#F2EFE9' },
+        { label: 'En stock', value: '4', color: '#5ED99A' },
+        { label: 'Stock faible', value: '2', color: '#E8945A' },
+        { label: 'Épuisé', value: '1', color: '#FF5A6E' }
+      ],
+      products: this.PRODUCTS.map((p, i) => {
+        const sm = this.stockMeta(p.stockN);
+        const vis = this.state.vis[i];
+        return {
+          name: p.name, ref: p.ref, cat: p.cat, price: this.fmt(p.price),
+          img: this.IMGS[i], stock: sm.label, stockColor: sm.color,
+          visBg: vis ? '#5ED99A' : '#3A3A42', visX: vis ? '17px' : '0px',
+          toggle: () => this.setState(s => ({ vis: s.vis.map((v, j) => j === i ? !v : v) }))
+        };
+      }),
+      orderFilters: [
+        { label: 'Payées', count: 1, color: '#B05CFF' },
+        { label: 'À préparer', count: 1, color: '#E8B23A' },
+        { label: 'Expédiées', count: 2, color: '#4FA3FF' },
+        { label: 'Livrées', count: 2, color: '#5ED99A' }
+      ],
+      adminOrders: this.ORDERS.map((o, i) => {
+        const status = this.STATUS_FLOW[this.state.orderStatus[i]];
+        const st = this.STATUS_STYLE[status];
+        return {
+          num: o.num, client: o.client, ini: o.ini, avBg: o.avBg, date: o.date, total: this.fmt(o.total),
+          status, statusBg: st.bg, statusColor: st.color,
+          advance: () => this.setState(s => ({ orderStatus: s.orderStatus.map((v, j) => j === i ? Math.min(this.STATUS_FLOW.length - 1, v + 1) : v) }))
+        };
+      }),
+      salesKpis: [
+        { label: 'CA du mois', value: '4 280 €', trend: '▲ +18 % vs mai', trendColor: '#5ED99A' },
+        { label: 'Commandes', value: '112', trend: '▲ +9', trendColor: '#5ED99A' },
+        { label: 'Panier moyen', value: '38,20 €', trend: '▲ +2,40 €', trendColor: '#5ED99A' },
+        { label: 'À expédier', value: '7', trend: 'à traiter', trendColor: '#E8B23A' }
+      ],
+      bars: this.BARS.map(([day, h, val]) => ({ day, h: (h / 175 * 100).toFixed(0) + '%', val })),
+      bestSellers: [
+        { name: 'Pack de 3 boosters', img: 'uploads/BOOSTERS_2.jpg', units: '212 u.', pct: '100%' },
+        { name: 'Booster à l\u2019unité', img: 'uploads/booster-1.png', units: '184 u.', pct: '86%' },
+        { name: 'Display Moteur Forgé', img: 'uploads/mockupdisplay20image.jpg', units: '58 u.', pct: '42%' },
+        { name: 'Pack stickers holo', img: 'uploads/logo-gold.png', units: '41 u.', pct: '30%' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

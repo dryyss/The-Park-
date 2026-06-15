@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #0E0E11; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+@keyframes floaty { 0% { transform: translateY(0) rotate(var(--rot, 0deg)); } 50% { transform: translateY(-12px) rotate(var(--rot, 0deg)); } 100% { transform: translateY(0) rotate(var(--rot, 0deg)); } }
+@keyframes sheen { 0% { transform: translateX(-130%) skewX(-18deg); } 60%, 100% { transform: translateX(240%) skewX(-18deg); } }
+@keyframes revealCard { from { opacity: 0; transform: translateY(30px) rotateY(40deg) scale(0.85); } to { opacity: 1; transform: none; } }
+@keyframes shake { 0%,100% { transform: rotate(-2deg); } 25% { transform: rotate(2deg); } 75% { transform: rotate(-3deg); } }
+@keyframes glowPulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+::selection { background: #D81B60; color: #fff; }
+input::placeholder { color: #5A5A64; }
+</style>
+</helmet>
+<div data-screen-label="Onboarding" style="position: relative; min-height: 100vh; background: #0E0E11; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow: hidden; display: flex; flex-direction: column;">
+
+  <!-- décor de fond -->
+  <div style="position: absolute; top: -160px; left: 50%; transform: translateX(-50%); width: 900px; height: 520px; background: radial-gradient(circle, rgba(216,27,96,0.16), transparent 62%); pointer-events: none;"></div>
+  <div style="position: absolute; bottom: -50px; left: 30px; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 220px; line-height: 1; color: rgba(242,239,233,0.025); pointer-events: none; user-select: none;">始</div>
+
+  <!-- barre haut : logo + skip -->
+  <div style="position: relative; display: flex; align-items: center; justify-content: space-between; padding: 22px 32px; flex-shrink: 0; z-index: 2;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 40px; height: 40px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5);"><img src="uploads/pasted-1781200672492-0.png" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);"></div>
+      <div style="line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 18px; letter-spacing: 1.5px;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9px; letter-spacing: 3px; color: #D81B60; margin-top: 2px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </div>
+    <a href="The Park - Accueil.dc.html" style="font-weight: 800; font-size: 12.5px; color: #6E6E78; text-decoration: none; transition: color 0.15s ease;" style-hover="color: #D81B60;">Passer →</a>
+  </div>
+
+  <!-- progression -->
+  <sc-if value="{{ showProgress }}" hint-placeholder-val="{{ false }}">
+    <div style="position: relative; z-index: 2; display: flex; gap: 8px; max-width: 420px; width: 100%; margin: 0 auto; padding: 4px 32px 0;">
+      <sc-for list="{{ steps }}" as="st" hint-placeholder-count="4">
+        <div style="flex: 1; height: 4px; border-radius: 2px; background: {{ st.color }}; transition: background 0.3s ease;"></div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- ZONE PRINCIPALE -->
+  <div style="position: relative; z-index: 2; flex: 1; display: flex; align-items: center; justify-content: center; padding: 28px;">
+
+    <!-- ===== ÉTAPE 0 — BIENVENUE ===== -->
+    <sc-if value="{{ isWelcome }}" hint-placeholder-val="{{ true }}">
+      <div style="text-align: center; max-width: 640px; animation: fadeUp 0.6s ease both;">
+        <!-- cartes flottantes -->
+        <div style="display: flex; justify-content: center; gap: 18px; margin-bottom: 38px;">
+          <div style="width: 116px; --rot: -8deg; animation: floaty 5s ease-in-out infinite;">
+            <div style="position: relative; aspect-ratio: 5/7; border-radius: 12px; overflow: hidden; box-shadow: 0 18px 36px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);"><img src="uploads/54_NISSAN_S15_ICONIQUE.jpg" style="width: 100%; height: 100%; object-fit: cover;"><div style="position: absolute; inset: 0; overflow: hidden;"><div style="position: absolute; top: -20%; left: 0; width: 40%; height: 140%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); animation: sheen 4.5s 0.2s ease-in-out infinite;"></div></div></div>
+          </div>
+          <div style="width: 128px; --rot: 0deg; margin-top: -14px; animation: floaty 5s 0.6s ease-in-out infinite;">
+            <div style="position: relative; aspect-ratio: 5/7; border-radius: 13px; overflow: hidden; box-shadow: 0 24px 48px rgba(0,0,0,0.7); border: 1.5px solid rgba(216,27,96,0.35);"><img src="uploads/76_TOYOTA_COROLLA_TRUENO.jpg" style="width: 100%; height: 100%; object-fit: cover;"><div style="position: absolute; inset: 0; overflow: hidden;"><div style="position: absolute; top: -20%; left: 0; width: 40%; height: 140%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: sheen 4.5s 0.9s ease-in-out infinite;"></div></div></div>
+          </div>
+          <div style="width: 116px; --rot: 8deg; animation: floaty 5s 1.2s ease-in-out infinite;">
+            <div style="position: relative; aspect-ratio: 5/7; border-radius: 12px; overflow: hidden; box-shadow: 0 18px 36px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);"><img src="uploads/64_PORSCHE_911_RWB.jpg" style="width: 100%; height: 100%; object-fit: cover;"><div style="position: absolute; inset: 0; overflow: hidden;"><div style="position: absolute; top: -20%; left: 0; width: 40%; height: 140%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); animation: sheen 4.5s 1.6s ease-in-out infinite;"></div></div></div>
+          </div>
+        </div>
+        <div style="font-weight: 700; font-size: 12px; letter-spacing: 4px; color: #D81B60; text-transform: uppercase;">Bienvenue, pilote</div>
+        <h1 style="margin: 16px 0 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(42px, 6.5vw, 74px); line-height: 0.9; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-4deg);">Entre dans<br><span style="color: #D81B60; text-shadow: 4px 4px 0 rgba(242,239,233,0.92);">le park</span></h1>
+        <p style="margin: 24px auto 0; max-width: 440px; font-size: 15px; line-height: 1.65; color: #A9A9B2;">Collectionne les cartes Pocket Drifterz, complète ton classeur Saison 1 et échange avec la communauté drift/JDM.</p>
+        <div onClick="{{ next }}" style="display: inline-block; margin-top: 32px; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1.5px; padding: 16px 36px; background: #D81B60; color: #fff; border-radius: 12px; cursor: pointer; transform: skewX(-3deg); box-shadow: 5px 5px 0 rgba(0,0,0,0.5); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px,-2px); box-shadow: 7px 7px 0 rgba(0,0,0,0.5);">C'EST PARTI →</div>
+      </div>
+    </sc-if>
+
+    <!-- ===== ÉTAPE 1 — RÉGIONS / MARQUES ===== -->
+    <sc-if value="{{ isScene }}" hint-placeholder-val="{{ false }}">
+      <div style="width: min(620px, 100%); animation: pop 0.4s ease both;">
+        <div style="font-weight: 700; font-size: 11.5px; letter-spacing: 3px; color: #D81B60; text-transform: uppercase;">Étape 1 / 3</div>
+        <h2 style="margin: 10px 0 4px; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(30px, 4vw, 44px); letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 3px 3px 0 #D81B60;">Ta scène, c'est quoi ?</h2>
+        <p style="margin: 0 0 24px; font-size: 14px; color: #8E8E98;">Choisis tes terrains de jeu — on personnalise ton feed et tes drops.</p>
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div>
+            <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 11px;">Régions</div>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <sc-for list="{{ regions }}" as="r" hint-placeholder-count="3">
+                <div onClick="{{ toggleRegion }}" data-k="{{ r.k }}" style="flex: 1; min-width: 140px; display: flex; align-items: center; gap: 12px; background: {{ r.bg }}; border: 1.5px solid {{ r.border }}; border-radius: 14px; padding: 16px 18px; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease;">
+                  <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 22px; color: {{ r.accent }};">{{ r.kanji }}</span>
+                  <div>
+                    <div style="font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 0.5px; color: #F2EFE9;">{{ r.label }}</div>
+                    <div style="font-weight: 700; font-size: 11px; color: #8E8E98;">{{ r.sub }}</div>
+                  </div>
+                  <div style="flex: 1;"></div>
+                  <span style="width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid {{ r.checkBorder }}; background: {{ r.checkBg }}; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff;">{{ r.check }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div>
+            <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 11px;">Marques préférées</div>
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ brands }}" as="b" hint-placeholder-count="8">
+                <div onClick="{{ toggleBrand }}" data-k="{{ b.k }}" style="font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 0.5px; padding: 11px 18px; background: {{ b.bg }}; border: 1.5px solid {{ b.border }}; color: {{ b.color }}; border-radius: 999px; cursor: pointer; transition: all 0.15s ease;">{{ b.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 30px;">
+          <div onClick="{{ back }}" style="font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 1.5px; padding: 15px 24px; background: transparent; color: #C9C6BE; border: 1.5px solid #3A3A42; border-radius: 11px; cursor: pointer; transform: skewX(-3deg); transition: border-color 0.16s ease, color 0.16s ease;" style-hover="border-color: #D81B60; color: #fff;">RETOUR</div>
+          <div onClick="{{ next }}" style="flex: 1; text-align: center; font-family: 'Anton', sans-serif; font-size: 14.5px; letter-spacing: 1.5px; padding: 15px; background: #D81B60; color: #fff; border-radius: 11px; cursor: pointer; transform: skewX(-3deg); box-shadow: 4px 4px 0 rgba(0,0,0,0.5); transition: background 0.16s ease, transform 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px,-2px);">CONTINUER</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ===== ÉTAPE 2 — OBJECTIF ===== -->
+    <sc-if value="{{ isGoal }}" hint-placeholder-val="{{ false }}">
+      <div style="width: min(640px, 100%); animation: pop 0.4s ease both;">
+        <div style="font-weight: 700; font-size: 11.5px; letter-spacing: 3px; color: #D81B60; text-transform: uppercase;">Étape 2 / 3</div>
+        <h2 style="margin: 10px 0 4px; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(30px, 4vw, 44px); letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 3px 3px 0 #D81B60;">Qu'est-ce qui t'amène ?</h2>
+        <p style="margin: 0 0 24px; font-size: 14px; color: #8E8E98;">On adapte tes raccourcis. Tu pourras tout faire de toute façon.</p>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ goals }}" as="g" hint-placeholder-count="3">
+            <div onClick="{{ pickGoal }}" data-k="{{ g.k }}" style="display: flex; align-items: center; gap: 16px; background: {{ g.bg }}; border: 1.5px solid {{ g.border }}; border-radius: 16px; padding: 18px 20px; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="transform: translateX(3px);">
+              <div style="width: 50px; height: 50px; border-radius: 13px; background: #131316; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; font-size: 23px; flex-shrink: 0;">{{ g.icon }}</div>
+              <div style="flex: 1;">
+                <div style="font-family: 'Anton', sans-serif; font-size: 16px; letter-spacing: 0.5px; color: #F2EFE9;">{{ g.title }}</div>
+                <div style="font-weight: 700; font-size: 12px; color: #8E8E98; margin-top: 3px;">{{ g.sub }}</div>
+              </div>
+              <span style="width: 22px; height: 22px; border-radius: 50%; border: 2px solid {{ g.dotBorder }}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><span style="width: 10px; height: 10px; border-radius: 50%; background: {{ g.dotFill }};"></span></span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 30px;">
+          <div onClick="{{ back }}" style="font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 1.5px; padding: 15px 24px; background: transparent; color: #C9C6BE; border: 1.5px solid #3A3A42; border-radius: 11px; cursor: pointer; transform: skewX(-3deg); transition: border-color 0.16s ease, color 0.16s ease;" style-hover="border-color: #D81B60; color: #fff;">RETOUR</div>
+          <div onClick="{{ next }}" style="flex: 1; text-align: center; font-family: 'Anton', sans-serif; font-size: 14.5px; letter-spacing: 1.5px; padding: 15px; background: #D81B60; color: #fff; border-radius: 11px; cursor: pointer; transform: skewX(-3deg); box-shadow: 4px 4px 0 rgba(0,0,0,0.5); transition: background 0.16s ease, transform 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px,-2px);">CONTINUER</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ===== ÉTAPE 3 — BOOSTER OFFERT ===== -->
+    <sc-if value="{{ isBooster }}" hint-placeholder-val="{{ false }}">
+      <div style="text-align: center; width: min(680px, 100%); animation: pop 0.4s ease both;">
+        <div style="font-weight: 700; font-size: 11.5px; letter-spacing: 3px; color: #D81B60; text-transform: uppercase;">Étape 3 / 3 · Cadeau de bienvenue</div>
+
+        <!-- AVANT OUVERTURE -->
+        <sc-if value="{{ boosterSealed }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <h2 style="margin: 12px 0 4px; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(30px, 4vw, 46px); letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 3px 3px 0 #D81B60;">Ton premier booster</h2>
+            <p style="margin: 0 0 6px; font-size: 14px; color: #8E8E98;">3 cartes offertes pour lancer ta collection. Tape pour ouvrir.</p>
+            <div onClick="{{ openBooster }}" style="position: relative; display: inline-block; margin-top: 26px; cursor: pointer;">
+              <div style="position: absolute; inset: -30px; background: radial-gradient(circle, rgba(216,27,96,0.35), transparent 68%); animation: glowPulse 2.2s ease-in-out infinite; pointer-events: none;"></div>
+              <div style="position: relative; width: 210px; animation: shake 2.6s ease-in-out infinite;">
+                <div style="position: relative; aspect-ratio: 3/4.4; border-radius: 16px; overflow: hidden; box-shadow: 0 26px 54px rgba(0,0,0,0.7); border: 1.5px solid rgba(216,27,96,0.5);">
+                  <img src="uploads/booster-1.png" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                  <div style="position: absolute; inset: 0; overflow: hidden;"><div style="position: absolute; top: -20%; left: 0; width: 45%; height: 140%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent); animation: sheen 3s ease-in-out infinite;"></div></div>
+                </div>
+              </div>
+            </div>
+            <div onClick="{{ openBooster }}" style="display: inline-block; margin-top: 30px; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1.5px; padding: 16px 38px; background: #D81B60; color: #fff; border-radius: 12px; cursor: pointer; transform: skewX(-3deg); box-shadow: 5px 5px 0 rgba(0,0,0,0.5); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px,-2px); box-shadow: 7px 7px 0 rgba(0,0,0,0.5);">✦ OUVRIR LE BOOSTER</div>
+          </div>
+        </sc-if>
+
+        <!-- APRÈS OUVERTURE -->
+        <sc-if value="{{ boosterOpened }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <h2 style="margin: 12px 0 4px; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(30px, 4vw, 46px); letter-spacing: 0.5px; text-transform: uppercase; transform: skewX(-3deg); text-shadow: 3px 3px 0 #D81B60;">Tes 3 premières cartes !</h2>
+            <p style="margin: 0 0 28px; font-size: 14px; color: #8E8E98;">Elles rejoignent ton classeur Saison 1. Bienvenue dans la course.</p>
+            <div style="display: flex; justify-content: center; gap: 18px; flex-wrap: wrap;">
+              <sc-for list="{{ pulled }}" as="p" hint-placeholder-count="3">
+                <div style="width: 150px; animation: revealCard 0.55s {{ p.delay }} cubic-bezier(0.2,0.8,0.3,1) both;">
+                  <div style="position: relative; aspect-ratio: 5/7; border-radius: 13px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,0.6); border: 2px solid {{ p.rarColor }};">
+                    <img src="{{ p.img }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                    <span style="position: absolute; top: 7px; left: 7px; font-family: 'Anton', sans-serif; font-size: 10px; padding: 3px 8px; border-radius: 6px; background: rgba(0,0,0,0.72); color: {{ p.rarColor }};">{{ p.rarGlyph }} {{ p.rarLabel }}</span>
+                  </div>
+                  <div style="font-weight: 800; font-size: 12px; color: #F2EFE9; margin-top: 9px; line-height: 1.25;">{{ p.name }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <a href="The Park - Classeur.dc.html" style="display: inline-block; margin-top: 34px; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1.5px; padding: 16px 38px; background: #D81B60; color: #fff; border-radius: 12px; text-decoration: none; transform: skewX(-3deg); box-shadow: 5px 5px 0 rgba(0,0,0,0.5); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px,-2px); box-shadow: 7px 7px 0 rgba(0,0,0,0.5);">ENTRER DANS THE PARK →</a>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { step: 0, regions: ['JP'], brands: ['nissan'], goal: 'collect', opened: false };
+
+  constructor(props) {
+    super(props);
+    this.REGIONS = [
+      { k: 'JP', kanji: '日本', label: 'Japon', sub: 'JDM, drift, touge', accent: '#FF2E63' },
+      { k: 'DE', kanji: '独逸', label: 'Allemagne', sub: 'BMW, Porsche…', accent: '#4FA3FF' },
+      { k: 'US', kanji: '米国', label: 'USA', sub: 'Muscle, V8', accent: '#E8B23A' }
+    ];
+    this.BRANDS = [
+      { k: 'nissan', label: 'NISSAN' }, { k: 'toyota', label: 'TOYOTA' }, { k: 'mazda', label: 'MAZDA' },
+      { k: 'bmw', label: 'BMW' }, { k: 'honda', label: 'HONDA' }, { k: 'porsche', label: 'PORSCHE' },
+      { k: 'subaru', label: 'SUBARU' }, { k: 'mercedes', label: 'MERCEDES' }
+    ];
+    this.GOALS = [
+      { k: 'collect', icon: '🗂️', title: 'Compléter mon classeur', sub: 'Chasser chaque carte de la Saison 1.' },
+      { k: 'trade', icon: '⇄', title: 'Échanger avec la communauté', sub: 'Troquer mes doubles contre des holos.' },
+      { k: 'sell', icon: '🏷️', title: 'Acheter & vendre', sub: 'Faire vivre ma collection sur le marketplace.' }
+    ];
+    this.PULL = [
+      { name: 'NISSAN SILVIA S15 SPEC-R', img: 'uploads/04-NISSAN_S15_SPECR.jpg', rar: 'c' },
+      { name: 'NISSAN SKYLINE R33 NISMO', img: 'uploads/33_Nissan_R33_nismo.jpg', rar: 'r' },
+      { name: 'NISSAN SILVIA S15 ULTIME', img: 'uploads/54_NISSAN_S15_ICONIQUE.jpg', rar: 'u' }
+    ];
+    this.RAR = { c: { c: '#9BA3B2', g: '◆', l: 'Commune' }, r: { c: '#4FA3FF', g: '◈', l: 'Rare Holo' }, u: { c: '#B05CFF', g: '✦', l: 'Ultra Rare' } };
+  }
+
+  renderVals() {
+    const { step, regions, brands, goal, opened } = this.state;
+    const stepColors = [1, 2, 3].map(i => (step >= i ? '#D81B60' : '#26262B'));
+
+    return {
+      showProgress: step >= 1 && step <= 3,
+      steps: stepColors.map(c => ({ color: c })),
+      isWelcome: step === 0, isScene: step === 1, isGoal: step === 2, isBooster: step === 3,
+      boosterSealed: step === 3 && !opened, boosterOpened: step === 3 && opened,
+
+      regions: this.REGIONS.map(r => {
+        const on = regions.includes(r.k);
+        return { k: r.k, kanji: r.kanji, label: r.label, sub: r.sub, accent: r.accent,
+          bg: on ? 'rgba(216,27,96,0.1)' : '#1A1A1E', border: on ? '#D81B60' : '#2B2B31',
+          checkBorder: on ? '#D81B60' : '#3A3A42', checkBg: on ? '#D81B60' : 'transparent', check: on ? '✓' : '' };
+      }),
+      toggleRegion: (e) => { const k = e.currentTarget.dataset.k; this.setState(s => ({ regions: s.regions.includes(k) ? s.regions.filter(x => x !== k) : [...s.regions, k] })); },
+
+      brands: this.BRANDS.map(b => {
+        const on = brands.includes(b.k);
+        return { k: b.k, label: b.label,
+          bg: on ? '#D81B60' : '#1A1A1E', border: on ? '#D81B60' : '#2B2B31', color: on ? '#fff' : '#C9C6BE' };
+      }),
+      toggleBrand: (e) => { const k = e.currentTarget.dataset.k; this.setState(s => ({ brands: s.brands.includes(k) ? s.brands.filter(x => x !== k) : [...s.brands, k] })); },
+
+      goals: this.GOALS.map(g => {
+        const on = goal === g.k;
+        return { k: g.k, icon: g.icon, title: g.title, sub: g.sub,
+          bg: on ? 'rgba(216,27,96,0.1)' : '#1A1A1E', border: on ? '#D81B60' : '#2B2B31',
+          dotBorder: on ? '#D81B60' : '#3A3A42', dotFill: on ? '#D81B60' : 'transparent' };
+      }),
+      pickGoal: (e) => this.setState({ goal: e.currentTarget.dataset.k }),
+
+      pulled: this.PULL.map((p, i) => {
+        const r = this.RAR[p.rar];
+        return { name: p.name, img: p.img, rarColor: r.c, rarGlyph: r.g, rarLabel: r.l, delay: (i * 0.18 + 0.1).toFixed(2) + 's' };
+      }),
+
+      next: () => this.setState(s => ({ step: Math.min(3, s.step + 1) })),
+      back: () => this.setState(s => ({ step: Math.max(0, s.step - 1) })),
+      openBooster: () => { try { localStorage.setItem('thepark_onboarded', '1'); } catch (e) {} this.setState({ opened: true }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

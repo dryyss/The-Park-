@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; padding: 0; background: #121215; }
+* { box-sizing: border-box; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes growBar { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes pop { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #121215; }
+::-webkit-scrollbar-thumb { background: #2E2E35; border-radius: 6px; }
+::selection { background: #D81B60; color: #fff; }
+</style>
+</helmet>
+<div data-screen-label="Dashboard vendeur" style="min-height: 100vh; background: #131316; color: #F2EFE9; font-family: 'Hanken Grotesk', sans-serif; overflow-x: hidden;">
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 28px; height: 66px; padding: 0 28px; background: rgba(19,19,22,0.86); backdrop-filter: blur(14px); border-bottom: 1px solid #2B2B31;">
+    <a href="The Park - Accueil.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <div style="width: 42px; height: 42px; border-radius: 9px; background: #F2EFE9; transform: rotate(-4deg); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0;">
+        <img src="uploads/pasted-1781200672492-0.png" alt="The Park" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);">
+      </div>
+      <div style="display: flex; flex-direction: column; line-height: 1;">
+        <div style="font-family: 'Anton', sans-serif; font-size: 19px; letter-spacing: 1.5px; color: #F2EFE9;">THE PARK</div>
+        <div style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: 3px; color: #D81B60; margin-top: 3px;">駐車場 · DRIFT/JDM</div>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center;">
+      <a href="The Park - Accueil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ACCUEIL</a>
+      <a href="The Park - Ma Collection.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">COLLECTION</a>
+      <a href="The Park - Marketplace.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">MARKETPLACE</a>
+      <a href="The Park - Échanges.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">ÉCHANGES</a>
+      <a href="The Park - Classements.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">CLASSEMENTS</a>
+      <a href="The Park - Profil.dc.html" style="font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.4px; padding: 8px 12px; color: #8E8E98; border-radius: 7px; text-decoration: none; transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;" style-hover="color: #F2EFE9; background: #202024; transform: translateY(-1.5px);">PROFIL</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="The Park - Recherche.dc.html" title="Recherche" style="width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></a>
+      <a href="The Park - Notifications.dc.html" title="Notifications" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a>
+      <a href="The Park - Messages.dc.html" title="Messages" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span style="position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: #D81B60; border: 2px solid #131316;"></span></a><a href="The Park - Panier.dc.html" title="Panier" style="position: relative; width: 35px; height: 35px; border-radius: 9px; background: #1A1A1E; border: 1px solid #2B2B31; display: flex; align-items: center; justify-content: center; color: #C9C6BE; text-decoration: none; transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-1.5px);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg><span style="position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #D81B60; color: #fff; font-weight: 800; font-size: 9.5px; display: flex; align-items: center; justify-content: center; border: 2px solid #131316; box-sizing: border-box;">3</span></a><a href="The Park - Vendre.dc.html" style="display: flex; align-items: center; gap: 5px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 8px 13px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.4); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(0,0,0,0.4);"><span style="font-size: 16px; line-height: 1;">+</span>VENDRE</a><a href="The Park - Magasin.dc.html" title="Mon portefeuille" style="display: flex; align-items: center; gap: 10px; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 999px; padding: 6px 7px 6px 16px; text-decoration: none; color: #F2EFE9; transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;" style-hover="border-color: #D81B60; transform: translateY(-1.5px); box-shadow: 0 6px 14px rgba(216,27,96,0.25);">
+        <span style="font-weight: 800; font-size: 13.5px; letter-spacing: 0.5px;">{{ walletLabel }}</span>
+        <span style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #D81B60; color: #fff; font-weight: 800; font-size: 15px; line-height: 1;">+</span>
+      </a>
+      <a href="The Park - Profil.dc.html" title="KENJI-13 · Profil" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #D81B60, #7A0F37); display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: 1px; color: #fff; border: 2px solid #2B2B31; text-decoration: none; transition: border-color 0.18s ease, transform 0.2s ease;" style-hover="border-color: #D81B60; transform: scale(1.08) rotate(-4deg);">K</a>
+    </div>
+  </div>
+
+  <div style="max-width: 1320px; margin: 0 auto; padding: 32px 28px 60px;">
+
+    <!-- header -->
+    <div style="position: relative; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 18px; animation: fadeUp 0.5s ease both;">
+      <div style="position: absolute; top: -28px; right: 0; font-family: 'Noto Sans JP', sans-serif; font-weight: 900; font-size: 130px; line-height: 1; color: rgba(242,239,233,0.035); pointer-events: none; user-select: none;">管理</div>
+      <div>
+        <div style="font-weight: 700; font-size: 12px; letter-spacing: 4px; color: #D81B60; text-transform: uppercase; margin-bottom: 10px;">Espace vendeur · KENJI-13</div>
+        <h1 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(40px, 5vw, 64px); line-height: 0.95; letter-spacing: 1px; text-transform: uppercase; transform: skewX(-4deg); text-shadow: 4px 4px 0 #D81B60;">Tableau de bord</h1>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <sc-for list="{{ ranges }}" as="r" hint-placeholder-count="3">
+          <div onClick="{{ setRange }}" data-k="{{ r.k }}" style="font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1px; padding: 10px 16px; border-radius: 8px; cursor: pointer; background: {{ r.bg }}; color: {{ r.color }}; border: 1px solid {{ r.border }}; transition: background 0.16s ease, color 0.16s ease;">{{ r.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 24px; animation: fadeUp 0.5s 0.06s ease both;">
+      <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+        <div style="position: relative; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 16px; padding: 20px 22px; overflow: hidden;">
+          <div style="position: absolute; inset: 0; background: radial-gradient(circle at 90% 0%, {{ k.glow }}, transparent 60%); pointer-events: none;"></div>
+          <div style="position: relative; font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase;">{{ k.label }}</div>
+          <div style="position: relative; font-family: 'Anton', sans-serif; font-size: 34px; line-height: 1; color: #F2EFE9; margin-top: 8px;">{{ k.value }}</div>
+          <div style="position: relative; font-weight: 700; font-size: 11.5px; color: {{ k.trendColor }}; margin-top: 6px;">{{ k.trend }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- chart + portefeuille -->
+    <div style="display: grid; grid-template-columns: 1fr 320px; gap: 18px; margin-top: 18px; align-items: stretch;">
+      <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 22px 24px; animation: fadeUp 0.5s 0.1s ease both;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+          <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 19px; letter-spacing: 1.5px; text-transform: uppercase; transform: skewX(-3deg);">Revenus des ventes</h2>
+          <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 11px; color: #5A5A64; letter-spacing: 2px;">売上</span>
+          <div style="flex: 1;"></div>
+          <span style="font-family: 'Anton', sans-serif; font-size: 22px; color: #D81B60;">{{ chartTotal }}</span>
+        </div>
+        <div style="display: flex; align-items: flex-end; gap: 10px; height: 200px;">
+          <sc-for list="{{ bars }}" as="b" hint-placeholder-count="7">
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; justify-content: flex-end;">
+              <div style="font-weight: 800; font-size: 10.5px; color: #C9C6BE;">{{ b.amt }}</div>
+              <div title="{{ b.amt }}" style="width: 100%; max-width: 42px; height: {{ b.h }}; border-radius: 8px 8px 3px 3px; background: {{ b.fill }}; transform-origin: bottom; animation: growBar 0.7s {{ b.delay }} cubic-bezier(0.2,0.7,0.2,1) both; transition: filter 0.15s ease;" style-hover="filter: brightness(1.2);"></div>
+              <div style="font-weight: 700; font-size: 10.5px; color: #6E6E78;">{{ b.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; animation: fadeUp 0.5s 0.14s ease both;">
+        <div style="position: relative; background: linear-gradient(150deg, #1F141A, #1A1A1E); border: 1px solid #2B2B31; border-radius: 18px; padding: 22px; overflow: hidden;">
+          <div style="position: absolute; inset: 0; background: radial-gradient(circle at 12% 0%, rgba(216,27,96,0.22), transparent 60%); pointer-events: none;"></div>
+          <div style="position: relative; font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase;">Portefeuille The Park</div>
+          <div style="position: relative; font-family: 'Anton', sans-serif; font-size: 38px; line-height: 1; color: #F2EFE9; margin-top: 8px;">{{ walletLabel }}</div>
+          <div style="position: relative; font-weight: 700; font-size: 11.5px; color: #5ED99A; margin-top: 5px;">▲ +{{ pendingLabel }} en attente de versement</div>
+          <a href="The Park - Magasin.dc.html" style="position: relative; display: block; text-align: center; margin-top: 16px; font-family: 'Anton', sans-serif; font-size: 12.5px; letter-spacing: 1.5px; padding: 12px; background: #D81B60; color: #fff; border-radius: 10px; text-decoration: none; transform: skewX(-3deg); box-shadow: 3px 3px 0 rgba(0,0,0,0.45); transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translate(-2px,-2px); box-shadow: 5px 5px 0 rgba(0,0,0,0.45);">GÉRER MON SOLDE</a>
+        </div>
+        <div style="flex: 1; background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 20px 22px;">
+          <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6E6E78; text-transform: uppercase; margin-bottom: 12px;">Note vendeur</div>
+          <div style="display: flex; align-items: baseline; gap: 10px;">
+            <div style="font-family: 'Anton', sans-serif; font-size: 40px; line-height: 1; color: #E8B23A;">4,9</div>
+            <div style="font-weight: 700; font-size: 12px; color: #8E8E98;">★★★★★<br>231 avis</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 7px; margin-top: 14px;">
+            <sc-for list="{{ stars }}" as="s" hint-placeholder-count="5">
+              <div style="display: flex; align-items: center; gap: 9px;">
+                <span style="font-weight: 700; font-size: 11px; color: #8E8E98; width: 14px;">{{ s.n }}</span>
+                <span style="font-size: 11px; color: #E8B23A;">★</span>
+                <div style="flex: 1; height: 5px; border-radius: 3px; background: #26262B; overflow: hidden;"><div style="height: 100%; width: {{ s.w }}; background: #E8B23A; border-radius: 3px;"></div></div>
+                <span style="font-weight: 700; font-size: 10.5px; color: #6E6E78; width: 30px; text-align: right;">{{ s.pct }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- commandes + annonces actives -->
+    <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 18px; margin-top: 18px; align-items: start;">
+
+      <!-- commandes -->
+      <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 22px 24px; animation: fadeUp 0.5s 0.16s ease both;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 19px; letter-spacing: 1.5px; text-transform: uppercase; transform: skewX(-3deg);">Commandes</h2>
+          <span style="font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 11px; color: #5A5A64; letter-spacing: 2px;">注文</span>
+          <div style="flex: 1;"></div>
+          <div style="display: flex; gap: 4px; background: #131316; border: 1px solid #2B2B31; border-radius: 9px; padding: 3px;">
+            <sc-for list="{{ orderTabs }}" as="t" hint-placeholder-count="3">
+              <div onClick="{{ setOrderTab }}" data-k="{{ t.k }}" style="font-weight: 800; font-size: 11px; padding: 6px 12px; border-radius: 7px; cursor: pointer; background: {{ t.bg }}; color: {{ t.color }}; transition: background 0.15s ease, color 0.15s ease; white-space: nowrap;">{{ t.label }} {{ t.count }}</div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 9px;">
+          <sc-for list="{{ orders }}" as="o" hint-placeholder-count="4">
+            <div style="display: flex; align-items: center; gap: 13px; background: #202024; border: 1px solid #26262B; border-radius: 12px; padding: 11px 13px; animation: pop 0.3s ease both;">
+              <img src="{{ o.src }}" alt="{{ o.name }}" style="width: 38px; height: 53px; object-fit: cover; border-radius: 7px; display: block; flex-shrink: 0;">
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 800; font-size: 12.5px; color: #F2EFE9; line-height: 1.3;">{{ o.name }}</div>
+                <div style="font-weight: 700; font-size: 11px; color: #8E8E98; margin-top: 2px;">{{ o.buyer }} · {{ o.when }}</div>
+              </div>
+              <div style="font-family: 'Anton', sans-serif; font-size: 16px; color: #F2EFE9; white-space: nowrap;">{{ o.price }}</div>
+              <span style="font-weight: 800; font-size: 10px; letter-spacing: 0.5px; padding: 5px 10px; border-radius: 6px; background: {{ o.stBg }}; color: {{ o.stColor }}; text-transform: uppercase; white-space: nowrap;">{{ o.status }}</span>
+              <sc-if value="{{ o.canShip }}" hint-placeholder-val="{{ false }}">
+                <div onClick="{{ ship }}" data-id="{{ o.id }}" style="font-family: 'Anton', sans-serif; font-size: 10px; letter-spacing: 0.5px; padding: 8px 12px; background: #D81B60; color: #fff; border-radius: 7px; cursor: pointer; transform: skewX(-3deg); white-space: nowrap; transition: background 0.15s ease, transform 0.15s ease;" style-hover="background: #F0246F; transform: skewX(-3deg) translateY(-2px);">EXPÉDIER</div>
+              </sc-if>
+            </div>
+          </sc-for>
+          <sc-if value="{{ ordersEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 26px; text-align: center; color: #5A5A64; font-weight: 700; font-size: 13px;">Aucune commande dans cette catégorie.</div>
+          </sc-if>
+        </div>
+      </div>
+
+      <!-- annonces actives -->
+      <div style="background: #1A1A1E; border: 1px solid #2B2B31; border-radius: 18px; padding: 22px 24px; animation: fadeUp 0.5s 0.2s ease both;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <h2 style="margin: 0; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 19px; letter-spacing: 1.5px; text-transform: uppercase; transform: skewX(-3deg);">Mes annonces</h2>
+          <span style="font-weight: 800; font-size: 12px; padding: 4px 11px; border-radius: 999px; background: #131316; border: 1px solid #2B2B31; color: #D81B60;">{{ activeCount }}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 9px;">
+          <sc-for list="{{ active }}" as="a" hint-placeholder-count="4">
+            <div style="display: flex; align-items: center; gap: 12px; background: #202024; border: 1px solid #26262B; border-radius: 12px; padding: 10px 12px;">
+              <img src="{{ a.src }}" alt="{{ a.name }}" style="width: 32px; height: 45px; object-fit: cover; border-radius: 6px; display: block; flex-shrink: 0;">
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 800; font-size: 11.5px; color: #F2EFE9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ a.name }}</div>
+                <div style="font-weight: 700; font-size: 10px; color: #8E8E98; margin-top: 2px;">{{ a.version }} · {{ a.views }} vues</div>
+              </div>
+              <div style="font-family: 'Anton', sans-serif; font-size: 14px; color: #F2EFE9; white-space: nowrap;">{{ a.price }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <a href="The Park - Magasin.dc.html" style="display: block; text-align: center; margin-top: 14px; font-family: 'Anton', sans-serif; font-size: 12px; letter-spacing: 1.5px; padding: 12px; background: transparent; color: #C9C6BE; border: 1.5px dashed #3A3A42; border-radius: 10px; text-decoration: none; cursor: pointer; transition: border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;" style-hover="border-color: #D81B60; color: #fff; transform: translateY(-2px);">+ METTRE UNE CARTE EN VENTE</a>
+      </div>
+    </div>
+
+    <dc-import name="The Park - Footer" hint-size="100%,320px" style="display: block; width: 100%;"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { range: '30j', orderTab: 'todo', shipped: {} };
+
+  constructor(props) {
+    super(props);
+    this.DATA = {
+      '7j':  { kpis: ['142,40 €', '6', '312', '4,9'], total: '142,40 €', pending: '38,90 €', bars: [12, 28, 9, 45, 18, 22, 8] },
+      '30j': { kpis: ['486,40 €', '23', '1 284', '4,9'], total: '486,40 €', pending: '64,50 €', bars: [62, 88, 47, 120, 75, 96, 110] },
+      '90j': { kpis: ['1 312,80 €', '61', '3 940', '4,8'], total: '1 312,80 €', pending: '120,00 €', bars: [180, 240, 195, 320, 260, 290, 410] }
+    };
+    this.BARLABELS = { '7j': ['L', 'M', 'M', 'J', 'V', 'S', 'D'], '30j': ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7'], '90j': ['Mar', 'Avr', 'Mai', 'Jun', 'Jui', 'Aou', 'Sep'] };
+    // commandes : id, carte, img, acheteur, when, prix, état(todo/shipped/done)
+    this.ORDERS = [
+      { id: 1, name: 'TOYOTA AE86 TRUENO', img: '76_TOYOTA_COROLLA_TRUENO.jpg', buyer: 'DRIFT_KING_06', when: 'il y a 2 h', price: '149,00 €', st: 'todo' },
+      { id: 2, name: 'NISSAN S13 KOUKI', img: '35_NISSAN_S13_KOUKI.jpg', buyer: 'SARA.S15', when: 'il y a 5 h', price: '14,50 €', st: 'todo' },
+      { id: 3, name: 'MAZDA RX7 FD', img: '38_MAZDA_RXY_FD.jpg', buyer: 'HACHI_ROKU', when: 'hier', price: '12,90 €', st: 'shipped' },
+      { id: 4, name: 'BMW E30 325I', img: '13-BMW_E30_325i.jpg', buyer: 'TOUGE_HUNTER', when: 'il y a 3 j', price: '4,50 €', st: 'done' },
+      { id: 5, name: 'NISSAN SKYLINE R32', img: '32_NISSAN_SKYLINE_R32.jpg', buyer: 'MIDNIGHT_PURPLE', when: 'il y a 4 j', price: '7,90 €', st: 'done' },
+      { id: 6, name: 'NISSAN S12', img: '51_NISSAN_SILVIA_S12.jpg', buyer: 'SARA.S15', when: 'il y a 6 j', price: '18,00 €', st: 'done' }
+    ];
+    this.ACTIVE = [
+      { name: 'NISSAN S13 DU CRÉATEUR', img: '68_NISSAN_S13_LIGHTON.jpg', version: 'Standard', views: 88, price: '65,00 €' },
+      { name: 'PORSCHE 911 RWB', img: '64_PORSCHE_911_RWB.jpg', version: 'Reverse', views: 54, price: '39,90 €' },
+      { name: 'SUPRA MK4 SECRÈTE', img: '59_TOYOTA_SUPRA_MK4_SECRET.jpg', version: 'Standard', views: 41, price: '54,00 €' },
+      { name: 'TOYOTA SOARER', img: '39_TOYOTA_SOARER_NEW.jpg', version: 'Standard', views: 23, price: '11,00 €' }
+    ];
+    this.STARS = [[5, 84], [4, 11], [3, 3], [2, 1], [1, 1]];
+  }
+
+  statusInfo(st) {
+    if (st === 'todo') return { label: 'À expédier', bg: 'rgba(216,27,96,0.14)', color: '#FF2E63' };
+    if (st === 'shipped') return { label: 'Expédiée', bg: 'rgba(79,163,255,0.12)', color: '#4FA3FF' };
+    return { label: 'Livrée', bg: 'rgba(94,217,154,0.12)', color: '#5ED99A' };
+  }
+
+  effSt(o) { return this.state.shipped[o.id] ? 'shipped' : o.st; }
+
+  renderVals() {
+    const { range, orderTab } = this.state;
+    const d = this.DATA[range];
+    const labels = this.BARLABELS[range];
+    const maxBar = Math.max.apply(null, d.bars);
+    const KCOL = ['rgba(216,27,96,0.18)', 'rgba(79,163,255,0.16)', 'rgba(176,92,255,0.16)', 'rgba(232,178,58,0.16)'];
+    const kpis = [
+      { label: 'Revenus', value: d.kpis[0], trend: '▲ +12,4 % vs période préc.', trendColor: '#5ED99A', glow: KCOL[0] },
+      { label: 'Ventes', value: d.kpis[1], trend: '▲ +3 commandes', trendColor: '#5ED99A', glow: KCOL[1] },
+      { label: 'Vues boutique', value: d.kpis[2], trend: '▲ +18 % de trafic', trendColor: '#5ED99A', glow: KCOL[2] },
+      { label: 'Note moyenne', value: d.kpis[3], trend: '= stable', trendColor: '#8E8E98', glow: KCOL[3] }
+    ];
+    const bars = d.bars.map((v, i) => ({
+      amt: v + ' €', label: labels[i],
+      h: Math.round(v / maxBar * 100) + '%',
+      fill: i === d.bars.length - 1 ? 'linear-gradient(180deg, #FF2E63, #D81B60)' : 'linear-gradient(180deg, #3A3A42, #2B2B31)',
+      delay: (i * 0.06).toFixed(2) + 's'
+    }));
+
+    const ranges = [['7j', '7 J'], ['30j', '30 J'], ['90j', '90 J']].map(([k, label]) => ({
+      k, label, bg: range === k ? '#D81B60' : '#1A1A1E', color: range === k ? '#fff' : '#8E8E98', border: range === k ? '#D81B60' : '#2B2B31'
+    }));
+
+    const counts = { todo: 0, shipped: 0, done: 0 };
+    this.ORDERS.forEach(o => { counts[this.effSt(o)]++; });
+    const orderTabs = [
+      { k: 'todo', label: 'À expédier', count: counts.todo },
+      { k: 'shipped', label: 'Expédiées', count: counts.shipped },
+      { k: 'done', label: 'Livrées', count: counts.done }
+    ].map(t => ({ ...t, count: '· ' + t.count, bg: orderTab === t.k ? '#D81B60' : 'transparent', color: orderTab === t.k ? '#fff' : '#8E8E98' }));
+
+    const orders = this.ORDERS.filter(o => this.effSt(o) === orderTab).map(o => {
+      const st = this.effSt(o);
+      const si = this.statusInfo(st);
+      return {
+        id: o.id, name: o.name, src: 'uploads/' + o.img, buyer: o.buyer, when: o.when, price: o.price,
+        status: si.label, stBg: si.bg, stColor: si.color, canShip: st === 'todo'
+      };
+    });
+
+    const active = this.ACTIVE.map(a => ({ ...a, src: 'uploads/' + a.img }));
+    const stars = this.STARS.map(([n, pct]) => ({ n, pct: pct + '%', w: pct + '%' }));
+
+    return {
+      walletLabel: (v => (isNaN(v) ? 128.5 : v).toFixed(2).replace('.', ',') + ' €')(parseFloat(localStorage.getItem('thepark_wallet'))),
+      ranges, kpis, bars, chartTotal: d.total, pendingLabel: d.pending,
+      orderTabs, orders, ordersEmpty: orders.length === 0,
+      active, activeCount: active.length + ' actives', stars,
+      setRange: (e) => this.setState({ range: e.currentTarget.dataset.k }),
+      setOrderTab: (e) => this.setState({ orderTab: e.currentTarget.dataset.k }),
+      ship: (e) => { const s = { ...this.state.shipped }; s[+e.currentTarget.dataset.id] = true; this.setState({ shipped: s, orderTab: 'shipped' }); }
+    };
+  }
+}
+</script>
+</body>
+</html>
