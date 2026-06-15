@@ -61,7 +61,7 @@ Légende : ☐ à faire · 🔄 en cours · ✅ fait · 🔴 bloquant juridique/
 - ☐ **TP-403** Panier officiel (séparé marketplace) + livraison offerte au seuil.
 - ☐ **TP-404** Checkout 4 étapes : Coordonnées → Livraison (transporteurs) → **Paiement Stripe** → Confirmation (n° commande, e-mail Resend).
 - ☐ **TP-405** Suivi de commande (timeline + tracking) + back-office créateur (produits/commandes/stock/ventes).
-- 🔴 **TP-406** Conformité VAD : CGV boutique, droit de rétractation, mentions — *client/juriste*.
+- 🔴 **TP-406** Conformité VAD : CGV boutique, droit de rétractation, mentions — _client/juriste_.
 
 ---
 
@@ -84,6 +84,7 @@ Légende : ☐ à faire · 🔄 en cours · ✅ fait · 🔴 bloquant juridique/
 > **Stratégie : livrer P0 (preuves vidéo, sans argent) d'abord** — n'enclenche pas le régime PSP.
 
 ### P0 — Preuves & machine à états (sans flux financier)
+
 - ☐ **TP-601** Capture **vidéo guidée in-app** (étapes 1–5), continuité, hash SHA-256, horodatage serveur, **jeton du jour**.
 - ☐ **TP-602** **Machine à états** transaction (timeouts non-expédition J+3, fenêtre 72 h, double-réception échange).
 - ☐ **TP-603** Intégration **agrégateur transporteurs** (suivi auto, statut « livré » déclencheur).
@@ -91,12 +92,14 @@ Légende : ☐ à faire · 🔄 en cours · ✅ fait · 🔴 bloquant juridique/
 - ☐ **TP-605** Dossier de litige auto + écran d'arbitrage modération (grille de décision).
 
 ### P1 — 🔴 Couche financière (déclenche avenant juridique)
+
 - 🔴 **TP-611** **Stripe Connect** + KYC membres + préautorisation **caution 100 % valeur** (`capture_method: manual`).
 - 🔴 **TP-612** Logique **ré-autorisation J+5**, `GARANTIE_SUSPENDUE` si refus, capture/annulation selon arbitrage.
 - 🔴 **TP-613** Choix **acheteur** (envoi sécurisé oui/non) + **choix croisé** sur l'échange + tarification des frais.
 - 🔴 **TP-614** Webhooks Stripe (capturable, canceled, refunded, dispute/chargeback) idempotents + signature vérifiée.
 
 ### P2 — Renforts
+
 - ☐ **TP-621** Analyse continuité/hash, détection collusion (graphe IP/appareil/carte).
 - ☐ **TP-622** Score de fiabilité d'expédition + badges + paliers de preuves.
 - ☐ **TP-623** Voie d'appel litige (second niveau).

@@ -16,17 +16,17 @@ Un suivi de collection riche (multi-versions, raretés, états), une marketplace
 
 ## 🧱 Stack technique
 
-| Domaine | Technologie |
-|---|---|
-| Front-end | **Next.js 15** (App Router), **React 19**, **TypeScript** |
-| Back-end / données | **Prisma** + **PostgreSQL** (modèle multi-versions & marketplace) |
-| Authentification | **Auth0** (comptes, âge, consentement parental) |
-| CMS / contenu | **Payload CMS v3** (catalogue, saisons, versions) |
-| Temps réel (chat) | **WebSocket / Pusher** (messagerie contextualisée à l'échange) |
-| Visualisations | **Recharts** (statistiques, progression) |
-| E-mails | **Resend** (validation, consentement, notifications) |
-| Paiement (boutique) | **Stripe** (+ Stripe Connect pour la couche sécurité C2C) |
-| Hébergement | **Vercel** ou **Clever Cloud** (UE) |
+| Domaine             | Technologie                                                       |
+| ------------------- | ----------------------------------------------------------------- |
+| Front-end           | **Next.js 15** (App Router), **React 19**, **TypeScript**         |
+| Back-end / données  | **Prisma** + **PostgreSQL** (modèle multi-versions & marketplace) |
+| Authentification    | **Auth0** (comptes, âge, consentement parental)                   |
+| CMS / contenu       | **Payload CMS v3** (catalogue, saisons, versions)                 |
+| Temps réel (chat)   | **WebSocket / Pusher** (messagerie contextualisée à l'échange)    |
+| Visualisations      | **Recharts** (statistiques, progression)                          |
+| E-mails             | **Resend** (validation, consentement, notifications)              |
+| Paiement (boutique) | **Stripe** (+ Stripe Connect pour la couche sécurité C2C)         |
+| Hébergement         | **Vercel** ou **Clever Cloud** (UE)                               |
 
 **Exigences transverses** : responsive (mobile-first), accessibilité de base, chargement progressif + virtualisation des grandes grilles de cartes, sécurité applicative (rate-limiting, journalisation).
 
@@ -35,6 +35,7 @@ Un suivi de collection riche (multi-versions, raretés, états), une marketplace
 ## 📦 Périmètre fonctionnel
 
 ### Socle V1 enrichie (10 modules)
+
 1. **Comptes & profils** — Auth0, profil collectionneur, visibilité, contrôle d'âge & consentement parental < 15 ans, RGPD.
 2. **Catalogue & fiches cartes** — navigation par saison/rareté, fiche détaillée (visuel HD, zoom, attributs), recherche.
 3. **Ma collection (multi-versions)** — possédé/manquant par carte ET par version, quantités, états (Neuve → Abîmée), complétion.
@@ -47,27 +48,30 @@ Un suivi de collection riche (multi-versions, raretés, états), une marketplace
 10. **Administration & modération renforcée** — gestion users, file priorisant les signalements mineurs, modération magasins/avis, journaux.
 
 ### Options ajoutées
+
 - **Traduction multilingue** FR / 日本語 / EN (interface).
 - **Boutique officielle créateur** — vente directe de produits physiques (displays, boosters, goodies) avec **paiement Stripe**, panier, commandes, stock, suivi livraison. Distincte de la marketplace entre membres.
 
-### Brique sécurité C2C (échanges postaux) — *avenant, voir roadmap*
+### Brique sécurité C2C (échanges postaux) — _avenant, voir roadmap_
+
 Préautorisation (caution 100 % valeur) + **chaîne de preuves vidéo horodatées** (emballage → dépôt → suivi → unboxing) + machine à états + arbitrage litige. Voir `docs/Plan-Securite-Echanges.md`.
 
 ### Back-office admin
+
 Console d'administration : **rôle Owner** + sous-rôles (Modérateur, Gestionnaire catalogue, Créateur/Boutique, Support) avec matrice de permissions. 15 modules (dashboard, users, modération, catalogue, import, boutique, gamification, langues, admins, rôles, conformité, réglages…).
 
 ---
 
 ## 🗂️ Structure de la collection (Saison 01 « Moteur Forgé »)
 
-| Rareté | Symbole | Numérotation | Cartes |
-|---|---|---|---|
-| Communes | ◆ | 01–30 | 30 |
-| Rares (holo) | ◈ | 31–50 | 20 |
-| Ultra Rares (holo) | ✦ | 51–67 | 17 |
-| Légendaires (holo & texture) | ❀ | 68–74 | 7 |
-| Gold | ✸ | 75–76 | 2 |
-| Carte unique | ✦✦ | 01/01 | 1 |
+| Rareté                       | Symbole | Numérotation | Cartes |
+| ---------------------------- | ------- | ------------ | ------ |
+| Communes                     | ◆       | 01–30        | 30     |
+| Rares (holo)                 | ◈       | 31–50        | 20     |
+| Ultra Rares (holo)           | ✦       | 51–67        | 17     |
+| Légendaires (holo & texture) | ❀       | 68–74        | 7      |
+| Gold                         | ✸       | 75–76        | 2      |
+| Carte unique                 | ✦✦      | 01/01        | 1      |
 
 **Versions** : Standard · Reverse · Édition spéciale/première édition · Alternatives (illustrations alt., promos, collaborations, signées). Structure extensible (ajout saisons/raretés/versions sans rupture).
 
@@ -139,4 +143,4 @@ the-park/
 
 ---
 
-*Magar Développement · auto-entrepreneur · SIRET 908 058 092 00028 · TVA non applicable art. 293 B CGI*
+_Magar Développement · auto-entrepreneur · SIRET 908 058 092 00028 · TVA non applicable art. 293 B CGI_

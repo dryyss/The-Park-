@@ -105,11 +105,27 @@ async function main() {
 
   console.log("→ Badges (CDC Module 9)");
   const badges = [
-    { code: "first_card", label: "Première carte", description: "Ajouter sa première carte à la collection" },
-    { code: "first_holo", label: "Première holo", description: "Posséder sa première carte holographique" },
+    {
+      code: "first_card",
+      label: "Première carte",
+      description: "Ajouter sa première carte à la collection",
+    },
+    {
+      code: "first_holo",
+      label: "Première holo",
+      description: "Posséder sa première carte holographique",
+    },
     { code: "set_gold", label: "Set Gold", description: "Compléter le palier Gold" },
-    { code: "unique_owner", label: "Carte unique", description: "Détenir la carte unique de la saison" },
-    { code: "first_trade", label: "Premier échange", description: "Réaliser son premier échange/vente" },
+    {
+      code: "unique_owner",
+      label: "Carte unique",
+      description: "Détenir la carte unique de la saison",
+    },
+    {
+      code: "first_trade",
+      label: "Premier échange",
+      description: "Réaliser son premier échange/vente",
+    },
     { code: "full_season", label: "Saison complète", description: "Compléter une saison à 100 %" },
   ];
   for (const b of badges) {

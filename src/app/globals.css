@@ -1,26 +1,51 @@
 @import "tailwindcss";
 
+/*
+  Design system — The Park (univers JDM / "garage de nuit").
+  Tokens de référence : .cursorrules. Carmin = action, Or = officiel,
+  néon = statuts uniquement. Thème sombre par défaut.
+*/
+@theme {
+  /* Signature */
+  --color-carmin: #d6004f;
+  --color-carmin-alt: #d81b60;
+  --color-rouge-fonce: #900030;
+
+  /* Neutres */
+  --color-charbon: #1e2424;
+  --color-charbon-700: #2a3232;
+  --color-charbon-500: #3a4444;
+  --color-blanc-casse: #fbf4f6;
+
+  /* Officiel (boutique / rareté Gold) — usage exclusif */
+  --color-or: #e8b23a;
+
+  /* Statuts (néon) — badges uniquement, jamais en décor */
+  --color-statut-succes: #2fd17a;
+  --color-statut-alerte: #ff9f43;
+  --color-statut-danger: #ff3b5c;
+
+  /* Polices */
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-jp: var(--font-jp);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: var(--color-charbon);
+  --foreground: var(--color-blanc-casse);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Titres : lettrage condensé/bold */
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
 }

@@ -1,0 +1,8 @@
+node_modules
+.next
+out
+build
+pnpm-lock.yaml
+src/generated
+_reference
+prisma/migrations

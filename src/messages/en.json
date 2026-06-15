@@ -1,0 +1,10 @@
+{
+  "common": {
+    "start": "Get started",
+    "browseCatalog": "Browse the catalog"
+  },
+  "home": {
+    "tagline": "Trading Card Game · Drift / JDM",
+    "intro": "Collection, trading and community marketplace platform."
+  }
+}
