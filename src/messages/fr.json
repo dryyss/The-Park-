@@ -194,7 +194,8 @@
     "linkCollection": "Collection",
     "linkExchanges": "Échanges",
     "linkSell": "Vendre",
-    "linkPublic": "Profil public"
+    "linkPublic": "Profil public",
+    "linkStaffDashboard": "Console admin"
   },
   "exchanges": {
     "kicker": "Double validation · chat lié à chaque échange",

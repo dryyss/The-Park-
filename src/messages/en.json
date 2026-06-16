@@ -194,7 +194,8 @@
     "linkCollection": "Collection",
     "linkExchanges": "Trades",
     "linkSell": "Sell",
-    "linkPublic": "Public profile"
+    "linkPublic": "Public profile",
+    "linkStaffDashboard": "Admin console"
   },
   "exchanges": {
     "kicker": "Double validation · chat tied to each trade",

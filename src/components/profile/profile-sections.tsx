@@ -6,8 +6,13 @@ import type { ViewerProfile } from "@/server/profile/profile.service";
 
 export async function ProfileHeader({ profile }: { profile: ViewerProfile }) {
   const t = await getTranslations("profile");
+  const tStaff = profile.staffRole ? await getTranslations("admin.roles.staffRoles") : null;
 
   const memberSince = new Intl.DateTimeFormat("fr-FR", { month: "2-digit", year: "numeric" }).format(profile.memberSince);
+  const badgeLabel = profile.staffRole && tStaff ? tStaff(profile.staffRole).toUpperCase() : t("badgeCollector");
+  const badgeClass = profile.staffRole
+    ? "border-[rgba(232,178,58,0.45)] bg-[rgba(232,178,58,0.12)] text-or"
+    : "border-[rgba(79,163,255,0.4)] bg-[rgba(79,163,255,0.1)] text-[#4FA3FF]";
 
   return (
     <div className="relative flex flex-wrap items-center gap-6 overflow-hidden rounded-[20px] border border-charbon-500 bg-charbon-800 p-7">
@@ -23,8 +28,8 @@ export async function ProfileHeader({ profile }: { profile: ViewerProfile }) {
           <h1 className="font-display text-[38px] leading-none -skew-x-3 uppercase text-blanc-casse [text-shadow:3px_3px_0_var(--color-carmin)]">
             {profile.displayName}
           </h1>
-          <span className="rounded-full border border-[rgba(79,163,255,0.4)] bg-[rgba(79,163,255,0.1)] px-3 py-1 text-[11px] font-extrabold tracking-wide text-[#4FA3FF]">
-            {t("badgeCollector")}
+          <span className={`rounded-full border px-3 py-1 text-[11px] font-extrabold tracking-wide ${badgeClass}`}>
+            {badgeLabel}
           </span>
         </div>
         <div className="mt-2.5 flex flex-wrap gap-4 text-[12.5px] font-bold text-texte-dim">
@@ -175,14 +180,20 @@ export async function ProfileReviews({ profile }: { profile: ViewerProfile }) {
 export async function ProfileQuickLinks({ profile }: { profile: ViewerProfile }) {
   const t = await getTranslations("profile");
 
+  const links = [
+    { href: "/collection", label: t("linkCollection"), pct: formatPercent(profile.pct / 100) },
+    { href: "/echanges", label: t("linkExchanges"), pct: String(profile.exchangeCount) },
+    { href: "/vendre", label: t("linkSell"), pct: String(profile.listingCount) },
+    { href: `/collectionneur/${profile.slug}`, label: t("linkPublic"), pct: "→" },
+  ];
+
+  if (profile.staffDashboardHref) {
+    links.unshift({ href: profile.staffDashboardHref, label: t("linkStaffDashboard"), pct: "✔" });
+  }
+
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-      {[
-        { href: "/collection", label: t("linkCollection"), pct: formatPercent(profile.pct / 100) },
-        { href: "/echanges", label: t("linkExchanges"), pct: String(profile.exchangeCount) },
-        { href: "/vendre", label: t("linkSell"), pct: String(profile.listingCount) },
-        { href: `/collectionneur/${profile.slug}`, label: t("linkPublic"), pct: "→" },
-      ].map((l) => (
+      {links.map((l) => (
         <Link
           key={l.href}
           href={l.href}

@@ -31,14 +31,18 @@ export async function getAuthenticatedViewer() {
   if (!session?.user?.sub) return null;
 
   try {
-    const user = await syncAuth0User({
+    await syncAuth0User({
       sub: session.user.sub,
       email: session.user.email,
       name: session.user.name,
       picture: session.user.picture,
     });
-    await syncRolesFromAuth0(session.user.sub);
-    return user;
+    await syncRolesFromAuth0(session.user.sub, session.user as Record<string, unknown>);
+
+    return prisma.user.findUnique({
+      where: { auth0Id: session.user.sub },
+      select: viewerSelect,
+    });
   } catch (err) {
     console.error("[auth] syncAuth0User failed", err);
     return null;

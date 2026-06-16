@@ -194,7 +194,8 @@
     "linkCollection": "コレクション",
     "linkExchanges": "交換",
     "linkSell": "出品",
-    "linkPublic": "公開プロフィール"
+    "linkPublic": "公開プロフィール",
+    "linkStaffDashboard": "管理コンソール"
   },
   "exchanges": {
     "kicker": "二重確認 · 交換ごとのチャット",

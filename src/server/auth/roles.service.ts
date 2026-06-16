@@ -21,11 +21,21 @@ export interface StaffMemberRow {
   lastLoginAt: Date | null;
 }
 
-/** Synchronise role + staffRole Prisma depuis Auth0 (RBAC + app_metadata fallback). */
-export async function syncRolesFromAuth0(auth0Id: string): Promise<void> {
+/** Synchronise role + staffRole Prisma depuis Auth0 (RBAC + app_metadata + claims token). */
+export async function syncRolesFromAuth0(
+  auth0Id: string,
+  sessionUser?: Record<string, unknown>,
+): Promise<void> {
+  const NAMESPACE = "https://thepark.app";
   let roleNames: string[] = [];
   let metadataRole: AdminRole | null = null;
+  let claimRole: AdminRole | null = null;
   let mgmtOk = false;
+
+  const claim = sessionUser?.[`${NAMESPACE}/staff_role`];
+  if (typeof claim === "string") {
+    claimRole = claim as AdminRole;
+  }
 
   if (isAuth0ManagementConfigured()) {
     try {
@@ -46,16 +56,17 @@ export async function syncRolesFromAuth0(auth0Id: string): Promise<void> {
 
   const mapped = mapAuth0RoleNames(roleNames);
 
-  if (!mapped.staffRole && metadataRole) {
-    const def = AUTH0_ROLE_DEFINITIONS.find((d) => d.staffRole === metadataRole);
+  const fallbackRole = claimRole ?? metadataRole;
+  if (!mapped.staffRole && fallbackRole) {
+    const def = AUTH0_ROLE_DEFINITIONS.find((d) => d.staffRole === fallbackRole);
     if (def) {
-      mapped.staffRole = metadataRole;
+      mapped.staffRole = fallbackRole;
       mapped.userRole = def.userRole;
     }
   }
 
   // Sans source Auth0 fiable, ne pas écraser un staff déjà présent en DB (seed / admin).
-  const hasAuth0Roles = roleNames.length > 0 || metadataRole != null;
+  const hasAuth0Roles = roleNames.length > 0 || fallbackRole != null;
   if (!mgmtOk && !hasAuth0Roles) {
     return;
   }

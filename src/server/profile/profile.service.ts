@@ -2,6 +2,8 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/format";
 import { getUserCollection } from "@/server/collection/collection.service";
+import type { AdminRole } from "@/generated/prisma/client";
+import { getDefaultDashboardForStaffRole } from "@/server/auth/roles.definition";
 
 export interface ProfileBadge {
   code: string;
@@ -34,6 +36,8 @@ export interface ViewerProfile {
   exchangeCount: number;
   listingCount: number;
   memberSince: Date;
+  staffRole: AdminRole | null;
+  staffDashboardHref: string | null;
   rarityBars: { code: string; label: string; glyph: string; color: string; owned: number; total: number; pct: number }[];
   badges: ProfileBadge[];
   recentReviews: ProfileReview[];
@@ -59,6 +63,7 @@ export async function getViewerProfile(userId: string): Promise<ViewerProfile | 
       ratingAvg: true,
       reviewCount: true,
       createdAt: true,
+      staffRole: true,
       _count: {
         select: {
           exchangesInitiated: true,
@@ -113,6 +118,8 @@ export async function getViewerProfile(userId: string): Promise<ViewerProfile | 
     exchangeCount,
     listingCount: user._count.listings,
     memberSince: user.createdAt,
+    staffRole: user.staffRole,
+    staffDashboardHref: user.staffRole ? getDefaultDashboardForStaffRole(user.staffRole) : null,
     rarityBars: collection.rarityBars,
     badges,
     recentReviews: reviews.map((r) => ({
