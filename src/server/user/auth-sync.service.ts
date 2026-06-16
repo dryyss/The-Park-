@@ -47,7 +47,7 @@ export async function syncAuth0User(profile: Auth0Profile) {
 
   const byAuth0 = await prisma.user.findUnique({
     where: { auth0Id: profile.sub },
-    select: viewerSelect,
+    select: { ...viewerSelect, displayNameCustom: true },
   });
   if (byAuth0) {
     await prisma.user.update({
@@ -56,7 +56,7 @@ export async function syncAuth0User(profile: Auth0Profile) {
         lastLoginAt: now,
         ...(profile.picture ? { avatarUrl: profile.picture } : {}),
         ...(email ? { email } : {}),
-        ...(profile.name ? { displayName: profile.name } : {}),
+        ...(!byAuth0.displayNameCustom && profile.name ? { displayName: profile.name } : {}),
       },
     });
     return byAuth0;

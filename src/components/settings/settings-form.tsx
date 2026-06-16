@@ -1,13 +1,31 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useState, useTransition, type ReactNode } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { saveNotificationPrefsAction } from "@/server/user/settings.actions";
 import type { NotificationPrefs } from "@/server/user/settings.service";
 import { Link } from "@/i18n/navigation";
+import { ProfileIdentityForm } from "@/components/settings/profile-identity-form";
+import { AddressBook } from "@/components/settings/address-book";
+import type { UserAddress } from "@/server/user/address.service";
 
-export function SettingsForm({ initialPrefs }: { initialPrefs: NotificationPrefs }) {
+export function SettingsForm({
+  initialPrefs,
+  displayName,
+  bio,
+  slug,
+  addresses,
+  securitySection,
+}: {
+  initialPrefs: NotificationPrefs;
+  displayName: string;
+  bio: string;
+  slug: string;
+  addresses: UserAddress[];
+  securitySection: ReactNode;
+}) {
   const t = useTranslations("settings");
+  const locale = useLocale();
   const [prefs, setPrefs] = useState(initialPrefs);
   const [pending, startTransition] = useTransition();
   const [saved, setSaved] = useState(false);
@@ -34,8 +52,20 @@ export function SettingsForm({ initialPrefs }: { initialPrefs: NotificationPrefs
     persist(next);
   }
 
+  const locales = [
+    { code: "fr", label: "FR" },
+    { code: "en", label: "EN" },
+    { code: "ja", label: "日本語" },
+  ] as const;
+
   return (
     <div className="flex flex-col gap-6">
+      <ProfileIdentityForm initialDisplayName={displayName} initialBio={bio} initialSlug={slug} />
+
+      {securitySection}
+
+      <AddressBook addresses={addresses} />
+
       <section className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
         <h2 className="font-display text-[16px] tracking-wide text-blanc-casse uppercase">{t("notifications")}</h2>
         <div className="mt-4 flex flex-col gap-3">
@@ -62,15 +92,18 @@ export function SettingsForm({ initialPrefs }: { initialPrefs: NotificationPrefs
         <h2 className="font-display text-[16px] tracking-wide text-blanc-casse uppercase">{t("language")}</h2>
         <p className="mt-2 text-[13px] font-semibold text-texte-dim">{t("languageDesc")}</p>
         <div className="mt-4 flex flex-wrap gap-2">
-          <Link href="/fr/parametres" className="rounded-lg border border-carmin bg-carmin/10 px-4 py-2 text-[12px] font-extrabold text-carmin">
-            FR
-          </Link>
-          <Link href="/en/parametres" className="rounded-lg border border-charbon-500 px-4 py-2 text-[12px] font-extrabold text-texte-dim hover:border-carmin">
-            EN
-          </Link>
-          <Link href="/ja/parametres" className="rounded-lg border border-charbon-500 px-4 py-2 text-[12px] font-extrabold text-texte-dim hover:border-carmin">
-            日本語
-          </Link>
+          {locales.map((loc) => (
+            <Link
+              key={loc.code}
+              href="/parametres"
+              locale={loc.code}
+              className={`rounded-lg border px-4 py-2 text-[12px] font-extrabold ${
+                locale === loc.code ? "border-carmin bg-carmin/10 text-carmin" : "border-charbon-500 text-texte-dim hover:border-carmin"
+              }`}
+            >
+              {loc.label}
+            </Link>
+          ))}
         </div>
       </section>
 

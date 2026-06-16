@@ -37,6 +37,7 @@ export async function saveAddressAction(input: unknown): Promise<ProfileActionRe
     const addressId = await upsertUserAddress(viewer.id, parsed.data);
     revalidatePath("/profil");
     revalidatePath("/parametres");
+    revalidatePath("/vendre");
     return { ok: true, addressId };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -50,6 +51,8 @@ export async function deleteAddressAction(addressId: string): Promise<ProfileAct
   try {
     await deleteUserAddress(viewer.id, addressId);
     revalidatePath("/profil");
+    revalidatePath("/parametres");
+    revalidatePath("/vendre");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -66,6 +69,8 @@ export async function updateProfileAction(input: unknown): Promise<ProfileAction
   try {
     await updateUserProfile(viewer.id, parsed.data);
     revalidatePath("/profil");
+    revalidatePath("/parametres");
+    revalidatePath("/vendre");
     revalidatePath("/collectionneur/[slug]", "page");
     return { ok: true };
   } catch (err) {

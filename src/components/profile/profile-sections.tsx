@@ -181,6 +181,7 @@ export async function ProfileQuickLinks({ profile }: { profile: ViewerProfile })
   const t = await getTranslations("profile");
 
   const links = [
+    { href: "/parametres", label: t("linkSettings"), pct: "⚙" },
     { href: "/collection", label: t("linkCollection"), pct: formatPercent(profile.pct / 100) },
     { href: "/echanges", label: t("linkExchanges"), pct: String(profile.exchangeCount) },
     { href: "/vendre", label: t("linkSell"), pct: String(profile.listingCount) },

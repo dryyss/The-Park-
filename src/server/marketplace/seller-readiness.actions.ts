@@ -55,6 +55,7 @@ export async function setBirthDateAction(input: unknown): Promise<SellerActionRe
     }
 
     revalidatePath("/[locale]/vendre", "page");
+    revalidatePath("/[locale]/parametres", "page");
     return { ok: true };
   } catch {
     return { ok: false, error: "UNKNOWN" };
@@ -97,6 +98,7 @@ export async function addAddressAction(input: unknown): Promise<SellerActionResu
     });
 
     revalidatePath("/[locale]/vendre", "page");
+    revalidatePath("/[locale]/parametres", "page");
     return { ok: true };
   } catch {
     return { ok: false, error: "UNKNOWN" };

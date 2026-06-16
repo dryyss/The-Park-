@@ -42,18 +42,25 @@ const CONTEXT_LABEL: Record<ConversationContext, string> = {
   DISPUTE: "dispute",
 };
 
+function asPartner(user: { displayName: string; slug: string }) {
+  return { name: user.displayName, slug: user.slug, initial: user.displayName.charAt(0).toUpperCase() };
+}
+
 async function getPartner(
-  conv: { exchange?: { initiatorId: string; recipientId: string; initiator: { displayName: string; slug: string }; recipient: { displayName: string; slug: string } } | null },
+  conv: {
+    exchange?: { initiatorId: string; recipientId: string; initiator: { displayName: string; slug: string }; recipient: { displayName: string; slug: string } } | null;
+    participants?: { userId: string; user: { displayName: string; slug: string } }[];
+  },
   viewerId: string,
 ) {
-  if (!conv.exchange) return { name: "—", slug: "", initial: "?" };
-  const isInitiator = conv.exchange.initiatorId === viewerId;
-  const partner = isInitiator ? conv.exchange.recipient : conv.exchange.initiator;
-  return {
-    name: partner.displayName,
-    slug: partner.slug,
-    initial: partner.displayName.charAt(0).toUpperCase(),
-  };
+  // Conversation liée à un échange : le partenaire est l'autre partie de l'échange.
+  if (conv.exchange) {
+    const isInitiator = conv.exchange.initiatorId === viewerId;
+    return asPartner(isInitiator ? conv.exchange.recipient : conv.exchange.initiator);
+  }
+  // Conversation directe (vente, contact) : le partenaire est l'autre participant.
+  const other = conv.participants?.find((p) => p.userId !== viewerId)?.user;
+  return other ? asPartner(other) : { name: "—", slug: "", initial: "?" };
 }
 
 export async function getViewerConversations(userId: string): Promise<ConversationListItem[]> {
@@ -63,6 +70,7 @@ export async function getViewerConversations(userId: string): Promise<Conversati
       conversation: {
         include: {
           messages: { orderBy: { createdAt: "desc" }, take: 1 },
+          participants: { include: { user: { select: { displayName: true, slug: true } } } },
           exchange: {
             include: {
               initiator: { select: { displayName: true, slug: true } },
@@ -121,6 +129,7 @@ export async function getConversationThread(
             orderBy: { createdAt: "asc" },
             include: { sender: { select: { id: true, displayName: true } } },
           },
+          participants: { include: { user: { select: { displayName: true, slug: true } } } },
           exchange: {
             include: {
               initiator: { select: { displayName: true, slug: true } },

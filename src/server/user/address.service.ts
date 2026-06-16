@@ -96,7 +96,9 @@ export async function updateUserProfile(
   await prisma.user.update({
     where: { id: userId },
     data: {
-      ...(data.displayName !== undefined ? { displayName: data.displayName.trim() } : {}),
+      ...(data.displayName !== undefined
+        ? { displayName: data.displayName.trim(), displayNameCustom: true }
+        : {}),
       ...(data.bio !== undefined ? { bio: data.bio.trim() || null } : {}),
       ...(data.slug !== undefined ? { slug: data.slug.trim() } : {}),
     },

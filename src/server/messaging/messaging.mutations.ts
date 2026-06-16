@@ -49,6 +49,39 @@ export async function sendConversationMessage(
   return message.id;
 }
 
+/**
+ * Récupère (ou crée) la conversation directe vendeur ↔ acheteur d'un contact marketplace.
+ * Contexte SALE non rattaché à une vente/échange précis : une seule conversation par binôme.
+ */
+export async function getOrCreateDirectConversation(viewerId: string, partnerId: string): Promise<string> {
+  if (viewerId === partnerId) throw new Error("SELF_CONTACT");
+
+  const existing = await prisma.conversation.findFirst({
+    where: {
+      context: "SALE",
+      saleId: null,
+      exchangeId: null,
+      auctionId: null,
+      disputeId: null,
+      AND: [
+        { participants: { some: { userId: viewerId } } },
+        { participants: { some: { userId: partnerId } } },
+      ],
+    },
+    select: { id: true },
+  });
+  if (existing) return existing.id;
+
+  const conv = await prisma.conversation.create({
+    data: {
+      context: "SALE",
+      participants: { create: [{ userId: viewerId }, { userId: partnerId }] },
+    },
+    select: { id: true },
+  });
+  return conv.id;
+}
+
 /** Marque une conversation comme lue. */
 export async function markConversationRead(userId: string, conversationId: string): Promise<void> {
   await prisma.conversationParticipant.updateMany({
