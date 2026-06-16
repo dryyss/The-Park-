@@ -119,10 +119,22 @@ export function Footer() {
             <Link href="/aide" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("shipping")}</Link>
             <Link href="/aide" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("help")}</Link>
           </div>
-          <span className="flex items-center gap-[7px] text-[12px] font-bold text-texte-faible">
-            <span className="h-1.5 w-1.5 rounded-full bg-statut-succes" />
-            {t("status")}
-          </span>
+          <div className="flex flex-wrap items-center gap-5">
+            <span className="flex items-center gap-[7px] text-[12px] font-bold text-texte-faible">
+              <span className="h-1.5 w-1.5 rounded-full bg-statut-succes" />
+              {t("status")}
+            </span>
+            <div className="flex items-center gap-2.5">
+              <span className="text-[11px] font-bold text-texte-faible">{t("developedBy")}</span>
+              <Image
+                src="/magar-developpement-logo.svg"
+                alt={t("developedByAlt")}
+                width={88}
+                height={24}
+                className="h-6 w-auto opacity-80 transition hover:opacity-100"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </footer>

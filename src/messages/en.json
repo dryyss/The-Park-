@@ -56,7 +56,9 @@
     "privacy": "Privacy",
     "shipping": "Shipping",
     "help": "Help",
-    "status": "All systems operational"
+    "status": "All systems operational",
+    "developedBy": "Developed by",
+    "developedByAlt": "Magar Développement"
   },
   "home": {
     "heroKicker": "Collection platform · Pocket Drifterz",
@@ -146,7 +148,11 @@
     "ctaListings": "View listings",
     "ctaExchange": "Propose a trade",
     "listingsTitle": "Active listings",
-    "contact": "Contact"
+    "contact": "Contact",
+    "manageTitle": "My collection",
+    "addVersion": "Add · {label}",
+    "removeVersion": "Remove · {label}",
+    "addWishlist": "+ Wishlist"
   },
   "search": {
     "kicker": "Catalog · Season 1",
@@ -203,6 +209,9 @@
     "doubleValidation": "Double validation",
     "you": "YOU",
     "validationPending": "Pending",
+    "selectGiveCards": "Select cards to offer in return",
+    "accept": "Accept exchange",
+    "cancel": "Decline / cancel",
     "status": {
       "proposed": "Proposed",
       "accepted": "Accepted",
@@ -266,6 +275,10 @@
     "salePrice": "Sale price",
     "priceHint": "Indicative price — matching only, no payment here.",
     "disclaimer": "Marketplace listings are member-to-member matching. No payment goes through The Park.",
+    "publish": "Publish listing",
+    "publishing": "Publishing…",
+    "publishSuccess": "Listing published!",
+    "publishError": "Could not publish the listing.",
     "publishSoon": "Publishing coming soon",
     "preview": "Preview",
     "quoteRef": "Quote ref."
@@ -303,6 +316,10 @@
     "title": "Notifications",
     "noUser": "Log in to see your notifications.",
     "empty": "No notifications yet.",
+    "unreadCount": "{count} unread",
+    "allRead": "All caught up",
+    "markAllRead": "Mark all as read",
+    "markRead": "Mark as read",
     "markAllHint": "Mark all as read — coming soon",
     "types": {
       "exchangeProposed": "Trade proposed",
@@ -357,6 +374,7 @@
     "back": "Messages",
     "viewExchange": "View trade",
     "inputPlaceholder": "Write a message…",
+    "send": "Send",
     "sendSoon": "Send — coming soon",
     "context": {
       "exchange": "Trade",
@@ -370,7 +388,8 @@
     "title": "Wishlist",
     "noUser": "Log in to see your wishlist.",
     "empty": "Your wishlist is empty.",
-    "browse": "Browse catalog →"
+    "browse": "Browse catalog →",
+    "remove": "Remove"
   },
   "auctions": {
     "kicker": "Real-time · anti-snipe",
@@ -382,6 +401,9 @@
     "back": "Auctions",
     "seller": "Seller",
     "increment": "Min. increment: {amount}",
+    "yourBid": "Your bid (€)",
+    "bid": "Place bid",
+    "ended": "Auction ended",
     "bidSoon": "Place bid — coming soon",
     "disclaimer": "Demo UI — no real payment.",
     "bidHistory": "Bid history",
@@ -475,7 +497,10 @@
     "recentListings": "Recent listings",
     "newListing": "+ New listing",
     "noListings": "No listings.",
-    "views": "views"
+    "views": "views",
+    "pauseListing": "Pause",
+    "resumeListing": "Resume",
+    "cancelListing": "Cancel"
   },
   "admin": {
     "kicker": "Staff · The Park",
@@ -483,6 +508,10 @@
     "noUser": "Login required.",
     "forbidden": "Staff access only.",
     "manageShop": "Manage shop",
+    "manageOrders": "Shop orders",
+    "manageModeration": "Moderation",
+    "manageCatalog": "Catalog",
+    "manageSettings": "Platform settings",
     "moreSoon": "Moderation, catalog… — coming soon",
     "back": "Admin console",
     "modules": {
@@ -538,7 +567,64 @@
       "status": "Status",
       "active": "Active",
       "inactive": "Inactive",
+      "actions": "Actions",
+      "save": "Save",
+      "saveSuccess": "Product updated.",
+      "saveError": "Update failed.",
       "editSoon": "Product editing — coming soon"
+    },
+    "catalog": {
+      "kicker": "Catalog · seasons",
+      "title": "Catalog management",
+      "code": "Code",
+      "name": "Name",
+      "cards": "Cards",
+      "release": "Release",
+      "save": "Save"
+    },
+    "settings": {
+      "kicker": "Platform · settings",
+      "title": "Settings",
+      "shippingTitle": "Shop & marketplace shipping",
+      "freeMin": "Free shipping threshold (€)",
+      "standardFee": "Standard shipping fee (€)",
+      "carrier": "Default carrier",
+      "listingDays": "Listing duration (days)",
+      "demoSlug": "Demo user slug (optional)",
+      "demoSlugHint": "Leave empty to require login",
+      "save": "Save"
+    },
+    "orders": {
+      "kicker": "Shop · orders",
+      "title": "Order management",
+      "number": "Order #",
+      "customer": "Customer",
+      "total": "Total",
+      "items": "Items",
+      "status": "Status",
+      "date": "Date",
+      "empty": "No orders.",
+      "statuses": {
+        "PENDING": "Pending",
+        "PAID": "Paid",
+        "PREPARING": "Preparing",
+        "SHIPPED": "Shipped",
+        "DELIVERED": "Delivered",
+        "CANCELLED": "Cancelled",
+        "REFUNDED": "Refunded"
+      }
+    },
+    "moderation": {
+      "kicker": "Reports · disputes",
+      "title": "Moderation",
+      "reports": "Reports",
+      "disputes": "Disputes",
+      "resolve": "Resolve",
+      "dismiss": "Dismiss",
+      "review": "In review",
+      "close": "Close",
+      "noReports": "No pending reports.",
+      "noDisputes": "No open disputes."
     }
   },
   "help": {
@@ -620,6 +706,7 @@
     "notifOrders": "Shop orders",
     "notifMarketing": "News & drops",
     "notifHint": "Preferences saved locally (demo UI).",
+    "notifSaved": "Preferences saved.",
     "language": "Language",
     "languageDesc": "Choose interface language.",
     "privacy": "Privacy",
@@ -676,7 +763,10 @@
     "recipientPlaceholder": "Username or collector link",
     "message": "Message",
     "messagePlaceholder": "Hi, interested in a trade?",
+    "submit": "Send proposal",
+    "submitting": "Sending…",
     "submitSoon": "Send proposal — coming soon",
+    "error": "Could not send the proposal.",
     "back": "My trades"
   },
   "security": {

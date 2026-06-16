@@ -56,7 +56,9 @@
     "privacy": "Confidentialité",
     "shipping": "Livraison",
     "help": "Aide",
-    "status": "Tous systèmes opérationnels"
+    "status": "Tous systèmes opérationnels",
+    "developedBy": "Développé par",
+    "developedByAlt": "Magar Développement"
   },
   "home": {
     "heroKicker": "Plateforme de collection · Pocket Drifterz",

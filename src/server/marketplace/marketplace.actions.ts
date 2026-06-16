@@ -6,10 +6,10 @@ import { getAuthenticatedViewer } from "@/server/user/user.service";
 import {
   cancelListing,
   pauseListing,
+  publishListing,
   publishWantListing,
   resumeListing,
 } from "@/server/marketplace/marketplace.mutations";
-import { publishListing } from "@/server/marketplace/marketplace.mutations";
 
 export type MarketplaceActionResult = { ok: true; listingId?: string } | { ok: false; error: string };
 

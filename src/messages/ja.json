@@ -56,7 +56,9 @@
     "privacy": "プライバシー",
     "shipping": "配送",
     "help": "ヘルプ",
-    "status": "全システム稼働中"
+    "status": "全システム稼働中",
+    "developedBy": "開発",
+    "developedByAlt": "Magar Développement"
   },
   "home": {
     "heroKicker": "コレクションプラットフォーム · Pocket Drifterz",
@@ -146,7 +148,11 @@
     "ctaListings": "出品を見る",
     "ctaExchange": "交換を提案",
     "listingsTitle": "出品中",
-    "contact": "連絡"
+    "contact": "連絡",
+    "manageTitle": "マイコレクション",
+    "addVersion": "追加 · {label}",
+    "removeVersion": "削除 · {label}",
+    "addWishlist": "+ ウィッシュリスト"
   },
   "search": {
     "kicker": "カタログ · シーズン1",
@@ -203,6 +209,9 @@
     "doubleValidation": "二重確認",
     "you": "自分",
     "validationPending": "保留中",
+    "selectGiveCards": "返すカードを選択",
+    "accept": "交換を承認",
+    "cancel": "拒否 / キャンセル",
     "status": {
       "proposed": "提案中",
       "accepted": "承認済",
@@ -266,6 +275,10 @@
     "salePrice": "販売価格",
     "priceHint": "参考価格 — マッチングのみ、決済なし。",
     "disclaimer": "マーケット出品はメンバー間マッチングです。決済は The Park を通りません。",
+    "publish": "出品を公開",
+    "publishing": "公開中…",
+    "publishSuccess": "出品を公開しました！",
+    "publishError": "出品を公開できませんでした。",
     "publishSoon": "公開は近日対応",
     "preview": "プレビュー",
     "quoteRef": "参考価格"
@@ -303,6 +316,10 @@
     "title": "通知",
     "noUser": "ログインして通知を表示。",
     "empty": "通知はありません。",
+    "unreadCount": "未読 {count}件",
+    "allRead": "すべて既読済み",
+    "markAllRead": "すべて既読にする",
+    "markRead": "既読にする",
     "markAllHint": "すべて既読 — 近日対応",
     "types": {
       "exchangeProposed": "交換提案",
@@ -357,6 +374,7 @@
     "back": "メッセージ",
     "viewExchange": "交換を見る",
     "inputPlaceholder": "メッセージを入力…",
+    "send": "送信",
     "sendSoon": "送信 — 近日",
     "context": {
       "exchange": "交換",
@@ -370,7 +388,8 @@
     "title": "ウィッシュリスト",
     "noUser": "ログインして表示。",
     "empty": "ウィッシュリストは空です。",
-    "browse": "カタログを見る →"
+    "browse": "カタログを見る →",
+    "remove": "削除"
   },
   "auctions": {
     "kicker": "リアルタイム · アンチスナイプ",
@@ -382,6 +401,9 @@
     "back": "オークション",
     "seller": "出品者",
     "increment": "最小単位：{amount}",
+    "yourBid": "入札額（€）",
+    "bid": "入札する",
+    "ended": "オークション終了",
     "bidSoon": "入札 — 近日",
     "disclaimer": "デモUI — 実決済なし",
     "bidHistory": "入札履歴",
@@ -475,7 +497,10 @@
     "recentListings": "最近の出品",
     "newListing": "+ 新規出品",
     "noListings": "出品なし",
-    "views": "閲覧"
+    "views": "閲覧",
+    "pauseListing": "一時停止",
+    "resumeListing": "再開",
+    "cancelListing": "取り消す"
   },
   "admin": {
     "kicker": "スタッフ",
@@ -483,6 +508,10 @@
     "noUser": "ログインが必要。",
     "forbidden": "スタッフ専用。",
     "manageShop": "ストア管理",
+    "manageOrders": "ショップ注文",
+    "manageModeration": "モデレーション",
+    "manageCatalog": "カタログ",
+    "manageSettings": "プラットフォーム設定",
     "moreSoon": "モデレーション等 — 近日",
     "back": "管理コンソール",
     "modules": {
@@ -538,7 +567,64 @@
       "status": "状態",
       "active": "有効",
       "inactive": "無効",
+      "actions": "操作",
+      "save": "保存",
+      "saveSuccess": "商品を更新しました。",
+      "saveError": "更新に失敗しました。",
       "editSoon": "商品編集 — 近日"
+    },
+    "catalog": {
+      "kicker": "カタログ · シーズン",
+      "title": "カタログ管理",
+      "code": "コード",
+      "name": "名称",
+      "cards": "カード",
+      "release": "発売",
+      "save": "保存"
+    },
+    "settings": {
+      "kicker": "プラットフォーム · 設定",
+      "title": "設定",
+      "shippingTitle": "ショップ・マーケット配送",
+      "freeMin": "送料無料の基準額（€）",
+      "standardFee": "標準送料（€）",
+      "carrier": "デフォルト配送業者",
+      "listingDays": "出品期間（日）",
+      "demoSlug": "デモユーザーのスラッグ（任意）",
+      "demoSlugHint": "空欄でログインを必須にする",
+      "save": "保存"
+    },
+    "orders": {
+      "kicker": "ショップ · 注文",
+      "title": "注文管理",
+      "number": "注文番号",
+      "customer": "顧客",
+      "total": "合計",
+      "items": "商品",
+      "status": "状態",
+      "date": "日付",
+      "empty": "注文がありません。",
+      "statuses": {
+        "PENDING": "保留",
+        "PAID": "支払済",
+        "PREPARING": "準備中",
+        "SHIPPED": "発送済",
+        "DELIVERED": "配達済",
+        "CANCELLED": "キャンセル",
+        "REFUNDED": "返金済"
+      }
+    },
+    "moderation": {
+      "kicker": "通報 · 紛争",
+      "title": "モデレーション",
+      "reports": "通報",
+      "disputes": "紛争",
+      "resolve": "解決",
+      "dismiss": "却下",
+      "review": "確認中",
+      "close": "クローズ",
+      "noReports": "保留中の通報はありません。",
+      "noDisputes": "未解決の紛争はありません。"
     }
   },
   "help": {
@@ -620,6 +706,7 @@
     "notifOrders": "ストア注文",
     "notifMarketing": "ニュース",
     "notifHint": "デモUI（ローカル保存）。",
+    "notifSaved": "設定を保存しました。",
     "language": "言語",
     "languageDesc": "表示言語を選択。",
     "privacy": "プライバシー",
@@ -676,7 +763,10 @@
     "recipientPlaceholder": "ユーザー名",
     "message": "メッセージ",
     "messagePlaceholder": "交換に興味ありますか？",
+    "submit": "提案を送信",
+    "submitting": "送信中…",
     "submitSoon": "送信 — 近日",
+    "error": "提案を送信できませんでした。",
     "back": "交換一覧"
   },
   "security": {
