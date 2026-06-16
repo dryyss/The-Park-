@@ -126,12 +126,8 @@ export interface RankingsView {
 const RANK_COLORS = ["#E8B23A", "#C9C6BE", "#E8945A"];
 const PAGE_SIZE = 20;
 
-/** Classements complets (complétion, réputation, échanges), paginés. */
-export async function getRankings(
-  category: RankingCategory,
-  viewerSlug?: string,
-  page = 1,
-): Promise<RankingsView> {
+/** Lignes de classement globales (sans viewer) — identiques pour tous, donc mises en cache. */
+async function fetchRankingRows(category: RankingCategory): Promise<RankingRow[]> {
   const totalVariants = await prisma.cardVariant.count();
 
   const members = await prisma.user.findMany({
@@ -174,7 +170,7 @@ export async function getRankings(
 
   const max = category === "reputation" ? 5 : withScore[0]?.raw || 1;
 
-  const rows: RankingRow[] = withScore.map((m, i) => ({
+  return withScore.map((m, i) => ({
     rank: i + 1,
     displayName: m.displayName,
     slug: m.slug,
@@ -182,19 +178,35 @@ export async function getRankings(
     value: m.value,
     subLabel: m.sub,
     barPct: max > 0 ? Math.round((m.raw / max) * 100) : 0,
-    isViewer: viewerSlug === m.slug,
   }));
+}
+
+function getRankingRows(category: RankingCategory) {
+  return unstable_cache(() => fetchRankingRows(category), ["ranking-rows", category], {
+    revalidate: 60,
+    tags: ["rankings"],
+  })();
+}
+
+/** Classements complets (complétion, réputation, échanges), paginés + marquage du viewer. */
+export async function getRankings(
+  category: RankingCategory,
+  viewerSlug?: string,
+  page = 1,
+): Promise<RankingsView> {
+  const allRows = await getRankingRows(category);
+  const mark = (r: RankingRow): RankingRow => ({ ...r, isViewer: viewerSlug === r.slug });
 
   // Podium en ordre naturel (1er, 2e, 3e) ; la mise en page (2e – 1er – 3e) est gérée par RankingsPodium.
-  const podium = rows.slice(0, 3);
+  const podium = allRows.slice(0, 3).map(mark);
 
-  const total = rows.length;
+  const total = allRows.length;
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const current = Math.min(Math.max(1, Math.trunc(page) || 1), pageCount);
   const start = (current - 1) * PAGE_SIZE;
-  const pageRows = rows.slice(start, start + PAGE_SIZE);
+  const pageRows = allRows.slice(start, start + PAGE_SIZE).map(mark);
 
-  const viewerRank = viewerSlug ? rows.find((r) => r.isViewer)?.rank ?? null : null;
+  const viewerRank = viewerSlug ? allRows.find((r) => r.slug === viewerSlug)?.rank ?? null : null;
 
   return { category, podium, rows: pageRows, page: current, pageCount, total, viewerRank };
 }

@@ -1,5 +1,6 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { rarityMeta, cardImage, type HoloVariant } from "@/lib/rarity";
 import { formatPrice } from "@/lib/format";
@@ -135,30 +136,16 @@ export interface SeasonCardRow {
   standardVariantId: string;
 }
 
-/** Grille catalogue d'une saison (tri par numéro), avec quantités viewer optionnelles. */
-export async function getSeasonCards(seasonCode = "S01", viewerUserId?: string): Promise<SeasonCardRow[]> {
+/** Catalogue d'une saison sans données utilisateur — lourd mais global, donc mis en cache. */
+async function fetchSeasonCardBase(seasonCode: string): Promise<Omit<SeasonCardRow, "quantity">[]> {
   const season = await prisma.season.findUnique({ where: { code: seasonCode } });
   if (!season) return [];
 
-  const [cards, items] = await Promise.all([
-    prisma.card.findMany({
-      where: { seasonId: season.id },
-      orderBy: { number: "asc" },
-      include: { rarity: true, variants: { include: { versionType: true } } },
-    }),
-    viewerUserId
-      ? prisma.collectionItem.findMany({
-          where: { userId: viewerUserId, variant: { card: { seasonId: season.id } } },
-          select: { quantity: true, variant: { select: { card: { select: { number: true } } } } },
-        })
-      : Promise.resolve([]),
-  ]);
-
-  const qtyByNumber = new Map<number, number>();
-  for (const item of items) {
-    const num = item.variant.card.number;
-    qtyByNumber.set(num, (qtyByNumber.get(num) ?? 0) + item.quantity);
-  }
+  const cards = await prisma.card.findMany({
+    where: { seasonId: season.id },
+    orderBy: { number: "asc" },
+    include: { rarity: true, variants: { include: { versionType: true } } },
+  });
 
   return cards.map((c) => {
     const meta = rarityMeta(c.rarity.code);
@@ -173,10 +160,38 @@ export async function getSeasonCards(seasonCode = "S01", viewerUserId?: string):
       tilt: meta.tilt,
       holo: meta.holo,
       variant: meta.variant,
-      quantity: qtyByNumber.get(c.number) ?? 0,
       standardVariantId: standardVariant?.id ?? c.variants[0]?.id ?? "",
     };
   });
+}
+
+function getSeasonCardBase(seasonCode: string) {
+  return unstable_cache(() => fetchSeasonCardBase(seasonCode), ["season-cards-base", seasonCode], {
+    revalidate: 300,
+    tags: ["catalog"],
+  })();
+}
+
+export async function getSeasonCards(seasonCode = "S01", viewerUserId?: string): Promise<SeasonCardRow[]> {
+  const base = await getSeasonCardBase(seasonCode);
+  if (base.length === 0) return [];
+
+  // Sans viewer (navigation publique) : catalogue caché, aucune requête par-utilisateur.
+  if (!viewerUserId) return base.map((c) => ({ ...c, quantity: 0 }));
+
+  // Quantités possédées : seule requête live (légère), fusionnée sur le catalogue caché.
+  const items = await prisma.collectionItem.findMany({
+    where: { userId: viewerUserId, variant: { card: { season: { code: seasonCode } } } },
+    select: { quantity: true, variant: { select: { card: { select: { number: true } } } } },
+  });
+
+  const qtyByNumber = new Map<number, number>();
+  for (const item of items) {
+    const num = item.variant.card.number;
+    qtyByNumber.set(num, (qtyByNumber.get(num) ?? 0) + item.quantity);
+  }
+
+  return base.map((c) => ({ ...c, quantity: qtyByNumber.get(c.number) ?? 0 }));
 }
 
 export interface CardDetail {
@@ -350,21 +365,83 @@ export interface SearchHit {
   rarityLabel: string;
 }
 
-/** Recherche globale catalogue. */
-export async function searchCards(q: string, limit = 24): Promise<SearchHit[]> {
-  const term = q.trim();
-  if (!term) return [];
+export type SearchSort = "number" | "name" | "rarity";
 
-  const num = parseInt(term, 10);
-  const cards = await prisma.card.findMany({
-    where: {
+export interface SearchFilters {
+  q?: string;
+  rarity?: string; // code rareté (c,r,u,l,g,p)
+  version?: string; // code versionType
+  sort?: SearchSort;
+  limit?: number;
+}
+
+/** Facettes pour les filtres de recherche (raretés + versions du catalogue). */
+export interface CatalogFacets {
+  rarities: { code: string; label: string; count: number }[];
+  versions: { code: string; label: string }[];
+}
+
+export async function getCatalogFacets(): Promise<CatalogFacets> {
+  return unstable_cache(fetchCatalogFacets, ["catalog-facets"], {
+    revalidate: 120,
+    tags: ["catalog"],
+  })();
+}
+
+async function fetchCatalogFacets(): Promise<CatalogFacets> {
+  const [rarities, versions] = await Promise.all([
+    prisma.rarity.findMany({
+      orderBy: { sortOrder: "asc" },
+      select: { code: true, label: true, _count: { select: { cards: true } } },
+    }),
+    prisma.versionType.findMany({ orderBy: { sortOrder: "asc" }, select: { code: true, label: true } }),
+  ]);
+
+  return {
+    rarities: rarities
+      .map((r) => ({ code: r.code, label: r.label, count: r._count.cards }))
+      .filter((r) => r.count > 0),
+    versions: versions.filter((v) => isActiveVersionCode(v.code)),
+  };
+}
+
+function searchOrderBy(sort: SearchSort | undefined): Prisma.CardOrderByWithRelationInput {
+  switch (sort) {
+    case "name":
+      return { name: "asc" };
+    case "rarity":
+      return { rarity: { sortOrder: "asc" } };
+    default:
+      return { number: "asc" };
+  }
+}
+
+/** Recherche globale catalogue (texte + facettes raretés/versions + tri). */
+export async function searchCards(filters: SearchFilters = {}): Promise<SearchHit[]> {
+  const term = (filters.q ?? "").trim();
+  const limit = filters.limit ?? 24;
+  const hasFacet = !!(filters.rarity || filters.version);
+
+  // Sans terme ni filtre, on ne renvoie rien (état d'accueil géré côté page).
+  if (!term && !hasFacet) return [];
+
+  const and: Prisma.CardWhereInput[] = [];
+  if (term) {
+    const num = parseInt(term, 10);
+    and.push({
       OR: [
         { name: { contains: term, mode: "insensitive" } },
         ...(Number.isFinite(num) ? [{ number: num }] : []),
       ],
-    },
+    });
+  }
+  if (filters.rarity) and.push({ rarity: { code: filters.rarity } });
+  if (filters.version) and.push({ variants: { some: { versionType: { code: filters.version } } } });
+
+  const cards = await prisma.card.findMany({
+    where: and.length ? { AND: and } : {},
     take: limit,
-    orderBy: { number: "asc" },
+    orderBy: searchOrderBy(filters.sort),
     include: { rarity: true },
   });
 

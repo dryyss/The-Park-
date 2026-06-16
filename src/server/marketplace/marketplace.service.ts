@@ -181,14 +181,29 @@ function toMarketplaceCard(l: FullRow): MarketplaceCard {
   };
 }
 
-/** Annonces filtrées de la marketplace (mise en relation — prix indicatifs, aucun paiement). */
-export async function getMarketplaceListings(f: MarketplaceFilters): Promise<MarketplaceCard[]> {
+async function fetchMarketplaceListings(f: MarketplaceFilters): Promise<MarketplaceCard[]> {
   const listings = await prisma.listing.findMany({
     where: buildWhere(f),
     orderBy: { createdAt: "desc" },
     include: fullInclude,
   });
   return listings.map(toMarketplaceCard);
+}
+
+/** Annonces filtrées de la marketplace (données globales — mises en cache 60 s, tag `listings`). */
+export async function getMarketplaceListings(f: MarketplaceFilters): Promise<MarketplaceCard[]> {
+  const key = [
+    "marketplace-listings",
+    f.intent,
+    f.rarity ?? "",
+    f.condition ?? "",
+    f.version ?? "",
+    f.q ?? "",
+  ];
+  return unstable_cache(() => fetchMarketplaceListings(f), key, {
+    revalidate: 60,
+    tags: ["listings"],
+  })();
 }
 
 export interface MarketplaceFacets {
@@ -198,8 +213,15 @@ export interface MarketplaceFacets {
   versions: { code: string; label: string }[];
 }
 
-/** Compteurs pour les onglets + chips de filtre. */
+/** Compteurs pour les onglets + chips de filtre (globaux — cache 60 s, tag `listings`). */
 export async function getMarketplaceFacets(): Promise<MarketplaceFacets> {
+  return unstable_cache(fetchMarketplaceFacets, ["marketplace-facets"], {
+    revalidate: 60,
+    tags: ["listings"],
+  })();
+}
+
+async function fetchMarketplaceFacets(): Promise<MarketplaceFacets> {
   const [sellCount, wantCount, versions] = await Promise.all([
     prisma.listing.count({ where: { status: "ACTIVE", type: { in: [...SELL_TYPES] } } }),
     prisma.listing.count({ where: { status: "ACTIVE", type: "WANT" } }),
