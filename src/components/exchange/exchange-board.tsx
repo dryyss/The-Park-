@@ -3,25 +3,39 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { avatarGradient } from "@/lib/avatars";
 import { exchangeStatusStyle, EXCHANGE_STATUS_I18N } from "@/lib/exchange-status";
-import type { ExchangeDetail, ExchangeListItem, ExchangeTab } from "@/server/exchange/exchange.service";
+import type {
+  ExchangeCounts,
+  ExchangeDetail,
+  ExchangeInboxRole,
+  ExchangeListItem,
+  ExchangeTab,
+  TradeOpportunity,
+} from "@/server/exchange/exchange.service";
 import { ExchangeActionsPanel } from "@/components/exchange/exchange-actions-panel";
 
 function ExchangeTabs({
   tab,
   currentCount,
   doneCount,
+  incomingCount,
 }: {
   tab: ExchangeTab;
   currentCount: number;
   doneCount: number;
+  incomingCount: number;
 }) {
   return (
     <div className="mb-1 flex rounded-[11px] border border-charbon-500 bg-charbon-800 p-1.5 gap-0.5">
       <Link
         href="/echanges"
-        className={`font-display rounded-lg px-4.5 py-2.5 text-[13px] tracking-[1.5px] uppercase transition ${tab === "current" ? "bg-carmin text-white" : "text-texte-dim hover:text-blanc-casse"}`}
+        className={`font-display relative rounded-lg px-4.5 py-2.5 text-[13px] tracking-[1.5px] uppercase transition ${tab === "current" ? "bg-carmin text-white" : "text-texte-dim hover:text-blanc-casse"}`}
       >
         EN COURS · {currentCount}
+        {incomingCount > 0 && tab !== "current" && (
+          <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-or px-1 text-[9px] font-extrabold text-charbon">
+            {incomingCount}
+          </span>
+        )}
       </Link>
       <Link
         href="/echanges?tab=done"
@@ -38,11 +52,13 @@ function ExchangeListRow({
   active,
   tab,
   statusLabel,
+  actionLabel,
 }: {
   item: ExchangeListItem;
   active: boolean;
   tab: ExchangeTab;
   statusLabel: string;
+  actionLabel?: string;
 }) {
   const st = exchangeStatusStyle(item.status);
 
@@ -63,6 +79,9 @@ function ExchangeListRow({
           <span className="text-[11px] font-bold text-texte-faible">· {item.shortId}</span>
         </div>
         <div className="mt-0.5 truncate text-[11px] font-bold text-texte-dim">{item.summary}</div>
+        {actionLabel && (
+          <div className="mt-1 text-[10px] font-extrabold tracking-wide text-or uppercase">{actionLabel}</div>
+        )}
       </div>
       <div className="flex shrink-0 flex-col items-end gap-1">
         <span
@@ -76,6 +95,40 @@ function ExchangeListRow({
         </span>
       </div>
     </Link>
+  );
+}
+
+function ExchangeListSection({
+  title,
+  items,
+  selectedId,
+  tab,
+  statusLabels,
+  actionLabel,
+}: {
+  title: string;
+  items: ExchangeListItem[];
+  selectedId?: string;
+  tab: ExchangeTab;
+  statusLabels: Record<string, string>;
+  actionLabel?: string;
+}) {
+  if (items.length === 0) return null;
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="px-1 text-[10px] font-extrabold tracking-[2px] text-texte-faible uppercase">{title}</div>
+      {items.map((item) => (
+        <ExchangeListRow
+          key={item.id}
+          item={item}
+          active={selectedId === item.id}
+          tab={tab}
+          statusLabel={statusLabels[EXCHANGE_STATUS_I18N[item.status]] ?? item.status}
+          actionLabel={item.needsAction ? actionLabel : undefined}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -141,20 +194,6 @@ async function ExchangeDetailPanel({
         </div>
       )}
 
-      <div className="border-t border-charbon-600 px-6 py-4">
-        <div className="text-[10px] font-extrabold tracking-[2px] text-texte-faible uppercase">{t("doubleValidation")}</div>
-        <div className="mt-2 grid grid-cols-2 gap-2">
-          <div className="rounded-[11px] border border-charbon-500 bg-charbon-700 p-3">
-            <div className="text-[11.5px] font-extrabold text-texte-doux">{t("you")}</div>
-            <div className="mt-0.5 text-[12px] font-extrabold text-neon-vert">{t("validationPending")}</div>
-          </div>
-          <div className="rounded-[11px] border border-charbon-500 bg-charbon-700 p-3">
-            <div className="text-[11.5px] font-extrabold text-texte-doux">{detail.partnerName}</div>
-            <div className="mt-0.5 text-[12px] font-extrabold text-texte-dim">{t("validationPending")}</div>
-          </div>
-        </div>
-      </div>
-
       <ExchangeActionsPanel detail={detail} ownedCards={ownedCards} />
     </div>
   );
@@ -183,31 +222,109 @@ function TradeSide({ title, cards }: { title: string; cards: { name: string; ima
   );
 }
 
+function OpportunitiesPanel({ opportunities }: { opportunities: TradeOpportunity[] }) {
+  return <OpportunitiesPanelAsync opportunities={opportunities} />;
+}
+
+async function OpportunitiesPanelAsync({ opportunities }: { opportunities: TradeOpportunity[] }) {
+  const t = await getTranslations("exchanges");
+
+  if (opportunities.length === 0) return null;
+
+  return (
+    <div className="rounded-[15px] border border-charbon-500 bg-charbon-800 p-4">
+      <div className="text-[10px] font-extrabold tracking-[2px] text-texte-faible uppercase">{t("openToTrade")}</div>
+      <p className="mt-1 text-[11.5px] font-bold text-texte-dim">{t("openToTradeHint")}</p>
+      <div className="mt-3 flex flex-col gap-2">
+        {opportunities.map((o) => (
+          <Link
+            key={o.listingId}
+            href={`/echanges/proposer?recipient=${encodeURIComponent(o.sellerSlug)}`}
+            className="flex items-center gap-3 rounded-[12px] border border-charbon-500 bg-charbon-700 p-3 transition hover:border-carmin"
+          >
+            <div className="relative h-12 w-9 shrink-0 overflow-hidden rounded-[6px] bg-charbon-600">
+              {o.cardImage && <Image src={o.cardImage} alt={o.cardName} fill className="object-cover" sizes="36px" />}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-[12px] font-extrabold text-blanc-casse">{o.cardName}</div>
+              <div className="text-[10.5px] font-bold text-texte-dim">
+                {o.sellerName} · {o.type === "WANT" ? t("listingWant") : t("listingTrade")} · {o.priceLabel}
+              </div>
+            </div>
+            <span className="shrink-0 text-[10px] font-extrabold tracking-wide text-carmin uppercase">{t("proposeCta")}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function groupCurrent(items: ExchangeListItem[]) {
+  const order: ExchangeInboxRole[] = ["incoming", "outgoing", "active"];
+  return order.map((role) => ({
+    role,
+    items: items.filter((i) => i.inboxRole === role),
+  }));
+}
+
 export async function ExchangeBoard({
   tab,
   current,
   done,
   selected,
+  counts,
+  opportunities,
   ownedCards = [],
 }: {
   tab: ExchangeTab;
   current: ExchangeListItem[];
   done: ExchangeListItem[];
   selected: ExchangeDetail | null;
+  counts: ExchangeCounts;
+  opportunities: TradeOpportunity[];
   ownedCards?: { variantId: string; name: string }[];
 }) {
   const t = await getTranslations("exchanges");
   const list = tab === "done" ? done : current;
+  const statusLabels = Object.fromEntries(
+    Object.values(EXCHANGE_STATUS_I18N).map((key) => [key, t(`status.${key}`)]),
+  );
+  const sections = tab === "current" ? groupCurrent(current) : null;
 
   return (
     <>
-      <ExchangeTabs tab={tab} currentCount={current.length} doneCount={done.length} />
+      <ExchangeTabs tab={tab} currentCount={current.length} doneCount={done.length} incomingCount={counts.incoming} />
       <div className="mt-6 grid grid-cols-1 items-start gap-5 lg:grid-cols-[380px_1fr]">
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-4">
           {list.length === 0 ? (
             <div className="rounded-[15px] border border-dashed border-charbon-500 p-8 text-center text-[13px] font-bold text-texte-dim">
               {tab === "done" ? t("emptyDone") : t("emptyCurrent")}
             </div>
+          ) : sections ? (
+            <>
+              <ExchangeListSection
+                title={t("sectionIncoming", { count: counts.incoming })}
+                items={sections.find((s) => s.role === "incoming")?.items ?? []}
+                selectedId={selected?.id}
+                tab={tab}
+                statusLabels={statusLabels}
+                actionLabel={t("actionReply")}
+              />
+              <ExchangeListSection
+                title={t("sectionOutgoing", { count: counts.outgoing })}
+                items={sections.find((s) => s.role === "outgoing")?.items ?? []}
+                selectedId={selected?.id}
+                tab={tab}
+                statusLabels={statusLabels}
+              />
+              <ExchangeListSection
+                title={t("sectionActive", { count: counts.active })}
+                items={sections.find((s) => s.role === "active")?.items ?? []}
+                selectedId={selected?.id}
+                tab={tab}
+                statusLabels={statusLabels}
+              />
+            </>
           ) : (
             list.map((item) => (
               <ExchangeListRow
@@ -215,12 +332,15 @@ export async function ExchangeBoard({
                 item={item}
                 active={selected?.id === item.id}
                 tab={tab}
-                statusLabel={t(`status.${EXCHANGE_STATUS_I18N[item.status]}`)}
+                statusLabel={statusLabels[EXCHANGE_STATUS_I18N[item.status]] ?? item.status}
               />
             ))
           )}
+
+          {tab === "current" && <OpportunitiesPanel opportunities={opportunities} />}
+
           <Link
-            href="/marketplace"
+            href="/echanges/proposer"
             className="font-display rounded-xl border-[1.5px] border-dashed border-charbon-400 p-3.5 text-center text-[12.5px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin hover:bg-carmin/10 hover:text-white"
           >
             + {t("proposeNew")}
@@ -230,8 +350,11 @@ export async function ExchangeBoard({
         {selected ? (
           <ExchangeDetailPanel detail={selected} ownedCards={ownedCards} />
         ) : (
-          <div className="flex min-h-[320px] items-center justify-center rounded-[20px] border border-charbon-500 bg-charbon-800 p-8 text-[13px] font-bold text-texte-dim">
-            {t("selectExchange")}
+          <div className="flex min-h-[320px] flex-col items-center justify-center gap-3 rounded-[20px] border border-charbon-500 bg-charbon-800 p-8 text-center text-[13px] font-bold text-texte-dim">
+            <p>{t("selectExchange")}</p>
+            {tab === "current" && opportunities.length > 0 && (
+              <p className="max-w-sm text-[12px] font-semibold text-texte-faible">{t("selectOrPropose")}</p>
+            )}
           </div>
         )}
       </div>

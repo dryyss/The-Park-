@@ -89,7 +89,10 @@
     "activityWant": "{actor} が {card} を募集中",
     "live": "ライブ",
     "topCollectorsTitle": "トップコレクター",
-    "seeFullRanking": "ランキング全体を見る"
+    "seeFullRanking": "ランキング全体を見る",
+    "rarityCount": "{count}枚",
+    "rarityPrev": "前のレアリティ",
+    "rarityNext": "次のレアリティ"
   },
   "pages": {
     "soon": "このセクションはすでにナビゲーションに接続されています。動的コンテンツは近日公開予定です。",
@@ -213,6 +216,16 @@
     "selectGiveCards": "返すカードを選択",
     "accept": "交換を承認",
     "cancel": "拒否 / キャンセル",
+    "sectionIncoming": "要返信 · {count}",
+    "sectionOutgoing": "返信待ち · {count}",
+    "sectionActive": "進行中（発送） · {count}",
+    "actionReply": "返信する",
+    "openToTrade": "交換受付中",
+    "openToTradeHint": "カードを出す・探しているメンバー — 提案を送ろう。",
+    "listingTrade": "交換",
+    "listingWant": "募集",
+    "proposeCta": "提案",
+    "selectOrPropose": "または下のメンバーに交換を提案してください。",
     "status": {
       "proposed": "提案中",
       "accepted": "承認済",

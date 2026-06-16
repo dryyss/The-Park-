@@ -219,7 +219,7 @@ async function main() {
   type Pick = {
     num: number;
     seller: string;
-    type: "SELL" | "SELL_OR_TRADE" | "WANT";
+    type: "SELL" | "SELL_OR_TRADE" | "TRADE" | "WANT";
     cond: Cond;
     price?: number;
     budgetMax?: number;
@@ -234,6 +234,8 @@ async function main() {
     { num: 38, seller: "LIGHTON_FACTORY", type: "SELL", cond: "GOOD", price: 12.9 },
     { num: 54, seller: "MIDNIGHT_PURPLE", type: "SELL", cond: "MINT", price: 44.0 },
     { num: 16, seller: "SARA.S15", type: "SELL_OR_TRADE", cond: "EXCELLENT", price: 9.5 },
+    { num: 42, seller: "DRIFT_KING_06", type: "TRADE", cond: "MINT", price: 0 },
+    { num: 71, seller: "TOUGE_HUNTER", type: "TRADE", cond: "VERY_GOOD", price: 0 },
     { num: 32, seller: "TOUGE_HUNTER", type: "SELL", cond: "DAMAGED", price: 22.0 },
     { num: 57, seller: "LIGHTON_FACTORY", type: "SELL", cond: "EXCELLENT", price: 50.0 },
     { num: 11, seller: "HACHI_ROKU", type: "SELL", cond: "DAMAGED", price: 8.9 },
@@ -371,7 +373,7 @@ async function main() {
 
   if (factoryId && midnightId && driftId && saraId && tougeId && hachiId) {
     await prisma.exchange.deleteMany({
-      where: { OR: [{ initiatorId: factoryId }, { recipientId: factoryId }] },
+      where: { OR: [{ initiatorId: { in: memberIds } }, { recipientId: { in: memberIds } }] },
     });
 
     const v = (n: number) => variantByNumber.get(n)!;
@@ -393,6 +395,13 @@ async function main() {
       { recipientId: hachiId, status: "COMPLETED", giveNums: [54], getNums: [11] },
     ];
 
+    // Échanges entrants pour d'autres membres (propositions à traiter)
+    const crossSeeds: ExSeed[] = [
+      { recipientId: midnightId, status: "PROPOSED", giveNums: [60], getNums: [64], message: "Échange contre ton Skyline ?" },
+      { recipientId: tougeId, status: "PROPOSED", giveNums: [11], getNums: [32], message: "Je te propose mon AE86." },
+    ];
+    const crossInitiators = [driftId, saraId] as const;
+
     for (const ex of exchangeSeeds) {
       await prisma.exchange.create({
         data: {
@@ -402,6 +411,35 @@ async function main() {
           secured: ex.secured ?? false,
           message: ex.message,
           completedAt: ex.status === "COMPLETED" ? new Date() : undefined,
+          items: {
+            create: [
+              ...ex.giveNums.map((n) => ({
+                fromInitiator: true,
+                variantId: v(n).id,
+                condition: "EXCELLENT" as const,
+              })),
+              ...ex.getNums.map((n) => ({
+                fromInitiator: false,
+                variantId: v(n).id,
+                condition: "VERY_GOOD" as const,
+              })),
+            ],
+          },
+        },
+      });
+    }
+
+    for (let i = 0; i < crossSeeds.length; i++) {
+      const ex = crossSeeds[i];
+      const initiatorId = crossInitiators[i];
+      if (!initiatorId) continue;
+      await prisma.exchange.create({
+        data: {
+          initiatorId,
+          recipientId: ex.recipientId,
+          status: ex.status,
+          secured: ex.secured ?? false,
+          message: ex.message,
           items: {
             create: [
               ...ex.giveNums.map((n) => ({

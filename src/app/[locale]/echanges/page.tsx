@@ -32,7 +32,15 @@ export default async function EchangesPage({
     <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="交換" />
       <div className="mt-6">
-        <ExchangeBoard tab={tab} current={data.current} done={data.done} selected={data.selected} ownedCards={ownedCards} />
+        <ExchangeBoard
+          tab={tab}
+          current={data.current}
+          done={data.done}
+          selected={data.selected}
+          counts={data.counts}
+          opportunities={data.opportunities}
+          ownedCards={ownedCards}
+        />
       </div>
     </main>
   );

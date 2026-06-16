@@ -89,7 +89,10 @@
     "activityWant": "{actor} recherche {card}",
     "live": "En direct",
     "topCollectorsTitle": "Top collectionneurs",
-    "seeFullRanking": "Voir le classement complet"
+    "seeFullRanking": "Voir le classement complet",
+    "rarityCount": "{count} cartes",
+    "rarityPrev": "Rareté précédente",
+    "rarityNext": "Rareté suivante"
   },
   "pages": {
     "soon": "Cette section est déjà branchée à la navigation. Son contenu dynamique arrive très bientôt.",
@@ -213,6 +216,16 @@
     "selectGiveCards": "Choisis les cartes à proposer en retour",
     "accept": "Accepter l'échange",
     "cancel": "Refuser / annuler",
+    "sectionIncoming": "À répondre · {count}",
+    "sectionOutgoing": "En attente de réponse · {count}",
+    "sectionActive": "En cours (expédition) · {count}",
+    "actionReply": "Répondre",
+    "openToTrade": "Ouverts à l'échange",
+    "openToTradeHint": "Membres qui proposent ou recherchent des cartes — envoie-leur une proposition.",
+    "listingTrade": "Échange",
+    "listingWant": "Recherche",
+    "proposeCta": "Proposer",
+    "selectOrPropose": "Ou choisis un membre ci-dessous pour lui proposer un échange.",
     "status": {
       "proposed": "Proposé",
       "accepted": "Accepté",

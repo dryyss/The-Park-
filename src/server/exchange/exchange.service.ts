@@ -1,9 +1,11 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { cardImage } from "@/lib/rarity";
+import { formatPrice } from "@/lib/format";
 import type { ExchangeStatus } from "@/generated/prisma/client";
 
 export type ExchangeTab = "current" | "done";
+export type ExchangeInboxRole = "incoming" | "outgoing" | "active";
 
 export interface ExchangeCardSide {
   name: string;
@@ -21,6 +23,33 @@ export interface ExchangeListItem {
   status: ExchangeStatus;
   createdAt: Date;
   isDone: boolean;
+  inboxRole: ExchangeInboxRole;
+  needsAction: boolean;
+}
+
+export interface TradeOpportunity {
+  listingId: string;
+  cardName: string;
+  cardImage: string | null;
+  sellerName: string;
+  sellerSlug: string;
+  sellerInitial: string;
+  type: "TRADE" | "SELL_OR_TRADE" | "WANT";
+  priceLabel: string;
+}
+
+export interface ExchangeCounts {
+  incoming: number;
+  outgoing: number;
+  active: number;
+}
+
+export interface ViewerExchangesResult {
+  current: ExchangeListItem[];
+  done: ExchangeListItem[];
+  selected: ExchangeDetail | null;
+  counts: ExchangeCounts;
+  opportunities: TradeOpportunity[];
 }
 
 export interface ExchangeDetail extends ExchangeListItem {
@@ -50,6 +79,11 @@ function buildSummary(gives: ExchangeCardSide[], gets: ExchangeCardSide[]): stri
   return give || get || "—";
 }
 
+function inboxRoleFor(status: ExchangeStatus, isInitiator: boolean): ExchangeInboxRole {
+  if (status === "PROPOSED") return isInitiator ? "outgoing" : "incoming";
+  return "active";
+}
+
 async function mapExchange(
   ex: Awaited<ReturnType<typeof fetchExchanges>>[number],
   viewerId: string,
@@ -72,6 +106,8 @@ async function mapExchange(
     else gets.push(side);
   }
 
+  const inboxRole = inboxRoleFor(ex.status, isInitiator);
+
   const listItem: ExchangeListItem = {
     id: ex.id,
     shortId: shortExchangeId(ex.id),
@@ -82,6 +118,8 @@ async function mapExchange(
     status: ex.status,
     createdAt: ex.createdAt,
     isDone: DONE_STATUSES.includes(ex.status),
+    inboxRole,
+    needsAction: inboxRole === "incoming",
   };
 
   return {
@@ -120,23 +158,64 @@ async function fetchExchanges(userId: string) {
   });
 }
 
-/** Échanges du membre connecté (liste + détail sélectionné). */
+/** Annonces marketplace ouvertes à l'échange (hors propres annonces du viewer). */
+export async function getTradeOpportunities(userId: string, limit = 8): Promise<TradeOpportunity[]> {
+  const listings = await prisma.listing.findMany({
+    where: {
+      status: "ACTIVE",
+      sellerId: { not: userId },
+      type: { in: ["TRADE", "SELL_OR_TRADE", "WANT"] },
+    },
+    orderBy: { updatedAt: "desc" },
+    take: limit,
+    include: {
+      seller: { select: { displayName: true, slug: true } },
+      variant: { include: { card: true } },
+    },
+  });
+
+  return listings.map((l) => {
+    const name = l.seller.displayName;
+    const isWant = l.type === "WANT";
+    return {
+      listingId: l.id,
+      cardName: l.variant.card.name,
+      cardImage: cardImage(l.variant.card.imageUrl),
+      sellerName: name,
+      sellerSlug: l.seller.slug,
+      sellerInitial: name.charAt(0).toUpperCase(),
+      type: l.type as TradeOpportunity["type"],
+      priceLabel: isWant ? formatPrice(l.budgetMax) : formatPrice(l.price),
+    };
+  });
+}
+
+/** Échanges du membre connecté (liste + détail + opportunités marketplace). */
 export async function getViewerExchanges(
   userId: string,
   tab: ExchangeTab,
   selectedId?: string,
-): Promise<{ current: ExchangeListItem[]; done: ExchangeListItem[]; selected: ExchangeDetail | null }> {
-  const raw = await fetchExchanges(userId);
+): Promise<ViewerExchangesResult> {
+  const [raw, opportunities] = await Promise.all([fetchExchanges(userId), getTradeOpportunities(userId)]);
   const mapped = await Promise.all(raw.map((ex) => mapExchange(ex, userId)));
 
   const current = mapped.filter((m) => !m.list.isDone).map((m) => m.list);
   const done = mapped.filter((m) => m.list.isDone).map((m) => m.list);
 
-  const pool = tab === "done" ? done : current;
-  const pickId = selectedId && pool.some((p) => p.id === selectedId) ? selectedId : pool[0]?.id;
-  const selected = pickId ? mapped.find((m) => m.list.id === pickId)?.detail ?? null : null;
+  const counts: ExchangeCounts = {
+    incoming: current.filter((c) => c.inboxRole === "incoming").length,
+    outgoing: current.filter((c) => c.inboxRole === "outgoing").length,
+    active: current.filter((c) => c.inboxRole === "active").length,
+  };
 
-  return { current, done, selected };
+  const pool = tab === "done" ? done : current;
+  const priorityId =
+    selectedId && pool.some((p) => p.id === selectedId)
+      ? selectedId
+      : current.find((c) => c.needsAction)?.id ?? pool[0]?.id;
+  const selected = priorityId ? mapped.find((m) => m.list.id === priorityId)?.detail ?? null : null;
+
+  return { current, done, selected, counts, opportunities };
 }
 
 /** Cartes possédées disponibles pour proposer un échange. */

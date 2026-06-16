@@ -89,7 +89,10 @@
     "activityWant": "{actor} is looking for {card}",
     "live": "Live",
     "topCollectorsTitle": "Top collectors",
-    "seeFullRanking": "See the full ranking"
+    "seeFullRanking": "See the full ranking",
+    "rarityCount": "{count} cards",
+    "rarityPrev": "Previous rarity",
+    "rarityNext": "Next rarity"
   },
   "pages": {
     "soon": "This section is already wired into the navigation. Its dynamic content is coming very soon.",
@@ -213,6 +216,16 @@
     "selectGiveCards": "Select cards to offer in return",
     "accept": "Accept exchange",
     "cancel": "Decline / cancel",
+    "sectionIncoming": "To reply · {count}",
+    "sectionOutgoing": "Awaiting reply · {count}",
+    "sectionActive": "In progress (shipping) · {count}",
+    "actionReply": "Reply",
+    "openToTrade": "Open to trade",
+    "openToTradeHint": "Members offering or looking for cards — send them a trade proposal.",
+    "listingTrade": "Trade",
+    "listingWant": "Want",
+    "proposeCta": "Propose",
+    "selectOrPropose": "Or pick a member below to send a trade proposal.",
     "status": {
       "proposed": "Proposed",
       "accepted": "Accepted",

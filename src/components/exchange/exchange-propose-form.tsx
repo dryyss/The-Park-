@@ -9,11 +9,17 @@ import { proposeExchangeAction } from "@/server/exchange/exchange.actions";
 
 type OwnedCard = { variantId: string; name: string; number: number; image: string | null; versionLabel: string };
 
-export function ExchangeProposeForm({ ownedCards }: { ownedCards: OwnedCard[] }) {
+export function ExchangeProposeForm({
+  ownedCards,
+  defaultRecipient = "",
+}: {
+  ownedCards: OwnedCard[];
+  defaultRecipient?: string;
+}) {
   const t = useTranslations("exchangePropose");
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [recipient, setRecipient] = useState("");
+  const [recipient, setRecipient] = useState(defaultRecipient);
   const [message, setMessage] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
