@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
-import { acceptExchange, cancelExchange, proposeExchange } from "@/server/exchange/exchange.mutations";
+import { acceptExchange, acceptExchangeWithItems, cancelExchange, proposeExchange } from "@/server/exchange/exchange.mutations";
 
 export type ExchangeActionResult = { ok: true; exchangeId?: string } | { ok: false; error: string };
 
@@ -31,12 +31,16 @@ export async function proposeExchangeAction(input: unknown): Promise<ExchangeAct
   }
 }
 
-export async function acceptExchangeAction(exchangeId: string): Promise<ExchangeActionResult> {
+export async function acceptExchangeAction(exchangeId: string, giveVariantIds?: string[]): Promise<ExchangeActionResult> {
   const viewer = await getAuthenticatedViewer();
   if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
 
   try {
-    await acceptExchange(viewer.id, exchangeId);
+    if (giveVariantIds && giveVariantIds.length > 0) {
+      await acceptExchangeWithItems(viewer.id, exchangeId, giveVariantIds);
+    } else {
+      await acceptExchange(viewer.id, exchangeId);
+    }
     revalidatePath("/echanges");
     revalidatePath("/securite", "layout");
     return { ok: true };

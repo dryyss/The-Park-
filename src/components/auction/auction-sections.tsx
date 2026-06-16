@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { rarityMeta } from "@/lib/rarity";
 import type { AuctionListItem } from "@/server/auction/auction.service";
+import { AuctionBidForm } from "@/components/auction/auction-bid-form";
 
 function timeLeft(endsAt: Date): string {
   const diff = endsAt.getTime() - Date.now();
@@ -77,14 +78,11 @@ export async function AuctionDetailPanel({ auction }: { auction: import("@/serve
         </p>
         <p className="mt-6 font-display text-[36px] text-or">{auction.currentPrice}</p>
         <p className="text-[12px] font-bold text-texte-faible">{t("increment", { amount: auction.bidIncrement })}</p>
-        <button
-          type="button"
-          disabled
-          className="mt-6 w-full rounded-[12px] bg-carmin/50 px-6 py-3.5 font-display text-[14px] tracking-[1.5px] text-white uppercase"
-        >
-          {t("bidSoon")}
-        </button>
-        <p className="mt-3 text-center text-[11px] font-bold text-texte-faible">{t("disclaimer")}</p>
+        {auction.status === "ACTIVE" ? (
+          <AuctionBidForm auctionId={auction.id} minAmount={auction.minBidAmount} />
+        ) : (
+          <p className="mt-6 text-[13px] font-bold text-texte-dim">{t("ended")}</p>
+        )}
       </div>
       <div className="rounded-[18px] border border-charbon-500 bg-charbon-800 p-5">
         <h3 className="font-display text-[16px] tracking-wide text-blanc-casse uppercase">{t("bidHistory")}</h3>

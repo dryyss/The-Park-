@@ -207,6 +207,9 @@
     "doubleValidation": "Double validation",
     "you": "TOI",
     "validationPending": "En attente",
+    "selectGiveCards": "Choisis les cartes à proposer en retour",
+    "accept": "Accepter l'échange",
+    "cancel": "Refuser / annuler",
     "status": {
       "proposed": "Proposé",
       "accepted": "Accepté",
@@ -311,6 +314,10 @@
     "title": "Notifications",
     "noUser": "Connecte-toi pour voir tes notifications.",
     "empty": "Aucune notification pour le moment.",
+    "unreadCount": "{count} non lue(s)",
+    "allRead": "Tout est lu",
+    "markAllRead": "Tout marquer comme lu",
+    "markRead": "Marquer comme lu",
     "markAllHint": "Marquer tout comme lu — bientôt disponible",
     "types": {
       "exchangeProposed": "Échange proposé",
@@ -365,6 +372,7 @@
     "back": "Messages",
     "viewExchange": "Voir l'échange",
     "inputPlaceholder": "Écrire un message…",
+    "send": "Envoyer",
     "sendSoon": "Envoi bientôt",
     "context": {
       "exchange": "Échange",
@@ -391,6 +399,9 @@
     "back": "Enchères",
     "seller": "Vendeur",
     "increment": "Pas minimum : {amount}",
+    "yourBid": "Ton enchère (€)",
+    "bid": "Enchérir",
+    "ended": "Enchère terminée",
     "bidSoon": "Enchérir — bientôt",
     "disclaimer": "Démo UI — pas d'encaissement réel.",
     "bidHistory": "Historique",
@@ -484,7 +495,10 @@
     "recentListings": "Annonces récentes",
     "newListing": "+ Nouvelle annonce",
     "noListings": "Aucune annonce.",
-    "views": "vues"
+    "views": "vues",
+    "pauseListing": "Pause",
+    "resumeListing": "Reprendre",
+    "cancelListing": "Annuler"
   },
   "admin": {
     "kicker": "Staff · The Park",
@@ -495,6 +509,7 @@
     "manageOrders": "Commandes boutique",
     "manageModeration": "Modération",
     "manageCatalog": "Catalogue",
+    "manageSettings": "Réglages plateforme",
     "moreSoon": "Modération, catalogue… — bientôt",
     "back": "Console admin",
     "modules": {
@@ -565,6 +580,18 @@
       "release": "Sortie",
       "save": "Enregistrer"
     },
+    "settings": {
+      "kicker": "Plateforme · réglages",
+      "title": "Réglages",
+      "shippingTitle": "Livraison boutique & marketplace",
+      "freeMin": "Seuil livraison gratuite (€)",
+      "standardFee": "Frais port standard (€)",
+      "carrier": "Transporteur par défaut",
+      "listingDays": "Durée annonce (jours)",
+      "demoSlug": "Slug utilisateur démo (optionnel)",
+      "demoSlugHint": "Laisser vide pour exiger la connexion",
+      "save": "Enregistrer"
+    },
     "orders": {
       "kicker": "Boutique · commandes",
       "title": "Gestion commandes",
@@ -629,6 +656,43 @@
     "aAccountMinor": "Contrôle d'âge à l'inscription, consentement parental < 15 ans, chat uniquement lié aux échanges.",
     "qAccountData": "Mes données personnelles ?",
     "aAccountData": "Tu peux demander l'export ou la suppression depuis Paramètres (RGPD)."
+  },
+  "sellReady": {
+    "title": "Avant de vendre",
+    "intro": "Quelques étapes à valider sur ton compte avant de publier une annonce.",
+    "optional": "Recommandé",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "error": "Une erreur est survenue. Réessaie.",
+    "account": {
+      "title": "Compte vérifié",
+      "desc": "Ton adresse email doit être confirmée et ton compte actif.",
+      "hint": "Vérifie l'email de confirmation envoyé par Auth0, puis reconnecte-toi."
+    },
+    "age": {
+      "title": "Âge & protection des mineurs",
+      "desc": "Indique ta date de naissance. Les mineurs ont besoin du consentement d'un tuteur.",
+      "label": "Date de naissance",
+      "guardian": "Email du tuteur légal",
+      "minorNotice": "Tu es mineur : un email sera envoyé à ton tuteur pour valider ton inscription vendeur.",
+      "pendingConsent": "En attente de la validation du tuteur légal."
+    },
+    "address": {
+      "title": "Adresse d'expédition",
+      "desc": "Nécessaire pour expédier les cartes vendues.",
+      "cta": "Ajouter une adresse",
+      "fullName": "Nom complet",
+      "line1": "Adresse",
+      "line2": "Complément (optionnel)",
+      "zip": "Code postal",
+      "city": "Ville",
+      "phone": "Téléphone (optionnel)"
+    },
+    "payout": {
+      "title": "Compte de versement",
+      "desc": "Pour recevoir l'argent de tes ventes (Stripe Connect).",
+      "hint": "Bientôt disponible — non requis pour le moment."
+    }
   },
   "settings": {
     "kicker": "Mon compte",

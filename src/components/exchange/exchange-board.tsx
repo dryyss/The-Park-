@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { avatarGradient } from "@/lib/avatars";
 import { exchangeStatusStyle, EXCHANGE_STATUS_I18N } from "@/lib/exchange-status";
 import type { ExchangeDetail, ExchangeListItem, ExchangeTab } from "@/server/exchange/exchange.service";
+import { ExchangeActionsPanel } from "@/components/exchange/exchange-actions-panel";
 
 function ExchangeTabs({
   tab,
@@ -78,7 +79,13 @@ function ExchangeListRow({
   );
 }
 
-async function ExchangeDetailPanel({ detail }: { detail: ExchangeDetail }) {
+async function ExchangeDetailPanel({
+  detail,
+  ownedCards = [],
+}: {
+  detail: ExchangeDetail;
+  ownedCards?: { variantId: string; name: string }[];
+}) {
   const t = await getTranslations("exchanges");
   const st = exchangeStatusStyle(detail.status);
   const statusKey = EXCHANGE_STATUS_I18N[detail.status];
@@ -147,6 +154,8 @@ async function ExchangeDetailPanel({ detail }: { detail: ExchangeDetail }) {
           </div>
         </div>
       </div>
+
+      <ExchangeActionsPanel detail={detail} ownedCards={ownedCards} />
     </div>
   );
 }
@@ -179,11 +188,13 @@ export async function ExchangeBoard({
   current,
   done,
   selected,
+  ownedCards = [],
 }: {
   tab: ExchangeTab;
   current: ExchangeListItem[];
   done: ExchangeListItem[];
   selected: ExchangeDetail | null;
+  ownedCards?: { variantId: string; name: string }[];
 }) {
   const t = await getTranslations("exchanges");
   const list = tab === "done" ? done : current;
@@ -217,7 +228,7 @@ export async function ExchangeBoard({
         </div>
 
         {selected ? (
-          <ExchangeDetailPanel detail={selected} />
+          <ExchangeDetailPanel detail={selected} ownedCards={ownedCards} />
         ) : (
           <div className="flex min-h-[320px] items-center justify-center rounded-[20px] border border-charbon-500 bg-charbon-800 p-8 text-[13px] font-bold text-texte-dim">
             {t("selectExchange")}

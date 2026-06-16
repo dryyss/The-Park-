@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { avatarGradient } from "@/lib/avatars";
 import type { NotificationItem } from "@/server/notification/notification.service";
+import { NotificationActions, NotificationRowActions } from "@/components/notifications/notification-actions";
 
 export async function NotificationList({ items }: { items: NotificationItem[] }) {
   const t = await getTranslations("notifications");
@@ -11,7 +12,9 @@ export async function NotificationList({ items }: { items: NotificationItem[] })
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <>
+      <NotificationActions items={items} />
+      <div className="flex flex-col gap-2">
       {items.map((n) => (
         <div
           key={n.id}
@@ -34,10 +37,11 @@ export async function NotificationList({ items }: { items: NotificationItem[] })
             <p className="mt-2 text-[11px] font-bold text-texte-faible">
               {new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium", timeStyle: "short" }).format(n.createdAt)}
             </p>
+            <NotificationRowActions id={n.id} read={n.read} />
           </div>
         </div>
       ))}
-      <p className="mt-4 text-center text-[12px] font-bold text-texte-faible">{t("markAllHint")}</p>
-    </div>
+      </div>
+    </>
   );
 }

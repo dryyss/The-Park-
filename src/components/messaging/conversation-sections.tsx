@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { avatarGradient } from "@/lib/avatars";
 import type { ConversationListItem } from "@/server/messaging/conversation.service";
+import { MessageComposeForm } from "@/components/messaging/message-compose-form";
 
 export async function ConversationList({ items }: { items: ConversationListItem[] }) {
   const t = await getTranslations("messages");
@@ -87,18 +88,7 @@ export async function ConversationThreadView({
           </div>
         ))}
       </div>
-      <div className="border-t border-charbon-500 p-4">
-        <div className="flex gap-2">
-          <input
-            disabled
-            placeholder={t("inputPlaceholder")}
-            className="flex-1 rounded-[11px] border border-charbon-500 bg-charbon-700 px-4 py-2.5 text-[13px] text-blanc-casse outline-none"
-          />
-          <button type="button" disabled className="rounded-[11px] bg-carmin/50 px-5 py-2.5 font-display text-[12px] tracking-wide text-white uppercase">
-            {t("sendSoon")}
-          </button>
-        </div>
-      </div>
+      <MessageComposeForm conversationId={thread.id} />
     </div>
   );
 }

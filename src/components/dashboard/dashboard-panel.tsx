@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { DashboardStats } from "@/server/dashboard/dashboard.service";
+import { ListingActions } from "@/components/dashboard/listing-actions";
 
 export async function DashboardPanel({ stats }: { stats: DashboardStats }) {
   const t = await getTranslations("dashboard");
@@ -43,6 +44,7 @@ export async function DashboardPanel({ stats }: { stats: DashboardStats }) {
                   <span>{l.price}</span>
                   <span>{l.views} {t("views")}</span>
                   <span className="rounded-md bg-charbon-600 px-2 py-0.5 text-[10px] uppercase">{l.status}</span>
+                  <ListingActions listingId={l.id} status={l.status} />
                 </div>
               </div>
             ))

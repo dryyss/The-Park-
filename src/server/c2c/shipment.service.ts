@@ -84,6 +84,18 @@ export async function recordShipmentProof(
   return proof.id;
 }
 
+/** Purge RGPD des preuves vidéo > 60 j après clôture (job cron). */
+export async function purgeExpiredShipmentProofs(): Promise<number> {
+  const cutoff = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000);
+  const result = await prisma.shipmentProof.deleteMany({
+    where: {
+      serverRecordedAt: { lt: cutoff },
+      shipment: { status: { in: ["DELIVERED", "RETURNED", "LOST"] } },
+    },
+  });
+  return result.count;
+}
+
 /** Marque un colis comme expédié avec numéro de suivi. */
 export async function markShipmentShipped(
   shipmentId: string,

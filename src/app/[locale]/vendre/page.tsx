@@ -2,7 +2,9 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { requireAuthViewer } from "@/server/user/user.service";
 import { getOwnedCardsForSale } from "@/server/marketplace/sell.service";
+import { getSellerReadiness } from "@/server/marketplace/seller-readiness.service";
 import { SellForm } from "@/components/sell/sell-form";
+import { SellerReadiness } from "@/components/sell/seller-readiness";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +14,8 @@ export default async function VendrePage({ params }: { params: Promise<{ locale:
   const t = await getTranslations("sell");
 
   const viewer = await requireAuthViewer(`/${locale}/vendre`);
-  const cards = await getOwnedCardsForSale(viewer.id);
+  const readiness = await getSellerReadiness(viewer.id);
+  const cards = readiness.ready ? await getOwnedCardsForSale(viewer.id) : [];
 
   return (
     <main className="mx-auto max-w-[1120px] px-7 pt-7 pb-[60px]">
@@ -30,7 +33,7 @@ export default async function VendrePage({ params }: { params: Promise<{ locale:
       <p className="mt-3.5 text-[13.5px] font-bold text-texte-doux">{t("subtitle")}</p>
 
       <div className="mt-6">
-        <SellForm cards={cards} />
+        {readiness.ready ? <SellForm cards={cards} /> : <SellerReadiness readiness={readiness} />}
       </div>
     </main>
   );

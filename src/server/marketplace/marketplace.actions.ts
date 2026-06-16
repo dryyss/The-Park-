@@ -3,9 +3,15 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
+import {
+  cancelListing,
+  pauseListing,
+  publishWantListing,
+  resumeListing,
+} from "@/server/marketplace/marketplace.mutations";
 import { publishListing } from "@/server/marketplace/marketplace.mutations";
 
-export type MarketplaceActionResult = { ok: true; listingId: string } | { ok: false; error: string };
+export type MarketplaceActionResult = { ok: true; listingId?: string } | { ok: false; error: string };
 
 const publishSchema = z.object({
   variantId: z.string().min(1),
@@ -13,7 +19,14 @@ const publishSchema = z.object({
   description: z.string().max(500).optional(),
 });
 
-export async function publishListingAction(input: unknown): Promise<MarketplaceActionResult> {
+const wantSchema = z.object({
+  variantId: z.string().min(1),
+  budgetMax: z.number().min(0).max(99999).optional(),
+});
+
+const listingIdSchema = z.object({ listingId: z.string().min(1) });
+
+export async function publishListingAction(input: unknown): Promise<MarketplaceActionResult & { listingId?: string }> {
   const viewer = await getAuthenticatedViewer();
   if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
 
@@ -29,7 +42,68 @@ export async function publishListingAction(input: unknown): Promise<MarketplaceA
     });
     revalidatePath("/marketplace");
     revalidatePath("/vendre");
+    revalidatePath("/dashboard");
     return { ok: true, listingId };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
+export async function publishWantListingAction(input: unknown): Promise<MarketplaceActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  const parsed = wantSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+
+  try {
+    const listingId = await publishWantListing(viewer.id, parsed.data);
+    revalidatePath("/marketplace");
+    revalidatePath("/dashboard");
+    return { ok: true, listingId };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
+export async function pauseListingAction(input: unknown): Promise<MarketplaceActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+  const parsed = listingIdSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+  try {
+    await pauseListing(viewer.id, parsed.data.listingId);
+    revalidatePath("/dashboard");
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
+export async function resumeListingAction(input: unknown): Promise<MarketplaceActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+  const parsed = listingIdSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+  try {
+    await resumeListing(viewer.id, parsed.data.listingId);
+    revalidatePath("/dashboard");
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
+export async function cancelListingAction(input: unknown): Promise<MarketplaceActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+  const parsed = listingIdSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+  try {
+    await cancelListing(viewer.id, parsed.data.listingId);
+    revalidatePath("/dashboard");
+    revalidatePath("/marketplace");
+    return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
   }

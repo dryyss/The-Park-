@@ -573,6 +573,43 @@
     "qAccountData": "My personal data?",
     "aAccountData": "Request export or deletion from Settings (GDPR)."
   },
+  "sellReady": {
+    "title": "Before you sell",
+    "intro": "A few account steps to complete before publishing a listing.",
+    "optional": "Recommended",
+    "save": "Save",
+    "cancel": "Cancel",
+    "error": "Something went wrong. Try again.",
+    "account": {
+      "title": "Verified account",
+      "desc": "Your email must be confirmed and your account active.",
+      "hint": "Check the confirmation email from Auth0, then sign in again."
+    },
+    "age": {
+      "title": "Age & minor protection",
+      "desc": "Enter your date of birth. Minors need a guardian's consent.",
+      "label": "Date of birth",
+      "guardian": "Legal guardian's email",
+      "minorNotice": "You are a minor: an email will be sent to your guardian to approve your seller registration.",
+      "pendingConsent": "Awaiting legal guardian's approval."
+    },
+    "address": {
+      "title": "Shipping address",
+      "desc": "Required to ship the cards you sell.",
+      "cta": "Add an address",
+      "fullName": "Full name",
+      "line1": "Address",
+      "line2": "Address line 2 (optional)",
+      "zip": "ZIP code",
+      "city": "City",
+      "phone": "Phone (optional)"
+    },
+    "payout": {
+      "title": "Payout account",
+      "desc": "To receive money from your sales (Stripe Connect).",
+      "hint": "Coming soon — not required for now."
+    }
+  },
   "settings": {
     "kicker": "My account",
     "title": "Settings",

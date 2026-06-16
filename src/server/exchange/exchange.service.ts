@@ -142,7 +142,7 @@ export async function getViewerExchanges(
 /** Cartes possédées disponibles pour proposer un échange. */
 export async function getViewerOwnedCardsForPropose(userId: string) {
   const items = await prisma.collectionItem.findMany({
-    where: { userId, reservedQuantity: 0 },
+    where: { userId },
     include: {
       variant: {
         include: { card: true, versionType: true },
@@ -152,7 +152,9 @@ export async function getViewerOwnedCardsForPropose(userId: string) {
     take: 24,
   });
 
-  return items.map((i) => ({
+  return items
+    .filter((i) => i.quantity > i.reservedQuantity)
+    .map((i) => ({
     variantId: i.variantId,
     name: i.variant.card.name,
     number: i.variant.card.number,

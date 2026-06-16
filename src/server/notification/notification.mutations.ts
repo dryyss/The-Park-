@@ -1,6 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import type { NotificationType } from "@/generated/prisma/client";
+import type { NotificationType, Prisma } from "@/generated/prisma/client";
 import { pushUserEvent } from "@/lib/pusher";
 import { sendTransactionalEmail } from "@/lib/resend";
 import { getUserNotificationPrefs } from "@/server/user/settings.service";
@@ -44,7 +44,7 @@ export async function dispatchNotification(input: {
       actorId: input.actorId ?? null,
       entityType: input.entityType ?? null,
       entityId: input.entityId ?? null,
-      payload: input.payload ?? undefined,
+      payload: (input.payload ?? undefined) as Prisma.InputJsonValue | undefined,
     },
   });
 

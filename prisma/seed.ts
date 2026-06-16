@@ -662,6 +662,26 @@ async function main() {
     }
   }
 
+  console.log("→ Réglages plateforme");
+  await prisma.platformConfig.upsert({
+    where: { id: "default" },
+    update: {
+      shopFreeShippingMin: 50,
+      shopStandardShipping: 4.9,
+      shopDefaultCarrier: "Colissimo",
+      demoUserSlug: null,
+      listingDefaultDays: 30,
+    },
+    create: {
+      id: "default",
+      shopFreeShippingMin: 50,
+      shopStandardShipping: 4.9,
+      shopDefaultCarrier: "Colissimo",
+      demoUserSlug: null,
+      listingDefaultDays: 30,
+    },
+  });
+
   console.log(
     `✅ Seed terminé — ${total} cartes · ${members} membres · ${listings} annonces (${createdListings} créées).`,
   );
