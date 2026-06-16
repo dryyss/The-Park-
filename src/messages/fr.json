@@ -8,7 +8,7 @@
     "signup": "Créer un compte",
     "logout": "Se déconnecter",
     "greeting": "Bonjour, {name}",
-    "loginFailed": "La connexion a échoué ({code}). Réessaie depuis la même URL que dans Auth0 (localhost en dev, https://the-park-omega.vercel.app en prod).",
+    "loginFailed": "La connexion a échoué ({code}). Réessaie depuis la même URL que dans Auth0 (localhost en dev, https://the-park-omega.vercel.app en prod)."
   },
   "nav": {
     "home": "Accueil",

@@ -77,7 +77,12 @@ export function resolveAuth0ClientBaseUrl(): string | undefined {
   if (process.env.VERCEL) {
     const explicit = getExplicitBaseUrl();
     if (explicit && !isLocalhostUrl(explicit)) return explicit;
-    return getVercelBaseUrl();
+
+    const vercel = getVercelBaseUrl();
+    if (vercel) return vercel;
+
+    const host = process.env.VERCEL_URL?.replace(/^https?:\/\//, "").replace(/\/$/, "");
+    if (host) return `https://${host}`;
   }
 
   if (process.env.NODE_ENV !== "production") return undefined;

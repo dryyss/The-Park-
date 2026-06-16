@@ -8,7 +8,7 @@
     "signup": "アカウント作成",
     "logout": "ログアウト",
     "greeting": "こんにちは、{name}さん",
-    "loginFailed": "ログイン失敗 ({code})。Auth0 に登録した URL でアクセスしてください（dev: localhost、prod: https://the-park-omega.vercel.app）。",
+    "loginFailed": "ログイン失敗 ({code})。Auth0 に登録した URL でアクセスしてください（dev: localhost、prod: https://the-park-omega.vercel.app）。"
   },
   "nav": {
     "home": "ホーム",
