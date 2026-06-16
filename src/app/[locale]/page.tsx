@@ -4,7 +4,8 @@ import { getRecentListings } from "@/server/marketplace/marketplace.service";
 import { getTopCollectors, getRecentActivity } from "@/server/community/community.service";
 import { rarityMeta } from "@/lib/rarity";
 import { HeroSection } from "@/components/home/hero-section";
-import { RarityStrip, type RarityStripItem } from "@/components/home/rarity-strip";
+import { type RarityStripItem } from "@/components/home/rarity-strip";
+import { RarityCarousel } from "@/components/home/rarity-carousel";
 import { FeaturedCards } from "@/components/home/featured-cards";
 import { SeasonBanner } from "@/components/home/season-banner";
 import { LatestListings } from "@/components/home/latest-listings";
@@ -50,7 +51,7 @@ export default async function Home({
       <HeroSection stats={stats} heroCards={featured.slice(0, 3)} />
 
       <div className="mx-auto max-w-[1320px] px-7 pb-[60px]">
-        <RarityStrip rarities={rarities} />
+        <RarityCarousel rarities={rarities} />
         <FeaturedCards cards={featured.slice(3, 8)} />
         <SeasonBanner />
         <LatestListings listings={listings} />

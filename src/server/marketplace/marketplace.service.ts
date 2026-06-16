@@ -5,6 +5,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { rarityMeta, cardImage, type HoloVariant } from "@/lib/rarity";
 import { conditionColor } from "@/lib/condition";
 import { formatPrice } from "@/lib/format";
+import { isActiveVersionCode } from "@/lib/card-versions";
 
 /** "sell" = annonces où l'on propose une carte ; "want" = recherches. */
 export type MarketIntent = "sell" | "want";
@@ -36,6 +37,7 @@ export interface MarketplaceCard {
   conditionColor: string;
   isWant: boolean;
   priceLabel: string;
+  sellerId: string;
   seller: { name: string; slug: string; initial: string; rating: string; reviews: number };
 }
 
@@ -138,7 +140,7 @@ function buildWhere(f: MarketplaceFilters): Prisma.ListingWhereInput {
 }
 
 const fullInclude = {
-  seller: { select: { displayName: true, slug: true, ratingAvg: true, reviewCount: true } },
+  seller: { select: { id: true, displayName: true, slug: true, ratingAvg: true, reviewCount: true } },
   variant: {
     include: { versionType: true, card: { include: { rarity: true } } },
   },
@@ -168,6 +170,7 @@ function toMarketplaceCard(l: FullRow): MarketplaceCard {
     conditionColor: conditionColor(l.condition),
     isWant,
     priceLabel: isWant ? formatPrice(l.budgetMax) : formatPrice(l.price),
+    sellerId: l.seller.id,
     seller: {
       name,
       slug: l.seller.slug,
@@ -214,7 +217,7 @@ export async function getMarketplaceFacets(): Promise<MarketplaceFacets> {
   return {
     sellCount,
     wantCount,
-    versions,
+    versions: versions.filter((v) => isActiveVersionCode(v.code)),
     rarities: rarityGroups.map((r) => ({ code: r.code, count: r._count.cards })),
   };
 }

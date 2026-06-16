@@ -886,3 +886,26 @@ export const CARDS = RAW.map((r) => ({
   co: r[7],
   d: r[8],
 }));
+
+/**
+ * Versions optionnelles par numéro de carte (en plus de Standard).
+ * unique · promotionnelle · carte spéciale · collaboration · signé
+ */
+export const CARD_EXTRA_VERSIONS = {
+  0: ["promotional", "special", "signed"],
+  68: ["special"],
+  69: ["special"],
+  70: ["collaboration"],
+  72: ["collaboration", "signed"],
+  74: ["collaboration"],
+  77: ["unique"],
+};
+
+/** Libellé d'édition catalogue par défaut (Saison 1). */
+export const DEFAULT_S01_EDITION_LABEL = "1ère édition";
+
+/**
+ * Surcharge d'édition par numéro de carte (null = illimitée).
+ * Absent = DEFAULT_S01_EDITION_LABEL pour toute la saison.
+ */
+export const CARD_EDITION_LABELS = {};

@@ -1,13 +1,16 @@
+import { Suspense } from "react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getViewerUser } from "@/server/user/user.service";
 import { getUserCollection } from "@/server/collection/collection.service";
 import { PageHeader } from "@/components/common/page-header";
 import { CompletionPanel, CollectionFiltersBar } from "@/components/collection/collection-filters";
 import { CollectionCardTile } from "@/components/collection/collection-card-tile";
+import { CollectionDisplayControls } from "@/components/collection/collection-display-controls";
+import { collectionGridClassName, parseCollectionGridCols, parseCollectionSort } from "@/lib/collection-grid";
 
 export const dynamic = "force-dynamic";
 
-type SP = { segment?: string; rarity?: string; q?: string };
+type SP = { segment?: string; rarity?: string; q?: string; cols?: string; sort?: string };
 
 export default async function CollectionPage({
   params,
@@ -32,9 +35,12 @@ export default async function CollectionPage({
     segment: (sp.segment === "owned" || sp.segment === "missing" ? sp.segment : "all") as "all" | "owned" | "missing",
     rarity: sp.rarity,
     q: sp.q,
+    cols: parseCollectionGridCols(sp.cols),
+    sort: parseCollectionSort(sp.sort),
   };
 
   const data = await getUserCollection(viewer.id, collParams);
+  const gridClass = collectionGridClassName(collParams.cols);
 
   return (
     <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
@@ -50,7 +56,12 @@ export default async function CollectionPage({
       </PageHeader>
 
       <CompletionPanel data={data} />
-      <CollectionFiltersBar params={collParams} counts={data.counts} locale={locale} />
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3.5">
+        <CollectionFiltersBar params={collParams} counts={data.counts} locale={locale} />
+        <Suspense fallback={null}>
+          <CollectionDisplayControls />
+        </Suspense>
+      </div>
 
       {data.sections.map((sec) => (
         <section key={sec.code} className="mt-9">
@@ -69,9 +80,9 @@ export default async function CollectionPage({
               <div className="h-full rounded transition-all" style={{ width: `${sec.pct}%`, background: sec.color }} />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          <div className={gridClass}>
             {sec.cards.map((card) => (
-              <CollectionCardTile key={card.slug} card={card} missingLabel={t("missing")} />
+              <CollectionCardTile key={card.slug} card={card} missingLabel={t("missing")} editable />
             ))}
           </div>
         </section>

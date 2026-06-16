@@ -77,7 +77,7 @@
     "seeAllCollection": "Voir toute la collection →",
     "seasonKicker": "Saison 1 · disponible",
     "seasonName": "Moteur Forgé",
-    "seasonDesc": "La première édition Pocket Drifterz : <b>67 cartes numérotées</b>, des secrètes Légendaires et Gold, et chaque carte en versions Standard, Reverse et Alternative.",
+    "seasonDesc": "La première édition Pocket Drifterz : <b>67 cartes numérotées</b>, des secrètes Légendaires et Gold.",
     "seasonCta": "Suivre ma complétion",
     "latestTitle": "Fraîchement listées",
     "latestJp": "出品",
@@ -120,6 +120,25 @@
     "segMissing": "Manquantes",
     "searchPlaceholder": "Rechercher une carte, un n°…",
     "missing": "Manquante",
+    "qtyIncrease": "Ajouter une carte",
+    "qtyDecrease": "Retirer une carte",
+    "conditionLabel": "État",
+    "qtyLoginRequired": "Connecte-toi pour modifier ton classeur.",
+    "qtyReserved": "Carte réservée pour un échange ou une annonce.",
+    "qtyError": "Impossible de mettre à jour la quantité.",
+    "gridColsLabel": "Affichage",
+    "gridColsPerRow": "{count} cartes par ligne",
+    "sortLabel": "Tri",
+    "sort": {
+      "number": "N° croissant",
+      "number-desc": "N° décroissant",
+      "name": "Nom A → Z",
+      "name-desc": "Nom Z → A",
+      "owned-first": "Possédées d'abord",
+      "missing-first": "Manquantes d'abord",
+      "quantity-desc": "Quantité ↓",
+      "quantity-asc": "Quantité ↑"
+    },
     "noUser": "Aucun profil disponible."
   },
   "rankings": {
@@ -148,15 +167,31 @@
     "no": "Non",
     "versionsTitle": "Versions · suivies séparément",
     "versionOwned": "Possédée ✓",
+    "versionQty": "{count, plural, one {# exemplaire} other {# exemplaires}}",
+    "versionQtyReserved": "{count, plural, one {# exemplaire} other {# exemplaires}} · {reserved} réservé(s)",
     "versionMissing": "Manquante",
     "ctaListings": "Voir les annonces",
     "ctaExchange": "Proposer un échange",
     "listingsTitle": "Annonces en cours",
     "contact": "Contacter",
+    "ownListingYou": "Mon annonce",
+    "actionManage": "Gérer",
     "manageTitle": "Ma collection",
     "addVersion": "Ajouter · {label}",
     "removeVersion": "Retirer · {label}",
-    "addWishlist": "+ Wishlist"
+    "addWishlist": "+ Wishlist",
+    "firstEditionBadge": "1ÈRE ÉDITION",
+    "editionLabel": "Édition",
+    "editionFirst": "1ère édition",
+    "editionUnlimited": "Illimitée",
+    "editionCustom": "Autre",
+    "editionCustomPlaceholder": "ex. 2ème édition, EU print…",
+    "editionSave": "OK",
+    "editionCatalog": "Catalogue : {label}",
+    "editionActive": "Édition : {label}",
+    "editionActiveFirst": "Édition : 1ère édition",
+    "editionActiveUnlimited": "Édition : illimitée",
+    "editionError": "Impossible de mettre à jour l'édition."
   },
   "search": {
     "kicker": "Catalogue · Saison 1",
@@ -174,7 +209,7 @@
   "season": {
     "kicker": "Saison 1 · disponible",
     "title": "Moteur Forgé",
-    "desc": "La première édition Pocket Drifterz : 78 cartes numérotées, des secrètes Légendaires et Gold, et chaque carte en versions Standard, Reverse et Alternative.",
+    "desc": "La première édition Pocket Drifterz : 78 cartes numérotées — Standard pour toutes, plus Unique, Promotionnelle, Carte spéciale, Collaboration ou Signé selon les tirages.",
     "trackCompletion": "Suivre ma complétion"
   },
   "profile": {
@@ -296,7 +331,9 @@
     "publishError": "Impossible de publier l'annonce.",
     "publishSoon": "Publication bientôt disponible",
     "preview": "Aperçu",
-    "quoteRef": "Cote ref."
+    "quoteRef": "Cote ref.",
+    "ownedQty": "{count, plural, one {# exemplaire} other {# exemplaires}}",
+    "availableQty": "{count} dispo."
   },
   "marketplace": {
     "kicker": "Achète · Vends · Échange entre membres",
@@ -322,6 +359,9 @@
     "wantedBadge": "Recherchée",
     "actionContact": "Contacter",
     "actionPropose": "Proposer la mienne",
+    "actionManage": "Gérer",
+    "ownListingBadge": "Mon annonce",
+    "ownListingYou": "Mon annonce",
     "reviews": "{count} avis",
     "emptyJp": "何もない",
     "emptyText": "Aucune annonce ne correspond à ces filtres."
@@ -680,7 +720,7 @@
       "account": "Compte"
     },
     "qCollectionVersions": "Pourquoi chaque version est suivie séparément ?",
-    "aCollectionVersions": "Une carte peut exister en Standard, Reverse, Alternative… Chaque version compte pour la complétion et la possession.",
+    "aCollectionVersions": "Chaque carte existe en Standard. Certaines proposent en plus : Unique, Promotionnelle, Carte spéciale, Collaboration ou Signé — chaque version compte pour la complétion.",
     "qCollectionMissing": "Comment repérer les cartes manquantes ?",
     "aCollectionMissing": "Filtre « Manquantes » dans ton classeur ou la page Saison 1.",
     "qMarketplacePayment": "Puis-je payer sur la marketplace ?",
@@ -800,6 +840,7 @@
     "subtitle": "Sélectionne les cartes que tu offres — uniquement celles que tu possèdes.",
     "noUser": "Connecte-toi pour proposer un échange.",
     "youGive": "Tu proposes",
+    "qtyAvailable": "{count, plural, one {# dispo.} other {# dispos.}}",
     "recipient": "Destinataire",
     "recipientPlaceholder": "Pseudo ou lien collectionneur",
     "message": "Message",

@@ -77,7 +77,7 @@
     "seeAllCollection": "コレクション全体を見る →",
     "seasonKicker": "シーズン1 · 配信中",
     "seasonName": "鍛造エンジン",
-    "seasonDesc": "Pocket Drifterz 初版：<b>67 枚のナンバリングカード</b>、シークレットのレジェンダリーとゴールド、そして各カードはスタンダード・リバース・オルタナティブの各バージョン。",
+    "seasonDesc": "Pocket Drifterz 初版：<b>67 枚のナンバリングカード</b>、シークレットのレジェンダリーとゴールド。",
     "seasonCta": "達成度を追う",
     "latestTitle": "新着出品",
     "latestJp": "出品",
@@ -120,6 +120,25 @@
     "segMissing": "未所持",
     "searchPlaceholder": "カード名・番号を検索…",
     "missing": "未所持",
+    "qtyIncrease": "カードを追加",
+    "qtyDecrease": "カードを減らす",
+    "conditionLabel": "状態",
+    "qtyLoginRequired": "コレクションを編集するにはログインしてください。",
+    "qtyReserved": "交換または出品で予約中のカードです。",
+    "qtyError": "数量を更新できませんでした。",
+    "gridColsLabel": "表示",
+    "gridColsPerRow": "1行 {count} 枚",
+    "sortLabel": "並び替え",
+    "sort": {
+      "number": "番号昇順",
+      "number-desc": "番号降順",
+      "name": "名前 A → Z",
+      "name-desc": "名前 Z → A",
+      "owned-first": "所持優先",
+      "missing-first": "未所持優先",
+      "quantity-desc": "枚数 ↓",
+      "quantity-asc": "枚数 ↑"
+    },
     "noUser": "プロフィールがありません。"
   },
   "rankings": {
@@ -148,15 +167,31 @@
     "no": "いいえ",
     "versionsTitle": "バージョン · 個別追跡",
     "versionOwned": "所持 ✓",
+    "versionQty": "{count}枚",
+    "versionQtyReserved": "{count}枚 · {reserved}枚予約中",
     "versionMissing": "未所持",
     "ctaListings": "出品を見る",
     "ctaExchange": "交換を提案",
     "listingsTitle": "出品中",
     "contact": "連絡",
+    "ownListingYou": "自分の出品",
+    "actionManage": "管理",
     "manageTitle": "マイコレクション",
     "addVersion": "追加 · {label}",
     "removeVersion": "削除 · {label}",
-    "addWishlist": "+ ウィッシュリスト"
+    "addWishlist": "+ ウィッシュリスト",
+    "firstEditionBadge": "1st ED",
+    "editionLabel": "版",
+    "editionFirst": "1st 版",
+    "editionUnlimited": "無制限",
+    "editionCustom": "その他",
+    "editionCustomPlaceholder": "例：2nd版、EU版…",
+    "editionSave": "OK",
+    "editionCatalog": "カタログ：{label}",
+    "editionActive": "版：{label}",
+    "editionActiveFirst": "版：1st",
+    "editionActiveUnlimited": "版：無制限",
+    "editionError": "版を更新できませんでした。"
   },
   "search": {
     "kicker": "カタログ · シーズン1",
@@ -174,7 +209,7 @@
   "season": {
     "kicker": "シーズン1 · 公開中",
     "title": "鍛造エンジン",
-    "desc": "Pocket Drifterz初版：78枚のナンバリングカード、レジェンダリーとゴールド、各カードにスタンダード・リバース・オルタネイティブ。",
+    "desc": "Pocket Drifterz初版：78枚 — 全カードにスタンダード版。一部はユニーク・プロモ・スペシャル・コラボ・サイン入り版あり。",
     "trackCompletion": "コンプリートを追跡"
   },
   "profile": {
@@ -296,7 +331,9 @@
     "publishError": "出品を公開できませんでした。",
     "publishSoon": "公開は近日対応",
     "preview": "プレビュー",
-    "quoteRef": "参考価格"
+    "quoteRef": "参考価格",
+    "ownedQty": "{count}枚",
+    "availableQty": "利用可 {count}枚"
   },
   "marketplace": {
     "kicker": "買う · 売る · メンバー間で交換",
@@ -322,6 +359,9 @@
     "wantedBadge": "募集",
     "actionContact": "連絡する",
     "actionPropose": "自分のを提案",
+    "actionManage": "管理",
+    "ownListingBadge": "自分の出品",
+    "ownListingYou": "自分の出品",
     "reviews": "{count}件",
     "emptyJp": "何もない",
     "emptyText": "条件に合う出品がありません。"
@@ -680,7 +720,7 @@
       "account": "アカウント"
     },
     "qCollectionVersions": "バージョンはなぜ個別管理？",
-    "aCollectionVersions": "Standard/Reverse/Alternative等、各バージョンが完成度にカウント。",
+    "aCollectionVersions": "全カードにスタンダード版。一部はユニーク・プロモ・スペシャル・コラボ・サイン入り版もあり、各バージョンが完成度にカウントされます。",
     "qCollectionMissing": "未所持カードの見つけ方？",
     "aCollectionMissing": "コレクションまたはシーズン1で「未所持」フィルター。",
     "qMarketplacePayment": "マーケットで支払える？",
@@ -800,6 +840,7 @@
     "subtitle": "所持カードのみ選択可能。",
     "noUser": "ログインが必要。",
     "youGive": "提供するカード",
+    "qtyAvailable": "利用可 {count}枚",
     "recipient": "相手",
     "recipientPlaceholder": "ユーザー名",
     "message": "メッセージ",

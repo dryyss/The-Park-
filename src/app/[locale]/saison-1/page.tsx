@@ -1,10 +1,12 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getCatalogSummary, getSeasonCards } from "@/server/catalog/catalog.service";
+import { getAuthenticatedViewer } from "@/server/user/user.service";
 import { rarityMeta } from "@/lib/rarity";
 import { PageHeader } from "@/components/common/page-header";
-import { RarityStrip, type RarityStripItem } from "@/components/home/rarity-strip";
-import { HoloCard } from "@/components/cards/holo-card";
+import { type RarityStripItem } from "@/components/home/rarity-strip";
+import { RarityCarousel } from "@/components/home/rarity-carousel";
+import { SeasonCardTile } from "@/components/season/season-card-tile";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +15,11 @@ export default async function Saison1Page({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
   const t = await getTranslations("season");
 
-  const [summary, cards] = await Promise.all([getCatalogSummary(), getSeasonCards("S01")]);
+  const viewer = await getAuthenticatedViewer();
+  const [summary, cardsWithQty] = await Promise.all([
+    getCatalogSummary(),
+    getSeasonCards("S01", viewer?.id),
+  ]);
 
   const rarities: RarityStripItem[] = summary.byRarity.map((r) => {
     const meta = rarityMeta(r.code);
@@ -31,18 +37,12 @@ export default async function Saison1Page({ params }: { params: Promise<{ locale
       <p className="mt-4 max-w-[640px] text-[15px] leading-relaxed text-texte-corps">{t("desc")}</p>
 
       <div className="mt-8">
-        <RarityStrip rarities={rarities} />
+        <RarityCarousel rarities={rarities} />
       </div>
 
       <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-        {cards.map((c) => (
-          <Link key={c.slug} href={`/carte/${c.slug}`}>
-            <HoloCard src={c.image} alt={c.name} tilt={c.tilt} holo={c.holo} variant={c.variant} />
-            <div className="mt-2 flex items-center justify-between px-0.5">
-              <span className="truncate text-[10.5px] font-extrabold text-texte-doux">{c.name}</span>
-              <span style={{ color: c.color }}>{c.glyph}</span>
-            </div>
-          </Link>
+        {cardsWithQty.map((c) => (
+          <SeasonCardTile key={c.slug} card={c} editable={!!viewer} />
         ))}
       </div>
     </main>

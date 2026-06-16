@@ -7,7 +7,15 @@ import { useRouter } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { proposeExchangeAction } from "@/server/exchange/exchange.actions";
 
-type OwnedCard = { variantId: string; name: string; number: number; image: string | null; versionLabel: string };
+type OwnedCard = {
+  variantId: string;
+  name: string;
+  number: number;
+  image: string | null;
+  versionLabel: string;
+  quantity: number;
+  availableQuantity: number;
+};
 
 export function ExchangeProposeForm({
   ownedCards,
@@ -64,7 +72,12 @@ export function ExchangeProposeForm({
                 {c.image && <Image src={c.image} alt={c.name} fill className="object-cover" sizes="100px" />}
               </div>
               <p className="mt-1.5 truncate text-[11px] font-extrabold text-blanc-casse">{c.name}</p>
-              <p className="text-[10px] font-bold text-texte-faible">#{String(c.number).padStart(2, "0")}</p>
+              <p className="text-[10px] font-bold text-texte-faible">
+                #{String(c.number).padStart(2, "0")} · {c.versionLabel}
+              </p>
+              <p className="text-[10px] font-extrabold tabular-nums text-carmin">
+                {t("qtyAvailable", { count: c.availableQuantity })}
+              </p>
             </label>
           ))}
         </div>

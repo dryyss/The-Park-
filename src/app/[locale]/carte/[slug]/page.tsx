@@ -6,6 +6,7 @@ import { getCardDetail } from "@/server/catalog/catalog.service";
 import { getViewerUser, getAuthenticatedViewer } from "@/server/user/user.service";
 import { CardMemberActions } from "@/components/cards/card-member-actions";
 import { avatarGradient } from "@/lib/avatars";
+import { isFirstEditionLabel } from "@/lib/card-edition";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,11 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
   const card = await getCardDetail(slug, viewer?.id);
   if (!card) notFound();
 
-  const ownedAny = card.versions.some((v) => v.owned);
+  const totalQty = card.versions.reduce((s, v) => s + v.quantity, 0);
+  const ownedAny = totalQty > 0;
+  const showFirstEditionBadge =
+    card.versions.some((v) => v.isFirstEdition) ||
+    card.versions.some((v) => isFirstEditionLabel(v.catalogEditionLabel));
 
   return (
     <main className="mx-auto max-w-[1240px] px-7 pt-5 pb-[60px]">
@@ -44,9 +49,9 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
       <div className="mt-6 grid items-start gap-11 lg:grid-cols-[380px_1fr]">
         <div className="lg:sticky lg:top-[90px]">
           <HoloCard src={card.image} alt={card.name} tilt={card.tilt} holo={card.holo} variant={card.variant} priority />
-          {card.isPromo && (
+          {showFirstEditionBadge && (
             <span className="font-display absolute left-0 top-3.5 -rotate-3 bg-carmin px-3 py-1 text-[11px] tracking-[1.5px] text-white">
-              1ÈRE ÉDITION
+              {t("firstEditionBadge")}
             </span>
           )}
           <p className="mt-3 text-center text-[11.5px] font-bold text-texte-faible">{t("holoHint")}</p>
@@ -72,7 +77,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
               { label: t("statQuote"), value: card.quoteLabel, accent: true },
               { label: t("statPower"), value: card.powerCh ?? "—" },
               { label: t("statWeight"), value: card.weightKg ? `${card.weightKg} kg` : "—" },
-              { label: t("statOwned"), value: ownedAny ? t("yes") : t("no"), ok: ownedAny },
+              { label: t("statOwned"), value: ownedAny ? String(totalQty) : t("no"), ok: ownedAny },
             ].map((s) => (
               <div key={s.label} className="min-w-[110px] rounded-[13px] border border-charbon-500 bg-charbon-800 px-4.5 py-3.5">
                 <div className="text-[10px] font-extrabold tracking-[2px] text-texte-dim uppercase">{s.label}</div>
@@ -92,6 +97,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
             <p className="mt-5 max-w-[620px] text-[15px] leading-[1.75] text-texte-doux">{card.description}</p>
           )}
 
+          {card.versions.length > 1 && (
           <div className="mt-6">
             <div className="mb-2.5 text-[11px] font-extrabold tracking-[2.5px] text-texte-dim uppercase">{t("versionsTitle")}</div>
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
@@ -105,16 +111,23 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
                 >
                   <div className={`text-[13px] font-extrabold ${v.owned ? "text-blanc-casse" : "text-texte-dim"}`}>{v.label}</div>
                   <div className={`mt-1 text-[11.5px] font-bold ${v.owned ? "text-statut-succes" : "text-texte-faible"}`}>
-                    {v.owned ? t("versionOwned") : t("versionMissing")}
+                    {v.owned
+                      ? v.reservedQuantity > 0
+                        ? t("versionQtyReserved", { count: v.quantity, reserved: v.reservedQuantity })
+                        : t("versionQty", { count: v.quantity })
+                      : t("versionMissing")}
+                  </div>
+                  <div className="mt-1 text-[10.5px] font-bold text-texte-dim">
+                    {v.editionLabel ? t("editionActive", { label: v.editionLabel }) : t("editionUnlimited")}
                   </div>
                 </div>
               ))}
             </div>
           </div>
+          )}
 
           <CardMemberActions
             cardId={card.id}
-            cardSlug={card.slug}
             isAuthenticated={!!authenticated}
             versions={card.versions}
           />
@@ -142,32 +155,47 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
             </span>
           </div>
           <div className="flex flex-col gap-2">
-            {card.listings.map((l) => (
-              <Link
-                key={l.id}
-                href={`/collectionneur/${l.sellerSlug}`}
-                className="flex items-center gap-3.5 rounded-[13px] border border-charbon-500 bg-charbon-800 px-4 py-3 transition hover:border-carmin"
-              >
-                <span
-                  className="font-display flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] text-white"
-                  style={{ background: avatarGradient(l.sellerInitial) }}
-                >
-                  {l.sellerInitial}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="text-[13px] font-extrabold text-blanc-casse">
-                    {l.sellerName} <span className="text-[11px] text-or">★ {l.rating}</span>
+            {card.listings.map((l) => {
+              const isOwn = viewer?.id === l.sellerId;
+              const rowClass =
+                "flex items-center gap-3.5 rounded-[13px] border border-charbon-500 bg-charbon-800 px-4 py-3 transition hover:border-carmin";
+              const inner = (
+                <>
+                  <span
+                    className="font-display flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] text-white"
+                    style={{ background: avatarGradient(l.sellerInitial) }}
+                  >
+                    {l.sellerInitial}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[13px] font-extrabold text-blanc-casse">
+                      {isOwn ? t("ownListingYou") : l.sellerName}{" "}
+                      {!isOwn && <span className="text-[11px] text-or">★ {l.rating}</span>}
+                    </div>
+                    <div className="text-[11px] font-bold text-texte-dim">
+                      {l.versionLabel} · {tc(l.conditionCode)}
+                    </div>
                   </div>
-                  <div className="text-[11px] font-bold text-texte-dim">
-                    {l.versionLabel} · {tc(l.conditionCode)}
-                  </div>
-                </div>
-                <div className="font-display text-[19px] text-blanc-casse">{l.price}</div>
-                <span className="font-display -skew-x-3 rounded-lg bg-carmin px-3.5 py-2 text-[11px] tracking-[1px] text-white uppercase">
-                  {t("contact")}
-                </span>
-              </Link>
-            ))}
+                  <div className="font-display text-[19px] text-blanc-casse">{l.price}</div>
+                  <span
+                    className={`font-display -skew-x-3 rounded-lg px-3.5 py-2 text-[11px] tracking-[1px] uppercase ${
+                      isOwn ? "border border-or bg-or/10 text-or" : "bg-carmin text-white"
+                    }`}
+                  >
+                    {isOwn ? t("actionManage") : t("contact")}
+                  </span>
+                </>
+              );
+              return isOwn ? (
+                <Link key={l.id} href="/dashboard" className={rowClass}>
+                  {inner}
+                </Link>
+              ) : (
+                <Link key={l.id} href={`/collectionneur/${l.sellerSlug}`} className={rowClass}>
+                  {inner}
+                </Link>
+              );
+            })}
           </div>
         </section>
       )}

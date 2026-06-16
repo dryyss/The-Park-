@@ -5,6 +5,7 @@ import {
   getMarketplaceFacets,
   type MarketIntent,
 } from "@/server/marketplace/marketplace.service";
+import { getViewerUser } from "@/server/user/user.service";
 import { MarketplaceFilters, type MarketParams } from "@/components/marketplace/marketplace-filters";
 import { ListingCard } from "@/components/marketplace/listing-card";
 
@@ -39,9 +40,10 @@ export default async function MarketplacePage({
     q: sp.q || undefined,
   };
 
-  const [listings, facets] = await Promise.all([
+  const [listings, facets, viewer] = await Promise.all([
     getMarketplaceListings(marketParams),
     getMarketplaceFacets(),
+    getViewerUser(),
   ]);
 
   const tabs: { intent: MarketIntent; label: string; count: number }[] = [
@@ -111,7 +113,7 @@ export default async function MarketplacePage({
       {listings.length > 0 ? (
         <div className="mt-5 grid grid-cols-2 gap-4.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {listings.map((l) => (
-            <ListingCard key={l.id} listing={l} />
+            <ListingCard key={l.id} listing={l} isOwnListing={viewer?.id === l.sellerId} />
           ))}
         </div>
       ) : (

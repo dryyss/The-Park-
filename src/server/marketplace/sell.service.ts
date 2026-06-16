@@ -14,6 +14,8 @@ export interface OwnedCardForSale {
   quoteValue: string;
   condition: string;
   versionLabel: string;
+  quantity: number;
+  availableQuantity: number;
 }
 
 /** Cartes réellement possédées — seules candidates à une annonce marketplace. */
@@ -46,6 +48,8 @@ export async function getOwnedCardsForSale(userId: string): Promise<OwnedCardFor
       quoteValue: Number(card.quoteValue).toFixed(2).replace(".", ","),
       condition: item.condition,
       versionLabel: item.variant.versionType.label,
+      quantity: item.quantity,
+      availableQuantity: item.quantity - item.reservedQuantity,
     };
   });
 }

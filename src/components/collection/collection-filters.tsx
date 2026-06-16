@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { CollectionView } from "@/server/collection/collection.service";
+import { buildCollectionHref, type CollectionUrlParams } from "@/lib/collection-grid";
 
 export async function CompletionPanel({ data }: { data: CollectionView }) {
   const t = await getTranslations("collection");
@@ -37,21 +38,7 @@ export async function CompletionPanel({ data }: { data: CollectionView }) {
   );
 }
 
-interface CollParams {
-  segment: "all" | "owned" | "missing";
-  rarity?: string;
-  q?: string;
-}
-
-function href(p: CollParams, patch: Partial<CollParams>): string {
-  const merged = { ...p, ...patch };
-  const sp = new URLSearchParams();
-  if (merged.segment !== "all") sp.set("segment", merged.segment);
-  if (merged.rarity) sp.set("rarity", merged.rarity);
-  if (merged.q) sp.set("q", merged.q);
-  const qs = sp.toString();
-  return `/collection${qs ? `?${qs}` : ""}`;
-}
+interface CollParams extends CollectionUrlParams {}
 
 export async function CollectionFiltersBar({
   params,
@@ -71,12 +58,12 @@ export async function CollectionFiltersBar({
   ];
 
   return (
-    <div className="mt-6 flex flex-wrap items-center gap-3.5">
+    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3.5">
       <div className="flex gap-0.5 rounded-[10px] border border-charbon-500 bg-charbon-800 p-1">
         {segs.map((s) => (
           <Link
             key={s.k}
-            href={href(params, { segment: s.k })}
+            href={buildCollectionHref(params, { segment: s.k })}
             className={[
               "rounded-lg px-3.5 py-1.5 text-[12.5px] font-extrabold whitespace-nowrap transition",
               params.segment === s.k ? "bg-carmin text-white" : "text-texte-muet hover:text-blanc-casse",
@@ -89,6 +76,8 @@ export async function CollectionFiltersBar({
       <form action={`/${locale}/collection`} className="ml-auto flex min-w-[200px] flex-1 justify-end">
         <input type="hidden" name="segment" value={params.segment} />
         {params.rarity && <input type="hidden" name="rarity" value={params.rarity} />}
+        {params.cols && <input type="hidden" name="cols" value={params.cols} />}
+        {params.sort && <input type="hidden" name="sort" value={params.sort} />}
         <input
           name="q"
           defaultValue={params.q ?? ""}

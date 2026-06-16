@@ -137,7 +137,7 @@ async function ExchangeDetailPanel({
   ownedCards = [],
 }: {
   detail: ExchangeDetail;
-  ownedCards?: { variantId: string; name: string }[];
+  ownedCards?: { variantId: string; name: string; availableQuantity?: number }[];
 }) {
   const t = await getTranslations("exchanges");
   const st = exchangeStatusStyle(detail.status);
@@ -282,7 +282,7 @@ export async function ExchangeBoard({
   selected: ExchangeDetail | null;
   counts: ExchangeCounts;
   opportunities: TradeOpportunity[];
-  ownedCards?: { variantId: string; name: string }[];
+  ownedCards?: { variantId: string; name: string; availableQuantity?: number }[];
 }) {
   const t = await getTranslations("exchanges");
   const list = tab === "done" ? done : current;

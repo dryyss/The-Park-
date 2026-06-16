@@ -11,7 +11,7 @@ export function ExchangeActionsPanel({
   ownedCards,
 }: {
   detail: ExchangeDetail;
-  ownedCards: { variantId: string; name: string }[];
+  ownedCards: { variantId: string; name: string; availableQuantity?: number }[];
 }) {
   const t = useTranslations("exchanges");
   const router = useRouter();
@@ -60,6 +60,9 @@ export function ExchangeActionsPanel({
                 className={`rounded-lg border px-3 py-1.5 text-[11px] font-bold transition ${selected.includes(c.variantId) ? "border-carmin bg-carmin/20 text-white" : "border-charbon-500 text-texte-dim"}`}
               >
                 {c.name}
+                {c.availableQuantity != null && c.availableQuantity > 1 && (
+                  <span className="ml-1 tabular-nums text-carmin">×{c.availableQuantity}</span>
+                )}
               </button>
             ))}
           </div>

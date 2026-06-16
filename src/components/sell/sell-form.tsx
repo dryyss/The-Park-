@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import Image from "next/image";
@@ -75,6 +75,9 @@ export function SellForm({ cards }: { cards: OwnedCardForSale[] }) {
                   </span>
                 </div>
                 <div className="mt-1.5 truncate text-center text-[9.5px] font-extrabold text-texte-doux">{cd.shortName}</div>
+                {cd.quantity > 1 && (
+                  <div className="mt-0.5 text-center text-[9px] font-bold tabular-nums text-carmin">×{cd.quantity}</div>
+                )}
               </button>
             ))}
           </div>
@@ -83,8 +86,8 @@ export function SellForm({ cards }: { cards: OwnedCardForSale[] }) {
         <section className="rounded-[18px] border border-charbon-500 bg-charbon-800 p-5">
           <StepHeader n="02" title={t("stepType")} />
           <div className="mb-4 flex gap-2.5">
-            <TypeCard active={listingType === "fixed"} emoji="🏷️" title={t("typeFixed")} desc={t("typeFixedDesc")} onClick={() => setListingType("fixed")} />
-            <TypeCard active={listingType === "auction"} emoji="🔨" title={t("typeAuction")} desc={t("typeAuctionDesc")} onClick={() => setListingType("auction")} disabled />
+            <TypeCard active={listingType === "fixed"} icon={<TagIcon />} title={t("typeFixed")} desc={t("typeFixedDesc")} onClick={() => setListingType("fixed")} />
+            <TypeCard active={listingType === "auction"} icon={<GavelIcon />} title={t("typeAuction")} desc={t("typeAuctionDesc")} onClick={() => setListingType("auction")} disabled />
           </div>
           {listingType === "fixed" && (
             <div>
@@ -132,6 +135,14 @@ export function SellForm({ cards }: { cards: OwnedCardForSale[] }) {
           <div className="mt-1 text-center text-[11px] font-bold text-texte-dim">
             #{String(card.number).padStart(2, "0")} · {card.versionLabel}
           </div>
+          <div className="mt-2 text-center text-[12px] font-extrabold tabular-nums text-blanc-casse">
+            {t("ownedQty", { count: card.quantity })}
+            {card.availableQuantity < card.quantity && (
+              <span className="ml-1 text-[10px] font-bold text-texte-faible">
+                ({t("availableQty", { count: card.availableQuantity })})
+              </span>
+            )}
+          </div>
           <div className="mt-4 rounded-lg border border-charbon-500 bg-charbon px-3 py-2 text-center text-[12px] font-bold text-texte-doux">
             {t("quoteRef")} : {card.quoteValue} €
           </div>
@@ -152,14 +163,14 @@ function StepHeader({ n, title }: { n: string; title: string }) {
 
 function TypeCard({
   active,
-  emoji,
+  icon,
   title,
   desc,
   onClick,
   disabled,
 }: {
   active: boolean;
-  emoji: string;
+  icon: ReactNode;
   title: string;
   desc: string;
   onClick: () => void;
@@ -170,11 +181,36 @@ function TypeCard({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`flex flex-1 flex-col gap-1.5 rounded-[13px] border-[1.5px] p-4 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${active ? "border-carmin bg-carmin/10" : "border-charbon-500 bg-charbon hover:border-charbon-400"}`}
+      className={`group flex flex-1 flex-col gap-1.5 rounded-[13px] border-[1.5px] p-4 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${active ? "border-carmin bg-carmin/10" : "border-charbon-500 bg-charbon hover:border-charbon-400"}`}
     >
-      <div className="text-[20px]">{emoji}</div>
+      <div
+        className={`grid h-9 w-9 place-items-center rounded-[10px] transition-colors ${active ? "bg-carmin/20 text-carmin" : "bg-charbon-700 text-texte-dim group-hover:text-texte-doux"}`}
+      >
+        {icon}
+      </div>
       <div className="text-[13.5px] font-extrabold text-blanc-casse">{title}</div>
       <div className="text-[11px] font-bold text-texte-dim">{desc}</div>
     </button>
+  );
+}
+
+function TagIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]" aria-hidden="true">
+      <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
+      <circle cx="7.5" cy="7.5" r="1.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function GavelIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]" aria-hidden="true">
+      <path d="m14.5 12.5-8 8a2.119 2.119 0 1 1-3-3l8-8" />
+      <path d="m16 16 6-6" />
+      <path d="m8 8 6-6" />
+      <path d="m9 7 8 8" />
+      <path d="m21 11-8-8" />
+    </svg>
   );
 }

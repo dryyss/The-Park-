@@ -2,6 +2,9 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { rarityMeta, cardImage } from "@/lib/rarity";
 import { formatPrice } from "@/lib/format";
+import { isActiveVersionCode } from "@/lib/card-versions";
+import { isFirstEditionLabel, resolveEditionLabel } from "@/lib/card-edition";
+import { sortCollectionCards, type CollectionSort } from "@/lib/collection-sort";
 
 export type CollectionSegment = "all" | "owned" | "missing";
 
@@ -9,6 +12,7 @@ export interface CollectionFilters {
   segment: CollectionSegment;
   rarity?: string;
   q?: string;
+  sort?: CollectionSort;
 }
 
 export interface CollectionCard {
@@ -22,9 +26,11 @@ export interface CollectionCard {
   holo: number;
   owned: boolean;
   quantity: number;
+  standardVariantId: string;
   isPromo: boolean;
+  hasFirstEdition: boolean;
   numberLabel: string;
-  dots: { standard: boolean; reverse: boolean; alternative: boolean };
+  dots: { code: string; owned: boolean }[];
 }
 
 export interface RaritySection {
@@ -83,14 +89,19 @@ export async function getUserCollection(userId: string, filters: CollectionFilte
 
   const vtCodes = new Map(versionTypes.map((v) => [v.id, v.code]));
   const cardByNumber = new Map(cards.map((c) => [c.number, c]));
-  const ownedByCard = new Map<number, { qty: number; versions: Set<string> }>();
+  const ownedByCard = new Map<
+    number,
+    { qty: number; versions: Set<string>; hasFirstEdition: boolean }
+  >();
 
   for (const item of items) {
     const num = item.variant.card.number;
-    const cur = ownedByCard.get(num) ?? { qty: 0, versions: new Set<string>() };
+    const cur = ownedByCard.get(num) ?? { qty: 0, versions: new Set<string>(), hasFirstEdition: false };
     cur.qty += item.quantity;
     const code = vtCodes.get(item.variant.versionTypeId);
     if (code) cur.versions.add(code);
+    const effective = resolveEditionLabel(item.editionLabel, item.variant.editionLabel);
+    if (isFirstEditionLabel(effective)) cur.hasFirstEdition = true;
     ownedByCard.set(num, cur);
   }
 
@@ -98,6 +109,7 @@ export async function getUserCollection(userId: string, filters: CollectionFilte
     const meta = rarityMeta(card.rarity.code);
     const own = ownedByCard.get(card.number);
     const owned = !!own && own.qty > 0;
+    const standardVariant = card.variants.find((v) => v.versionType.code === "standard");
     return {
       number: card.number,
       slug: card.slug,
@@ -109,13 +121,16 @@ export async function getUserCollection(userId: string, filters: CollectionFilte
       holo: meta.holo,
       owned,
       quantity: own?.qty ?? 0,
+      standardVariantId: standardVariant?.id ?? card.variants[0]?.id ?? "",
       isPromo: card.rarity.code === "p",
+      hasFirstEdition: own?.hasFirstEdition ?? false,
       numberLabel: card.rarity.code === "p" ? `${String(card.number).padStart(2, "0")} · PROMO` : `${String(card.number).padStart(2, "0")}/78`,
-      dots: {
-        standard: own?.versions.has("standard") ?? false,
-        reverse: own?.versions.has("reverse") ?? false,
-        alternative: own?.versions.has("alternative") ?? false,
-      },
+      dots: card.variants
+        .filter((v) => isActiveVersionCode(v.versionType.code))
+        .map((v) => ({
+        code: v.versionType.code,
+        owned: own?.versions.has(v.versionType.code) ?? false,
+      })),
     };
   });
 
@@ -156,7 +171,7 @@ export async function getUserCollection(userId: string, filters: CollectionFilte
         owned: ownedInRarity,
         total: allInRarity.length,
         pct: allInRarity.length ? Math.round((ownedInRarity / allInRarity.length) * 100) : 0,
-        cards: sectionCards,
+        cards: sortCollectionCards(sectionCards, filters.sort ?? "number"),
       };
     });
 

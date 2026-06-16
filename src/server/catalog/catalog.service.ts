@@ -3,6 +3,8 @@ import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { rarityMeta, cardImage, type HoloVariant } from "@/lib/rarity";
 import { formatPrice } from "@/lib/format";
+import { isActiveVersionCode } from "@/lib/card-versions";
+import { isFirstEditionLabel, resolveEditionLabel } from "@/lib/card-edition";
 
 /** Représentation d'une carte prête à afficher (vignette holo). */
 export interface CardDisplay {
@@ -122,36 +124,57 @@ export async function getCatalogSummary() {
 export interface SeasonCardRow {
   slug: string;
   name: string;
+  number: number;
   image: string;
   glyph: string;
   color: string;
   tilt: number;
   holo: number;
   variant: HoloVariant;
+  quantity: number;
+  standardVariantId: string;
 }
 
-/** Grille catalogue d'une saison (tri par numéro). */
-export async function getSeasonCards(seasonCode = "S01"): Promise<SeasonCardRow[]> {
+/** Grille catalogue d'une saison (tri par numéro), avec quantités viewer optionnelles. */
+export async function getSeasonCards(seasonCode = "S01", viewerUserId?: string): Promise<SeasonCardRow[]> {
   const season = await prisma.season.findUnique({ where: { code: seasonCode } });
   if (!season) return [];
 
-  const cards = await prisma.card.findMany({
-    where: { seasonId: season.id },
-    orderBy: { number: "asc" },
-    include: { rarity: true },
-  });
+  const [cards, items] = await Promise.all([
+    prisma.card.findMany({
+      where: { seasonId: season.id },
+      orderBy: { number: "asc" },
+      include: { rarity: true, variants: { include: { versionType: true } } },
+    }),
+    viewerUserId
+      ? prisma.collectionItem.findMany({
+          where: { userId: viewerUserId, variant: { card: { seasonId: season.id } } },
+          select: { quantity: true, variant: { select: { card: { select: { number: true } } } } },
+        })
+      : Promise.resolve([]),
+  ]);
+
+  const qtyByNumber = new Map<number, number>();
+  for (const item of items) {
+    const num = item.variant.card.number;
+    qtyByNumber.set(num, (qtyByNumber.get(num) ?? 0) + item.quantity);
+  }
 
   return cards.map((c) => {
     const meta = rarityMeta(c.rarity.code);
+    const standardVariant = c.variants.find((v) => v.versionType.code === "standard");
     return {
       slug: c.slug,
       name: c.name,
+      number: c.number,
       image: cardImage(c.imageUrl),
       glyph: c.rarity.symbol ?? meta.glyph,
       color: c.rarity.color ?? meta.color,
       tilt: meta.tilt,
       holo: meta.holo,
       variant: meta.variant,
+      quantity: qtyByNumber.get(c.number) ?? 0,
+      standardVariantId: standardVariant?.id ?? c.variants[0]?.id ?? "",
     };
   });
 }
@@ -179,9 +202,22 @@ export interface CardDetail {
   variant: HoloVariant;
   prevSlug: string | null;
   nextSlug: string | null;
-  versions: { variantId: string; code: string; label: string; owned: boolean }[];
+  versions: {
+    variantId: string;
+    code: string;
+    label: string;
+    owned: boolean;
+    quantity: number;
+    reservedQuantity: number;
+    availableQuantity: number;
+    catalogEditionLabel: string | null;
+    userEditionLabel: string | null;
+    editionLabel: string | null;
+    isFirstEdition: boolean;
+  }[];
   listings: {
     id: string;
+    sellerId: string;
     price: string;
     sellerName: string;
     sellerSlug: string;
@@ -221,14 +257,28 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     viewerUserId
       ? prisma.collectionItem.findMany({
           where: { userId: viewerUserId, variant: { cardId: card.id } },
-          select: { variantId: true },
+          select: { variantId: true, quantity: true, reservedQuantity: true, editionLabel: true },
         })
       : Promise.resolve([]),
   ]);
 
   const idx = neighbors.findIndex((n) => n.slug === slug);
   const meta = rarityMeta(card.rarity.code);
-  const ownedSet = new Set(ownedVariants.map((o) => o.variantId));
+  const variantStats = new Map<
+    string,
+    { quantity: number; reservedQuantity: number; userEditionLabel: string | null }
+  >();
+  for (const o of ownedVariants) {
+    const cur = variantStats.get(o.variantId) ?? {
+      quantity: 0,
+      reservedQuantity: 0,
+      userEditionLabel: null,
+    };
+    cur.quantity += o.quantity;
+    cur.reservedQuantity += o.reservedQuantity;
+    if (o.editionLabel?.trim()) cur.userEditionLabel = o.editionLabel.trim();
+    variantStats.set(o.variantId, cur);
+  }
 
   return {
     id: card.id,
@@ -253,14 +303,32 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     variant: meta.variant,
     prevSlug: idx > 0 ? neighbors[idx - 1].slug : null,
     nextSlug: idx < neighbors.length - 1 ? neighbors[idx + 1].slug : null,
-    versions: card.variants.map((v) => ({
-      variantId: v.id,
-      code: v.versionType.code,
-      label: v.versionType.label,
-      owned: ownedSet.has(v.id),
-    })),
+    versions: card.variants
+      .filter((v) => isActiveVersionCode(v.versionType.code))
+      .map((v) => {
+      const stats = variantStats.get(v.id);
+      const quantity = stats?.quantity ?? 0;
+      const reservedQuantity = stats?.reservedQuantity ?? 0;
+      const catalogEditionLabel = v.editionLabel?.trim() || null;
+      const userEditionLabel = stats?.userEditionLabel ?? null;
+      const editionLabel = resolveEditionLabel(userEditionLabel, catalogEditionLabel);
+      return {
+        variantId: v.id,
+        code: v.versionType.code,
+        label: v.versionType.label,
+        owned: quantity > 0,
+        quantity,
+        reservedQuantity,
+        availableQuantity: quantity - reservedQuantity,
+        catalogEditionLabel,
+        userEditionLabel,
+        editionLabel,
+        isFirstEdition: isFirstEditionLabel(editionLabel),
+      };
+    }),
     listings: listings.map((l) => ({
       id: l.id,
+      sellerId: l.sellerId,
       price: formatPrice(l.price ?? l.budgetMax),
       sellerName: l.seller.displayName,
       sellerSlug: l.seller.slug,

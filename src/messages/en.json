@@ -77,7 +77,7 @@
     "seeAllCollection": "See the full collection →",
     "seasonKicker": "Season 1 · available",
     "seasonName": "Forged Engine",
-    "seasonDesc": "The first Pocket Drifterz edition: <b>67 numbered cards</b>, secret Legendary and Gold cards, and every card in Standard, Reverse and Alternative versions.",
+    "seasonDesc": "The first Pocket Drifterz edition: <b>67 numbered cards</b>, secret Legendary and Gold cards.",
     "seasonCta": "Track my completion",
     "latestTitle": "Freshly listed",
     "latestJp": "出品",
@@ -120,6 +120,25 @@
     "segMissing": "Missing",
     "searchPlaceholder": "Search a card, number…",
     "missing": "Missing",
+    "qtyIncrease": "Add a card",
+    "qtyDecrease": "Remove a card",
+    "conditionLabel": "Condition",
+    "qtyLoginRequired": "Sign in to update your binder.",
+    "qtyReserved": "Card reserved for a trade or listing.",
+    "qtyError": "Could not update quantity.",
+    "gridColsLabel": "Layout",
+    "gridColsPerRow": "{count} cards per row",
+    "sortLabel": "Sort",
+    "sort": {
+      "number": "Number ↑",
+      "number-desc": "Number ↓",
+      "name": "Name A → Z",
+      "name-desc": "Name Z → A",
+      "owned-first": "Owned first",
+      "missing-first": "Missing first",
+      "quantity-desc": "Quantity ↓",
+      "quantity-asc": "Quantity ↑"
+    },
     "noUser": "No profile available."
   },
   "rankings": {
@@ -148,15 +167,31 @@
     "no": "No",
     "versionsTitle": "Versions · tracked separately",
     "versionOwned": "Owned ✓",
+    "versionQty": "{count, plural, one {# copy} other {# copies}}",
+    "versionQtyReserved": "{count, plural, one {# copy} other {# copies}} · {reserved} reserved",
     "versionMissing": "Missing",
     "ctaListings": "View listings",
     "ctaExchange": "Propose a trade",
     "listingsTitle": "Active listings",
     "contact": "Contact",
+    "ownListingYou": "My listing",
+    "actionManage": "Manage",
     "manageTitle": "My collection",
     "addVersion": "Add · {label}",
     "removeVersion": "Remove · {label}",
-    "addWishlist": "+ Wishlist"
+    "addWishlist": "+ Wishlist",
+    "firstEditionBadge": "1ST EDITION",
+    "editionLabel": "Edition",
+    "editionFirst": "1st edition",
+    "editionUnlimited": "Unlimited",
+    "editionCustom": "Other",
+    "editionCustomPlaceholder": "e.g. 2nd edition, EU print…",
+    "editionSave": "OK",
+    "editionCatalog": "Catalog: {label}",
+    "editionActive": "Edition: {label}",
+    "editionActiveFirst": "Edition: 1st edition",
+    "editionActiveUnlimited": "Edition: unlimited",
+    "editionError": "Could not update edition."
   },
   "search": {
     "kicker": "Catalog · Season 1",
@@ -174,7 +209,7 @@
   "season": {
     "kicker": "Season 1 · available",
     "title": "Forged Engine",
-    "desc": "The first Pocket Drifterz edition: 78 numbered cards, Legendary and Gold secrets, each in Standard, Reverse and Alternative versions.",
+    "desc": "The first Pocket Drifterz edition: 78 numbered cards — Standard for all, plus Unique, Promotional, Special, Collaboration or Signed where applicable.",
     "trackCompletion": "Track my completion"
   },
   "profile": {
@@ -296,7 +331,9 @@
     "publishError": "Could not publish the listing.",
     "publishSoon": "Publishing coming soon",
     "preview": "Preview",
-    "quoteRef": "Quote ref."
+    "quoteRef": "Quote ref.",
+    "ownedQty": "{count, plural, one {# copy} other {# copies}}",
+    "availableQty": "{count} avail."
   },
   "marketplace": {
     "kicker": "Buy · Sell · Trade between members",
@@ -322,6 +359,9 @@
     "wantedBadge": "Wanted",
     "actionContact": "Contact",
     "actionPropose": "Offer mine",
+    "actionManage": "Manage",
+    "ownListingBadge": "My listing",
+    "ownListingYou": "My listing",
     "reviews": "{count} reviews",
     "emptyJp": "何もない",
     "emptyText": "No listing matches these filters."
@@ -680,7 +720,7 @@
       "account": "Account"
     },
     "qCollectionVersions": "Why is each version tracked separately?",
-    "aCollectionVersions": "A card can exist as Standard, Reverse, Alternative… Each version counts for completion.",
+    "aCollectionVersions": "Every card exists as Standard. Some also offer Unique, Promotional, Special, Collaboration or Signed — each version counts toward completion.",
     "qCollectionMissing": "How do I find missing cards?",
     "aCollectionMissing": "Use the « Missing » filter in your binder or Season 1 page.",
     "qMarketplacePayment": "Can I pay on the marketplace?",
@@ -800,6 +840,7 @@
     "subtitle": "Select cards you offer — only ones you own.",
     "noUser": "Log in to propose a trade.",
     "youGive": "You offer",
+    "qtyAvailable": "{count, plural, one {# avail.} other {# avail.}}",
     "recipient": "Recipient",
     "recipientPlaceholder": "Username or collector link",
     "message": "Message",

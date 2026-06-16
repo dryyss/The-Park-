@@ -454,7 +454,7 @@ model Rarity {
   cards     Card[]
 }
 
-/// Type de version (paramétrable par l'admin) : Standard, Reverse, Alternative…
+/// Type de version (paramétrable par l'admin) : Standard, Unique, Promotionnelle, Carte spéciale, Collaboration, Signé…
 model VersionType {
   id        String        @id @default(cuid())
   code      String        @unique
@@ -527,6 +527,8 @@ model CollectionItem {
   forTrade         Boolean       @default(false)
   forSale          Boolean       @default(false)
   note             String?
+  /// Édition de l'exemplaire possédé (ex. « 1ère édition », « Illimitée »). Null = illimitée.
+  editionLabel     String?
 
   // Gradation optionnelle (PSA, PCA…)
   isGraded     Boolean @default(false)

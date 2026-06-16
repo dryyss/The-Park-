@@ -2,7 +2,8 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 // @ts-ignore - module de données JS sans types (catalogue fourni par le client)
-import { CARDS, META } from "./cards-data.mjs";
+import { CARDS, META, CARD_EXTRA_VERSIONS, DEFAULT_S01_EDITION_LABEL, CARD_EDITION_LABELS } from "./cards-data.mjs";
+import { VERSION_TYPE_DEFINITIONS } from "../src/lib/card-versions";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -79,12 +80,32 @@ async function main() {
   }
 
   console.log("→ Types de version");
-  const versionTypes = [
-    { code: "standard", label: "Standard", isFoil: false, sortOrder: 0 },
-    { code: "reverse", label: "Reverse", isFoil: true, sortOrder: 1 },
-    { code: "special", label: "Édition spéciale", isFoil: false, sortOrder: 2 },
-    { code: "alternative", label: "Alternative", isFoil: false, sortOrder: 3 },
-  ];
+  // Retrait des variantes obsolètes (reverse / alternative).
+  const obsoleteCodes = ["reverse", "alternative"];
+  const obsoleteTypes = await prisma.versionType.findMany({ where: { code: { in: obsoleteCodes } } });
+  const obsoleteTypeIds = obsoleteTypes.map((t) => t.id);
+  if (obsoleteTypeIds.length > 0) {
+    const obsoleteVariants = await prisma.cardVariant.findMany({
+      where: { versionTypeId: { in: obsoleteTypeIds } },
+      select: { id: true },
+    });
+    const obsoleteVariantIds = obsoleteVariants.map((v) => v.id);
+    if (obsoleteVariantIds.length > 0) {
+      await prisma.exchangeItem.deleteMany({ where: { variantId: { in: obsoleteVariantIds } } });
+      await prisma.auction.deleteMany({ where: { variantId: { in: obsoleteVariantIds } } });
+      await prisma.listing.deleteMany({ where: { variantId: { in: obsoleteVariantIds } } });
+      await prisma.collectionItem.deleteMany({ where: { variantId: { in: obsoleteVariantIds } } });
+      await prisma.cardVariant.deleteMany({ where: { id: { in: obsoleteVariantIds } } });
+    }
+    await prisma.versionType.deleteMany({ where: { id: { in: obsoleteTypeIds } } });
+  }
+
+  const versionTypes = VERSION_TYPE_DEFINITIONS.map(({ code, label, isFoil, sortOrder }) => ({
+    code,
+    label,
+    isFoil,
+    sortOrder,
+  }));
   const vtByCode: Record<string, string> = {};
   for (const vt of versionTypes) {
     const v = await prisma.versionType.upsert({
@@ -96,6 +117,16 @@ async function main() {
   }
 
   console.log(`→ Cartes (${(CARDS as RawCard[]).length})`);
+  const extraVersionsByNumber = CARD_EXTRA_VERSIONS as Record<number, readonly string[]>;
+  const editionOverrides = CARD_EDITION_LABELS as Record<number, string | null | undefined>;
+
+  function catalogEditionForCard(num: number): string | null {
+    if (Object.prototype.hasOwnProperty.call(editionOverrides, num)) {
+      return editionOverrides[num] ?? null;
+    }
+    return DEFAULT_S01_EDITION_LABEL;
+  }
+
   for (const c of CARDS as RawCard[]) {
     const slug = `s01-${String(c.num).padStart(2, "0")}-${slugify(c.name)}`;
     const data = {
@@ -115,18 +146,35 @@ async function main() {
       create: { seasonId: season.id, number: c.num, slug, ...data },
     });
 
-    // Toutes les variantes FR (Standard, Reverse, Édition spéciale, Alternative)
-    for (const vtCode of ["standard", "reverse", "special", "alternative"] as const) {
+    const editionLabel = catalogEditionForCard(c.num);
+
+    // Standard (toutes) + versions optionnelles du catalogue
+    await prisma.cardVariant.upsert({
+      where: {
+        cardId_versionTypeId_language: {
+          cardId: card.id,
+          versionTypeId: vtByCode["standard"],
+          language: "FR",
+        },
+      },
+      update: { editionLabel },
+      create: { cardId: card.id, versionTypeId: vtByCode["standard"], language: "FR", editionLabel },
+    });
+
+    const extras = extraVersionsByNumber[c.num] ?? [];
+    for (const code of extras) {
+      const versionTypeId = vtByCode[code];
+      if (!versionTypeId) continue;
       await prisma.cardVariant.upsert({
         where: {
           cardId_versionTypeId_language: {
             cardId: card.id,
-            versionTypeId: vtByCode[vtCode],
+            versionTypeId,
             language: "FR",
           },
         },
-        update: {},
-        create: { cardId: card.id, versionTypeId: vtByCode[vtCode], language: "FR" },
+        update: { editionLabel },
+        create: { cardId: card.id, versionTypeId, language: "FR", editionLabel },
       });
     }
   }
@@ -205,6 +253,25 @@ async function main() {
         },
         update: {},
         create: { userId: user.id, variantId: v.id, condition: "EXCELLENT", quantity: 1 },
+      });
+    }
+  }
+
+  const lightonId = memberRecords.find((m) => m.display === "LIGHTON_FACTORY")?.id;
+  if (lightonId) {
+    const extraVariants = await prisma.cardVariant.findMany({
+      where: { versionType: { code: { not: "standard" } } },
+      include: { card: true, versionType: true },
+    });
+    for (const v of extraVariants) {
+      const extras = extraVersionsByNumber[v.card.number] ?? [];
+      if (!extras.includes(v.versionType.code)) continue;
+      await prisma.collectionItem.upsert({
+        where: {
+          userId_variantId_condition: { userId: lightonId, variantId: v.id, condition: "EXCELLENT" },
+        },
+        update: {},
+        create: { userId: lightonId, variantId: v.id, condition: "EXCELLENT", quantity: 1 },
       });
     }
   }

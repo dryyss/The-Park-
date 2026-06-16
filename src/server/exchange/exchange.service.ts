@@ -239,5 +239,7 @@ export async function getViewerOwnedCardsForPropose(userId: string) {
     number: i.variant.card.number,
     image: cardImage(i.variant.card.imageUrl),
     versionLabel: i.variant.versionType.label,
+    quantity: i.quantity,
+    availableQuantity: i.quantity - i.reservedQuantity,
   }));
 }

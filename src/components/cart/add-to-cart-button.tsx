@@ -53,7 +53,7 @@ export function AddToCartButton({ productId, inStock, stock, locale }: AddToCart
     return (
       <a
         href={`/auth/login?returnTo=${returnTo}`}
-        className="font-display -skew-x-3 rounded-[11px] bg-carmin px-7 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase transition hover:bg-carmin-alt"
+        className="font-display -skew-x-3 rounded-[11px] bg-carmin px-7 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase shadow-[4px_4px_0_rgba(0,0,0,0.5)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-carmin-alt hover:shadow-[7px_7px_0_rgba(0,0,0,0.55)] active:translate-y-0 active:shadow-[2px_2px_0_rgba(0,0,0,0.5)]"
       >
         {t("loginToBuy")}
       </a>
@@ -69,7 +69,7 @@ export function AddToCartButton({ productId, inStock, stock, locale }: AddToCart
             aria-label={t("decrease")}
             onClick={() => setQty((q) => Math.max(1, q - 1))}
             disabled={pending || qty <= 1}
-            className="px-3.5 py-3 text-[18px] text-texte-doux transition hover:text-white disabled:opacity-40"
+            className="rounded-l-[11px] px-3.5 py-3 text-[18px] text-texte-doux transition-colors duration-150 hover:bg-charbon-600 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent"
           >
             −
           </button>
@@ -79,7 +79,7 @@ export function AddToCartButton({ productId, inStock, stock, locale }: AddToCart
             aria-label={t("increase")}
             onClick={() => setQty((q) => Math.min(max, q + 1))}
             disabled={pending || qty >= max}
-            className="px-3.5 py-3 text-[18px] text-texte-doux transition hover:text-white disabled:opacity-40"
+            className="rounded-r-[11px] px-3.5 py-3 text-[18px] text-texte-doux transition-colors duration-150 hover:bg-charbon-600 hover:text-white disabled:opacity-40 disabled:hover:bg-transparent"
           >
             +
           </button>
@@ -89,7 +89,7 @@ export function AddToCartButton({ productId, inStock, stock, locale }: AddToCart
           type="button"
           onClick={handleAdd}
           disabled={pending}
-          className="font-display -skew-x-3 rounded-[11px] bg-carmin px-7 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase shadow-[4px_4px_0_rgba(0,0,0,0.5)] transition hover:bg-carmin-alt disabled:cursor-not-allowed disabled:opacity-50"
+          className="font-display -skew-x-3 rounded-[11px] bg-carmin px-7 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase shadow-[4px_4px_0_rgba(0,0,0,0.5)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-carmin-alt hover:shadow-[7px_7px_0_rgba(0,0,0,0.55)] active:translate-y-0 active:shadow-[2px_2px_0_rgba(0,0,0,0.5)] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0_rgba(0,0,0,0.5)]"
         >
           {pending ? t("adding") : t("addToCart")}
         </button>

@@ -7,7 +7,11 @@ import {
   addCollectionItem,
   removeCollectionItem,
   updateCollectionQuantity,
+  adjustCollectionCardQuantity,
+  adjustCollectionVariantQuantity,
+  updateCollectionEdition,
 } from "@/server/collection/collection.mutations";
+import { editionPresetToLabel, type EditionPresetCode } from "@/lib/card-edition";
 
 export type CollectionActionResult = { ok: true } | { ok: false; error: string };
 
@@ -28,10 +32,34 @@ const qtySchema = z.object({
   condition: z.enum(["MINT", "EXCELLENT", "VERY_GOOD", "GOOD", "FAIR", "DAMAGED"]).default("EXCELLENT"),
 });
 
+const conditionEnum = z.enum(["MINT", "EXCELLENT", "VERY_GOOD", "GOOD", "FAIR", "DAMAGED"]);
+
+const adjustSchema = z.object({
+  cardNumber: z.number().int().min(1).max(999),
+  delta: z.union([z.literal(1), z.literal(-1)]),
+  condition: conditionEnum.default("EXCELLENT"),
+});
+
+const adjustVariantSchema = z.object({
+  variantId: z.string().min(1),
+  delta: z.union([z.literal(1), z.literal(-1)]),
+  condition: conditionEnum.default("EXCELLENT"),
+});
+
+const editionSchema = z.object({
+  variantId: z.string().min(1),
+  preset: z.enum(["first", "unlimited", "custom"]),
+  customLabel: z.string().trim().max(64).optional(),
+  condition: z.enum(["MINT", "EXCELLENT", "VERY_GOOD", "GOOD", "FAIR", "DAMAGED"]).default("EXCELLENT"),
+});
+
 function revalidateCollection() {
   revalidatePath("/collection");
   revalidatePath("/carte", "layout");
   revalidatePath("/vendre");
+  revalidatePath("/saison-1");
+  revalidatePath("/echanges");
+  revalidatePath("/echanges/proposer");
 }
 
 export async function addToCollectionAction(input: unknown): Promise<CollectionActionResult> {
@@ -59,6 +87,59 @@ export async function removeFromCollectionAction(input: unknown): Promise<Collec
 
   try {
     await removeCollectionItem(viewer.id, parsed.data.variantId, parsed.data.condition);
+    revalidateCollection();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
+export async function adjustCollectionCardAction(input: unknown): Promise<CollectionActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  const parsed = adjustSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+
+  try {
+    await adjustCollectionCardQuantity(viewer.id, parsed.data.cardNumber, parsed.data.delta, parsed.data.condition);
+    revalidateCollection();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
+export async function adjustCollectionVariantAction(input: unknown): Promise<CollectionActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  const parsed = adjustVariantSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+
+  try {
+    await adjustCollectionVariantQuantity(viewer.id, parsed.data.variantId, parsed.data.delta, parsed.data.condition);
+    revalidateCollection();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
+export async function updateCollectionEditionAction(input: unknown): Promise<CollectionActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  const parsed = editionSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+
+  const editionLabel = editionPresetToLabel(
+    parsed.data.preset as EditionPresetCode,
+    parsed.data.customLabel,
+  );
+
+  try {
+    await updateCollectionEdition(viewer.id, parsed.data.variantId, editionLabel, parsed.data.condition);
     revalidateCollection();
     return { ok: true };
   } catch (err) {

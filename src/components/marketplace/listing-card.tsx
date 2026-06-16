@@ -12,7 +12,13 @@ const AV_GRADIENTS: Record<string, string> = {
   H: "linear-gradient(135deg,#FF6B5E,#8C2F1F)",
 };
 
-export async function ListingCard({ listing }: { listing: MarketplaceCard }) {
+export async function ListingCard({
+  listing,
+  isOwnListing = false,
+}: {
+  listing: MarketplaceCard;
+  isOwnListing?: boolean;
+}) {
   const t = await getTranslations("marketplace");
   const tc = await getTranslations("conditions");
   const l = listing;
@@ -32,6 +38,11 @@ export async function ListingCard({ listing }: { listing: MarketplaceCard }) {
             {t("wantedBadge").toUpperCase()}
           </span>
         )}
+        {isOwnListing && (
+          <span className="font-display absolute bottom-3 left-5 rounded bg-or/90 px-2 py-0.5 text-[9px] tracking-[1px] text-charbon">
+            {t("ownListingBadge")}
+          </span>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col gap-2.5 px-4 pt-3 pb-4">
@@ -45,7 +56,7 @@ export async function ListingCard({ listing }: { listing: MarketplaceCard }) {
         </div>
 
         <Link
-          href={`/collectionneur/${l.seller.slug}`}
+          href={isOwnListing ? "/dashboard" : `/collectionneur/${l.seller.slug}`}
           className="flex items-center gap-2 rounded-[9px] border border-charbon-600 bg-charbon-700 px-2.5 py-1.5 transition hover:border-carmin"
         >
           <span
@@ -54,9 +65,15 @@ export async function ListingCard({ listing }: { listing: MarketplaceCard }) {
           >
             {l.seller.initial}
           </span>
-          <span className="flex-1 truncate text-[11.5px] font-bold text-texte-doux">{l.seller.name}</span>
-          <span className="text-[11px] font-extrabold whitespace-nowrap text-or">★ {l.seller.rating}</span>
-          <span className="text-[10.5px] font-bold text-texte-faible">({l.seller.reviews})</span>
+          <span className="flex-1 truncate text-[11.5px] font-bold text-texte-doux">
+            {isOwnListing ? t("ownListingYou") : l.seller.name}
+          </span>
+          {!isOwnListing && (
+            <>
+              <span className="text-[11px] font-extrabold whitespace-nowrap text-or">★ {l.seller.rating}</span>
+              <span className="text-[10.5px] font-bold text-texte-faible">({l.seller.reviews})</span>
+            </>
+          )}
         </Link>
 
         <div className="mt-auto flex items-center justify-between gap-2">
@@ -66,17 +83,26 @@ export async function ListingCard({ listing }: { listing: MarketplaceCard }) {
             </div>
             <div className="font-display text-[21px] leading-tight text-blanc-casse">{l.priceLabel}</div>
           </div>
-          <Link
-            href={`/collectionneur/${l.seller.slug}`}
-            className={[
-              "font-display -skew-x-3 rounded-lg border-[1.5px] px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap uppercase transition hover:-translate-y-0.5",
-              l.isWant
-                ? "border-charbon-400 text-blanc-casse hover:border-carmin"
-                : "border-carmin bg-carmin text-white hover:bg-carmin-alt",
-            ].join(" ")}
-          >
-            {l.isWant ? t("actionPropose") : t("actionContact")}
-          </Link>
+          {isOwnListing ? (
+            <Link
+              href="/dashboard"
+              className="font-display -skew-x-3 rounded-lg border-[1.5px] border-or bg-or/10 px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap text-or uppercase transition hover:bg-or/20"
+            >
+              {t("actionManage")}
+            </Link>
+          ) : (
+            <Link
+              href={`/collectionneur/${l.seller.slug}`}
+              className={[
+                "font-display -skew-x-3 rounded-lg border-[1.5px] px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap uppercase transition hover:-translate-y-0.5",
+                l.isWant
+                  ? "border-charbon-400 text-blanc-casse hover:border-carmin"
+                  : "border-carmin bg-carmin text-white hover:bg-carmin-alt",
+              ].join(" ")}
+            >
+              {l.isWant ? t("actionPropose") : t("actionContact")}
+            </Link>
+          )}
         </div>
       </div>
     </div>

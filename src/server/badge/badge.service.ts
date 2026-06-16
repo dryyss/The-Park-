@@ -9,7 +9,11 @@ export async function evaluateUserBadges(userId: string): Promise<string[]> {
   const [collectionCount, holoCount, exchangeCount, goldOwned, userBadges, allBadges] = await Promise.all([
     prisma.collectionItem.count({ where: { userId, quantity: { gt: 0 } } }),
     prisma.collectionItem.count({
-      where: { userId, quantity: { gt: 0 }, variant: { versionType: { isFoil: true } } },
+      where: {
+        userId,
+        quantity: { gt: 0 },
+        variant: { card: { rarity: { code: { in: ["r", "u", "l", "g"] } } } },
+      },
     }),
     prisma.exchange.count({
       where: {
