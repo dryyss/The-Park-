@@ -1,5 +1,5 @@
 function normalizeBaseUrl(url: string): string {
-  return url.replace(/\/$/, "");
+  return url.trim().replace(/\/$/, "");
 }
 
 function isLocalhostUrl(url: string): boolean {
