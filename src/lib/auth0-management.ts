@@ -119,4 +119,26 @@ export const auth0Management = {
       method: "DELETE",
       body: JSON.stringify({ roles: roleIds }),
     }),
+
+  getUsersByEmail: (email: string) =>
+    mgmt<Auth0User[]>(`/users-by-email?email=${encodeURIComponent(email)}`),
+
+  createUser: (payload: {
+    email: string;
+    password: string;
+    name: string;
+    connection?: string;
+    app_metadata?: Record<string, unknown>;
+  }) =>
+    mgmt<Auth0User>("/users", {
+      method: "POST",
+      body: JSON.stringify({
+        connection: payload.connection ?? "Username-Password-Authentication",
+        email: payload.email,
+        password: payload.password,
+        name: payload.name,
+        email_verified: true,
+        app_metadata: payload.app_metadata,
+      }),
+    }),
 };

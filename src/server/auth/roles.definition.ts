@@ -3,6 +3,44 @@ import type { AdminRole, UserRole } from "@/generated/prisma/client";
 /** Modules admin — masqués côté UI et vérifiés côté serveur. */
 export type AdminModule = "overview" | "moderation" | "catalog" | "shop" | "support" | "staff";
 
+/** Entrée de navigation console admin (liée à un module RBAC). */
+export interface AdminDashboard {
+  module: AdminModule;
+  href: string;
+  labelKey: "overview" | "moderation" | "catalog" | "shop" | "orders" | "settings" | "support" | "staff";
+}
+
+/** Dashboards disponibles — filtrés par MODULES_BY_STAFF_ROLE côté serveur. */
+export const ADMIN_DASHBOARDS: AdminDashboard[] = [
+  { module: "overview", href: "/admin", labelKey: "overview" },
+  { module: "moderation", href: "/admin/moderation", labelKey: "moderation" },
+  { module: "catalog", href: "/admin/catalogue", labelKey: "catalog" },
+  { module: "shop", href: "/admin/boutique", labelKey: "shop" },
+  { module: "shop", href: "/admin/commandes", labelKey: "orders" },
+  { module: "shop", href: "/admin/reglages", labelKey: "settings" },
+  { module: "support", href: "/admin/support", labelKey: "support" },
+  { module: "staff", href: "/admin/roles", labelKey: "staff" },
+];
+
+/** Dashboard par défaut après connexion staff (Post-Login Action). */
+export const DEFAULT_DASHBOARD_BY_STAFF_ROLE: Record<AdminRole, string> = {
+  OWNER: "/admin",
+  MODERATOR: "/admin/moderation",
+  CATALOG_MANAGER: "/admin/catalogue",
+  SHOP_MANAGER: "/admin/boutique",
+  SUPPORT: "/admin/support",
+};
+
+export function getDashboardsForStaffRole(staffRole: AdminRole): AdminDashboard[] {
+  const modules = MODULES_BY_STAFF_ROLE[staffRole];
+  return ADMIN_DASHBOARDS.filter((d) => modules.includes(d.module));
+}
+
+export function getDefaultDashboardForStaffRole(staffRole: AdminRole | null): string {
+  if (!staffRole) return "/admin";
+  return DEFAULT_DASHBOARD_BY_STAFF_ROLE[staffRole];
+}
+
 /** Rôles Auth0 (RBAC) — préfixe `park_` pour éviter les collisions. */
 export const AUTH0_ROLE_DEFINITIONS = [
   {

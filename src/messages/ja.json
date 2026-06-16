@@ -7,7 +7,8 @@
     "login": "ログイン",
     "signup": "アカウント作成",
     "logout": "ログアウト",
-    "greeting": "こんにちは、{name}さん"
+    "greeting": "こんにちは、{name}さん",
+    "loginFailed": "ログインに失敗しました。もう一度お試しください。Auth0 に登録した URL（例: http://localhost:3000）でアクセスしているか確認してください。"
   },
   "nav": {
     "home": "ホーム",
@@ -511,9 +512,21 @@
     "manageOrders": "ショップ注文",
     "manageModeration": "モデレーション",
     "manageCatalog": "カタログ",
+    "manageSupport": "メンバーサポート",
     "manageSettings": "プラットフォーム設定",
     "moreSoon": "モデレーション等 — 近日",
     "back": "管理コンソール",
+    "nav": {
+      "ariaLabel": "管理コンソールナビ",
+      "overview": "概要",
+      "moderation": "モデレーション",
+      "catalog": "カタログ",
+      "shop": "ショップ",
+      "orders": "注文",
+      "settings": "設定",
+      "support": "サポート",
+      "staff": "ロール"
+    },
     "modules": {
       "moderationSoon": "モデレーション — 近日",
       "catalogSoon": "カタログ — 近日"
@@ -538,7 +551,7 @@
       "assignError": "更新失敗。",
       "revokeSuccess": "スタッフアクセス解除。",
       "revokeError": "解除失敗。",
-      "triggerHint": "Post-Login: scripts/auth0/post-login-sync-roles.js + AUTH0_ACTION_SECRET",
+      "triggerHint": "Post-Login: scripts/auth0/post-login-sync-roles.js（シークレット不要）",
       "staffRoles": {
         "OWNER": "Owner",
         "MODERATOR": "モデレーター",
@@ -581,6 +594,20 @@
       "cards": "カード",
       "release": "発売",
       "save": "保存"
+    },
+    "support": {
+      "kicker": "ヘルプ · メンバー",
+      "title": "メンバーサポート",
+      "helpCenter": "ヘルプセンター",
+      "recentMembers": "新規メンバー",
+      "noMembers": "最近のメンバーはいません。",
+      "contactHint": "連絡先: support@thepark.local — 紛争はモデレーションへ。",
+      "stats": {
+        "activeMembers": "アクティブメンバー",
+        "newMembersWeek": "登録 (7日)",
+        "ordersNeedingHelp": "進行中の注文",
+        "openReports": "未処理の通報"
+      }
     },
     "settings": {
       "kicker": "プラットフォーム · 設定",

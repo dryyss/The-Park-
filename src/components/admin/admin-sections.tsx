@@ -87,6 +87,14 @@ export async function AdminOverviewPanel({
             {t("manageCatalog")}
           </Link>
         )}
+        {modules.includes("support") && (
+          <Link
+            href="/admin/support"
+            className="font-display rounded-[12px] border border-charbon-400 px-5 py-3 text-[13px] tracking-[1px] text-texte-doux uppercase transition hover:border-carmin hover:text-white"
+          >
+            {t("manageSupport")}
+          </Link>
+        )}
         {modules.includes("shop") && (
           <Link
             href="/admin/reglages"

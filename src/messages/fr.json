@@ -7,7 +7,8 @@
     "login": "Se connecter",
     "signup": "Créer un compte",
     "logout": "Se déconnecter",
-    "greeting": "Bonjour, {name}"
+    "greeting": "Bonjour, {name}",
+    "loginFailed": "La connexion a échoué. Réessaie, ou vérifie que tu accèdes au site via la même URL que dans Auth0 (ex. http://localhost:3000)."
   },
   "nav": {
     "home": "Accueil",
@@ -511,9 +512,21 @@
     "manageOrders": "Commandes boutique",
     "manageModeration": "Modération",
     "manageCatalog": "Catalogue",
+    "manageSupport": "Support membres",
     "manageSettings": "Réglages plateforme",
     "moreSoon": "Modération, catalogue… — bientôt",
     "back": "Console admin",
+    "nav": {
+      "ariaLabel": "Navigation console admin",
+      "overview": "Vue d'ensemble",
+      "moderation": "Modération",
+      "catalog": "Catalogue",
+      "shop": "Boutique",
+      "orders": "Commandes",
+      "settings": "Réglages",
+      "support": "Support",
+      "staff": "Rôles"
+    },
     "modules": {
       "moderationSoon": "Modération — bientôt",
       "catalogSoon": "Catalogue — bientôt"
@@ -538,7 +551,7 @@
       "assignError": "Échec de la mise à jour.",
       "revokeSuccess": "Accès staff retiré.",
       "revokeError": "Impossible de retirer l'accès.",
-      "triggerHint": "Trigger Post-Login : scripts/auth0/post-login-sync-roles.js + AUTH0_ACTION_SECRET",
+      "triggerHint": "Trigger Post-Login : scripts/auth0/post-login-sync-roles.js (aucun secret requis)",
       "staffRoles": {
         "OWNER": "Owner",
         "MODERATOR": "Modérateur",
@@ -581,6 +594,20 @@
       "cards": "Cartes",
       "release": "Sortie",
       "save": "Enregistrer"
+    },
+    "support": {
+      "kicker": "Aide · membres",
+      "title": "Support membres",
+      "helpCenter": "Centre d'aide",
+      "recentMembers": "Nouveaux membres",
+      "noMembers": "Aucun membre récent.",
+      "contactHint": "Contact : support@thepark.local — les litiges passent par la modération.",
+      "stats": {
+        "activeMembers": "Membres actifs",
+        "newMembersWeek": "Inscriptions (7 j)",
+        "ordersNeedingHelp": "Commandes en cours",
+        "openReports": "Signalements ouverts"
+      }
     },
     "settings": {
       "kicker": "Plateforme · réglages",

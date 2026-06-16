@@ -1,4 +1,4 @@
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getCatalogSummary, getCatalogStats, getFeaturedCards } from "@/server/catalog/catalog.service";
 import { getRecentListings } from "@/server/marketplace/marketplace.service";
 import { getTopCollectors, getRecentActivity } from "@/server/community/community.service";
@@ -14,9 +14,17 @@ import { TopCollectors } from "@/components/home/top-collectors";
 // Données catalogue mises en cache côté serveur (120 s) — évite un aller-retour Neon à chaque navigation.
 export const revalidate = 60;
 
-export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+export default async function Home({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ auth_error?: string }>;
+}) {
   const { locale } = await params;
+  const { auth_error: authError } = await searchParams;
   setRequestLocale(locale);
+  const tAuth = authError ? await getTranslations("auth") : null;
 
   const [stats, summary, featured, listings, collectors, activity] = await Promise.all([
     getCatalogStats(),
@@ -34,6 +42,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <main className="overflow-x-hidden">
+      {authError && tAuth && (
+        <div className="border-b border-statut-danger/30 bg-statut-danger/10 px-7 py-3 text-center text-[13px] font-semibold text-statut-danger">
+          {tAuth("loginFailed")}
+        </div>
+      )}
       <HeroSection stats={stats} heroCards={featured.slice(0, 3)} />
 
       <div className="mx-auto max-w-[1320px] px-7 pb-[60px]">

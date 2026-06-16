@@ -7,7 +7,8 @@
     "login": "Log in",
     "signup": "Sign up",
     "logout": "Log out",
-    "greeting": "Hi, {name}"
+    "greeting": "Hi, {name}",
+    "loginFailed": "Sign-in failed. Try again, or make sure you use the same URL registered in Auth0 (e.g. http://localhost:3000)."
   },
   "nav": {
     "home": "Home",
@@ -511,9 +512,21 @@
     "manageOrders": "Shop orders",
     "manageModeration": "Moderation",
     "manageCatalog": "Catalog",
+    "manageSupport": "Member support",
     "manageSettings": "Platform settings",
     "moreSoon": "Moderation, catalog… — coming soon",
     "back": "Admin console",
+    "nav": {
+      "ariaLabel": "Admin console navigation",
+      "overview": "Overview",
+      "moderation": "Moderation",
+      "catalog": "Catalog",
+      "shop": "Shop",
+      "orders": "Orders",
+      "settings": "Settings",
+      "support": "Support",
+      "staff": "Roles"
+    },
     "modules": {
       "moderationSoon": "Moderation — coming soon",
       "catalogSoon": "Catalog — coming soon"
@@ -538,7 +551,7 @@
       "assignError": "Update failed.",
       "revokeSuccess": "Staff access removed.",
       "revokeError": "Could not remove access.",
-      "triggerHint": "Post-Login trigger: scripts/auth0/post-login-sync-roles.js + AUTH0_ACTION_SECRET",
+      "triggerHint": "Post-Login trigger: scripts/auth0/post-login-sync-roles.js (no secrets required)",
       "staffRoles": {
         "OWNER": "Owner",
         "MODERATOR": "Moderator",
@@ -581,6 +594,20 @@
       "cards": "Cards",
       "release": "Release",
       "save": "Save"
+    },
+    "support": {
+      "kicker": "Help · members",
+      "title": "Member support",
+      "helpCenter": "Help center",
+      "recentMembers": "Recent members",
+      "noMembers": "No recent members.",
+      "contactHint": "Contact: support@thepark.local — disputes go through moderation.",
+      "stats": {
+        "activeMembers": "Active members",
+        "newMembersWeek": "Sign-ups (7d)",
+        "ordersNeedingHelp": "Orders in progress",
+        "openReports": "Open reports"
+      }
     },
     "settings": {
       "kicker": "Platform · settings",

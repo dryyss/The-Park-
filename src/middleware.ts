@@ -26,8 +26,14 @@ export default async function middleware(request: NextRequest) {
 
     const intlRes = intlMiddleware(request);
 
-    for (const cookie of authRes.cookies.getAll()) {
-      intlRes.cookies.set(cookie);
+    // Pattern officiel Auth0 + next-intl : fusionner les en-têtes Auth0 (session, cookies)
+    // sans écraser une redirection ou une erreur produite par next-intl.
+    for (const [key, value] of authRes.headers) {
+      if (key.toLowerCase() === "x-middleware-next") {
+        const isIntlResponseTerminating = intlRes.status >= 300;
+        if (isIntlResponseTerminating) continue;
+      }
+      intlRes.headers.append(key, value);
     }
 
     return intlRes;
@@ -41,5 +47,7 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\..*).*)",
+  ],
 };
