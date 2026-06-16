@@ -1188,3 +1188,18 @@ model ConnectionLog {
   @@index([userId])
   @@index([createdAt])
 }
+
+// ============================================================================
+//  RÉGLAGES PLATEFORME  (singleton — frais port, drop, mode démo)
+// ============================================================================
+
+model PlatformConfig {
+  id                   String   @id @default("default")
+  shopFreeShippingMin  Decimal  @default(50) @db.Decimal(10, 2)
+  shopStandardShipping Decimal  @default(4.90) @db.Decimal(10, 2)
+  shopDefaultCarrier   String   @default("Colissimo")
+  /// Slug utilisateur démo si navigation sans login (null = désactivé)
+  demoUserSlug         String?
+  listingDefaultDays   Int      @default(30)
+  updatedAt            DateTime @updatedAt
+}

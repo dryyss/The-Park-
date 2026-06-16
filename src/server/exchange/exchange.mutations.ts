@@ -72,14 +72,99 @@ export async function proposeExchange(
       },
     });
 
+    await tx.conversation.create({
+      data: {
+        context: "EXCHANGE",
+        exchangeId: ex.id,
+        participants: {
+          create: [{ userId: initiatorId }, { userId: recipient.id }],
+        },
+      },
+    });
+
     return ex;
   });
 
   return exchange.id;
 }
 
+/** Accepte une proposition avec les cartes offertes par le destinataire. */
+export async function acceptExchangeWithItems(
+  recipientId: string,
+  exchangeId: string,
+  giveVariantIds: string[],
+): Promise<void> {
+  if (giveVariantIds.length === 0) throw new Error("NO_CARDS");
+
+  const ex = await prisma.exchange.findFirst({
+    where: { id: exchangeId, recipientId, status: "PROPOSED" },
+    select: { id: true, initiatorId: true },
+  });
+  if (!ex) throw new Error("NOT_FOUND");
+
+  const owned = await prisma.collectionItem.findMany({
+    where: {
+      userId: recipientId,
+      variantId: { in: giveVariantIds },
+      quantity: { gt: 0 },
+    },
+    select: { variantId: true, condition: true, quantity: true, reservedQuantity: true },
+  });
+  if (owned.length !== giveVariantIds.length) throw new Error("NOT_OWNED");
+  for (const o of owned) {
+    if (o.reservedQuantity >= o.quantity) throw new Error("CARD_RESERVED");
+  }
+
+  await prisma.$transaction(async (tx) => {
+    for (const item of owned) {
+      await tx.exchangeItem.create({
+        data: {
+          exchangeId,
+          fromInitiator: false,
+          variantId: item.variantId,
+          condition: item.condition,
+          quantity: 1,
+        },
+      });
+      await tx.collectionItem.updateMany({
+        where: { userId: recipientId, variantId: item.variantId, condition: item.condition },
+        data: { reservedQuantity: { increment: 1 } },
+      });
+    }
+
+    await tx.exchange.update({
+      where: { id: exchangeId },
+      data: { status: "ACCEPTED", acceptedAt: new Date() },
+    });
+    await tx.transactionEvent.create({
+      data: {
+        entityType: "EXCHANGE",
+        entityId: exchangeId,
+        fromStatus: "PROPOSED",
+        toStatus: "ACCEPTED",
+        event: "EXCHANGE_ACCEPTED",
+        actorId: recipientId,
+      },
+    });
+    await tx.notification.create({
+      data: {
+        userId: ex.initiatorId,
+        type: "EXCHANGE_ACCEPTED",
+        entityType: "EXCHANGE",
+        entityId: exchangeId,
+      },
+    });
+  });
+}
+
 /** Accepte une proposition d'échange (destinataire). */
 export async function acceptExchange(recipientId: string, exchangeId: string): Promise<void> {
+  const recipientItems = await prisma.exchangeItem.count({
+    where: { exchangeId, fromInitiator: false },
+  });
+  if (recipientItems === 0) {
+    throw new Error("RECIPIENT_CARDS_REQUIRED");
+  }
   const ex = await prisma.exchange.findFirst({
     where: { id: exchangeId, recipientId, status: "PROPOSED" },
     select: { id: true, initiatorId: true },

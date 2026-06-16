@@ -4,8 +4,7 @@ import { auth0 } from "@/lib/auth0";
 import { prisma } from "@/lib/prisma";
 import { syncAuth0User } from "@/server/user/auth-sync.service";
 import { syncRolesFromAuth0 } from "@/server/auth/roles.service";
-
-const DEMO_SLUG = "lighton-factory";
+import { getPlatformConfig } from "@/server/platform/platform.service";
 
 const viewerSelect = {
   id: true,
@@ -59,13 +58,16 @@ export async function requireAuthViewer(returnTo: string) {
   return viewer;
 }
 
-/** Connecté → compte réel ; sinon membre démo (navigation sans login). */
+/** Connecté → compte réel ; sinon utilisateur démo si configuré en DB (null par défaut). */
 export async function getViewerUser() {
   const authenticated = await getAuthenticatedViewer();
   if (authenticated) return authenticated;
 
+  const { demoUserSlug } = await getPlatformConfig();
+  if (!demoUserSlug) return null;
+
   return prisma.user.findFirst({
-    where: { slug: DEMO_SLUG },
+    where: { slug: demoUserSlug, status: "ACTIVE" },
     select: viewerSelect,
   });
 }

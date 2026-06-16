@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useUser } from "@auth0/nextjs-auth0";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 type NavItem = { href: string; key: "home" | "collection" | "marketplace" | "shop" | "exchanges" | "rankings" | "profile"; official?: boolean };
 
@@ -137,6 +138,8 @@ export function TopBar() {
             <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />
           </svg>
         </IconButton>
+
+        <LanguageSwitcher />
 
         {/* « Vendre » réservé aux membres connectés (la page exige la connexion). */}
         {user && (

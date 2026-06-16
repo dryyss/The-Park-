@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/format";
+import { computeShopShipping } from "@/server/platform/platform.service";
 
 export interface CartLine {
   id: string;
@@ -55,7 +56,7 @@ export async function getViewerCart(userId: string): Promise<CartSummary> {
     };
   });
 
-  const shippingRaw = subtotalRaw > 0 ? (subtotalRaw >= 50 ? 0 : 4.9) : 0;
+  const shippingRaw = subtotalRaw > 0 ? await computeShopShipping(subtotalRaw) : 0;
 
   return {
     lines,

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getAppBaseUrl, isStripeConfigured } from "@/lib/env";
 import { getStripe } from "@/lib/stripe";
 import { getViewerCart } from "@/server/cart/cart.service";
+import { computeShopShipping, getShopShippingConfig } from "@/server/platform/platform.service";
 
 export interface ShippingInput {
   fullName: string;
@@ -13,9 +14,9 @@ export interface ShippingInput {
   country?: string;
 }
 
-function computeShipping(subtotalRaw: number): number {
-  if (subtotalRaw <= 0) return 0;
-  return subtotalRaw >= 50 ? 0 : 4.9;
+async function resolveShipping(subtotalRaw: number): Promise<{ cost: number; carrier: string }> {
+  const [cost, cfg] = await Promise.all([computeShopShipping(subtotalRaw), getShopShippingConfig()]);
+  return { cost, carrier: cfg.defaultCarrier };
 }
 
 async function generateOrderNumber(): Promise<string> {
@@ -42,7 +43,7 @@ export async function createCheckoutFromCart(userId: string, locale: string, shi
     throw new Error("OUT_OF_STOCK");
   }
 
-  const shippingCost = computeShipping(cart.subtotalRaw);
+  const { cost: shippingCost, carrier } = await resolveShipping(cart.subtotalRaw);
   const totalRaw = cart.subtotalRaw + shippingCost;
   const orderNumber = await generateOrderNumber();
   const country = shipping.country?.trim() || "FR";
@@ -61,7 +62,7 @@ export async function createCheckoutFromCart(userId: string, locale: string, shi
         shippingZip: shipping.zip.trim(),
         shippingCity: shipping.city.trim(),
         shippingCountry: country,
-        shippingMethod: "Colissimo",
+        shippingMethod: carrier,
         items: {
           create: cart.lines.map((line) => ({
             productId: line.productId,

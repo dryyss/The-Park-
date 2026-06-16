@@ -16,8 +16,11 @@ export interface TopCollector {
 async function fetchTopCollectors(limit: number): Promise<TopCollector[]> {
   const total = await prisma.cardVariant.count();
 
+  // Mêmes critères que le classement complet : on exclut les comptes non-membres
+  // (boutique officielle / admin) pour rester cohérent avec /classements.
   const grouped = await prisma.collectionItem.groupBy({
     by: ["userId"],
+    where: { user: { role: "MEMBER", status: "ACTIVE" } },
     _count: { variantId: true },
     orderBy: { _count: { variantId: "desc" } },
     take: limit,
