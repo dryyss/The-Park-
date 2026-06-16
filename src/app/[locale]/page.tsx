@@ -44,7 +44,7 @@ export default async function Home({
     <main className="overflow-x-hidden">
       {authError && tAuth && (
         <div className="border-b border-statut-danger/30 bg-statut-danger/10 px-7 py-3 text-center text-[13px] font-semibold text-statut-danger">
-          {tAuth("loginFailed")}
+          {tAuth("loginFailed", { code: authError })}
         </div>
       )}
       <HeroSection stats={stats} heroCards={featured.slice(0, 3)} />

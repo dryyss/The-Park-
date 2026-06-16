@@ -8,7 +8,7 @@
     "signup": "Sign up",
     "logout": "Log out",
     "greeting": "Hi, {name}",
-    "loginFailed": "Sign-in failed. Try again, or make sure you use the same URL registered in Auth0 (e.g. http://localhost:3000)."
+    "loginFailed": "Sign-in failed ({code}). Use the same URL registered in Auth0 (localhost for dev, https://the-park-omega.vercel.app for prod).",
   },
   "nav": {
     "home": "Home",
