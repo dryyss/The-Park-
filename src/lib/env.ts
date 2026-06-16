@@ -72,15 +72,29 @@ export function getAppBaseUrl(): string {
   return "http://localhost:3000";
 }
 
-/** Ignore APP_BASE_URL localhost pour laisser Auth0 inférer l'hôte réel de la requête. */
-export function shouldAuth0InferBaseUrl(): boolean {
-  if (process.env.AUTH0_FORCE_APP_BASE_URL === "1") return false;
-  if (getAuth0AppBaseUrl()) return false;
+/** URL passée au SDK Auth0 — jamais localhost sur Vercel. */
+export function resolveAuth0ClientBaseUrl(): string | undefined {
+  if (process.env.VERCEL) {
+    const explicit = getExplicitBaseUrl();
+    if (explicit && !isLocalhostUrl(explicit)) return explicit;
+    return getVercelBaseUrl();
+  }
+
+  if (process.env.NODE_ENV !== "production") return undefined;
 
   const explicit = getExplicitBaseUrl();
-  if (!explicit) return true;
+  if (explicit && !isLocalhostUrl(explicit)) return explicit;
 
-  return isLocalhostUrl(explicit) || Boolean(process.env.VERCEL);
+  return undefined;
+}
+
+/** Retire APP_BASE_URL localhost pour que le SDK Auth0 n'utilise pas localhost sur Vercel. */
+export function stripLocalhostAppBaseUrlForAuth0(): string | undefined {
+  const saved = process.env.APP_BASE_URL;
+  if (saved && isLocalhostUrl(saved) && process.env.VERCEL) {
+    delete process.env.APP_BASE_URL;
+  }
+  return saved;
 }
 
 export function isAuth0Configured(): boolean {

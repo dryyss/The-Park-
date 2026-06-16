@@ -1,14 +1,14 @@
 import { Auth0Client } from "@auth0/nextjs-auth0/server";
 import { NextResponse } from "next/server";
-import { getAppBaseUrl, getAuth0AppBaseUrl, isAuth0Configured, shouldAuth0InferBaseUrl } from "@/lib/env";
+import {
+  getAppBaseUrl,
+  isAuth0Configured,
+  resolveAuth0ClientBaseUrl,
+  stripLocalhostAppBaseUrlForAuth0,
+} from "@/lib/env";
 
-// Le SDK lit aussi process.env.APP_BASE_URL : on retire localhost sur Vercel pour inférer l'URL réelle.
-const savedAppBaseUrl = process.env.APP_BASE_URL;
-const auth0AppBaseUrl = getAuth0AppBaseUrl();
-
-if (shouldAuth0InferBaseUrl() && savedAppBaseUrl) {
-  delete process.env.APP_BASE_URL;
-}
+const savedAppBaseUrl = stripLocalhostAppBaseUrlForAuth0();
+const auth0AppBaseUrl = resolveAuth0ClientBaseUrl();
 
 // Sync user/roles : Post-Login Action (claims) + getAuthenticatedViewer() (Prisma + Management API).
 export const auth0 = new Auth0Client({
@@ -33,7 +33,8 @@ export const auth0 = new Auth0Client({
   },
 });
 
-if (shouldAuth0InferBaseUrl() && savedAppBaseUrl) {
+// Ne pas réinjecter localhost sur Vercel : d'autres modules lisent APP_BASE_URL au runtime.
+if (savedAppBaseUrl && !process.env.VERCEL) {
   process.env.APP_BASE_URL = savedAppBaseUrl;
 }
 
