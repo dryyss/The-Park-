@@ -141,4 +141,15 @@ export const auth0Management = {
         app_metadata: payload.app_metadata,
       }),
     }),
+
+  listClientConnections: (clientId: string) =>
+    mgmt<{ connections: { id: string; name: string; strategy: string }[] }>(
+      `/clients/${encodeURIComponent(clientId)}/connections`,
+    ),
+
+  disableClientConnection: (connectionId: string, clientId: string) =>
+    mgmt<void>(
+      `/connections/${encodeURIComponent(connectionId)}/enabled_clients/${encodeURIComponent(clientId)}`,
+      { method: "DELETE" },
+    ),
 };

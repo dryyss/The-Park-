@@ -16,6 +16,7 @@
     "db:seed": "prisma db seed",
     "auth0:roles": "tsx scripts/setup-auth0-roles.ts",
     "auth0:setup": "tsx scripts/setup-auth0-triggers.ts",
+    "auth0:disable-google": "tsx scripts/disable-auth0-google.ts",
     "staff:seed": "tsx scripts/seed-staff-accounts.ts"
   },
   "dependencies": {

@@ -17,6 +17,10 @@ export const auth0 = new Auth0Client({
   clientSecret: process.env.AUTH0_CLIENT_SECRET,
   secret: process.env.AUTH0_SECRET,
   ...(auth0AppBaseUrl ? { appBaseUrl: auth0AppBaseUrl } : {}),
+  // Email + mot de passe uniquement (Google désactivé sur l'application Auth0).
+  authorizationParameters: {
+    connection: "Username-Password-Authentication",
+  },
   async onCallback(error, ctx) {
     const base = ctx.appBaseUrl ?? getAppBaseUrl();
 
