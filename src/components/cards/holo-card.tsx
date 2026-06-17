@@ -18,11 +18,13 @@ interface HoloCardProps {
   tilt?: number;
   holo?: number;
   variant?: HoloVariant;
+  /** Couleur de rareté : applique une bordure + halo assortis. */
+  rarityColor?: string;
   priority?: boolean;
   className?: string;
 }
 
-export function HoloCard({ src, alt, tilt = 6, holo = 0.6, variant = "rainbow", priority, className }: HoloCardProps) {
+export function HoloCard({ src, alt, tilt = 6, holo = 0.6, variant = "rainbow", rarityColor, priority, className }: HoloCardProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -47,11 +49,17 @@ export function HoloCard({ src, alt, tilt = 6, holo = 0.6, variant = "rainbow", 
   const overlayBg = variant === "gold" ? GOLD : variant === "rainbow" ? `${GLARE}, ${RAINBOW}` : undefined;
   const blend = variant === "gold" ? "screen" : "overlay";
 
+  // Bordure + halo colorés selon la rareté (override le border-white/10 par défaut).
+  const rarityStyle = rarityColor
+    ? { borderColor: rarityColor, boxShadow: `0 10px 24px rgba(0,0,0,0.45), 0 0 16px ${rarityColor}3a, inset 0 0 14px ${rarityColor}1f` }
+    : undefined;
+
   return (
     <div
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
+      style={rarityStyle}
       className={[
         "relative aspect-[5/7] overflow-hidden rounded-xl border border-white/10 bg-charbon-700 shadow-[0_10px_24px_rgba(0,0,0,0.45)] [transition:transform_0.18s_ease-out] [will-change:transform]",
         className ?? "",

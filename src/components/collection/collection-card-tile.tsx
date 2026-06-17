@@ -21,6 +21,11 @@ export function CollectionCardTile({
     <div className={`animate-fade-up transition-[opacity,filter] ${missing ? "opacity-[0.88]" : ""}`}>
       <Link href={`/carte/${card.slug}`} className="block">
         <div
+          style={
+            missing
+              ? undefined
+              : { borderColor: card.color, boxShadow: `0 10px 24px rgba(0,0,0,0.45), 0 0 16px ${card.color}3a, inset 0 0 14px ${card.color}1f` }
+          }
           className={[
             "relative aspect-[5/7] overflow-hidden rounded-xl border bg-charbon-700 shadow-[0_10px_24px_rgba(0,0,0,0.45)] transition-[filter,border-color]",
             missing ? "border-charbon-500/80 brightness-[0.68] saturate-[0.82]" : "border-white/10",

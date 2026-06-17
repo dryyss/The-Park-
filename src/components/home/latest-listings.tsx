@@ -20,7 +20,7 @@ export async function LatestListings({ listings }: { listings: ListingDisplay[] 
         {listings.map((l) => (
           <Link key={l.id} href="/marketplace" className="animate-fade-up block">
             <div className="relative">
-              <HoloCard src={l.image} alt={l.name} tilt={l.tilt} holo={l.holo} variant={l.variant} />
+              <HoloCard src={l.image} alt={l.name} tilt={l.tilt} holo={l.holo} variant={l.variant} rarityColor={l.color} />
               <span className="absolute bottom-1.5 left-1.5 z-10 rounded-md bg-black/70 px-2 py-[3px] text-[10px] font-extrabold text-blanc-casse backdrop-blur-sm">
                 {l.price}
               </span>

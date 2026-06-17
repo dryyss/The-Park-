@@ -49,7 +49,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
 
       <div className="mt-6 grid items-start gap-11 lg:grid-cols-[380px_1fr]">
         <div className="lg:sticky lg:top-[90px]">
-          <HoloCard src={card.image} alt={card.name} tilt={card.tilt} holo={card.holo} variant={card.variant} priority />
+          <HoloCard src={card.image} alt={card.name} tilt={card.tilt} holo={card.holo} variant={card.variant} rarityColor={card.color} priority />
           {showFirstEditionBadge && (
             <span className="font-display absolute left-0 top-3.5 -rotate-3 bg-carmin px-3 py-1 text-[11px] tracking-[1.5px] text-white">
               {t("firstEditionBadge")}

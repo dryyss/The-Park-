@@ -19,6 +19,7 @@ export function SeasonCardTile({
           tilt={card.tilt}
           holo={card.holo}
           variant={card.quantity > 0 ? "rainbow" : card.variant}
+          rarityColor={card.color}
         />
         <div className="mt-2 flex items-center justify-between px-0.5">
           <span className="truncate text-[10.5px] font-extrabold text-texte-doux">{card.name}</span>
