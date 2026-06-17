@@ -9,6 +9,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useUser } from "@auth0/nextjs-auth0";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { UserMenu } from "@/components/layout/user-menu";
+import { LogoutLink } from "@/components/auth/logout-link";
 
 type NavItem = { href: string; key: "home" | "collection" | "marketplace" | "shop" | "exchanges" | "rankings" | "profile"; official?: boolean };
 
@@ -152,9 +153,12 @@ export function TopBar() {
           </Link>
         )}
 
-        {/* Avatar / auth */}
+        {/* Déconnexion + avatar */}
         {user ? (
-          <UserMenu />
+          <>
+            <LogoutLink label={tAuth("logout")} variant="nav" />
+            <UserMenu />
+          </>
         ) : (
           <a
             href="/auth/login"

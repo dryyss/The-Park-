@@ -2,10 +2,12 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { avatarGradient } from "@/lib/avatars";
 import { formatPercent } from "@/lib/format";
+import { LogoutLink } from "@/components/auth/logout-link";
 import type { ViewerProfile } from "@/server/profile/profile.service";
 
 export async function ProfileHeader({ profile }: { profile: ViewerProfile }) {
   const t = await getTranslations("profile");
+  const tAuth = await getTranslations("auth");
   const tStaff = profile.staffRole ? await getTranslations("admin.roles.staffRoles") : null;
 
   const memberSince = new Intl.DateTimeFormat("fr-FR", { month: "2-digit", year: "numeric" }).format(profile.memberSince);
@@ -41,13 +43,24 @@ export async function ProfileHeader({ profile }: { profile: ViewerProfile }) {
           <span>{t("memberSince", { date: memberSince })}</span>
         </div>
       </div>
-      <div className="relative text-right">
-        <div className="font-display text-[52px] leading-none text-blanc-casse">
-          {profile.pct}
-          <span className="text-[24px] text-carmin">%</span>
+      <div className="relative flex flex-col items-end gap-3">
+        <div className="text-right">
+          <div className="font-display text-[52px] leading-none text-blanc-casse">
+            {profile.pct}
+            <span className="text-[24px] text-carmin">%</span>
+          </div>
+          <div className="mt-1 text-[12px] font-bold text-texte-dim">
+            {t("ownedSummary", { owned: profile.owned, total: profile.total })}
+          </div>
         </div>
-        <div className="mt-1 text-[12px] font-bold text-texte-dim">
-          {t("ownedSummary", { owned: profile.owned, total: profile.total })}
+        <div className="flex flex-wrap justify-end gap-2">
+          <Link
+            href="/parametres"
+            className="font-display -skew-x-3 rounded-[10px] border border-charbon-500 bg-charbon-700 px-4 py-2.5 text-[12px] tracking-[1px] text-blanc-casse uppercase transition hover:border-carmin"
+          >
+            {t("linkSettings")}
+          </Link>
+          <LogoutLink label={tAuth("logout")} variant="profile" />
         </div>
       </div>
     </div>
