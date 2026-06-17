@@ -10,6 +10,7 @@ import {
   adjustCollectionCardQuantity,
   adjustCollectionVariantQuantity,
   updateCollectionEdition,
+  updateCollectionGrading,
 } from "@/server/collection/collection.mutations";
 import { editionPresetToLabel, type EditionPresetCode } from "@/lib/card-edition";
 
@@ -48,9 +49,14 @@ const adjustVariantSchema = z.object({
 
 const editionSchema = z.object({
   variantId: z.string().min(1),
-  preset: z.enum(["first", "unlimited", "custom"]),
-  customLabel: z.string().trim().max(64).optional(),
+  preset: z.enum(["first", "unlimited"]),
   condition: z.enum(["MINT", "EXCELLENT", "VERY_GOOD", "GOOD", "FAIR", "DAMAGED"]).default("EXCELLENT"),
+});
+
+const gradingSchema = z.object({
+  variantId: z.string().min(1),
+  condition: conditionEnum,
+  isGraded: z.boolean(),
 });
 
 function revalidateCollection() {
@@ -133,13 +139,26 @@ export async function updateCollectionEditionAction(input: unknown): Promise<Col
   const parsed = editionSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "VALIDATION" };
 
-  const editionLabel = editionPresetToLabel(
-    parsed.data.preset as EditionPresetCode,
-    parsed.data.customLabel,
-  );
+  const editionLabel = editionPresetToLabel(parsed.data.preset as EditionPresetCode);
 
   try {
     await updateCollectionEdition(viewer.id, parsed.data.variantId, editionLabel, parsed.data.condition);
+    revalidateCollection();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
+export async function updateCollectionGradingAction(input: unknown): Promise<CollectionActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  const parsed = gradingSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+
+  try {
+    await updateCollectionGrading(viewer.id, parsed.data.variantId, parsed.data.condition, parsed.data.isGraded);
     revalidateCollection();
     return { ok: true };
   } catch (err) {

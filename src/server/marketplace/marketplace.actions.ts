@@ -19,6 +19,45 @@ const publishSchema = z.object({
   description: z.string().max(500).optional(),
 });
 
+const conditionEnum = z.enum(["MINT", "EXCELLENT", "VERY_GOOD", "GOOD", "FAIR", "DAMAGED"]);
+
+const listItemSchema = z
+  .object({
+    variantId: z.string().min(1),
+    condition: conditionEnum,
+    type: z.enum(["SELL", "TRADE", "SELL_OR_TRADE"]),
+    price: z.number().min(0).max(99999).optional(),
+  })
+  // Une vente exige un prix valide ; un échange pur n'en demande pas.
+  .refine((d) => d.type === "TRADE" || (d.price != null && d.price > 0), {
+    message: "PRICE_REQUIRED",
+  });
+
+/** Met une carte possédée en vente / échange depuis le classeur, pour un état donné. */
+export async function listCollectionItemAction(input: unknown): Promise<MarketplaceActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  const parsed = listItemSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+
+  try {
+    const listingId = await publishListing(viewer.id, {
+      variantId: parsed.data.variantId,
+      type: parsed.data.type,
+      condition: parsed.data.condition,
+      price: parsed.data.price,
+    });
+    revalidatePath("/marketplace");
+    revalidatePath("/carte", "layout");
+    revalidatePath("/dashboard");
+    revalidatePath("/echanges");
+    return { ok: true, listingId };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
 const wantSchema = z.object({
   variantId: z.string().min(1),
   budgetMax: z.number().min(0).max(99999).optional(),

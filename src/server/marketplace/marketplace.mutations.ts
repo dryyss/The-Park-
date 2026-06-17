@@ -1,24 +1,34 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import type { ListingType } from "@/generated/prisma/client";
+import type { CardCondition, ListingType } from "@/generated/prisma/client";
 import { getPlatformConfig } from "@/server/platform/platform.service";
 
-/** Publie une annonce marketplace — uniquement sur une variante possédée. */
+/** Publie une annonce marketplace — uniquement sur une variante (et un état) possédé. */
 export async function publishListing(
   sellerId: string,
   input: {
     variantId: string;
     type: ListingType;
+    condition?: CardCondition;
     price?: number;
     description?: string;
   },
 ): Promise<string> {
   const item = await prisma.collectionItem.findFirst({
-    where: { userId: sellerId, variantId: input.variantId, quantity: { gt: 0 } },
+    where: {
+      userId: sellerId,
+      variantId: input.variantId,
+      quantity: { gt: 0 },
+      ...(input.condition ? { condition: input.condition } : {}),
+    },
     select: { id: true, quantity: true, reservedQuantity: true, condition: true },
   });
   if (!item) throw new Error("NOT_OWNED");
   if (item.reservedQuantity >= item.quantity) throw new Error("ALL_RESERVED");
+
+  // Le prix n'a de sens que pour une vente ; un échange pur n'en porte pas.
+  const sells = input.type !== "TRADE";
+  const trades = input.type !== "SELL";
 
   const { listingDefaultDays } = await getPlatformConfig();
   const expiresAt = new Date(Date.now() + listingDefaultDays * 24 * 60 * 60 * 1000);
@@ -26,7 +36,7 @@ export async function publishListing(
   const listing = await prisma.$transaction(async (tx) => {
     await tx.collectionItem.update({
       where: { id: item.id },
-      data: { reservedQuantity: { increment: 1 }, forSale: true },
+      data: { reservedQuantity: { increment: 1 }, forSale: sells, forTrade: trades },
     });
 
     return tx.listing.create({
@@ -35,7 +45,7 @@ export async function publishListing(
         variantId: input.variantId,
         type: input.type,
         status: "ACTIVE",
-        price: input.price ?? null,
+        price: sells ? (input.price ?? null) : null,
         condition: item.condition,
         quantity: 1,
         description: input.description ?? null,
@@ -65,7 +75,7 @@ export async function resumeListing(sellerId: string, listingId: string): Promis
   await prisma.listing.update({ where: { id: listingId }, data: { status: "ACTIVE" } });
 }
 
-/** Annule une annonce et libère la réservation collection. */
+/** Annule une annonce et libère la réservation de l'état concerné. */
 export async function cancelListing(sellerId: string, listingId: string): Promise<void> {
   const listing = await prisma.listing.findFirst({
     where: { id: listingId, sellerId, status: { in: ["ACTIVE", "PAUSED", "DRAFT"] } },
@@ -74,9 +84,15 @@ export async function cancelListing(sellerId: string, listingId: string): Promis
 
   await prisma.$transaction(async (tx) => {
     await tx.listing.update({ where: { id: listingId }, data: { status: "CANCELLED" } });
+    // Cible l'état précis de l'annonce (plusieurs états possibles par variante).
     await tx.collectionItem.updateMany({
-      where: { userId: sellerId, variantId: listing.variantId },
-      data: { reservedQuantity: { decrement: 1 }, forSale: false },
+      where: {
+        userId: sellerId,
+        variantId: listing.variantId,
+        condition: listing.condition,
+        reservedQuantity: { gt: 0 },
+      },
+      data: { reservedQuantity: { decrement: 1 } },
     });
   });
 }

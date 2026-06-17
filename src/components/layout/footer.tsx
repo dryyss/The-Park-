@@ -71,7 +71,6 @@ export function Footer() {
             <div className="flex flex-col gap-2.5">
               <FooterLink href="/">{t("linkHome")}</FooterLink>
               <FooterLink href="/collection">{t("linkCollection")}</FooterLink>
-              <FooterLink href="/saison-1">{t("linkSeason1")}</FooterLink>
               <FooterLink href="/marketplace">{t("linkMarketplace")}</FooterLink>
               <FooterLink href="/encheres" live>{t("linkAuctions")}</FooterLink>
               <FooterLink href="/recherche">{t("linkSearch")}</FooterLink>

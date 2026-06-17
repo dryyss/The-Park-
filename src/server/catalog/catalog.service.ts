@@ -6,6 +6,10 @@ import { rarityMeta, cardImage, type HoloVariant } from "@/lib/rarity";
 import { formatPrice } from "@/lib/format";
 import { isActiveVersionCode } from "@/lib/card-versions";
 import { isFirstEditionLabel, resolveEditionLabel } from "@/lib/card-edition";
+import { CONDITION_ORDER } from "@/lib/condition";
+
+// Ordre d'affichage des états (du meilleur au plus abîmé).
+const CONDITION_SORT: readonly string[] = CONDITION_ORDER;
 
 /** Représentation d'une carte prête à afficher (vignette holo). */
 export interface CardDisplay {
@@ -221,6 +225,7 @@ export interface CardDetail {
     variantId: string;
     code: string;
     label: string;
+    image: string;
     owned: boolean;
     quantity: number;
     reservedQuantity: number;
@@ -229,6 +234,15 @@ export interface CardDetail {
     userEditionLabel: string | null;
     editionLabel: string | null;
     isFirstEdition: boolean;
+    // Détail par état possédé + annonce active du viewer pour cet état (le cas échéant).
+    conditions: {
+      condition: string;
+      quantity: number;
+      reservedQuantity: number;
+      available: number;
+      listing: { id: string; type: string; price: string | null } | null;
+      isGraded: boolean;
+    }[];
   }[];
   listings: {
     id: string;
@@ -254,7 +268,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
   });
   if (!card) return null;
 
-  const [neighbors, listings, ownedVariants] = await Promise.all([
+  const [neighbors, listings, ownedVariants, viewerListings] = await Promise.all([
     prisma.card.findMany({
       where: { seasonId: card.seasonId },
       orderBy: { number: "asc" },
@@ -272,10 +286,42 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     viewerUserId
       ? prisma.collectionItem.findMany({
           where: { userId: viewerUserId, variant: { cardId: card.id } },
-          select: { variantId: true, quantity: true, reservedQuantity: true, editionLabel: true },
+          select: { variantId: true, condition: true, quantity: true, reservedQuantity: true, editionLabel: true, isGraded: true },
+        })
+      : Promise.resolve([]),
+    viewerUserId
+      ? prisma.listing.findMany({
+          where: { sellerId: viewerUserId, status: "ACTIVE", variant: { cardId: card.id } },
+          select: { id: true, variantId: true, condition: true, type: true, price: true },
         })
       : Promise.resolve([]),
   ]);
+
+  // Annonce active du viewer par (variante, état) — pour signaler ce qui est déjà listé.
+  const viewerListingByKey = new Map<string, { id: string; type: string; price: string | null }>();
+  for (const l of viewerListings) {
+    const key = `${l.variantId}:${l.condition}`;
+    if (!viewerListingByKey.has(key)) {
+      viewerListingByKey.set(key, { id: l.id, type: l.type, price: l.price != null ? formatPrice(l.price) : null });
+    }
+  }
+
+  // Détail des états possédés par variante.
+  const conditionsByVariant = new Map<
+    string,
+    { condition: string; quantity: number; reservedQuantity: number; isGraded: boolean }[]
+  >();
+  for (const o of ownedVariants) {
+    if (o.quantity <= 0) continue;
+    const list = conditionsByVariant.get(o.variantId) ?? [];
+    list.push({
+      condition: o.condition,
+      quantity: o.quantity,
+      reservedQuantity: o.reservedQuantity,
+      isGraded: o.isGraded,
+    });
+    conditionsByVariant.set(o.variantId, list);
+  }
 
   const idx = neighbors.findIndex((n) => n.slug === slug);
   const meta = rarityMeta(card.rarity.code);
@@ -327,10 +373,22 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
       const catalogEditionLabel = v.editionLabel?.trim() || null;
       const userEditionLabel = stats?.userEditionLabel ?? null;
       const editionLabel = resolveEditionLabel(userEditionLabel, catalogEditionLabel);
+      const conditions = (conditionsByVariant.get(v.id) ?? [])
+        .slice()
+        .sort((a, b) => CONDITION_SORT.indexOf(a.condition) - CONDITION_SORT.indexOf(b.condition))
+        .map((c) => ({
+          condition: c.condition,
+          quantity: c.quantity,
+          reservedQuantity: c.reservedQuantity,
+          available: c.quantity - c.reservedQuantity,
+          listing: viewerListingByKey.get(`${v.id}:${c.condition}`) ?? null,
+          isGraded: c.isGraded,
+        }));
       return {
         variantId: v.id,
         code: v.versionType.code,
         label: v.versionType.label,
+        image: cardImage(v.imageUrl ?? card.imageUrl),
         owned: quantity > 0,
         quantity,
         reservedQuantity,
@@ -339,6 +397,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
         userEditionLabel,
         editionLabel,
         isFirstEdition: isFirstEditionLabel(editionLabel),
+        conditions,
       };
     }),
     listings: listings.map((l) => ({

@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { addToWishlistAction } from "@/server/wishlist/wishlist.actions";
-import { VariantQuantityControls } from "@/components/collection/variant-quantity-controls";
+import { VariantConditionManager, type ConditionRow } from "@/components/collection/variant-condition-manager";
 import { VariantEditionEditor } from "@/components/collection/variant-edition-editor";
 import { LoginGatePrompt } from "@/components/collection/login-gate-prompt";
 
@@ -20,6 +20,7 @@ export type CardVersionRow = {
   userEditionLabel: string | null;
   editionLabel: string | null;
   isFirstEdition: boolean;
+  conditions: ConditionRow[];
 };
 
 export function CardMemberActions({
@@ -67,43 +68,35 @@ export function CardMemberActions({
               v.owned ? "border-statut-succes/45 bg-statut-succes/8" : "border-charbon-500 bg-charbon"
             }`}
           >
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className={`text-[13px] font-extrabold ${v.owned ? "text-blanc-casse" : "text-texte-dim"}`}>{v.label}</div>
-                  {v.isFirstEdition && (
-                    <span className="font-display rounded bg-carmin px-2 py-0.5 text-[9px] tracking-[1px] text-white">
-                      {t("firstEditionBadge")}
-                    </span>
-                  )}
-                </div>
-                <div className={`mt-0.5 text-[11px] font-bold ${v.owned ? "text-statut-succes" : "text-texte-faible"}`}>
-                  {v.owned
-                    ? v.reservedQuantity > 0
-                      ? t("versionQtyReserved", { count: v.quantity, reserved: v.reservedQuantity })
-                      : t("versionQty", { count: v.quantity })
-                    : t("versionMissing")}
-                </div>
-                {isAuthenticated && (
-                  <VariantEditionEditor
-                    variantId={v.variantId}
-                    owned={v.owned}
-                    userEditionLabel={v.userEditionLabel}
-                    catalogEditionLabel={v.catalogEditionLabel}
-                    editionLabel={v.editionLabel}
-                  />
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <div className={`text-[13px] font-extrabold ${v.owned ? "text-blanc-casse" : "text-texte-dim"}`}>{v.label}</div>
+                {v.isFirstEdition && (
+                  <span className="font-display rounded bg-carmin px-2 py-0.5 text-[9px] tracking-[1px] text-white">
+                    {t("firstEditionBadge")}
+                  </span>
                 )}
-                {!isAuthenticated && (
-                  <p className="mt-1 text-[10.5px] font-bold text-texte-faible">
-                    {v.catalogEditionLabel ? t("editionCatalog", { label: v.catalogEditionLabel }) : t("editionUnlimited")}
-                  </p>
-                )}
+                <span className={`text-[11px] font-bold ${v.owned ? "text-statut-succes" : "text-texte-faible"}`}>
+                  {v.owned ? t("versionQty", { count: v.quantity }) : t("versionMissing")}
+                </span>
               </div>
-              <VariantQuantityControls
+              {isAuthenticated && (
+                <VariantEditionEditor
+                  variantId={v.variantId}
+                  owned={v.owned}
+                  userEditionLabel={v.userEditionLabel}
+                  catalogEditionLabel={v.catalogEditionLabel}
+                  editionLabel={v.editionLabel}
+                />
+              )}
+              {!isAuthenticated && (
+                <p className="mt-1 text-[10.5px] font-bold text-texte-faible">
+                  {v.catalogEditionLabel ? t("editionCatalog", { label: v.catalogEditionLabel }) : t("editionReedition")}
+                </p>
+              )}
+              <VariantConditionManager
                 variantId={v.variantId}
-                quantity={v.quantity}
-                minQuantity={v.reservedQuantity}
-                compact
+                conditions={v.conditions}
                 isAuthenticated={isAuthenticated}
               />
             </div>

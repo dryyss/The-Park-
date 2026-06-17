@@ -170,3 +170,24 @@ export async function updateCollectionEdition(
     data: { editionLabel },
   });
 }
+
+/** Active ou désactive la gradation sur un exemplaire (par état). */
+export async function updateCollectionGrading(
+  userId: string,
+  variantId: string,
+  condition: CardCondition,
+  isGraded: boolean,
+): Promise<void> {
+  const item = await prisma.collectionItem.findUnique({
+    where: { userId_variantId_condition: { userId, variantId, condition } },
+    select: { id: true },
+  });
+  if (!item) throw new Error("NOT_FOUND");
+
+  await prisma.collectionItem.update({
+    where: { id: item.id },
+    data: isGraded
+      ? { isGraded: true }
+      : { isGraded: false, gradeCompany: null, gradeScore: null },
+  });
+}

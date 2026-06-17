@@ -1,7 +1,7 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
-import { HoloCard } from "@/components/cards/holo-card";
+import { OwnedVariantStack } from "@/components/cards/owned-variant-stack";
 import { getCardDetail } from "@/server/catalog/catalog.service";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import { getViewerUser, getAuthenticatedViewer } from "@/server/user/user.service";
@@ -24,6 +24,16 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
 
   const totalQty = card.versions.reduce((s, v) => s + v.quantity, 0);
   const ownedAny = totalQty > 0;
+  // Exemplaires possédés (variante + édition) empilés sur le hero, 1ère édition devant.
+  const ownedVariantCards = card.versions
+    .filter((v) => v.owned)
+    .map((v) => ({
+      variantId: v.variantId,
+      image: v.image,
+      label: v.label,
+      editionLabel: v.editionLabel,
+      isFirstEdition: v.isFirstEdition,
+    }));
   const showFirstEditionBadge =
     card.versions.some((v) => v.isFirstEdition) ||
     card.versions.some((v) => isFirstEditionLabel(v.catalogEditionLabel));
@@ -49,7 +59,16 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
 
       <div className="mt-6 grid items-start gap-11 lg:grid-cols-[380px_1fr]">
         <div className="lg:sticky lg:top-[90px]">
-          <HoloCard src={card.image} alt={card.name} tilt={card.tilt} holo={card.holo} variant={card.variant} rarityColor={card.color} priority />
+          <OwnedVariantStack
+            cards={ownedVariantCards}
+            fallbackImage={card.image}
+            alt={card.name}
+            tilt={card.tilt}
+            holo={card.holo}
+            variant={card.variant}
+            rarityColor={card.color}
+            priority
+          />
           {showFirstEditionBadge && (
             <span className="font-display absolute left-0 top-3.5 -rotate-3 bg-carmin px-3 py-1 text-[11px] tracking-[1.5px] text-white">
               {t("firstEditionBadge")}
@@ -119,7 +138,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
                       : t("versionMissing")}
                   </div>
                   <div className="mt-1 text-[10.5px] font-bold text-texte-dim">
-                    {v.editionLabel ? t("editionActive", { label: v.editionLabel }) : t("editionUnlimited")}
+                    {v.editionLabel ? t("editionActive", { label: v.editionLabel }) : t("editionReedition")}
                   </div>
                 </div>
               ))}

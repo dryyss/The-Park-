@@ -1,7 +1,7 @@
 /** Libellé catalogue par défaut — Saison 1 · Moteur Forgé. */
 export const DEFAULT_FIRST_EDITION_LABEL = "1ère édition";
 
-export const EDITION_PRESET_CODES = ["first", "unlimited", "custom"] as const;
+export const EDITION_PRESET_CODES = ["first", "unlimited"] as const;
 
 export type EditionPresetCode = (typeof EDITION_PRESET_CODES)[number];
 
@@ -33,12 +33,7 @@ export function resolveEditionLabel(
   return catalog || null;
 }
 
-export function editionPresetToLabel(
-  preset: EditionPresetCode,
-  custom?: string,
-): string | null {
+export function editionPresetToLabel(preset: EditionPresetCode): string | null {
   if (preset === "first") return DEFAULT_FIRST_EDITION_LABEL;
-  if (preset === "unlimited") return null;
-  const c = custom?.trim();
-  return c || null;
+  return null;
 }
