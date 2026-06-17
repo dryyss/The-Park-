@@ -261,7 +261,12 @@
     "guestLinkCollection": "My collection",
     "guestLinkMarketplace": "Marketplace",
     "guestLinkSeason": "Season 1",
-    "guestLinkSearch": "Search"
+    "guestLinkSearch": "Search",
+    "sessionLoading": "Checking session…",
+    "sessionPending": "Signed in — loading your profile…",
+    "sessionHint": "Your Auth0 session is active but your profile hasn't synced yet. Retry or sign out and back in if this keeps happening.",
+    "sessionRetry": "Retry",
+    "sessionRelogin": "Log out"
   },
   "exchanges": {
     "kicker": "Double validation · chat tied to each trade",

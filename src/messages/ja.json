@@ -261,7 +261,12 @@
     "guestLinkCollection": "マイコレクション",
     "guestLinkMarketplace": "マーケット",
     "guestLinkSeason": "シーズン1",
-    "guestLinkSearch": "検索"
+    "guestLinkSearch": "検索",
+    "sessionLoading": "セッションを確認中…",
+    "sessionPending": "ログイン済み — プロフィールを読み込み中…",
+    "sessionHint": "Auth0セッションは有効ですが、プロフィールがまだ同期されていません。再試行するか、問題が続く場合は一度ログアウトして再接続してください。",
+    "sessionRetry": "再試行",
+    "sessionRelogin": "ログアウト"
   },
   "exchanges": {
     "kicker": "二重確認 · 交換ごとのチャット",

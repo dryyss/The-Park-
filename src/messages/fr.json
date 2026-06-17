@@ -261,7 +261,12 @@
     "guestLinkCollection": "Ma collection",
     "guestLinkMarketplace": "Marketplace",
     "guestLinkSeason": "Saison 1",
-    "guestLinkSearch": "Recherche"
+    "guestLinkSearch": "Recherche",
+    "sessionLoading": "Vérification de la session…",
+    "sessionPending": "Connexion détectée — chargement de ton profil…",
+    "sessionHint": "La session Auth0 est active mais le profil n'a pas encore été synchronisé. Réessaie ou reconnecte-toi si le problème persiste.",
+    "sessionRetry": "Réessayer",
+    "sessionRelogin": "Se déconnecter"
   },
   "exchanges": {
     "kicker": "Double validation · chat lié à chaque échange",

@@ -30,23 +30,25 @@ export async function getAuthenticatedViewer() {
   }
   if (!session?.user?.sub) return null;
 
+  const auth0Id = session.user.sub;
+  const sessionUser = session.user as Record<string, unknown>;
+
   try {
     await syncAuth0User({
-      sub: session.user.sub,
+      sub: auth0Id,
       email: session.user.email,
       name: session.user.name,
       picture: session.user.picture,
     });
-    await syncRolesFromAuth0(session.user.sub, session.user as Record<string, unknown>);
-
-    return prisma.user.findUnique({
-      where: { auth0Id: session.user.sub },
-      select: viewerSelect,
-    });
+    await syncRolesFromAuth0(auth0Id, sessionUser);
   } catch (err) {
-    console.error("[auth] syncAuth0User failed", err);
-    return null;
+    console.error("[auth] syncAuth0User/syncRoles failed — tentative de lecture Prisma", err);
   }
+
+  return prisma.user.findUnique({
+    where: { auth0Id },
+    select: viewerSelect,
+  });
 }
 
 /**
