@@ -24,7 +24,6 @@ export default async function EchangesPage({
   const t = await getTranslations("exchanges");
 
   const viewer = await getViewerUser();
-  const isAuthenticated = !!viewer;
   const tab: ExchangeTab = sp.tab === "done" ? "done" : "current";
 
   if (!viewer) {

@@ -1,5 +1,4 @@
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { avatarGradient } from "@/lib/avatars";
 import type { NotificationItem } from "@/server/notification/notification.service";
 import { NotificationActions, NotificationRowActions } from "@/components/notifications/notification-actions";

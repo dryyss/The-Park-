@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable @next/next/no-html-link-for-pages */
 import { useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 

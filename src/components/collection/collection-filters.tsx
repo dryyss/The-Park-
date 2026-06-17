@@ -38,7 +38,7 @@ export async function CompletionPanel({ data }: { data: CollectionView }) {
   );
 }
 
-interface CollParams extends CollectionUrlParams {}
+type CollParams = CollectionUrlParams;
 
 export async function CollectionFiltersBar({
   params,

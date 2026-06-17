@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
+import { LogoutLink } from "@/components/auth/logout-link";
 
 export function UserMenu() {
   const { user } = useUser();
@@ -67,10 +68,7 @@ export function UserMenu() {
             {tProfile("linkSettings")}
           </Link>
           <div className="my-1 border-t border-charbon-600" />
-          {/* Route Auth0 — hors i18n */}
-          <a href="/auth/logout" role="menuitem" className={`${itemClass} text-neon-rouge hover:text-neon-rouge`}>
-            {tAuth("logout")}
-          </a>
+          <LogoutLink label={tAuth("logout")} variant="menu" className="uppercase tracking-wide" />
         </div>
       )}
     </div>

@@ -1,6 +1,9 @@
+// Route Auth0 hors App Router localisé — navigation complète requise.
+/* eslint-disable @next/next/no-html-link-for-pages */
+
 type LogoutLinkProps = {
   label: string;
-  variant?: "nav" | "profile";
+  variant?: "nav" | "profile" | "menu";
   className?: string;
 };
 
@@ -15,6 +18,10 @@ const VARIANT_CLASS: Record<NonNullable<LogoutLinkProps["variant"]>, string> = {
     "font-display -skew-x-3 rounded-[10px] border border-neon-rouge/50 bg-neon-rouge/10",
     "px-4 py-2.5 text-[12px] tracking-[1px] text-neon-rouge uppercase",
     "transition hover:border-neon-rouge hover:bg-neon-rouge/20",
+  ].join(" "),
+  menu: [
+    "block w-full px-3.5 py-2.5 text-left text-[12.5px] font-bold text-neon-rouge",
+    "transition hover:bg-charbon-600",
   ].join(" "),
 };
 

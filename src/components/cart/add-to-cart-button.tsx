@@ -12,10 +12,9 @@ interface AddToCartButtonProps {
   productId: string;
   inStock: boolean;
   stock: number;
-  locale: string;
 }
 
-export function AddToCartButton({ productId, inStock, stock, locale }: AddToCartButtonProps) {
+export function AddToCartButton({ productId, inStock, stock }: AddToCartButtonProps) {
   const t = useTranslations("shop");
   const router = useRouter();
   const { user } = useUser();

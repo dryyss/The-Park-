@@ -52,7 +52,6 @@ export default async function BoutiqueProduitPage({
               productId={product.id}
               inStock={product.inStock}
               stock={product.stock}
-              locale={locale}
             />
             <Link href="/boutique" className="font-display -skew-x-3 self-start rounded-[11px] border border-charbon-400 px-6 py-3.5 text-[14px] tracking-wide text-blanc-casse uppercase transition-all duration-150 hover:-translate-y-0.5 hover:border-carmin hover:text-carmin hover:shadow-[5px_5px_0_rgba(216,27,96,0.25)] active:translate-y-0 active:shadow-none">
               {t("backToCatalog")}

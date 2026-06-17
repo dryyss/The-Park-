@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { LogoutLink } from "@/components/auth/logout-link";
 
 export async function AccountSecuritySection({
   email,
@@ -35,12 +36,7 @@ export async function AccountSecuritySection({
           <p className="text-[12px] font-bold text-texte-faible">{t("securityPasswordUnavailable")}</p>
         )}
 
-        <a
-          href="/auth/logout"
-          className="font-display self-start -skew-x-3 rounded-lg border border-charbon-400 px-5 py-2.5 text-[12px] tracking-[1px] text-neon-rouge uppercase transition hover:border-neon-rouge hover:bg-neon-rouge/10"
-        >
-          {tAuth("logout")}
-        </a>
+        <LogoutLink label={tAuth("logout")} variant="profile" className="self-start" />
       </div>
     </section>
   );
