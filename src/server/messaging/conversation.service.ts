@@ -110,6 +110,23 @@ export async function getViewerConversations(userId: string): Promise<Conversati
   });
 }
 
+function ageFromBirthDate(birthDate: Date, now: Date): number {
+  let age = now.getFullYear() - birthDate.getFullYear();
+  const m = now.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && now.getDate() < birthDate.getDate())) age -= 1;
+  return age;
+}
+
+/** Vrai si au moins un participant de la conversation est mineur (< 18 ans). */
+export async function conversationInvolvesMinor(conversationId: string): Promise<boolean> {
+  const participants = await prisma.conversationParticipant.findMany({
+    where: { conversationId },
+    include: { user: { select: { birthDate: true } } },
+  });
+  const now = new Date();
+  return participants.some((p) => p.user.birthDate != null && ageFromBirthDate(p.user.birthDate, now) < 18);
+}
+
 /** Nombre de conversations avec au moins un message non lu (pour l'indicateur top-bar). */
 export async function getUnreadConversationCount(userId: string): Promise<number> {
   const items = await getViewerConversations(userId);

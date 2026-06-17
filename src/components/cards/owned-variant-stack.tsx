@@ -52,7 +52,6 @@ export function OwnedVariantStack({
         tilt={tilt}
         holo={holo}
         variant={variant}
-        rarityColor={rarityColor}
         priority={priority}
       />
     );
@@ -85,7 +84,6 @@ export function OwnedVariantStack({
                   tilt={tilt}
                   holo={holo}
                   variant={variant}
-                  rarityColor={rarityColor}
                   priority={priority}
                   className="h-full w-full"
                 />
@@ -99,8 +97,8 @@ export function OwnedVariantStack({
               type="button"
               onClick={() => setActive(i)}
               aria-label={c.label}
-              className="absolute inset-0 cursor-pointer overflow-hidden rounded-xl border bg-charbon-700 shadow-[0_10px_24px_rgba(0,0,0,0.5)]"
-              style={{ ...wrapperStyle, borderColor: rarityColor }}
+              className="absolute inset-0 cursor-pointer overflow-hidden rounded-xl bg-charbon-700 shadow-[0_10px_24px_rgba(0,0,0,0.5)]"
+              style={wrapperStyle}
             >
               <Image src={c.image} alt={c.label} fill sizes="380px" className="object-cover brightness-[0.6]" />
             </button>

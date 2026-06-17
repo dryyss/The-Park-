@@ -1,6 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import { rarityMeta, cardImage } from "@/lib/rarity";
+import { rarityMeta, cardImage, cardNumberLabel, isPromoRarity, RARITY_ORDER, rarityTitle, rarityJp } from "@/lib/rarity";
 import { isActiveVersionCode } from "@/lib/card-versions";
 import { isFirstEditionLabel, resolveEditionLabel } from "@/lib/card-edition";
 import { sortCollectionCards, type CollectionSort } from "@/lib/collection-sort";
@@ -52,24 +52,6 @@ export interface CollectionView {
   sections: RaritySection[];
   counts: { all: number; owned: number; missing: number };
 }
-
-const RARITY_JP: Record<string, string> = {
-  c: "一般",
-  r: "レア",
-  u: "ウルトラ",
-  l: "伝説",
-  g: "金",
-  p: "唯一",
-};
-
-const RARITY_TITLE: Record<string, string> = {
-  c: "Communes",
-  r: "Rares Holo",
-  u: "Ultra Rares",
-  l: "Légendaires",
-  g: "Gold",
-  p: "Uniques · Promo",
-};
 
 /** Classeur complet (possédé / manquant par carte). userId null = visiteur (tout en manquant). */
 export async function getUserCollection(userId: string | null, filters: CollectionFilters): Promise<CollectionView> {
@@ -123,9 +105,9 @@ export async function getUserCollection(userId: string | null, filters: Collecti
       owned,
       quantity: own?.qty ?? 0,
       standardVariantId: standardVariant?.id ?? card.variants[0]?.id ?? "",
-      isPromo: card.rarity.code === "p",
+      isPromo: isPromoRarity(card.rarity.code),
       hasFirstEdition: own?.hasFirstEdition ?? false,
-      numberLabel: card.rarity.code === "p" ? `${String(card.number).padStart(2, "0")} · PROMO` : `${String(card.number).padStart(2, "0")}/78`,
+      numberLabel: cardNumberLabel(card.number, card.rarity.code),
       dots: card.variants
         .filter((v) => isActiveVersionCode(v.versionType.code))
         .map((v) => ({
@@ -147,7 +129,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
   const ownedCards = enriched.filter((c) => c.owned).length;
   const missingCards = enriched.length - ownedCards;
 
-  const rarityOrder = ["c", "r", "u", "l", "g", "p"];
+  const rarityOrder = RARITY_ORDER;
   const byRarityCode = new Map<string, CollectionCard[]>();
   for (const c of filtered) {
     const card = cardByNumber.get(c.number)!;
@@ -165,8 +147,8 @@ export async function getUserCollection(userId: string | null, filters: Collecti
       const meta = rarityMeta(code);
       return {
         code,
-        title: RARITY_TITLE[code] ?? code,
-        jp: RARITY_JP[code] ?? "",
+        title: rarityTitle(code),
+        jp: rarityJp(code),
         glyph: meta.glyph,
         color: meta.color,
         owned: ownedInRarity,

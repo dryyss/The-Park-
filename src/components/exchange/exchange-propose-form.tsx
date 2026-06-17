@@ -31,7 +31,9 @@ export function ExchangeProposeForm({
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [recipient, setRecipient] = useState(defaultRecipient);
-  const [message, setMessage] = useState("");
+  // Pré-rempli avec un message d'amorce réel (et non un simple placeholder),
+  // pour qu'une proposition parte toujours avec un mot d'accroche éditable.
+  const [message, setMessage] = useState(() => t("messageDefault"));
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [showLoginGate, setShowLoginGate] = useState(false);

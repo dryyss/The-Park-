@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { avatarGradient } from "@/lib/avatars";
 import type { ConversationListItem } from "@/server/messaging/conversation.service";
+import { ConversationMessageList } from "@/components/messaging/conversation-message-list";
 import { MessageComposeForm } from "@/components/messaging/message-compose-form";
 
 export async function ConversationList({ items }: { items: ConversationListItem[] }) {
@@ -52,8 +53,10 @@ export async function ConversationList({ items }: { items: ConversationListItem[
 
 export async function ConversationThreadView({
   thread,
+  viewerId,
 }: {
   thread: import("@/server/messaging/conversation.service").ConversationThread;
+  viewerId: string;
 }) {
   const t = await getTranslations("messages");
 
@@ -68,26 +71,15 @@ export async function ConversationThreadView({
           <p className="text-[11px] font-bold text-texte-dim">{t(`context.${thread.contextLabel}`)}</p>
         </div>
         {thread.exchangeId && (
-          <Link href={`/echanges?id=${thread.exchangeId}`} className="text-[11px] font-extrabold text-carmin hover:underline">
+          <Link
+            href={`/echanges?tab=current&id=${thread.exchangeId}`}
+            className="text-[11px] font-extrabold text-carmin hover:underline"
+          >
             {t("viewExchange")}
           </Link>
         )}
       </div>
-      <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-5">
-        {thread.messages.map((m) => (
-          <div key={m.id} className={`flex ${m.isViewer ? "justify-end" : "justify-start"}`}>
-            <div
-              className={`max-w-[75%] rounded-[14px] px-4 py-2.5 ${m.isViewer ? "bg-carmin text-white" : "bg-charbon-700 text-blanc-casse"}`}
-            >
-              {!m.isViewer && <p className="mb-1 text-[10px] font-extrabold opacity-70">{m.senderName}</p>}
-              <p className="text-[13px] font-semibold">{m.body}</p>
-              <p className={`mt-1 text-[10px] font-bold ${m.isViewer ? "text-white/60" : "text-texte-faible"}`}>
-                {new Intl.DateTimeFormat("fr-FR", { timeStyle: "short" }).format(m.createdAt)}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+      <ConversationMessageList conversationId={thread.id} viewerId={viewerId} initialMessages={thread.messages} />
       <MessageComposeForm conversationId={thread.id} />
     </div>
   );

@@ -2,7 +2,19 @@
 // Le glyphe et la couleur "officiels" viennent de la base (Rarity.symbol / .color) ;
 // ici on complète avec l'intensité de l'effet holographique de la carte.
 
-export type HoloVariant = "rainbow" | "gold" | "none";
+import { RARITY_DEFINITIONS, type HoloVariant } from "@/lib/rarities";
+
+export type { HoloVariant };
+export {
+  RARITY_DEFINITIONS,
+  RARITY_ORDER,
+  SPECIAL_RARITY_CODES,
+  isSpecialRarity,
+  isPromoRarity,
+  cardNumberLabel,
+  rarityTitle,
+  rarityJp,
+} from "@/lib/rarities";
 
 export interface RarityMeta {
   tilt: number;
@@ -13,14 +25,15 @@ export interface RarityMeta {
   label: string;
 }
 
-export const RARITY_META: Record<string, RarityMeta> = {
-  c: { tilt: 3, holo: 0.3, variant: "rainbow", glyph: "◆", color: "#9BA3B2", label: "Commune" },
-  r: { tilt: 5, holo: 0.5, variant: "rainbow", glyph: "◈", color: "#4FA3FF", label: "Rare Holo" },
-  u: { tilt: 6, holo: 0.65, variant: "rainbow", glyph: "✦", color: "#B05CFF", label: "Ultra Rare" },
-  l: { tilt: 8, holo: 0.8, variant: "rainbow", glyph: "❀", color: "#FF2E63", label: "Légendaire" },
-  g: { tilt: 8, holo: 0.85, variant: "gold", glyph: "✸", color: "#E8B23A", label: "Gold" },
-  p: { tilt: 9, holo: 0.9, variant: "rainbow", glyph: "✪", color: "#6FE3D0", label: "Carte Unique" },
-};
+export const RARITY_META: Record<string, RarityMeta> = Object.fromEntries(
+  RARITY_DEFINITIONS.map((d) => [
+    d.code,
+    { tilt: d.tilt, holo: d.holo, variant: d.variant, glyph: d.symbol, color: d.color, label: d.label },
+  ]),
+);
+
+/** Fallback legacy pour l'ancien code promo « p ». */
+RARITY_META.p = RARITY_META.unique;
 
 export function rarityMeta(code: string): RarityMeta {
   return RARITY_META[code] ?? RARITY_META.c;

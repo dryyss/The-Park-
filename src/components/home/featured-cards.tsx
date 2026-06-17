@@ -17,7 +17,7 @@ export async function FeaturedCards({ cards }: { cards: CardDisplay[] }) {
       <div className="grid grid-cols-2 gap-[18px] sm:grid-cols-3 lg:grid-cols-5">
         {cards.map((c) => (
           <Link key={c.slug} href={`/carte/${c.slug}`} className="animate-fade-up block">
-            <HoloCard src={c.image} alt={c.name} tilt={c.tilt} holo={c.holo} variant={c.variant} rarityColor={c.color} />
+            <HoloCard src={c.image} alt={c.name} tilt={c.tilt} holo={c.holo} variant={c.variant} />
             <div className="mt-[9px] flex items-center justify-between px-[3px]">
               <span className="truncate text-[11.5px] font-extrabold text-texte-doux">{c.name}</span>
               <span className="text-[12px]" style={{ color: c.color }}>{c.glyph}</span>

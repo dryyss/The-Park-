@@ -2,7 +2,7 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { rarityMeta, cardImage, type HoloVariant } from "@/lib/rarity";
+import { rarityMeta, cardImage, cardNumberLabel, isPromoRarity, type HoloVariant } from "@/lib/rarity";
 import { formatPrice } from "@/lib/format";
 import { isActiveVersionCode } from "@/lib/card-versions";
 import { isFirstEditionLabel, resolveEditionLabel } from "@/lib/card-edition";
@@ -345,7 +345,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     id: card.id,
     slug: card.slug,
     number: card.number,
-    numberLabel: card.rarity.code === "p" ? `${String(card.number).padStart(2, "0")} · PROMO` : `${String(card.number).padStart(2, "0")}/78`,
+    numberLabel: cardNumberLabel(card.number, card.rarity.code),
     name: card.name,
     image: cardImage(card.imageUrl),
     description: card.description,
@@ -357,7 +357,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     quoteLabel: formatPrice(card.quoteValue),
     powerCh: card.powerCh,
     weightKg: card.weightKg,
-    isPromo: card.rarity.code === "p",
+    isPromo: isPromoRarity(card.rarity.code),
     isUnique: card.isUnique,
     tilt: meta.tilt,
     holo: meta.holo,

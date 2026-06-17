@@ -448,7 +448,7 @@ model Season {
 
 model Rarity {
   id        String  @id @default(cuid())
-  code      String  @unique // c, r, u, l, g, p
+  code      String  @unique // c, r, u, l, g, unique, promotional, special, collaboration, signed
   label     String // Commune, Rare Holo…
   symbol    String? // ◆ ◈ ✦ ❀ ✸ ✪
   color     String? // hex

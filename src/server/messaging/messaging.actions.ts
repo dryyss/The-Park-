@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
+import { createReport } from "@/server/moderation/moderation.service";
+import { conversationInvolvesMinor } from "@/server/messaging/conversation.service";
 import {
   getOrCreateDirectConversation,
   markConversationRead,
@@ -72,4 +74,45 @@ export async function markConversationReadAction(conversationId: string): Promis
   await markConversationRead(viewer.id, conversationId);
   revalidatePath("/messages");
   return { ok: true };
+}
+
+const reportMessageSchema = z.object({
+  messageId: z.string().min(1),
+  reason: z.string().min(3).max(500),
+});
+
+/** Signale un message dans une conversation dont le viewer est participant. */
+export async function reportMessageAction(input: unknown): Promise<MessagingActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  const parsed = reportMessageSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+
+  const message = await prisma.message.findUnique({
+    where: { id: parsed.data.messageId },
+    select: { id: true, senderId: true, conversationId: true },
+  });
+  if (!message) return { ok: false, error: "NOT_FOUND" };
+  if (message.senderId === viewer.id) return { ok: false, error: "SELF_REPORT" };
+
+  const participation = await prisma.conversationParticipant.findUnique({
+    where: { conversationId_userId: { conversationId: message.conversationId, userId: viewer.id } },
+  });
+  if (!participation) return { ok: false, error: "FORBIDDEN" };
+
+  const involvesMinor = await conversationInvolvesMinor(message.conversationId);
+
+  try {
+    await createReport(viewer.id, {
+      targetType: "MESSAGE",
+      targetId: message.id,
+      reason: parsed.data.reason,
+      involvesMinor,
+    });
+    revalidatePath("/admin/moderation");
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
 }

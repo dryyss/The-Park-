@@ -1,6 +1,7 @@
 // Données partagées Pocket Drifterz — Saison 1 · Moteur Forgé
 // Utilisé par la fiche carte dédiée et la recherche globale.
-// rar: c=Commune, r=Rare Holo, u=Ultra Rare, l=Légendaire, g=Gold, p=Carte Unique/Promo
+// rar: c=Commune, r=Rare Holo, u=Ultra Rare, l=Légendaire, g=Gold
+// + unique, promotional, special, collaboration, signed
 
 export const META = {
   c: { glyph: '◆', color: '#9BA3B2', label: 'Commune', tilt: 3, holo: '0.3' },
@@ -8,14 +9,18 @@ export const META = {
   u: { glyph: '✦', color: '#B05CFF', label: 'Ultra Rare', tilt: 6, holo: '0.65' },
   l: { glyph: '❀', color: '#FF2E63', label: 'Légendaire', tilt: 8, holo: '0.8' },
   g: { glyph: '✸', color: '#E8B23A', label: 'Gold', tilt: 8, holo: '0.85' },
-  p: { glyph: '✪', color: '#6FE3D0', label: 'Carte Unique', tilt: 9, holo: '0.9' }
+  unique: { glyph: '✪', color: '#6FE3D0', label: 'Unique', tilt: 9, holo: '0.9' },
+  promotional: { glyph: '★', color: '#FF6B9D', label: 'Promotionnelle', tilt: 9, holo: '0.88' },
+  special: { glyph: '◇', color: '#A78BFA', label: 'Carte spéciale', tilt: 9, holo: '0.88' },
+  collaboration: { glyph: '✧', color: '#34D399', label: 'Collaboration', tilt: 9, holo: '0.9' },
+  signed: { glyph: '✒', color: '#F59E0B', label: 'Signé', tilt: 9, holo: '0.92' },
 };
 
 export const COUNTRY = { JP: 'JAPON', US: 'USA', DE: 'ALLEMAGNE' };
 
 // num, name, rarity, img, val(€ cote), ch(puissance), kg(poids), country, desc
 const RAW = [
-  [0, "NISSAN LEOPARD F31 BOSOZOKU", 'p', "00_NISSAN_LEOPARD_F31_SPECIALE.jpg", 40, 250, 1450, 'JP', "Nez allongé, échappements démesurés, peinture criarde : cette Leopard version bosozoku ne cherche pas la discrétion. Elle hurle plus qu'elle ne roule, et défile comme un drapeau rebelle sur l'asphalte japonais. Carte promo 1ère édition."],
+  [0, "NISSAN LEOPARD F31 BOSOZOKU", 'promotional', "00_NISSAN_LEOPARD_F31_SPECIALE.jpg", 40, 250, 1450, 'JP', "Nez allongé, échappements démesurés, peinture criarde : cette Leopard version bosozoku ne cherche pas la discrétion. Elle hurle plus qu'elle ne roule, et défile comme un drapeau rebelle sur l'asphalte japonais. Carte promo 1ère édition."],
   [1, "NISSAN SILVIA S13 MISSILE", 'c', "01-NISSAN_S13_MISSILE.jpg", 30, 280, 1200, 'JP', "Réparée et remise sur piste environ 422 fois, c'est la voiture parfaite pour aller baptiser les portes des adversaires. Délabrée à l'extérieur mais armée d'un SR20DET qui chantonne."],
   [2, "NISSAN SILVIA PS13", 'c', "02-Nissan_PS13.jpg", 20, 205, 1250, 'JP', "Avec sa silhouette tranchante, la PS13 incarne une époque où chaque ligne avait du caractère. Agile et nerveuse, elle est vite devenue une légende du drift underground."],
   [3, "NISSAN SILVIA S14", 'c', "03-NISSAN_S14_B.jpg", 20, 220, 1250, 'JP', "La S14 pose les bases du châssis parfait : empattement long, propulsion, et un SR20 prêt à tout."],
@@ -92,7 +97,7 @@ const RAW = [
   [74, "DMC DELOREAN D'ALEXANDRE", 'l', "74_DMC_DELOREAN.jpg", 60, 550, 1280, 'US', "Icône de la pop culture revue par Alexandre Claudin. Moteur de Corvette à l'avant, châssis tubulaire : un ovni du drift."],
   [75, "HONDA NSX TYPE-R NA1", 'g', "75_HONDA_NSX_NA1.jpg", 70, 280, 1230, 'JP', "La noblesse japonaise sur quatre roues. Conçue avec l'aide d'Ayrton Senna. Sa rareté renforce son aura légendaire."],
   [76, "TOYOTA COROLLA AE86 TRUENO", 'g', "76_TOYOTA_COROLLA_TRUENO.jpg", 100, 130, 940, 'JP', "L'emblème du drift ! Connue dans le monde entier grâce à un manga à succès, c'est la voiture avec laquelle tout a commencé."],
-  [77, "NISSAN SKYLINE R34 TITANESQUE", 'p', "77_NISSAN_R34_TITAN.jpg", 40, 1600, 1250, 'JP', "Entièrement façonnée en carbone, elle s'évapore dans les virages de Tokyo comme une ombre."]
+  [77, "NISSAN SKYLINE R34 TITANESQUE", 'unique', "77_NISSAN_R34_TITAN.jpg", 40, 1600, 1250, 'JP', "Entièrement façonnée en carbone, elle s'évapore dans les virages de Tokyo comme une ombre."]
 ];
 
 export const CARDS = RAW.map(r => ({

@@ -18,13 +18,22 @@ interface HoloCardProps {
   tilt?: number;
   holo?: number;
   variant?: HoloVariant;
-  /** Couleur de rareté : applique une bordure + halo assortis. */
-  rarityColor?: string;
   priority?: boolean;
   className?: string;
+  /** Désactive tilt + overlay holographique (grilles catalogue/collection). */
+  interactive?: boolean;
 }
 
-export function HoloCard({ src, alt, tilt = 6, holo = 0.6, variant = "rainbow", rarityColor, priority, className }: HoloCardProps) {
+export function HoloCard({
+  src,
+  alt,
+  tilt = 6,
+  holo = 0.6,
+  variant = "rainbow",
+  priority,
+  className,
+  interactive = true,
+}: HoloCardProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -48,25 +57,21 @@ export function HoloCard({ src, alt, tilt = 6, holo = 0.6, variant = "rainbow", 
 
   const overlayBg = variant === "gold" ? GOLD : variant === "rainbow" ? `${GLARE}, ${RAINBOW}` : undefined;
   const blend = variant === "gold" ? "screen" : "overlay";
-
-  // Bordure + halo colorés selon la rareté (override le border-white/10 par défaut).
-  const rarityStyle = rarityColor
-    ? { borderColor: rarityColor, boxShadow: `0 10px 24px rgba(0,0,0,0.45), 0 0 16px ${rarityColor}3a, inset 0 0 14px ${rarityColor}1f` }
-    : undefined;
+  const showOverlay = interactive && variant !== "none";
 
   return (
     <div
       ref={ref}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      style={rarityStyle}
+      onMouseMove={interactive ? onMove : undefined}
+      onMouseLeave={interactive ? onLeave : undefined}
       className={[
-        "relative aspect-[5/7] overflow-hidden rounded-xl border border-white/10 bg-charbon-700 shadow-[0_10px_24px_rgba(0,0,0,0.45)] [transition:transform_0.18s_ease-out] [will-change:transform]",
+        "relative aspect-[5/7] overflow-hidden rounded-xl bg-charbon-700 shadow-[0_10px_24px_rgba(0,0,0,0.45)]",
+        interactive ? "[transition:transform_0.18s_ease-out] [will-change:transform]" : "",
         className ?? "",
       ].join(" ")}
     >
       <Image src={src} alt={alt} fill sizes="(max-width: 768px) 40vw, 220px" priority={priority} className="object-cover" />
-      {variant !== "none" && (
+      {showOverlay && (
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 [opacity:var(--ho,0)] [transition:opacity_0.25s_ease]"

@@ -74,7 +74,7 @@ export async function HeroSection({ stats, heroCards }: { stats: HeroStats; hero
       <div className="animate-fade-up relative hidden h-[480px] lg:block">
         {heroCards.slice(0, 3).map((card, i) => (
           <div key={card.slug} className={`animate-floaty absolute ${POSITIONS[i]}`}>
-            <HoloCard src={card.image} alt={card.name} tilt={card.tilt} holo={card.holo} variant={card.variant} rarityColor={card.color} priority={i < 2} />
+            <HoloCard src={card.image} alt={card.name} tilt={card.tilt} holo={card.holo} variant={card.variant} priority={i < 2} />
             {card.isUnique && (
               <span className="font-display absolute top-[-12px] right-[-14px] rotate-[4deg] rounded-md bg-carmin px-3 py-1.5 text-[11px] tracking-[1.5px] text-white shadow-[2px_2px_0_rgba(0,0,0,0.5)]">
                 CARTE UNIQUE ✪

@@ -1,6 +1,7 @@
 // Données partagées Pocket Drifterz — Saison 1 · Moteur Forgé
 // Utilisé par la fiche carte dédiée et la recherche globale.
-// rar: c=Commune, r=Rare Holo, u=Ultra Rare, l=Légendaire, g=Gold, p=Carte Unique/Promo
+// rar: c=Commune, r=Rare Holo, u=Ultra Rare, l=Légendaire, g=Gold
+// + unique, promotional, special, collaboration, signed
 
 export const META = {
   c: { glyph: "◆", color: "#9BA3B2", label: "Commune", tilt: 3, holo: "0.3" },
@@ -8,7 +9,11 @@ export const META = {
   u: { glyph: "✦", color: "#B05CFF", label: "Ultra Rare", tilt: 6, holo: "0.65" },
   l: { glyph: "❀", color: "#FF2E63", label: "Légendaire", tilt: 8, holo: "0.8" },
   g: { glyph: "✸", color: "#E8B23A", label: "Gold", tilt: 8, holo: "0.85" },
-  p: { glyph: "✪", color: "#6FE3D0", label: "Carte Unique", tilt: 9, holo: "0.9" },
+  unique: { glyph: "✪", color: "#6FE3D0", label: "Unique", tilt: 9, holo: "0.9" },
+  promotional: { glyph: "★", color: "#FF6B9D", label: "Promotionnelle", tilt: 9, holo: "0.88" },
+  special: { glyph: "◇", color: "#A78BFA", label: "Carte spéciale", tilt: 9, holo: "0.88" },
+  collaboration: { glyph: "✧", color: "#34D399", label: "Collaboration", tilt: 9, holo: "0.9" },
+  signed: { glyph: "✒", color: "#F59E0B", label: "Signé", tilt: 9, holo: "0.92" },
 };
 
 export const COUNTRY = { JP: "JAPON", US: "USA", DE: "ALLEMAGNE" };
@@ -18,7 +23,7 @@ const RAW = [
   [
     0,
     "NISSAN LEOPARD F31 BOSOZOKU",
-    "p",
+    "promotional",
     "00_NISSAN_LEOPARD_F31_SPECIALE.jpg",
     40,
     250,
@@ -865,7 +870,7 @@ const RAW = [
   [
     77,
     "NISSAN SKYLINE R34 TITANESQUE",
-    "p",
+    "unique",
     "77_NISSAN_R34_TITAN.jpg",
     40,
     1600,

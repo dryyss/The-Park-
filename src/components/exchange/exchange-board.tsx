@@ -166,12 +166,22 @@ async function ExchangeDetailPanel({
             </Link>
           </div>
         </div>
-        <span
-          className="rounded-full px-3 py-1.5 text-[11px] font-extrabold tracking-wide uppercase"
-          style={{ background: st.bg, color: st.color }}
-        >
-          {t(`status.${statusKey}`)}
-        </span>
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          {detail.conversationId && (
+            <Link
+              href={`/messages/${detail.conversationId}`}
+              className="rounded-[11px] border border-carmin/50 bg-carmin/10 px-3.5 py-2 text-[11px] font-extrabold tracking-wide text-carmin uppercase transition hover:bg-carmin/20"
+            >
+              {t("openChat")} →
+            </Link>
+          )}
+          <span
+            className="rounded-full px-3 py-1.5 text-[11px] font-extrabold tracking-wide uppercase"
+            style={{ background: st.bg, color: st.color }}
+          >
+            {t(`status.${statusKey}`)}
+          </span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2">

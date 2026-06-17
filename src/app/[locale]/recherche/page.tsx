@@ -5,6 +5,7 @@ import { rarityMeta } from "@/lib/rarity";
 import { buildHref } from "@/lib/query";
 import { PageHeader } from "@/components/common/page-header";
 import { HoloCard } from "@/components/cards/holo-card";
+import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { FilterChipGroup } from "@/components/filters/filter-chip";
 import { SortSelect } from "@/components/filters/sort-select";
 
@@ -119,7 +120,15 @@ export default async function RecherchePage({
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {results.map((c) => (
               <Link key={c.slug} href={`/carte/${c.slug}`}>
-                <HoloCard src={c.image} alt={c.name} tilt={5} holo={0.5} variant="rainbow" rarityColor={c.color} />
+                <CatalogCardFrame rarityColor={c.color}>
+                  <HoloCard
+                    src={c.image}
+                    alt={c.name}
+                    interactive={false}
+                    variant="none"
+                    className="rounded-none shadow-none"
+                  />
+                </CatalogCardFrame>
                 <div className="mt-2 truncate text-[11px] font-extrabold text-texte-doux">{c.name}</div>
                 <div className="text-[10px] font-bold text-texte-dim">
                   <span style={{ color: c.color }}>{c.glyph}</span> {c.rarityLabel}

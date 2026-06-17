@@ -1,5 +1,6 @@
 import type { CollectionCard as Card } from "@/server/collection/collection.service";
 import { HoloCard } from "@/components/cards/holo-card";
+import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { Link } from "@/i18n/navigation";
 import { CollectionQuantityControls } from "@/components/collection/collection-quantity-controls";
 import { versionTypeLabel } from "@/lib/card-versions";
@@ -18,52 +19,47 @@ export function CollectionCardTile({
   const missing = !card.owned;
 
   return (
-    <div className={`animate-fade-up transition-[opacity,filter] ${missing ? "opacity-[0.88]" : ""}`}>
+    <div className={`transition-[opacity,filter] ${missing ? "opacity-[0.88]" : ""}`}>
       <Link href={`/carte/${card.slug}`} className="block">
-        <div
-          style={
-            missing
-              ? undefined
-              : { borderColor: card.color, boxShadow: `0 10px 24px rgba(0,0,0,0.45), 0 0 16px ${card.color}3a, inset 0 0 14px ${card.color}1f` }
-          }
-          className={[
-            "relative aspect-[5/7] overflow-hidden rounded-xl border bg-charbon-700 shadow-[0_10px_24px_rgba(0,0,0,0.45)] transition-[filter,border-color]",
-            missing ? "border-charbon-500/80 brightness-[0.68] saturate-[0.82]" : "border-white/10",
-          ].join(" ")}
-        >
-          {card.image ? (
-            <HoloCard
-              src={card.image}
-              alt={card.name}
-              tilt={card.tilt}
-              holo={card.holo}
-              variant={card.owned ? "rainbow" : "none"}
-              className="h-full w-full rounded-none border-0 shadow-none"
-            />
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-2.5 bg-linear-to-b from-charbon-600 to-charbon-800 p-3.5">
-              <span className="text-[32px] opacity-45" style={{ color: card.color }}>
-                {card.glyph}
+        <CatalogCardFrame rarityColor={card.color}>
+          <div
+            className={[
+              "relative transition-[filter]",
+              missing ? "brightness-[0.68] saturate-[0.82]" : "",
+            ].join(" ")}
+          >
+            {card.image ? (
+              <HoloCard
+                src={card.image}
+                alt={card.name}
+                interactive={false}
+                variant="none"
+                className="rounded-none shadow-none"
+              />
+            ) : (
+              <div className="relative flex aspect-[5/7] flex-col items-center justify-center gap-2.5 overflow-hidden bg-linear-to-b from-charbon-600 to-charbon-800 p-3.5">
+                <span className="text-[32px] opacity-45" style={{ color: card.color }}>
+                  {card.glyph}
+                </span>
+                <span className="font-display text-center text-[14px] tracking-[1px] text-texte-faible uppercase">
+                  {card.name}
+                </span>
+              </div>
+            )}
+            {missing && (
+              <div className="pointer-events-none absolute inset-0 flex items-end justify-center bg-black/48 pb-3.5">
+                <span className="font-display rounded bg-black/65 px-3 py-1 text-[10.5px] tracking-[2.5px] text-texte-doux uppercase backdrop-blur-sm">
+                  {missingLabel}
+                </span>
+              </div>
+            )}
+            {(card.hasFirstEdition || card.isPromo) && card.owned && (
+              <span className="font-display absolute -left-1 top-2.5 -rotate-3 bg-carmin px-2.5 py-1 text-[9.5px] tracking-[1.5px] text-white shadow-[2px_2px_0_rgba(0,0,0,0.4)]">
+                1ÈRE ÉDITION
               </span>
-              <span className="font-display text-center text-[14px] tracking-[1px] text-texte-faible uppercase">
-                {card.name}
-              </span>
-            </div>
-          )}
-          {missing && (
-            <div className="pointer-events-none absolute inset-0 flex items-end justify-center bg-black/48 pb-3.5">
-              <div className="absolute inset-1.5 rounded-lg border border-dashed border-white/10" />
-              <span className="font-display rounded bg-black/65 px-3 py-1 text-[10.5px] tracking-[2.5px] text-texte-doux uppercase backdrop-blur-sm">
-                {missingLabel}
-              </span>
-            </div>
-          )}
-          {(card.hasFirstEdition || card.isPromo) && card.owned && (
-            <span className="font-display absolute -left-1 top-2.5 -rotate-3 bg-carmin px-2.5 py-1 text-[9.5px] tracking-[1.5px] text-white shadow-[2px_2px_0_rgba(0,0,0,0.4)]">
-              1ÈRE ÉDITION
-            </span>
-          )}
-        </div>
+            )}
+          </div>
+        </CatalogCardFrame>
       </Link>
       <div className={`mt-2 flex items-center justify-between px-0.5 ${missing ? "opacity-55" : ""}`}>
         <div className="flex items-center gap-1.5 text-[11px] font-extrabold text-texte-dim">

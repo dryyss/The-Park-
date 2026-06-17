@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import type { CardCondition } from "@/generated/prisma/client";
 
 /** Propose un échange — double validation requise ensuite. */
 export async function proposeExchange(
@@ -29,9 +30,17 @@ export async function proposeExchange(
     select: { variantId: true, condition: true, quantity: true, reservedQuantity: true },
   });
 
-  if (owned.length !== input.giveVariantIds.length) throw new Error("NOT_OWNED");
+  // Une variante peut exister en plusieurs états : on choisit, par variante, un
+  // état avec un exemplaire disponible (sinon NOT_OWNED / CARD_RESERVED).
+  const ownedVariantIds = new Set(owned.map((o) => o.variantId));
+  const chosenByVariant = new Map<string, CardCondition>();
   for (const o of owned) {
-    if (o.reservedQuantity >= o.quantity) throw new Error("CARD_RESERVED");
+    if (o.reservedQuantity >= o.quantity) continue;
+    if (!chosenByVariant.has(o.variantId)) chosenByVariant.set(o.variantId, o.condition);
+  }
+  for (const variantId of input.giveVariantIds) {
+    if (!ownedVariantIds.has(variantId)) throw new Error("NOT_OWNED");
+    if (!chosenByVariant.has(variantId)) throw new Error("CARD_RESERVED");
   }
 
   const exchange = await prisma.$transaction(async (tx) => {
@@ -45,18 +54,18 @@ export async function proposeExchange(
       },
     });
 
-    for (const item of owned) {
+    for (const [variantId, condition] of chosenByVariant) {
       await tx.exchangeItem.create({
         data: {
           exchangeId: ex.id,
           fromInitiator: true,
-          variantId: item.variantId,
-          condition: item.condition,
+          variantId,
+          condition,
           quantity: 1,
         },
       });
       await tx.collectionItem.updateMany({
-        where: { userId: initiatorId, variantId: item.variantId, condition: item.condition },
+        where: { userId: initiatorId, variantId, condition },
         data: { reservedQuantity: { increment: 1 } },
       });
     }

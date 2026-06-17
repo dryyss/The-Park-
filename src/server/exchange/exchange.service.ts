@@ -25,6 +25,7 @@ export interface ExchangeListItem {
   isDone: boolean;
   inboxRole: ExchangeInboxRole;
   needsAction: boolean;
+  conversationId: string | null;
 }
 
 export interface TradeOpportunity {
@@ -120,6 +121,7 @@ async function mapExchange(
     isDone: DONE_STATUSES.includes(ex.status),
     inboxRole,
     needsAction: inboxRole === "incoming",
+    conversationId: ex.conversation?.id ?? null,
   };
 
   return {
@@ -154,6 +156,7 @@ async function fetchExchanges(userId: string) {
           },
         },
       },
+      conversation: { select: { id: true } },
     },
   });
 }
@@ -221,25 +224,47 @@ export async function getViewerExchanges(
 /** Cartes possédées disponibles pour proposer un échange. */
 export async function getViewerOwnedCardsForPropose(userId: string) {
   const items = await prisma.collectionItem.findMany({
-    where: { userId },
+    where: { userId, quantity: { gt: 0 } },
     include: {
       variant: {
         include: { card: true, versionType: true },
       },
     },
     orderBy: { variant: { card: { number: "asc" } } },
-    take: 24,
   });
 
-  return items
-    .filter((i) => i.quantity > i.reservedQuantity)
-    .map((i) => ({
-    variantId: i.variantId,
-    name: i.variant.card.name,
-    number: i.variant.card.number,
-    image: cardImage(i.variant.card.imageUrl),
-    versionLabel: i.variant.versionType.label,
-    quantity: i.quantity,
-    availableQuantity: i.quantity - i.reservedQuantity,
-  }));
+  // Une variante peut être possédée en plusieurs états : on agrège pour qu'une
+  // carte apparaisse une seule fois, avec le total possédé et disponible.
+  const byVariant = new Map<
+    string,
+    {
+      variantId: string;
+      name: string;
+      number: number;
+      image: string | null;
+      versionLabel: string;
+      quantity: number;
+      availableQuantity: number;
+    }
+  >();
+  for (const i of items) {
+    const available = i.quantity - i.reservedQuantity;
+    const existing = byVariant.get(i.variantId);
+    if (existing) {
+      existing.quantity += i.quantity;
+      existing.availableQuantity += available;
+    } else {
+      byVariant.set(i.variantId, {
+        variantId: i.variantId,
+        name: i.variant.card.name,
+        number: i.variant.card.number,
+        image: cardImage(i.variant.card.imageUrl),
+        versionLabel: i.variant.versionType.label,
+        quantity: i.quantity,
+        availableQuantity: available,
+      });
+    }
+  }
+
+  return [...byVariant.values()];
 }

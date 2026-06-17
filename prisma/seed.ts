@@ -2,8 +2,9 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 // @ts-ignore - module de données JS sans types (catalogue fourni par le client)
-import { CARDS, META, CARD_EXTRA_VERSIONS, DEFAULT_S01_EDITION_LABEL, CARD_EDITION_LABELS } from "./cards-data.mjs";
+import { CARDS, CARD_EXTRA_VERSIONS, DEFAULT_S01_EDITION_LABEL, CARD_EDITION_LABELS } from "./cards-data.mjs";
 import { VERSION_TYPE_DEFINITIONS } from "../src/lib/card-versions";
+import { RARITY_DEFINITIONS, isSpecialRarity } from "../src/lib/rarities";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -20,7 +21,7 @@ type RawCard = {
   d: string;
 };
 
-const RARITY_ORDER = ["c", "r", "u", "l", "g", "p"] as const;
+const RARITY_ORDER = RARITY_DEFINITIONS.map((d) => d.code);
 
 function slugify(s: string): string {
   return s
@@ -70,13 +71,25 @@ async function main() {
   const rarityByCode: Record<string, string> = {};
   for (let i = 0; i < RARITY_ORDER.length; i++) {
     const code = RARITY_ORDER[i];
-    const m = (META as Record<string, { label: string; glyph: string; color: string }>)[code];
+    const m = RARITY_DEFINITIONS[i];
     const r = await prisma.rarity.upsert({
       where: { code },
-      update: { label: m.label, symbol: m.glyph, color: m.color, sortOrder: i },
-      create: { code, label: m.label, symbol: m.glyph, color: m.color, sortOrder: i },
+      update: { label: m.label, symbol: m.symbol, color: m.color, sortOrder: m.sortOrder },
+      create: { code, label: m.label, symbol: m.symbol, color: m.color, sortOrder: m.sortOrder },
     });
     rarityByCode[code] = r.id;
+  }
+
+  const obsoleteRarities = await prisma.rarity.findMany({
+    where: { code: { notIn: RARITY_ORDER } },
+    select: { id: true, code: true },
+  });
+  if (obsoleteRarities.length > 0) {
+    const obsoleteIds = obsoleteRarities.map((r) => r.id);
+    const stillUsed = await prisma.card.count({ where: { rarityId: { in: obsoleteIds } } });
+    if (stillUsed === 0) {
+      await prisma.rarity.deleteMany({ where: { id: { in: obsoleteIds } } });
+    }
   }
 
   console.log("→ Types de version");
@@ -138,7 +151,7 @@ async function main() {
       weightKg: c.kg,
       country: c.co,
       description: c.d,
-      isUnique: c.r === "p",
+      isUnique: isSpecialRarity(c.r),
     };
     const card = await prisma.card.upsert({
       where: { seasonId_number: { seasonId: season.id, number: c.num } },

@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { pushUserEvent } from "@/lib/pusher";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
 
 /** Envoie un message dans une conversation contextualisée. */
@@ -27,6 +28,7 @@ export async function sendConversationMessage(
   const message = await prisma.$transaction(async (tx) => {
     const created = await tx.message.create({
       data: { conversationId, senderId, body: trimmed },
+      include: { sender: { select: { displayName: true } } },
     });
     await tx.conversationParticipant.update({
       where: { conversationId_userId: { conversationId, userId: senderId } },
@@ -34,6 +36,18 @@ export async function sendConversationMessage(
     });
     return created;
   });
+
+  const chatPayload = {
+    conversationId,
+    message: {
+      id: message.id,
+      body: message.body,
+      senderId,
+      senderName: message.sender.displayName,
+      senderInitial: message.sender.displayName.charAt(0).toUpperCase(),
+      createdAt: message.createdAt.toISOString(),
+    },
+  };
 
   for (const p of participation.conversation.participants) {
     await dispatchNotification({
@@ -44,7 +58,16 @@ export async function sendConversationMessage(
       entityId: conversationId,
       payload: { preview: trimmed.slice(0, 120) },
     });
+    await pushUserEvent(p.userId, "chat-message", {
+      ...chatPayload,
+      message: { ...chatPayload.message, isViewer: false },
+    });
   }
+
+  await pushUserEvent(senderId, "chat-message", {
+    ...chatPayload,
+    message: { ...chatPayload.message, isViewer: true },
+  });
 
   return message.id;
 }

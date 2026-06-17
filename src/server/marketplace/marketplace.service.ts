@@ -2,7 +2,7 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
-import { rarityMeta, cardImage, type HoloVariant } from "@/lib/rarity";
+import { rarityMeta, cardImage, cardNumberLabel, type HoloVariant } from "@/lib/rarity";
 import { conditionColor } from "@/lib/condition";
 import { formatPrice } from "@/lib/format";
 import { isActiveVersionCode } from "@/lib/card-versions";
@@ -156,7 +156,7 @@ function toMarketplaceCard(l: FullRow): MarketplaceCard {
   return {
     id: l.id,
     number: card.number,
-    numberLabel: card.rarity.code === "p" ? `${String(card.number).padStart(2, "0")} · PROMO` : `${String(card.number).padStart(2, "0")}/78`,
+    numberLabel: cardNumberLabel(card.number, card.rarity.code),
     name: card.name,
     slug: card.slug,
     image: cardImage(card.imageUrl),

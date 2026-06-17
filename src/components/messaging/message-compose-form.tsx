@@ -22,7 +22,9 @@ export function MessageComposeForm({ conversationId }: { conversationId: string 
         return;
       }
       setBody("");
-      router.refresh();
+      if (!process.env.NEXT_PUBLIC_PUSHER_KEY) {
+        router.refresh();
+      }
     });
   }
 

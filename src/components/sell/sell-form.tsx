@@ -6,7 +6,7 @@ import { useRouter } from "@/i18n/navigation";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import type { OwnedCardForSale } from "@/server/marketplace/sell.service";
-import { publishListingAction } from "@/server/marketplace/marketplace.actions";
+import { listCollectionItemAction } from "@/server/marketplace/marketplace.actions";
 import { createAuctionAction } from "@/server/auction/auction.actions";
 import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
 
@@ -21,6 +21,7 @@ export function SellForm({
   const router = useRouter();
   const [selected, setSelected] = useState(0);
   const [listingType, setListingType] = useState<"fixed" | "auction">("fixed");
+  const [saleKind, setSaleKind] = useState<"SELL" | "TRADE" | "SELL_OR_TRADE">("SELL");
   const [price, setPrice] = useState("");
   const [auctionDays, setAuctionDays] = useState("3");
   const [reserve, setReserve] = useState("");
@@ -48,14 +49,15 @@ export function SellForm({
       return;
     }
     if (!card) return;
-    const parsed = parseFloat(price.replace(",", "."));
-    if (!Number.isFinite(parsed) || parsed < 0) {
-      setError("VALIDATION");
-      return;
-    }
-    if (listingType === "auction" && parsed <= 0) {
-      setError("VALIDATION");
-      return;
+    // Un échange pur ne demande aucun prix ; vente / enchère / vente-ou-échange si.
+    const tradeOnly = listingType === "fixed" && saleKind === "TRADE";
+    let parsed: number | undefined;
+    if (!tradeOnly) {
+      parsed = parseFloat(price.replace(",", "."));
+      if (!Number.isFinite(parsed) || parsed <= 0) {
+        setError("VALIDATION");
+        return;
+      }
     }
     setError(null);
     startTransition(async () => {
@@ -63,7 +65,7 @@ export function SellForm({
         const parsedReserve = reserve.trim() ? parseFloat(reserve.replace(",", ".")) : undefined;
         const res = await createAuctionAction({
           variantId: card.variantId,
-          startPrice: parsed,
+          startPrice: parsed!,
           durationDays: parseInt(auctionDays, 10),
           reservePrice: parsedReserve != null && Number.isFinite(parsedReserve) ? parsedReserve : undefined,
         });
@@ -75,10 +77,15 @@ export function SellForm({
         }
         return;
       }
-      const res = await publishListingAction({ variantId: card.variantId, price: parsed });
+      const res = await listCollectionItemAction({
+        variantId: card.variantId,
+        condition: card.condition,
+        type: saleKind,
+        price: tradeOnly ? undefined : parsed,
+      });
       if (res.ok) {
         setSuccess(true);
-        router.push("/marketplace");
+        router.push(saleKind === "TRADE" ? "/echanges" : "/marketplace");
       } else {
         setError(res.error);
       }
@@ -124,7 +131,27 @@ export function SellForm({
             <TypeCard active={listingType === "fixed"} icon={<TagIcon />} title={t("typeFixed")} desc={t("typeFixedDesc")} onClick={() => setListingType("fixed")} />
             <TypeCard active={listingType === "auction"} icon={<GavelIcon />} title={t("typeAuction")} desc={t("typeAuctionDesc")} onClick={() => setListingType("auction")} />
           </div>
-          <div>
+          {listingType === "fixed" && (
+            <div className="mb-4">
+              <label className="text-[10.5px] font-extrabold tracking-[2px] text-texte-faible uppercase">{t("saleKindLabel")}</label>
+              <div className="mt-1.5 flex flex-wrap gap-2">
+                {(["SELL", "TRADE", "SELL_OR_TRADE"] as const).map((kind) => (
+                  <button
+                    key={kind}
+                    type="button"
+                    onClick={() => setSaleKind(kind)}
+                    className={`rounded-[10px] border-[1.5px] px-3.5 py-2 text-[12px] font-extrabold transition ${
+                      saleKind === kind ? "border-carmin bg-carmin/10 text-blanc-casse" : "border-charbon-500 text-texte-dim hover:border-charbon-400"
+                    }`}
+                  >
+                    {kind === "SELL" ? t("saleKindSell") : kind === "TRADE" ? t("saleKindTrade") : t("saleKindBoth")}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className={listingType === "fixed" && saleKind === "TRADE" ? "hidden" : undefined}>
             <label className="text-[10.5px] font-extrabold tracking-[2px] text-texte-faible uppercase">
               {listingType === "auction" ? t("startPrice") : t("salePrice")}
             </label>
