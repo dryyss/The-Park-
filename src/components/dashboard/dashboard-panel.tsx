@@ -2,8 +2,15 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { DashboardStats } from "@/server/dashboard/dashboard.service";
 import { ListingActions } from "@/components/dashboard/listing-actions";
+import { AuthGatedLink } from "@/components/auth/auth-gated-link";
 
-export async function DashboardPanel({ stats }: { stats: DashboardStats }) {
+export async function DashboardPanel({
+  stats,
+  readOnly = false,
+}: {
+  stats: DashboardStats;
+  readOnly?: boolean;
+}) {
   const t = await getTranslations("dashboard");
 
   const cards = [
@@ -29,9 +36,19 @@ export async function DashboardPanel({ stats }: { stats: DashboardStats }) {
       <div className="mt-8 rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-[18px] tracking-wide text-blanc-casse uppercase">{t("recentListings")}</h2>
-          <Link href="/vendre" className="text-[12px] font-extrabold text-carmin hover:underline">
-            {t("newListing")}
-          </Link>
+          {readOnly ? (
+            <AuthGatedLink
+              href="/vendre"
+              messageKey="loginGateDashboard"
+              className="text-[12px] font-extrabold text-carmin hover:underline"
+            >
+              {t("newListing")}
+            </AuthGatedLink>
+          ) : (
+            <Link href="/vendre" className="text-[12px] font-extrabold text-carmin hover:underline">
+              {t("newListing")}
+            </Link>
+          )}
         </div>
         <div className="mt-4 flex flex-col gap-2">
           {stats.recentListings.length === 0 ? (
@@ -44,7 +61,7 @@ export async function DashboardPanel({ stats }: { stats: DashboardStats }) {
                   <span>{l.price}</span>
                   <span>{l.views} {t("views")}</span>
                   <span className="rounded-md bg-charbon-600 px-2 py-0.5 text-[10px] uppercase">{l.status}</span>
-                  <ListingActions listingId={l.id} status={l.status} />
+                  {!readOnly && <ListingActions listingId={l.id} status={l.status} />}
                 </div>
               </div>
             ))

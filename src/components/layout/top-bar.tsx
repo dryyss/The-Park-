@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useUser } from "@auth0/nextjs-auth0";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { UserMenu } from "@/components/layout/user-menu";
 
 type NavItem = { href: string; key: "home" | "collection" | "marketplace" | "shop" | "exchanges" | "rankings" | "profile"; official?: boolean };
 
@@ -47,7 +48,6 @@ export function TopBar() {
   const tAuth = useTranslations("auth");
   const pathname = usePathname();
   const { user } = useUser();
-  const initial = (user?.name ?? user?.email ?? "K").charAt(0).toUpperCase();
 
   // État live de la top-bar (panier / notifs / messages), rafraîchi à chaque navigation.
   const [live, setLive] = useState({ cart: 0, notifications: 0, messages: 0 });
@@ -154,13 +154,7 @@ export function TopBar() {
 
         {/* Avatar / auth */}
         {user ? (
-          <Link
-            href="/profil"
-            title={t("profile")}
-            className="font-display flex h-[38px] w-[38px] items-center justify-center rounded-full border-2 border-charbon-500 bg-linear-to-br from-carmin to-rouge-fonce text-[15px] tracking-[1px] text-white transition hover:scale-105 hover:border-carmin"
-          >
-            {initial}
-          </Link>
+          <UserMenu />
         ) : (
           <a
             href="/auth/login"

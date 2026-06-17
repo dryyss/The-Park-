@@ -1,10 +1,11 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { requireAuthViewer } from "@/server/user/user.service";
+import { getViewerUser } from "@/server/user/user.service";
 import { getOwnedCardsForSale } from "@/server/marketplace/sell.service";
 import { getSellerReadiness } from "@/server/marketplace/seller-readiness.service";
 import { SellForm } from "@/components/sell/sell-form";
 import { SellerReadiness } from "@/components/sell/seller-readiness";
+import { GuestAuthBanner } from "@/components/auth/login-gate-prompt";
 
 export const dynamic = "force-dynamic";
 
@@ -13,9 +14,10 @@ export default async function VendrePage({ params }: { params: Promise<{ locale:
   setRequestLocale(locale);
   const t = await getTranslations("sell");
 
-  const viewer = await requireAuthViewer(`/${locale}/vendre`);
-  const readiness = await getSellerReadiness(viewer.id);
-  const cards = readiness.ready ? await getOwnedCardsForSale(viewer.id) : [];
+  const viewer = await getViewerUser();
+  const isAuthenticated = !!viewer;
+  const readiness = viewer ? await getSellerReadiness(viewer.id) : null;
+  const cards = viewer && readiness?.ready ? await getOwnedCardsForSale(viewer.id) : [];
 
   return (
     <main className="mx-auto max-w-[1120px] px-7 pt-7 pb-[60px]">
@@ -32,8 +34,29 @@ export default async function VendrePage({ params }: { params: Promise<{ locale:
       </h1>
       <p className="mt-3.5 text-[13.5px] font-bold text-texte-doux">{t("subtitle")}</p>
 
+      {!isAuthenticated && <GuestAuthBanner messageKey="loginGateSell" />}
+
       <div className="mt-6">
-        {readiness.ready ? <SellForm cards={cards} /> : <SellerReadiness readiness={readiness} />}
+        {!isAuthenticated ? (
+          <SellerReadiness
+            readiness={{
+              ready: false,
+              birthDate: null,
+              addressCount: 0,
+              steps: [
+                { key: "account", required: true, done: false },
+                { key: "age", required: true, done: false },
+                { key: "address", required: true, done: false },
+                { key: "payout", required: false, done: false },
+              ],
+            }}
+            isAuthenticated={false}
+          />
+        ) : readiness?.ready ? (
+          <SellForm cards={cards} isAuthenticated />
+        ) : readiness ? (
+          <SellerReadiness readiness={readiness} isAuthenticated />
+        ) : null}
       </div>
     </main>
   );

@@ -4,15 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { rarityMeta } from "@/lib/rarity";
 import type { AuctionListItem } from "@/server/auction/auction.service";
 import { AuctionBidForm } from "@/components/auction/auction-bid-form";
-
-function timeLeft(endsAt: Date): string {
-  const diff = endsAt.getTime() - Date.now();
-  if (diff <= 0) return "00:00:00";
-  const h = Math.floor(diff / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
+import { AuctionCountdown } from "@/components/auction/auction-countdown";
 
 export async function AuctionGrid({ auctions }: { auctions: AuctionListItem[] }) {
   const t = await getTranslations("auctions");
@@ -47,9 +39,11 @@ export async function AuctionGrid({ auctions }: { auctions: AuctionListItem[] })
                 </p>
                 <p className="mt-2 font-display text-[22px] tracking-wide text-or">{a.currentPrice}</p>
                 <div className="mt-2 flex items-center justify-between">
-                  <span className="rounded-md bg-charbon-700 px-2 py-1 font-mono text-[12px] font-bold text-carmin">
-                    {timeLeft(a.endsAt)}
-                  </span>
+                  <AuctionCountdown
+                    endsAt={a.endsAt}
+                    endedLabel={t("endedShort")}
+                    className="rounded-md bg-charbon-700 px-2 py-1 font-mono text-[12px] font-bold text-carmin"
+                  />
                   {a.antiSnipe && (
                     <span className="text-[10px] font-extrabold tracking-wide text-texte-faible uppercase">{t("antiSnipe")}</span>
                   )}
@@ -78,10 +72,38 @@ export async function AuctionDetailPanel({ auction }: { auction: import("@/serve
         </p>
         <p className="mt-6 font-display text-[36px] text-or">{auction.currentPrice}</p>
         <p className="text-[12px] font-bold text-texte-faible">{t("increment", { amount: auction.bidIncrement })}</p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <span className="text-[11px] font-extrabold tracking-wide text-texte-dim uppercase">{t("timeLeft")}</span>
+          <AuctionCountdown
+            endsAt={auction.endsAt}
+            endedLabel={t("endedShort")}
+            className="rounded-md bg-charbon-700 px-2.5 py-1 font-mono text-[14px] font-bold text-carmin"
+          />
+          {auction.reserveMet !== null && (
+            <span
+              className={`rounded-md px-2 py-1 text-[10.5px] font-extrabold tracking-wide uppercase ${
+                auction.reserveMet ? "bg-neon-vert/15 text-neon-vert" : "bg-charbon-700 text-texte-faible"
+              }`}
+            >
+              {auction.reserveMet ? t("reserveMet") : t("reserveNotMet")}
+            </span>
+          )}
+        </div>
+
         {auction.status === "ACTIVE" ? (
           <AuctionBidForm auctionId={auction.id} minAmount={auction.minBidAmount} />
         ) : (
-          <p className="mt-6 text-[13px] font-bold text-texte-dim">{t("ended")}</p>
+          <div className="mt-6 rounded-[12px] border border-charbon-500 bg-charbon-700/50 p-4">
+            <p className="text-[13px] font-extrabold text-blanc-casse">
+              {auction.status === "SOLD" ? t("ended") : t("endedNoSale")}
+            </p>
+            {auction.winnerName && (
+              <p className="mt-1 text-[12px] font-bold text-texte-dim">
+                {t("winner", { name: auction.winnerName })} · {auction.currentPrice}
+              </p>
+            )}
+          </div>
         )}
       </div>
       <div className="rounded-[18px] border border-charbon-500 bg-charbon-800 p-5">

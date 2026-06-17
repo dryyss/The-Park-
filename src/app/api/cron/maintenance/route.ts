@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { expireDueListings } from "@/server/marketplace/marketplace.mutations";
+import { settleDueAuctions } from "@/server/auction/auction.mutations";
 import { purgeExpiredShipmentProofs } from "@/server/c2c/shipment.service";
 
 export const dynamic = "force-dynamic";
@@ -11,10 +12,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
 
-  const [expiredListings, purgedProofs] = await Promise.all([
+  const [expiredListings, settledAuctions, purgedProofs] = await Promise.all([
     expireDueListings(),
+    settleDueAuctions(),
     purgeExpiredShipmentProofs(),
   ]);
 
-  return NextResponse.json({ expiredListings, purgedProofs });
+  return NextResponse.json({ expiredListings, settledAuctions, purgedProofs });
 }

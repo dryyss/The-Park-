@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { avatarGradient } from "@/lib/avatars";
 import { exchangeStatusStyle, EXCHANGE_STATUS_I18N } from "@/lib/exchange-status";
+import { AuthGatedLink } from "@/components/auth/auth-gated-link";
 import type {
   ExchangeCounts,
   ExchangeDetail,
@@ -222,11 +223,23 @@ function TradeSide({ title, cards }: { title: string; cards: { name: string; ima
   );
 }
 
-function OpportunitiesPanel({ opportunities }: { opportunities: TradeOpportunity[] }) {
-  return <OpportunitiesPanelAsync opportunities={opportunities} />;
+function OpportunitiesPanel({
+  opportunities,
+  isAuthenticated,
+}: {
+  opportunities: TradeOpportunity[];
+  isAuthenticated: boolean;
+}) {
+  return <OpportunitiesPanelAsync opportunities={opportunities} isAuthenticated={isAuthenticated} />;
 }
 
-async function OpportunitiesPanelAsync({ opportunities }: { opportunities: TradeOpportunity[] }) {
+async function OpportunitiesPanelAsync({
+  opportunities,
+  isAuthenticated,
+}: {
+  opportunities: TradeOpportunity[];
+  isAuthenticated: boolean;
+}) {
   const t = await getTranslations("exchanges");
 
   if (opportunities.length === 0) return null;
@@ -236,24 +249,35 @@ async function OpportunitiesPanelAsync({ opportunities }: { opportunities: Trade
       <div className="text-[10px] font-extrabold tracking-[2px] text-texte-faible uppercase">{t("openToTrade")}</div>
       <p className="mt-1 text-[11.5px] font-bold text-texte-dim">{t("openToTradeHint")}</p>
       <div className="mt-3 flex flex-col gap-2">
-        {opportunities.map((o) => (
-          <Link
-            key={o.listingId}
-            href={`/echanges/proposer?recipient=${encodeURIComponent(o.sellerSlug)}`}
-            className="flex items-center gap-3 rounded-[12px] border border-charbon-500 bg-charbon-700 p-3 transition hover:border-carmin"
-          >
-            <div className="relative h-12 w-9 shrink-0 overflow-hidden rounded-[6px] bg-charbon-600">
-              {o.cardImage && <Image src={o.cardImage} alt={o.cardName} fill className="object-cover" sizes="36px" />}
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="truncate text-[12px] font-extrabold text-blanc-casse">{o.cardName}</div>
-              <div className="text-[10.5px] font-bold text-texte-dim">
-                {o.sellerName} · {o.type === "WANT" ? t("listingWant") : t("listingTrade")} · {o.priceLabel}
+        {opportunities.map((o) => {
+          const href = `/echanges/proposer?recipient=${encodeURIComponent(o.sellerSlug)}`;
+          const row = (
+            <>
+              <div className="relative h-12 w-9 shrink-0 overflow-hidden rounded-[6px] bg-charbon-600">
+                {o.cardImage && <Image src={o.cardImage} alt={o.cardName} fill className="object-cover" sizes="36px" />}
               </div>
-            </div>
-            <span className="shrink-0 text-[10px] font-extrabold tracking-wide text-carmin uppercase">{t("proposeCta")}</span>
-          </Link>
-        ))}
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-[12px] font-extrabold text-blanc-casse">{o.cardName}</div>
+                <div className="text-[10.5px] font-bold text-texte-dim">
+                  {o.sellerName} · {o.type === "WANT" ? t("listingWant") : t("listingTrade")} · {o.priceLabel}
+                </div>
+              </div>
+              <span className="shrink-0 text-[10px] font-extrabold tracking-wide text-carmin uppercase">{t("proposeCta")}</span>
+            </>
+          );
+          const rowClass =
+            "flex items-center gap-3 rounded-[12px] border border-charbon-500 bg-charbon-700 p-3 transition hover:border-carmin";
+
+          return isAuthenticated ? (
+            <Link key={o.listingId} href={href} className={rowClass}>
+              {row}
+            </Link>
+          ) : (
+            <AuthGatedLink key={o.listingId} href={href} messageKey="loginGateExchanges" className={rowClass}>
+              {row}
+            </AuthGatedLink>
+          );
+        })}
       </div>
     </div>
   );
@@ -275,6 +299,7 @@ export async function ExchangeBoard({
   counts,
   opportunities,
   ownedCards = [],
+  isAuthenticated = true,
 }: {
   tab: ExchangeTab;
   current: ExchangeListItem[];
@@ -283,6 +308,7 @@ export async function ExchangeBoard({
   counts: ExchangeCounts;
   opportunities: TradeOpportunity[];
   ownedCards?: { variantId: string; name: string; availableQuantity?: number }[];
+  isAuthenticated?: boolean;
 }) {
   const t = await getTranslations("exchanges");
   const list = tab === "done" ? done : current;
@@ -298,7 +324,7 @@ export async function ExchangeBoard({
         <div className="flex flex-col gap-4">
           {list.length === 0 ? (
             <div className="rounded-[15px] border border-dashed border-charbon-500 p-8 text-center text-[13px] font-bold text-texte-dim">
-              {tab === "done" ? t("emptyDone") : t("emptyCurrent")}
+              {!isAuthenticated && tab === "current" ? t("guestEmpty") : tab === "done" ? t("emptyDone") : t("emptyCurrent")}
             </div>
           ) : sections ? (
             <>
@@ -337,14 +363,24 @@ export async function ExchangeBoard({
             ))
           )}
 
-          {tab === "current" && <OpportunitiesPanel opportunities={opportunities} />}
+          {tab === "current" && <OpportunitiesPanel opportunities={opportunities} isAuthenticated={isAuthenticated} />}
 
-          <Link
-            href="/echanges/proposer"
-            className="font-display rounded-xl border-[1.5px] border-dashed border-charbon-400 p-3.5 text-center text-[12.5px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin hover:bg-carmin/10 hover:text-white"
-          >
-            + {t("proposeNew")}
-          </Link>
+          {isAuthenticated ? (
+            <Link
+              href="/echanges/proposer"
+              className="font-display rounded-xl border-[1.5px] border-dashed border-charbon-400 p-3.5 text-center text-[12.5px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin hover:bg-carmin/10 hover:text-white"
+            >
+              + {t("proposeNew")}
+            </Link>
+          ) : (
+            <AuthGatedLink
+              href="/echanges/proposer"
+              messageKey="loginGateExchanges"
+              className="font-display block rounded-xl border-[1.5px] border-dashed border-charbon-400 p-3.5 text-center text-[12.5px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin hover:bg-carmin/10 hover:text-white"
+            >
+              + {t("proposeNew")}
+            </AuthGatedLink>
+          )}
         </div>
 
         {selected ? (

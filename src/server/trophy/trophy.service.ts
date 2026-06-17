@@ -20,6 +20,24 @@ const BADGE_ICONS: Record<string, string> = {
   full_season: "100",
 };
 
+export async function getCatalogTrophies(): Promise<TrophyBadge[]> {
+  const allBadges = await prisma.badge.findMany({ orderBy: { code: "asc" } });
+  return allBadges.map((b) => ({
+    code: b.code,
+    label: b.label,
+    description: b.description ?? "",
+    icon: b.icon ?? BADGE_ICONS[b.code] ?? "★",
+    unlocked: false,
+    progress: 0,
+    unlockedAt: null,
+  }));
+}
+
+export async function getCatalogTrophyStats() {
+  const total = await prisma.badge.count();
+  return { total, unlocked: 0, pct: 0 };
+}
+
 export async function getViewerTrophies(userId: string): Promise<TrophyBadge[]> {
   const [allBadges, userBadges] = await Promise.all([
     prisma.badge.findMany({ orderBy: { code: "asc" } }),

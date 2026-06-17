@@ -6,27 +6,36 @@ import { useTranslations } from "next-intl";
 import { adjustCollectionCardAction } from "@/server/collection/collection.actions";
 import { QuantityStepper } from "@/components/collection/quantity-stepper";
 import { ConditionPicker } from "@/components/collection/condition-picker";
+import { LoginGatePrompt } from "@/components/collection/login-gate-prompt";
 import type { ConditionCode } from "@/lib/condition";
 
 export function CollectionQuantityControls({
   cardNumber,
   quantity,
+  isAuthenticated,
 }: {
   cardNumber: number;
   quantity: number;
+  isAuthenticated: boolean;
 }) {
   const t = useTranslations("collection");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [showLoginGate, setShowLoginGate] = useState(false);
   const [condition, setCondition] = useState<ConditionCode>("EXCELLENT");
 
   function adjust(delta: 1 | -1) {
+    if (!isAuthenticated) {
+      setShowLoginGate(true);
+      return;
+    }
     setError(null);
+    setShowLoginGate(false);
     startTransition(async () => {
       const res = await adjustCollectionCardAction({ cardNumber, delta, condition });
       if (!res.ok) {
-        if (res.error === "UNAUTHORIZED") setError(t("qtyLoginRequired"));
+        if (res.error === "UNAUTHORIZED") setShowLoginGate(true);
         else if (res.error === "RESERVED" || res.error === "BELOW_RESERVED") setError(t("qtyReserved"));
         else setError(t("qtyError"));
         return;
@@ -37,6 +46,7 @@ export function CollectionQuantityControls({
 
   return (
     <div className="mt-1.5 flex flex-col gap-1.5">
+      {showLoginGate && <LoginGatePrompt compact messageKey="loginGateCollection" />}
       <ConditionPicker value={condition} onChange={setCondition} disabled={pending} compact />
       <QuantityStepper
         quantity={quantity}

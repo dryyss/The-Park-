@@ -6,6 +6,7 @@ import { useRouter } from "@/i18n/navigation";
 import { addToWishlistAction } from "@/server/wishlist/wishlist.actions";
 import { VariantQuantityControls } from "@/components/collection/variant-quantity-controls";
 import { VariantEditionEditor } from "@/components/collection/variant-edition-editor";
+import { LoginGatePrompt } from "@/components/collection/login-gate-prompt";
 
 export type CardVersionRow = {
   variantId: string;
@@ -34,11 +35,15 @@ export function CardMemberActions({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
-
-  if (!isAuthenticated) return null;
+  const [showLoginGate, setShowLoginGate] = useState(false);
 
   function handleWishlist() {
+    if (!isAuthenticated) {
+      setShowLoginGate(true);
+      return;
+    }
     setMessage(null);
+    setShowLoginGate(false);
     startTransition(async () => {
       const res = await addToWishlistAction({ cardId });
       if (res.ok) router.refresh();
@@ -49,6 +54,11 @@ export function CardMemberActions({
   return (
     <div className="mt-6 rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
       <div className="mb-3 text-[11px] font-extrabold tracking-[2.5px] text-texte-dim uppercase">{t("manageTitle")}</div>
+      {!isAuthenticated && (
+        <div className="mb-4">
+          <LoginGatePrompt messageKey="loginGateCollection" />
+        </div>
+      )}
       <div className="flex flex-col gap-3">
         {versions.map((v) => (
           <div
@@ -74,19 +84,27 @@ export function CardMemberActions({
                       : t("versionQty", { count: v.quantity })
                     : t("versionMissing")}
                 </div>
-                <VariantEditionEditor
-                  variantId={v.variantId}
-                  owned={v.owned}
-                  userEditionLabel={v.userEditionLabel}
-                  catalogEditionLabel={v.catalogEditionLabel}
-                  editionLabel={v.editionLabel}
-                />
+                {isAuthenticated && (
+                  <VariantEditionEditor
+                    variantId={v.variantId}
+                    owned={v.owned}
+                    userEditionLabel={v.userEditionLabel}
+                    catalogEditionLabel={v.catalogEditionLabel}
+                    editionLabel={v.editionLabel}
+                  />
+                )}
+                {!isAuthenticated && (
+                  <p className="mt-1 text-[10.5px] font-bold text-texte-faible">
+                    {v.catalogEditionLabel ? t("editionCatalog", { label: v.catalogEditionLabel }) : t("editionUnlimited")}
+                  </p>
+                )}
               </div>
               <VariantQuantityControls
                 variantId={v.variantId}
                 quantity={v.quantity}
                 minQuantity={v.reservedQuantity}
                 compact
+                isAuthenticated={isAuthenticated}
               />
             </div>
           </div>
@@ -100,6 +118,11 @@ export function CardMemberActions({
           {t("addWishlist")}
         </button>
       </div>
+      {showLoginGate && (
+        <div className="mt-3">
+          <LoginGatePrompt compact messageKey="loginGateCollection" />
+        </div>
+      )}
       {message && <p className="mt-2 text-[11px] font-bold text-neon-rouge">{message}</p>}
     </div>
   );

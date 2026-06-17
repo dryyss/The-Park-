@@ -7,11 +7,13 @@ import { versionTypeLabel } from "@/lib/card-versions";
 export function CollectionCardTile({
   card,
   missingLabel,
-  editable = false,
+  showControls = false,
+  isAuthenticated = false,
 }: {
   card: Card;
   missingLabel: string;
-  editable?: boolean;
+  showControls?: boolean;
+  isAuthenticated?: boolean;
 }) {
   const missing = !card.owned;
 
@@ -75,9 +77,13 @@ export function CollectionCardTile({
             ))}
         </div>
       </div>
-      {editable && card.standardVariantId && (
+      {showControls && card.standardVariantId && (
         <div className={missing ? "opacity-70" : undefined}>
-          <CollectionQuantityControls cardNumber={card.number} quantity={card.quantity} />
+          <CollectionQuantityControls
+            cardNumber={card.number}
+            quantity={card.quantity}
+            isAuthenticated={isAuthenticated}
+          />
         </div>
       )}
     </div>

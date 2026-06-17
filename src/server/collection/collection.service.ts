@@ -72,17 +72,19 @@ const RARITY_TITLE: Record<string, string> = {
   p: "Uniques · Promo",
 };
 
-/** Classeur complet d'un utilisateur (possédé / manquant par carte). */
-export async function getUserCollection(userId: string, filters: CollectionFilters): Promise<CollectionView> {
+/** Classeur complet (possédé / manquant par carte). userId null = visiteur (tout en manquant). */
+export async function getUserCollection(userId: string | null, filters: CollectionFilters): Promise<CollectionView> {
   const [cards, items, versionTypes, totalVariants] = await Promise.all([
     prisma.card.findMany({
       orderBy: { number: "asc" },
       include: { rarity: true, variants: { include: { versionType: true } } },
     }),
-    prisma.collectionItem.findMany({
-      where: { userId },
-      include: { variant: { include: { versionType: true, card: true } } },
-    }),
+    userId
+      ? prisma.collectionItem.findMany({
+          where: { userId },
+          include: { variant: { include: { versionType: true, card: true } } },
+        })
+      : Promise.resolve([]),
     prisma.versionType.findMany({ orderBy: { sortOrder: "asc" } }),
     prisma.cardVariant.count(),
   ]);

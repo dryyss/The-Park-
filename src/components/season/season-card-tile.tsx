@@ -5,10 +5,10 @@ import { CollectionQuantityControls } from "@/components/collection/collection-q
 
 export function SeasonCardTile({
   card,
-  editable,
+  isAuthenticated,
 }: {
   card: SeasonCardRow;
-  editable: boolean;
+  isAuthenticated: boolean;
 }) {
   return (
     <div>
@@ -25,8 +25,12 @@ export function SeasonCardTile({
           <span style={{ color: card.color }}>{card.glyph}</span>
         </div>
       </Link>
-      {editable && card.standardVariantId && (
-        <CollectionQuantityControls cardNumber={card.number} quantity={card.quantity} />
+      {card.standardVariantId && (
+        <CollectionQuantityControls
+          cardNumber={card.number}
+          quantity={card.quantity}
+          isAuthenticated={isAuthenticated}
+        />
       )}
     </div>
   );

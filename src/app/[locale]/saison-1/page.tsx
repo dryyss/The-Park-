@@ -1,7 +1,7 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getCatalogSummary, getSeasonCards } from "@/server/catalog/catalog.service";
-import { getAuthenticatedViewer } from "@/server/user/user.service";
+import { getViewerUser } from "@/server/user/user.service";
 import { rarityMeta } from "@/lib/rarity";
 import { PageHeader } from "@/components/common/page-header";
 import { type RarityStripItem } from "@/components/home/rarity-strip";
@@ -15,7 +15,8 @@ export default async function Saison1Page({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
   const t = await getTranslations("season");
 
-  const viewer = await getAuthenticatedViewer();
+  const viewer = await getViewerUser();
+  const isAuthenticated = !!viewer;
   const [summary, cardsWithQty] = await Promise.all([
     getCatalogSummary(),
     getSeasonCards("S01", viewer?.id),
@@ -42,7 +43,7 @@ export default async function Saison1Page({ params }: { params: Promise<{ locale
 
       <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {cardsWithQty.map((c) => (
-          <SeasonCardTile key={c.slug} card={c} editable={!!viewer} />
+          <SeasonCardTile key={c.slug} card={c} isAuthenticated={isAuthenticated} />
         ))}
       </div>
     </main>

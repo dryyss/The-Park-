@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { HoloCard } from "@/components/cards/holo-card";
 import { getCardDetail } from "@/server/catalog/catalog.service";
+import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import { getViewerUser, getAuthenticatedViewer } from "@/server/user/user.service";
 import { CardMemberActions } from "@/components/cards/card-member-actions";
 import { avatarGradient } from "@/lib/avatars";
@@ -191,9 +192,14 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
                   {inner}
                 </Link>
               ) : (
-                <Link key={l.id} href={`/collectionneur/${l.sellerSlug}`} className={rowClass}>
+                <ContactSellerButton
+                  key={l.id}
+                  sellerSlug={l.sellerSlug}
+                  locale={locale}
+                  className={`${rowClass} w-full text-left`}
+                >
                   {inner}
-                </Link>
+                </ContactSellerButton>
               );
             })}
           </div>

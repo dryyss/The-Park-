@@ -2,9 +2,11 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@auth0/nextjs-auth0";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { addToCartAction, type CartActionError } from "@/server/cart/cart.actions";
+import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
 
 interface AddToCartButtonProps {
   productId: string;
@@ -16,22 +18,30 @@ interface AddToCartButtonProps {
 export function AddToCartButton({ productId, inStock, stock, locale }: AddToCartButtonProps) {
   const t = useTranslations("shop");
   const router = useRouter();
+  const { user } = useUser();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const [error, setError] = useState<CartActionError | null>(null);
+  const [showLoginGate, setShowLoginGate] = useState(false);
   const [pending, startTransition] = useTransition();
 
   const max = Math.max(1, Math.min(stock, 20));
 
   function handleAdd() {
+    if (!user) {
+      setShowLoginGate(true);
+      return;
+    }
     setError(null);
+    setShowLoginGate(false);
     startTransition(async () => {
       const result = await addToCartAction({ productId, quantity: qty });
       if (result.ok) {
         setAdded(true);
         router.refresh();
       } else {
-        setError(result.error);
+        if (result.error === "UNAUTHORIZED") setShowLoginGate(true);
+        else setError(result.error);
       }
     });
   }
@@ -49,19 +59,12 @@ export function AddToCartButton({ productId, inStock, stock, locale }: AddToCart
   }
 
   if (error === "UNAUTHORIZED") {
-    const returnTo = encodeURIComponent(`/${locale}/boutique`);
-    return (
-      <a
-        href={`/auth/login?returnTo=${returnTo}`}
-        className="font-display -skew-x-3 rounded-[11px] bg-carmin px-7 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase shadow-[4px_4px_0_rgba(0,0,0,0.5)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-carmin-alt hover:shadow-[7px_7px_0_rgba(0,0,0,0.55)] active:translate-y-0 active:shadow-[2px_2px_0_rgba(0,0,0,0.5)]"
-      >
-        {t("loginToBuy")}
-      </a>
-    );
+    return <LoginGatePrompt messageKey="loginGateShop" />;
   }
 
   return (
     <div className="flex flex-col gap-3">
+      {showLoginGate && <LoginGatePrompt compact messageKey="loginGateShop" />}
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex items-center rounded-[11px] border border-charbon-400 bg-charbon-800">
           <button

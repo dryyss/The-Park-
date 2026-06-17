@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
 import type { SellerReadiness, SellerStep } from "@/server/marketplace/seller-readiness.service";
 import { setBirthDateAction, addAddressAction } from "@/server/marketplace/seller-readiness.actions";
 
@@ -17,7 +18,13 @@ function ageFromInput(value: string): number | null {
   return age;
 }
 
-export function SellerReadiness({ readiness }: { readiness: SellerReadiness }) {
+export function SellerReadiness({
+  readiness,
+  isAuthenticated = true,
+}: {
+  readiness: SellerReadiness;
+  isAuthenticated?: boolean;
+}) {
   const t = useTranslations("sellReady");
   const router = useRouter();
   const doneCount = readiness.steps.filter((s) => s.required && s.done).length;
@@ -37,7 +44,7 @@ export function SellerReadiness({ readiness }: { readiness: SellerReadiness }) {
 
       <div className="mt-6 flex flex-col gap-3">
         {readiness.steps.map((step) => (
-          <StepRow key={step.key} step={step} readiness={readiness} onDone={() => router.refresh()} />
+          <StepRow key={step.key} step={step} readiness={readiness} isAuthenticated={isAuthenticated} onDone={() => router.refresh()} />
         ))}
       </div>
     </div>
@@ -47,10 +54,12 @@ export function SellerReadiness({ readiness }: { readiness: SellerReadiness }) {
 function StepRow({
   step,
   readiness,
+  isAuthenticated,
   onDone,
 }: {
   step: SellerStep;
   readiness: SellerReadiness;
+  isAuthenticated: boolean;
   onDone: () => void;
 }) {
   const t = useTranslations("sellReady");
@@ -89,24 +98,40 @@ function StepRow({
           {!step.done && (
             <div className="mt-3">
               {step.key === "age" && (
-                <AgeForm initialBirthDate={readiness.birthDate} onDone={onDone} />
+                <AgeForm initialBirthDate={readiness.birthDate} isAuthenticated={isAuthenticated} onDone={onDone} />
               )}
               {step.key === "address" && (
                 <>
                   {open ? (
-                    <AddressForm onDone={onDone} onCancel={() => setOpen(false)} />
+                    <AddressForm isAuthenticated={isAuthenticated} onDone={onDone} onCancel={() => setOpen(false)} />
                   ) : (
                     <button
                       type="button"
-                      onClick={() => setOpen(true)}
+                      onClick={() => {
+                        if (!isAuthenticated) {
+                          setOpen(true);
+                          return;
+                        }
+                        setOpen(true);
+                      }}
                       className="font-display rounded-[9px] bg-carmin px-4 py-2 text-[12px] tracking-wide text-white uppercase transition hover:bg-carmin-alt"
                     >
                       {t("address.cta")}
                     </button>
                   )}
+                  {!isAuthenticated && open && (
+                    <div className="mt-2">
+                      <LoginGatePrompt compact messageKey="loginGateSell" />
+                    </div>
+                  )}
                 </>
               )}
-              {step.key === "account" && <p className="text-[12px] font-bold text-texte-faible">{t("account.hint")}</p>}
+              {step.key === "account" && !isAuthenticated && (
+                <LoginGatePrompt compact messageKey="loginGateSell" />
+              )}
+              {step.key === "account" && isAuthenticated && (
+                <p className="text-[12px] font-bold text-texte-faible">{t("account.hint")}</p>
+              )}
               {step.key === "payout" && <p className="text-[12px] font-bold text-texte-faible">{t("payout.hint")}</p>}
             </div>
           )}
@@ -116,17 +141,30 @@ function StepRow({
   );
 }
 
-function AgeForm({ initialBirthDate, onDone }: { initialBirthDate: string | null; onDone: () => void }) {
+function AgeForm({
+  initialBirthDate,
+  isAuthenticated,
+  onDone,
+}: {
+  initialBirthDate: string | null;
+  isAuthenticated: boolean;
+  onDone: () => void;
+}) {
   const t = useTranslations("sellReady");
   const [birthDate, setBirthDate] = useState(initialBirthDate ?? "");
   const [guardianEmail, setGuardianEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [showLoginGate, setShowLoginGate] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const age = ageFromInput(birthDate);
   const isMinor = age !== null && age < 18;
 
   function submit() {
+    if (!isAuthenticated) {
+      setShowLoginGate(true);
+      return;
+    }
     setError(null);
     startTransition(async () => {
       const res = await setBirthDateAction({
@@ -140,6 +178,7 @@ function AgeForm({ initialBirthDate, onDone }: { initialBirthDate: string | null
 
   return (
     <div className="flex flex-col gap-2.5">
+      {showLoginGate && <LoginGatePrompt compact messageKey="loginGateSell" />}
       <div className="flex flex-wrap items-end gap-2.5">
         <label className="flex flex-col gap-1">
           <span className="text-[10px] font-extrabold tracking-[1.5px] text-texte-faible uppercase">{t("age.label")}</span>
@@ -178,10 +217,19 @@ function AgeForm({ initialBirthDate, onDone }: { initialBirthDate: string | null
   );
 }
 
-function AddressForm({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
+function AddressForm({
+  isAuthenticated,
+  onDone,
+  onCancel,
+}: {
+  isAuthenticated: boolean;
+  onDone: () => void;
+  onCancel: () => void;
+}) {
   const t = useTranslations("sellReady");
   const [form, setForm] = useState({ fullName: "", line1: "", line2: "", zip: "", city: "", country: "FR", phone: "" });
   const [error, setError] = useState<string | null>(null);
+  const [showLoginGate, setShowLoginGate] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   function set(key: keyof typeof form, value: string) {
@@ -189,6 +237,10 @@ function AddressForm({ onDone, onCancel }: { onDone: () => void; onCancel: () =>
   }
 
   function submit() {
+    if (!isAuthenticated) {
+      setShowLoginGate(true);
+      return;
+    }
     setError(null);
     startTransition(async () => {
       const res = await addAddressAction(form);
@@ -201,6 +253,7 @@ function AddressForm({ onDone, onCancel }: { onDone: () => void; onCancel: () =>
 
   return (
     <div className="flex flex-col gap-2.5">
+      {showLoginGate && <LoginGatePrompt compact messageKey="loginGateSell" />}
       <input className={input} placeholder={t("address.fullName")} value={form.fullName} onChange={(e) => set("fullName", e.target.value)} />
       <input className={input} placeholder={t("address.line1")} value={form.line1} onChange={(e) => set("line1", e.target.value)} />
       <input className={input} placeholder={t("address.line2")} value={form.line2} onChange={(e) => set("line2", e.target.value)} />

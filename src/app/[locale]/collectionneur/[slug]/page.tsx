@@ -1,6 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { contactSellerAction } from "@/server/messaging/messaging.actions";
+import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import { getCollectorProfile } from "@/server/community/community.service";
 import { getUserCollection } from "@/server/collection/collection.service";
 import { avatarGradient } from "@/lib/avatars";
@@ -41,16 +41,13 @@ export default async function CollectionneurPage({ params }: { params: Promise<{
             </span>
           </div>
         </div>
-        <form action={contactSellerAction}>
-          <input type="hidden" name="sellerSlug" value={slug} />
-          <input type="hidden" name="locale" value={locale} />
-          <button
-            type="submit"
-            className="font-display -skew-x-3 rounded-[10px] bg-carmin px-5 py-3 text-[13px] tracking-[1.5px] text-white uppercase transition hover:bg-carmin-alt"
-          >
-            {t("contact")}
-          </button>
-        </form>
+        <ContactSellerButton
+          sellerSlug={slug}
+          locale={locale}
+          className="font-display -skew-x-3 rounded-[10px] bg-carmin px-5 py-3 text-[13px] tracking-[1.5px] text-white uppercase transition hover:bg-carmin-alt"
+        >
+          {t("contact")}
+        </ContactSellerButton>
       </div>
 
       {previewCards.length > 0 && (

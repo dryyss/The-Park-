@@ -1,7 +1,7 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { HoloCard } from "@/components/cards/holo-card";
 import { Link } from "@/i18n/navigation";
-import { contactSellerAction } from "@/server/messaging/messaging.actions";
+import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import type { MarketplaceCard } from "@/server/marketplace/marketplace.service";
 
 const AV_GRADIENTS: Record<string, string> = {
@@ -93,21 +93,18 @@ export async function ListingCard({
               {t("actionManage")}
             </Link>
           ) : (
-            <form action={contactSellerAction}>
-              <input type="hidden" name="sellerSlug" value={l.seller.slug} />
-              <input type="hidden" name="locale" value={locale} />
-              <button
-                type="submit"
-                className={[
-                  "font-display -skew-x-3 rounded-lg border-[1.5px] px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap uppercase transition hover:-translate-y-0.5",
-                  l.isWant
-                    ? "border-charbon-400 text-blanc-casse hover:border-carmin"
-                    : "border-carmin bg-carmin text-white hover:bg-carmin-alt",
-                ].join(" ")}
-              >
-                {l.isWant ? t("actionPropose") : t("actionContact")}
-              </button>
-            </form>
+            <ContactSellerButton
+              sellerSlug={l.seller.slug}
+              locale={locale}
+              className={[
+                "font-display -skew-x-3 rounded-lg border-[1.5px] px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap uppercase transition hover:-translate-y-0.5",
+                l.isWant
+                  ? "border-charbon-400 text-blanc-casse hover:border-carmin"
+                  : "border-carmin bg-carmin text-white hover:bg-carmin-alt",
+              ].join(" ")}
+            >
+              {l.isWant ? t("actionPropose") : t("actionContact")}
+            </ContactSellerButton>
           )}
         </div>
       </div>

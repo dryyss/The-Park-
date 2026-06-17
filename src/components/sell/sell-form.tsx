@@ -7,16 +7,27 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import type { OwnedCardForSale } from "@/server/marketplace/sell.service";
 import { publishListingAction } from "@/server/marketplace/marketplace.actions";
+import { createAuctionAction } from "@/server/auction/auction.actions";
+import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
 
-export function SellForm({ cards }: { cards: OwnedCardForSale[] }) {
+export function SellForm({
+  cards,
+  isAuthenticated = true,
+}: {
+  cards: OwnedCardForSale[];
+  isAuthenticated?: boolean;
+}) {
   const t = useTranslations("sell");
   const router = useRouter();
   const [selected, setSelected] = useState(0);
   const [listingType, setListingType] = useState<"fixed" | "auction">("fixed");
   const [price, setPrice] = useState("");
+  const [auctionDays, setAuctionDays] = useState("3");
+  const [reserve, setReserve] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [showLoginGate, setShowLoginGate] = useState(false);
 
   const card = cards[selected];
 
@@ -32,14 +43,38 @@ export function SellForm({ cards }: { cards: OwnedCardForSale[] }) {
   }
 
   function handlePublish() {
-    if (!card || listingType !== "fixed") return;
+    if (!isAuthenticated) {
+      setShowLoginGate(true);
+      return;
+    }
+    if (!card) return;
     const parsed = parseFloat(price.replace(",", "."));
     if (!Number.isFinite(parsed) || parsed < 0) {
       setError("VALIDATION");
       return;
     }
+    if (listingType === "auction" && parsed <= 0) {
+      setError("VALIDATION");
+      return;
+    }
     setError(null);
     startTransition(async () => {
+      if (listingType === "auction") {
+        const parsedReserve = reserve.trim() ? parseFloat(reserve.replace(",", ".")) : undefined;
+        const res = await createAuctionAction({
+          variantId: card.variantId,
+          startPrice: parsed,
+          durationDays: parseInt(auctionDays, 10),
+          reservePrice: parsedReserve != null && Number.isFinite(parsedReserve) ? parsedReserve : undefined,
+        });
+        if (res.ok) {
+          setSuccess(true);
+          router.push("/encheres");
+        } else {
+          setError(res.error);
+        }
+        return;
+      }
       const res = await publishListingAction({ variantId: card.variantId, price: parsed });
       if (res.ok) {
         setSuccess(true);
@@ -87,26 +122,63 @@ export function SellForm({ cards }: { cards: OwnedCardForSale[] }) {
           <StepHeader n="02" title={t("stepType")} />
           <div className="mb-4 flex gap-2.5">
             <TypeCard active={listingType === "fixed"} icon={<TagIcon />} title={t("typeFixed")} desc={t("typeFixedDesc")} onClick={() => setListingType("fixed")} />
-            <TypeCard active={listingType === "auction"} icon={<GavelIcon />} title={t("typeAuction")} desc={t("typeAuctionDesc")} onClick={() => setListingType("auction")} disabled />
+            <TypeCard active={listingType === "auction"} icon={<GavelIcon />} title={t("typeAuction")} desc={t("typeAuctionDesc")} onClick={() => setListingType("auction")} />
           </div>
-          {listingType === "fixed" && (
-            <div>
-              <label className="text-[10.5px] font-extrabold tracking-[2px] text-texte-faible uppercase">{t("salePrice")}</label>
-              <div className="relative mt-1.5">
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  placeholder="0"
-                  className="font-display w-full rounded-[11px] border-[1.5px] border-charbon-500 bg-charbon px-4 py-3.5 pr-10 text-[20px] text-blanc-casse outline-none focus:border-carmin"
-                />
-                <span className="font-display pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-[18px] text-texte-faible">€</span>
-              </div>
-              <p className="mt-2 text-[11px] font-bold text-texte-faible">{t("priceHint")}</p>
+          <div>
+            <label className="text-[10.5px] font-extrabold tracking-[2px] text-texte-faible uppercase">
+              {listingType === "auction" ? t("startPrice") : t("salePrice")}
+            </label>
+            <div className="relative mt-1.5">
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="0"
+                className="font-display w-full rounded-[11px] border-[1.5px] border-charbon-500 bg-charbon px-4 py-3.5 pr-10 text-[20px] text-blanc-casse outline-none focus:border-carmin"
+              />
+              <span className="font-display pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-[18px] text-texte-faible">€</span>
             </div>
-          )}
+
+            {listingType === "auction" && (
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10.5px] font-extrabold tracking-[2px] text-texte-faible uppercase">{t("auctionDuration")}</label>
+                  <select
+                    value={auctionDays}
+                    onChange={(e) => setAuctionDays(e.target.value)}
+                    className="mt-1.5 w-full rounded-[11px] border-[1.5px] border-charbon-500 bg-charbon px-4 py-3 text-[14px] font-bold text-blanc-casse outline-none focus:border-carmin"
+                  >
+                    {["1", "3", "5", "7"].map((d) => (
+                      <option key={d} value={d} className="bg-charbon-800">
+                        {t("auctionDays", { count: Number(d) })}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10.5px] font-extrabold tracking-[2px] text-texte-faible uppercase">{t("reservePrice")}</label>
+                  <div className="relative mt-1.5">
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={reserve}
+                      onChange={(e) => setReserve(e.target.value)}
+                      placeholder={t("reserveOptional")}
+                      className="w-full rounded-[11px] border-[1.5px] border-charbon-500 bg-charbon px-4 py-3 pr-9 text-[14px] font-bold text-blanc-casse outline-none focus:border-carmin"
+                    />
+                    <span className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-[14px] text-texte-faible">€</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <p className="mt-2 text-[11px] font-bold text-texte-faible">
+              {listingType === "auction" ? t("auctionHint") : t("priceHint")}
+            </p>
+          </div>
         </section>
 
         <section className="rounded-[18px] border border-charbon-500 bg-charbon-800 p-5">
@@ -114,9 +186,10 @@ export function SellForm({ cards }: { cards: OwnedCardForSale[] }) {
           <p className="mb-4 text-[12.5px] font-semibold text-texte-dim">{t("disclaimer")}</p>
           {success && <p className="mb-3 text-[13px] font-bold text-statut-succes">{t("publishSuccess")}</p>}
           {error && <p className="mb-3 text-[13px] font-bold text-neon-rouge">{t("publishError")}</p>}
+          {showLoginGate && <div className="mb-3"><LoginGatePrompt compact messageKey="loginGateSell" /></div>}
           <button
             type="button"
-            disabled={pending || listingType !== "fixed" || success}
+            disabled={pending || success}
             onClick={handlePublish}
             className="font-display w-full -skew-x-3 rounded-[11px] bg-carmin px-6 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase transition hover:bg-carmin-alt disabled:cursor-not-allowed disabled:opacity-50"
           >

@@ -8,6 +8,7 @@ export async function AccountSecuritySection({
   passwordResetUrl: string | null;
 }) {
   const t = await getTranslations("settings");
+  const tAuth = await getTranslations("auth");
 
   return (
     <section className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
@@ -33,6 +34,13 @@ export async function AccountSecuritySection({
         ) : (
           <p className="text-[12px] font-bold text-texte-faible">{t("securityPasswordUnavailable")}</p>
         )}
+
+        <a
+          href="/auth/logout"
+          className="font-display self-start -skew-x-3 rounded-lg border border-charbon-400 px-5 py-2.5 text-[12px] tracking-[1px] text-neon-rouge uppercase transition hover:border-neon-rouge hover:bg-neon-rouge/10"
+        >
+          {tAuth("logout")}
+        </a>
       </div>
     </section>
   );

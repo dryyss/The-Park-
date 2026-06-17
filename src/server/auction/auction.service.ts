@@ -2,6 +2,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { cardImage } from "@/lib/rarity";
 import { formatPrice } from "@/lib/format";
+import { minNextBid, settleDueAuctions } from "@/server/auction/auction.mutations";
 import type { AuctionStatus } from "@/generated/prisma/client";
 
 export interface AuctionBid {
@@ -33,6 +34,7 @@ export interface AuctionListItem {
 
 export interface AuctionDetail extends AuctionListItem {
   reservePrice: string | null;
+  reserveMet: boolean | null;
   bidIncrement: string;
   minBidAmount: number;
   bids: AuctionBid[];
@@ -76,11 +78,13 @@ async function fetchAuctions() {
 }
 
 export async function getActiveAuctions(): Promise<AuctionListItem[]> {
+  await settleDueAuctions(); // clôture paresseuse entre deux passages du cron
   const rows = await fetchAuctions();
   return rows.map((a) => mapAuction(a, a._count.bids));
 }
 
 export async function getAuctionById(id: string): Promise<AuctionDetail | null> {
+  await settleDueAuctions();
   const a = await prisma.auction.findUnique({
     where: { id },
     include: {
@@ -98,11 +102,13 @@ export async function getAuctionById(id: string): Promise<AuctionDetail | null> 
   if (!a) return null;
 
   const base = mapAuction(a, a._count.bids);
-  const currentHigh = a.bids[0] ? Number(a.bids[0].amount) : Number(a.startPrice);
-  const minBidAmount = currentHigh + Number(a.bidIncrement);
+  const topBid = a.bids[0] ? Number(a.bids[0].amount) : null;
+  const minBidAmount = minNextBid(Number(a.startPrice), Number(a.bidIncrement), topBid);
+  const reserveMet = a.reservePrice ? topBid != null && topBid >= Number(a.reservePrice) : null;
   return {
     ...base,
     reservePrice: a.reservePrice ? formatPrice(a.reservePrice) : null,
+    reserveMet,
     bidIncrement: formatPrice(a.bidIncrement),
     minBidAmount,
     winnerName: a.winner?.displayName ?? null,

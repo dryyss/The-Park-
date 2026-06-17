@@ -8,11 +8,19 @@ import type { WishlistCard } from "@/server/wishlist/wishlist.service";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { rarityMeta } from "@/lib/rarity";
+import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
 
-export function WishlistGridClient({ items }: { items: WishlistCard[] }) {
+export function WishlistGridClient({
+  items,
+  isAuthenticated,
+}: {
+  items: WishlistCard[];
+  isAuthenticated: boolean;
+}) {
   const t = useTranslations("wishlist");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const [showLoginGate, setShowLoginGate] = useState(false);
 
   if (items.length === 0) {
     return (
@@ -26,6 +34,10 @@ export function WishlistGridClient({ items }: { items: WishlistCard[] }) {
   }
 
   function remove(id: string) {
+    if (!isAuthenticated) {
+      setShowLoginGate(true);
+      return;
+    }
     startTransition(async () => {
       await removeFromWishlistAction(id);
       router.refresh();
@@ -33,7 +45,9 @@ export function WishlistGridClient({ items }: { items: WishlistCard[] }) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+    <div className="flex flex-col gap-4">
+      {showLoginGate && <LoginGatePrompt messageKey="loginGateWishlist" />}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
       {items.map((card) => {
         const meta = rarityMeta(card.rarityCode);
         return (
@@ -64,6 +78,7 @@ export function WishlistGridClient({ items }: { items: WishlistCard[] }) {
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

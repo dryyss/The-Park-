@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/common/page-header";
 import { CompletionPanel, CollectionFiltersBar } from "@/components/collection/collection-filters";
 import { CollectionCardTile } from "@/components/collection/collection-card-tile";
 import { CollectionDisplayControls } from "@/components/collection/collection-display-controls";
+import { CollectionGuestBanner } from "@/components/collection/collection-guest-banner";
 import { collectionGridClassName, parseCollectionGridCols, parseCollectionSort } from "@/lib/collection-grid";
 
 export const dynamic = "force-dynamic";
@@ -25,11 +26,7 @@ export default async function CollectionPage({
   const t = await getTranslations("collection");
 
   const viewer = await getViewerUser();
-  if (!viewer) {
-    return (
-      <main className="mx-auto max-w-[1320px] px-7 py-24 text-center text-texte-dim">{t("noUser")}</main>
-    );
-  }
+  const isAuthenticated = !!viewer;
 
   const collParams = {
     segment: (sp.segment === "owned" || sp.segment === "missing" ? sp.segment : "all") as "all" | "owned" | "missing",
@@ -39,7 +36,7 @@ export default async function CollectionPage({
     sort: parseCollectionSort(sp.sort),
   };
 
-  const data = await getUserCollection(viewer.id, collParams);
+  const data = await getUserCollection(viewer?.id ?? null, collParams);
   const gridClass = collectionGridClassName(collParams.cols);
 
   return (
@@ -54,6 +51,8 @@ export default async function CollectionPage({
           </span>
         </div>
       </PageHeader>
+
+      {!isAuthenticated && <CollectionGuestBanner messageKey="loginGateCollection" />}
 
       <CompletionPanel data={data} />
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3.5">
@@ -82,7 +81,13 @@ export default async function CollectionPage({
           </div>
           <div className={gridClass}>
             {sec.cards.map((card) => (
-              <CollectionCardTile key={card.slug} card={card} missingLabel={t("missing")} editable />
+              <CollectionCardTile
+                key={card.slug}
+                card={card}
+                missingLabel={t("missing")}
+                showControls
+                isAuthenticated={isAuthenticated}
+              />
             ))}
           </div>
         </section>

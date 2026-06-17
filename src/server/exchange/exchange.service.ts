@@ -158,12 +158,12 @@ async function fetchExchanges(userId: string) {
   });
 }
 
-/** Annonces marketplace ouvertes à l'échange (hors propres annonces du viewer). */
-export async function getTradeOpportunities(userId: string, limit = 8): Promise<TradeOpportunity[]> {
+/** Annonces marketplace ouvertes à l'échange (hors propres annonces du viewer si connecté). */
+export async function getTradeOpportunities(userId: string | null, limit = 8): Promise<TradeOpportunity[]> {
   const listings = await prisma.listing.findMany({
     where: {
       status: "ACTIVE",
-      sellerId: { not: userId },
+      ...(userId ? { sellerId: { not: userId } } : {}),
       type: { in: ["TRADE", "SELL_OR_TRADE", "WANT"] },
     },
     orderBy: { updatedAt: "desc" },
