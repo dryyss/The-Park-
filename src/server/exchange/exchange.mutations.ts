@@ -1,6 +1,5 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import type { CardCondition } from "@/generated/prisma/client";
 
 /** Propose un échange — double validation requise ensuite. */
 export async function proposeExchange(

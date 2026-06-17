@@ -1,7 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { rarityMeta, cardImage } from "@/lib/rarity";
-import { formatPrice } from "@/lib/format";
 import { isActiveVersionCode } from "@/lib/card-versions";
 import { isFirstEditionLabel, resolveEditionLabel } from "@/lib/card-edition";
 import { sortCollectionCards, type CollectionSort } from "@/lib/collection-sort";

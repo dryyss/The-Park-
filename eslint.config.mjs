@@ -14,6 +14,17 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   prettier,
   {
+    rules: {
+      // Routes Auth0 (/auth/*) : middleware, pas de pages Next localisées → <a> requis.
+      "@next/next/no-html-link-for-pages": [
+        "error",
+        {
+          allow: ["/auth/login", "/auth/logout", "/auth/signup", "/auth/callback"],
+        },
+      ],
+    },
+  },
+  {
     ignores: [
       "node_modules/**",
       ".next/**",

@@ -123,7 +123,6 @@ export interface RankingsView {
   viewerRank: number | null;
 }
 
-const RANK_COLORS = ["#E8B23A", "#C9C6BE", "#E8945A"];
 const PAGE_SIZE = 20;
 
 /** Lignes de classement globales (sans viewer) — identiques pour tous, donc mises en cache. */
