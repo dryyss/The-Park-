@@ -50,7 +50,12 @@ export function TopBar() {
   const { user } = useUser();
 
   // État live de la top-bar (panier / notifs / messages), rafraîchi à chaque navigation.
-  const [live, setLive] = useState({ cart: 0, notifications: 0, messages: 0 });
+  const [live, setLive] = useState({
+    cart: 0,
+    notifications: 0,
+    messages: 0,
+    staffDashboardHref: null as string | null,
+  });
   useEffect(() => {
     let active = true;
     fetch("/api/topbar", { cache: "no-store" })
@@ -61,6 +66,7 @@ export function TopBar() {
             cart: Number(data.cart) || 0,
             notifications: Number(data.notifications) || 0,
             messages: Number(data.messages) || 0,
+            staffDashboardHref: typeof data.staffDashboardHref === "string" ? data.staffDashboardHref : null,
           });
         }
       })
@@ -156,7 +162,7 @@ export function TopBar() {
         {user ? (
           <>
             <LogoutLink label={tAuth("logout")} variant="nav" />
-            <UserMenu />
+            <UserMenu staffDashboardHref={live.staffDashboardHref} />
           </>
         ) : (
           <a

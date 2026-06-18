@@ -1,8 +1,9 @@
 import { setRequestLocale } from "next-intl/server";
+import { notFound, redirect } from "next/navigation";
 import { requireAuthenticatedStaff } from "@/server/auth/admin-guard";
 import { resolveStaffRole } from "@/server/auth/permissions.service";
 import { getDashboardsForStaffRole } from "@/server/auth/roles.definition";
-import { AdminNav } from "@/components/admin/admin-nav";
+import { AdminShell } from "@/components/admin/admin-shell";
 
 export default async function AdminLayout({
   children,
@@ -15,19 +16,25 @@ export default async function AdminLayout({
   setRequestLocale(locale);
 
   const access = await requireAuthenticatedStaff();
-  if (!access.ok) return children;
+  if (!access.ok) {
+    if (access.reason === "UNAUTHORIZED") {
+      redirect(`/auth/login?returnTo=${encodeURIComponent(`/${locale}/admin`)}`);
+    }
+    notFound();
+  }
 
   const staffRole = resolveStaffRole(access.user);
-  if (!staffRole) return children;
+  if (!staffRole) notFound();
 
   const dashboards = getDashboardsForStaffRole(staffRole);
 
   return (
-    <>
-      <div className="mx-auto max-w-[1320px] px-7 pt-9">
-        <AdminNav dashboards={dashboards} staffRole={staffRole} />
-      </div>
-      {children}
-    </>
+    <AdminShell
+      dashboards={dashboards}
+      staffRole={staffRole}
+      displayName={access.user.displayName}
+    >
+      <div className="mx-auto max-w-[1200px]">{children}</div>
+    </AdminShell>
   );
 }

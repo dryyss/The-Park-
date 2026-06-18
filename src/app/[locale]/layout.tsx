@@ -5,9 +5,7 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Auth0Provider } from "@auth0/nextjs-auth0";
 import { routing } from "@/i18n/routing";
-import { TopBar } from "@/components/layout/top-bar";
-import { Footer } from "@/components/layout/footer";
-import { MobileTabs } from "@/components/layout/mobile-tabs";
+import { AppShell } from "@/components/layout/app-shell";
 import "../globals.css";
 
 // Titres : lettrage condensé JDM (Anton)
@@ -59,12 +57,7 @@ export default async function LocaleLayout({
       <body className={`${display.variable} ${sans.variable} ${jp.variable} antialiased`}>
         <Auth0Provider>
           <NextIntlClientProvider>
-            <div className="flex min-h-screen flex-col">
-              <TopBar />
-              <div className="flex-1 pb-20 lg:pb-0">{children}</div>
-              <Footer />
-            </div>
-            <MobileTabs />
+            <AppShell>{children}</AppShell>
           </NextIntlClientProvider>
         </Auth0Provider>
       </body>

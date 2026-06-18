@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { LogoutLink } from "@/components/auth/logout-link";
 
-export function UserMenu() {
+export function UserMenu({ staffDashboardHref }: { staffDashboardHref?: string | null }) {
   const { user } = useUser();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -64,6 +64,16 @@ export function UserMenu() {
           <Link href="/profil" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
             {tNav("profile")}
           </Link>
+          {staffDashboardHref && (
+            <Link
+              href={staffDashboardHref}
+              role="menuitem"
+              className={`${itemClass} text-or hover:bg-or/10 hover:text-or-clair`}
+              onClick={() => setOpen(false)}
+            >
+              {tNav("staffConsole")}
+            </Link>
+          )}
           <Link href="/parametres" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
             {tProfile("linkSettings")}
           </Link>

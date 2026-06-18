@@ -36,7 +36,8 @@
     "messages": "Messages",
     "cart": "Panier",
     "wallet": "Mon portefeuille",
-    "language": "Langue · FR / 日本語 / EN"
+    "language": "Langue · FR / 日本語 / EN",
+    "staffConsole": "Console admin"
   },
   "footer": {
     "tagline": "La plateforme des collectionneurs Pocket Drifterz. Classeur, échanges sécurisés et marketplace — entre passionnés de drift et de JDM.",
@@ -664,6 +665,10 @@
     "manageSupport": "Support membres",
     "manageSettings": "Réglages plateforme",
     "back": "Console admin",
+    "shell": {
+      "consoleTitle": "Espace staff",
+      "backToSite": "Retour au site"
+    },
     "nav": {
       "ariaLabel": "Navigation console admin",
       "overview": "Vue d'ensemble",

@@ -3,14 +3,23 @@ import { getAuthenticatedViewer } from "@/server/user/user.service";
 import { getCartItemCount } from "@/server/cart/cart.service";
 import { getUnreadNotificationCount } from "@/server/notification/notification.service";
 import { getUnreadConversationCount } from "@/server/messaging/conversation.service";
+import { resolveStaffRole } from "@/server/auth/permissions.service";
+import { getDefaultDashboardForStaffRole } from "@/server/auth/roles.definition";
 
 export const dynamic = "force-dynamic";
 
-/** État live de la top-bar pour l'utilisateur connecté (badges panier / notifs / messages). */
+/** État live de la top-bar pour l'utilisateur connecté (badges panier / notifs / messages + accès staff). */
 export async function GET() {
   const viewer = await getAuthenticatedViewer();
   if (!viewer) {
-    return NextResponse.json({ authenticated: false, cart: 0, notifications: 0, messages: 0 });
+    return NextResponse.json({
+      authenticated: false,
+      cart: 0,
+      notifications: 0,
+      messages: 0,
+      staffRole: null,
+      staffDashboardHref: null,
+    });
   }
 
   const [cart, notifications, messages] = await Promise.all([
@@ -19,5 +28,15 @@ export async function GET() {
     getUnreadConversationCount(viewer.id),
   ]);
 
-  return NextResponse.json({ authenticated: true, cart, notifications, messages });
+  const staffRole = resolveStaffRole(viewer);
+  const staffDashboardHref = staffRole ? getDefaultDashboardForStaffRole(staffRole) : null;
+
+  return NextResponse.json({
+    authenticated: true,
+    cart,
+    notifications,
+    messages,
+    staffRole,
+    staffDashboardHref,
+  });
 }

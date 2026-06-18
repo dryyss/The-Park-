@@ -36,7 +36,8 @@
     "messages": "メッセージ",
     "cart": "カート",
     "wallet": "ウォレット",
-    "language": "言語 · FR / 日本語 / EN"
+    "language": "言語 · FR / 日本語 / EN",
+    "staffConsole": "管理コンソール"
   },
   "footer": {
     "tagline": "Pocket Drifterz コレクターのためのプラットフォーム。バインダー、安全な交換、マーケット — ドリフトと JDM の愛好家のために。",
@@ -664,6 +665,10 @@
     "manageSupport": "メンバーサポート",
     "manageSettings": "プラットフォーム設定",
     "back": "管理コンソール",
+    "shell": {
+      "consoleTitle": "スタッフワークスペース",
+      "backToSite": "サイトに戻る"
+    },
     "nav": {
       "ariaLabel": "管理コンソールナビ",
       "overview": "概要",
