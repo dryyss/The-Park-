@@ -97,8 +97,9 @@
 |-------|----------------|---------|-----|--------|---|-------|-----|
 | `/marketplace` | Onglets Vendre / Recherche (want) | `marketplace.service` | `MarketplaceFilters` | ✅ | — | Disclaimer prix indicatifs | 2026-06-16 |
 | `/marketplace` | Filtres rareté/état/version | `marketplace.service` | `ListingCard` | ✅ | — | | 2026-06-16 |
-| `/marketplace` | Paiement marketplace | — | — | ❌ | — | **Règle métier** : aucun encaissement | 2026-06-16 |
-| `/vendre` | Prérequis vendeur (âge, adresse, parental) | `seller-readiness.service` | `SellerReadiness` | ✅ | — | Payout optionnel non bloquant | 2026-06-16 |
+| `/marketplace` | Paiement marketplace | `wallet.service`, `sale.actions` | `BuyListingButton` | ✅ | — | Portefeuille crédits (recharge Stripe + 5 % frais) | 2026-06-18 |
+| `/portefeuille` | Recharge crédits (min. 5 €) | `wallet-topup.service` | `WalletTopUpForm` | ✅ | — | Débit achats marketplace | 2026-06-18 |
+| `/vendre` | Prérequis vendeur (âge, adresse, parental) | `seller-readiness.service` | `SellerReadiness` | ✅ | — | Versement vendeur → portefeuille | 2026-06-18 |
 | `/vendre` | Publication annonce fixe | `marketplace.actions` | `SellForm` | ✅ | — | Vérif possession | 2026-06-16 |
 | `/vendre` | Création enchère depuis vente | `auction.actions` | `SellForm` | ✅ | — | Redirige /encheres | 2026-06-16 |
 | `/dashboard` | Stats vendeur | `dashboard.service` | `DashboardPanel` | ✅ | — | Preview vide si invité | 2026-06-16 |
@@ -214,8 +215,8 @@
 |-------|----------------|---------|--------|---|-------|-----|
 | `GET /api/topbar` | Compteurs panier / notifs / messages | `cart`, `notification`, `conversation` services | ✅ | — | Polling client top-bar | 2026-06-16 |
 | `POST /api/pusher/auth` | Auth canal Pusher privé | `lib/pusher` | 🔧 | P1 | `PUSHER_*` | 2026-06-16 |
-| `POST /api/webhooks/stripe` | checkout.session.completed | `checkout.service` | 🔧 | P0 | `STRIPE_WEBHOOK_SECRET` | 2026-06-16 |
-| `POST /api/webhooks/stripe` | Webhooks caution C2C / Connect | — | ❌ | P2 | Non géré | 2026-06-16 |
+| `POST /api/webhooks/stripe` | checkout.session.completed | `checkout.service`, `wallet-topup` | 🔧 | P0 | `STRIPE_WEBHOOK_SECRET` — boutique + wallet top-up | 2026-06-18 |
+| `POST /api/webhooks/stripe` | Webhooks caution C2C / Connect | — | ❌ | P2 | Retrait bancaire Connect vendeur non géré | 2026-06-18 |
 | `POST /api/cron/maintenance` | Expiration annonces | `marketplace.mutations` | ✅ | P0 | Bearer `CRON_SECRET` | 2026-06-16 |
 | `POST /api/cron/maintenance` | Clôture enchères | `auction.mutations` | ✅ | P0 | Scheduler externe requis | 2026-06-16 |
 | `POST /api/cron/maintenance` | Purge preuves C2C | `shipment.service` | ✅ | P1 | | 2026-06-16 |
@@ -238,7 +239,7 @@
 | Footer | Newsletter | ❌ | P3 | Form sans handler | 2026-06-16 |
 | Tests | Vitest / e2e | ❌ | P1 | 0 test automatisé | 2026-06-16 |
 | CMS | Payload cartes/saisons | ❌ | P2 | Seed Prisma uniquement | 2026-06-16 |
-| DB orphelins | Sale, TrackingEvent, DisputeResolution… | ⚠️ | P2 | Modèles sans usage complet | 2026-06-16 |
+| DB orphelins | Sale, TrackingEvent, DisputeResolution… | ⚠️ | P2 | Cycle vente + wallet actifs ; Connect retrait à brancher | 2026-06-18 |
 | Config | `.env.example` versionné | ❌ | P0 | À créer | 2026-06-16 |
 | LCEN | ConnectionLog | ❌ | P1 | Modèle présent, non branché | 2026-06-16 |
 | Rate limiting | Endpoints sensibles | ❌ | P1 | Non implémenté | 2026-06-16 |
@@ -289,7 +290,7 @@
 | 21 | Newsletter footer | S |
 | 22 | Ticketing support admin | M |
 | 23 | Recharts analytics admin | M |
-| 24 | Stripe Connect marketplace (hors scope V1) | XL |
+| 24 | Stripe Connect retrait bancaire vendeur (wallet → virement) | L |
 
 ---
 

@@ -20,7 +20,8 @@
     "loginGateDashboard": "出品ダッシュボードにアクセスするにはログインまたはアカウント作成が必要です。",
     "loginGateAuction": "入札するにはログインまたはアカウント作成が必要です。",
     "loginGateContact": "このメンバーに連絡するにはログインまたはアカウント作成が必要です。",
-    "loginGateBuy": "このカードを購入するにはログインまたはアカウント作成が必要です。"
+    "loginGateBuy": "このカードを購入するにはログインまたはアカウント作成が必要です。",
+    "loginGateWallet": "ウォレットを利用するにはログインが必要です。"
   },
   "nav": {
     "home": "ホーム",
@@ -392,8 +393,8 @@
     "reservePrice": "最低落札価格",
     "reserveOptional": "任意",
     "auctionHint": "オークションはすぐに開始します。カードは終了までロックされます。",
-    "priceHint": "参考価格 — マッチングのみ、決済なし。",
-    "disclaimer": "マーケット出品はメンバー間マッチングです。決済は The Park を通りません。",
+    "priceHint": "表示価格 — 購入者はクレジットウォレットで支払い（Stripeチャージ、最低5 €）。",
+    "disclaimer": "マーケット販売はクレジットウォレット経由：Stripeチャージ（+5%手数料）、残高から購入、完了時に売り手へ入金。",
     "publish": "出品を公開",
     "publishing": "公開中…",
     "publishSuccess": "出品を公開しました！",
@@ -439,12 +440,14 @@
       "STRIPE_MIN_AMOUNT": "安全決済の最低金額（0,50 €）を下回っています。",
       "STRIPE_NOT_CONFIGURED": "現在お支払いを利用できません。",
       "STRIPE_ERROR": "Stripeエラー — 再試行するか出品者に連絡してください。",
+      "INSUFFICIENT_CREDIT": "残高不足 — ウォレットをチャージしてください（最低5 €）。",
       "UNKNOWN": "購入を開始できませんでした。"
     },
     "actionPropose": "自分のを提案",
     "actionManage": "管理",
     "ownListingBadge": "自分の出品",
     "ownListingYou": "自分の出品",
+    "walletTopUpLink": "チャージ →",
     "reviews": "{count}件",
     "emptyJp": "何もない",
     "emptyText": "条件に合う出品がありません。",
@@ -551,6 +554,37 @@
     "errorSchema": "データベース更新中です — 数分後にもう一度お試しください。",
     "errorInvalidSelection": "このカードに対するバージョンまたはシーズンが無効です。",
     "itemSeason": "シーズン · {season}"
+  },
+  "wallet": {
+    "kicker": "クレジット · マーケット",
+    "title": "ウォレット",
+    "currentBalance": "利用可能残高",
+    "topUpTitle": "クレジットを追加",
+    "topUpHint": "最低 {min} €。Stripe決済に5%の手数料が加算されます。",
+    "creditAmount": "クレジット額 (€)",
+    "creditLine": "追加クレジット",
+    "feeLine": "手数料 (5%)",
+    "totalLine": "Stripe請求合計",
+    "topUpCta": "Stripeで支払う",
+    "topUpPending": "リダイレクト中…",
+    "topUpSuccess": "クレジットが追加されました。",
+    "topUpCancelled": "チャージがキャンセルされました。",
+    "historyTitle": "履歴",
+    "historyEmpty": "取引はまだありません。",
+    "entryType": {
+      "TOP_UP": "チャージ",
+      "PURCHASE": "マーケット購入",
+      "REFUND": "返金",
+      "SALE_PAYOUT": "販売入金",
+      "ADJUSTMENT": "調整"
+    },
+    "topUpError": {
+      "UNAUTHORIZED": "ログインが必要です。",
+      "VALIDATION": "無効な金額です。",
+      "TOP_UP_TOO_LOW": "最低5 €のクレジット。",
+      "STRIPE_NOT_CONFIGURED": "決済を利用できません。",
+      "UNKNOWN": "チャージを開始できませんでした。"
+    }
   },
   "auctions": {
     "kicker": "リアルタイム · アンチスナイプ",
@@ -841,7 +875,7 @@
     "qCollectionMissing": "未所持カードの見つけ方？",
     "aCollectionMissing": "コレクションまたはシーズン1で「未所持」フィルター。",
     "qMarketplacePayment": "マーケットで支払える？",
-    "aMarketplacePayment": "いいえ。マッチングのみ、価格は参考。",
+    "aMarketplacePayment": "はい。クレジットウォレット経由：Stripeで最低5 €チャージ（+5%手数料）、残高から購入。売り手は取引完了時にウォレットへ入金されます。",
     "qMarketplacePrice": "価格は保証？",
     "aMarketplacePrice": "いいえ、メンバー間の参考価格です。",
     "qExchangeValidation": "二重承認とは？",
@@ -889,9 +923,9 @@
       "phone": "電話番号（任意）"
     },
     "payout": {
-      "title": "受取アカウント",
-      "desc": "販売代金の受け取り用（Stripe Connect）。",
-      "hint": "近日公開 — 現時点では不要です。"
+      "title": "販売入金",
+      "desc": "販売代金は取引完了時にウォレットへ入金されます。",
+      "hint": "Stripe Connect による銀行振込 — 任意、近日公開。"
     }
   },
   "settings": {
@@ -1125,7 +1159,7 @@
     "minConditionLabel": "最低状態",
     "minConditionAny": "指定なし",
     "stepPublish": "公開",
-    "disclaimer": "募集はメンバー間のマッチングです。The Park で決済は行われません。",
+    "disclaimer": "募集はメンバー間のマッチングです。該当出品があればクレジットウォレットで購入できます。",
     "publish": "募集を公開",
     "publishing": "公開中…",
     "publishSuccess": "募集を公開しました！",

@@ -5,6 +5,7 @@ import { useUser } from "@auth0/nextjs-auth0";
 import { useTranslations } from "next-intl";
 import { buyListingAction, type BuyListingError } from "@/server/sale/sale.actions";
 import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
+import { Link } from "@/i18n/navigation";
 
 export function BuyListingButton({
   listingId,
@@ -46,7 +47,17 @@ export function BuyListingButton({
         {pending ? t("actionBuying") : t("actionBuy")}
       </button>
       {error && (
-        <span className="text-center text-[10px] font-bold text-neon-rouge">{t(`buyError.${error}`)}</span>
+        <span className="text-center text-[10px] font-bold text-neon-rouge">
+          {t(`buyError.${error}`)}
+          {error === "INSUFFICIENT_CREDIT" && (
+            <>
+              {" "}
+              <Link href="/portefeuille" className="text-carmin underline">
+                {t("walletTopUpLink")}
+              </Link>
+            </>
+          )}
+        </span>
       )}
     </div>
   );

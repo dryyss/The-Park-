@@ -124,6 +124,13 @@ export function TopBar() {
             <line x1="21" y1="21" x2="16.5" y2="16.5" />
           </svg>
         </IconButton>
+        <IconButton href="/portefeuille" title={t("wallet")}>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="6" width="20" height="14" rx="2" />
+            <path d="M2 10h20" />
+            <circle cx="17" cy="14" r="1.5" fill="currentColor" stroke="none" />
+          </svg>
+        </IconButton>
         <span className="hidden sm:contents">
           <IconButton href="/notifications" title={t("notifications")} badge={live.notifications > 0 ? "dot" : undefined}>
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">

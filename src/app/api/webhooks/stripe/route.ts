@@ -34,6 +34,9 @@ export async function POST(request: Request) {
       if (session.payment_status === "paid" && session.id) {
         if (session.metadata?.kind === "PURCHASE" && session.metadata?.saleId) {
           await fulfillSaleFromStripeSession(session.id);
+        } else if (session.metadata?.kind === "WALLET_TOP_UP") {
+          const { fulfillWalletTopUpFromStripeSession } = await import("@/server/wallet/wallet-topup.service");
+          await fulfillWalletTopUpFromStripeSession(session.id);
         } else if (session.metadata?.orderId) {
           await fulfillOrderFromStripeSession(session.id);
         }

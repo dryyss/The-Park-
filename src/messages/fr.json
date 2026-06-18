@@ -20,7 +20,8 @@
     "loginGateDashboard": "Connecte-toi ou inscris-toi pour accéder à ton dashboard vendeur.",
     "loginGateAuction": "Connecte-toi ou inscris-toi pour enchérir.",
     "loginGateContact": "Connecte-toi ou inscris-toi pour contacter ce membre.",
-    "loginGateBuy": "Connecte-toi ou inscris-toi pour acheter cette carte."
+    "loginGateBuy": "Connecte-toi ou inscris-toi pour acheter cette carte.",
+    "loginGateWallet": "Connecte-toi ou inscris-toi pour gérer ton portefeuille."
   },
   "nav": {
     "home": "Accueil",
@@ -392,8 +393,8 @@
     "reservePrice": "Prix de réserve",
     "reserveOptional": "Optionnel",
     "auctionHint": "L'enchère démarre immédiatement. La carte est réservée jusqu'à la fin de la vente.",
-    "priceHint": "Prix indicatif — mise en relation uniquement, aucun paiement ici.",
-    "disclaimer": "Les annonces marketplace sont des mises en relation entre membres. Aucun encaissement ne transite sur The Park.",
+    "priceHint": "Prix affiché — l'acheteur paie via son portefeuille crédits (recharge Stripe min. 5 €).",
+    "disclaimer": "Les ventes marketplace sont sécurisées via le portefeuille crédits : recharge Stripe (+ 5 % de frais), achat débité du solde, versement vendeur à la clôture.",
     "publish": "Publier l'annonce",
     "publishing": "Publication…",
     "publishSuccess": "Annonce publiée !",
@@ -439,12 +440,14 @@
       "STRIPE_MIN_AMOUNT": "Montant trop bas pour le paiement sécurisé (minimum 0,50 €).",
       "STRIPE_NOT_CONFIGURED": "Paiement indisponible pour le moment.",
       "STRIPE_ERROR": "Erreur Stripe — réessaie ou contacte le vendeur.",
+      "INSUFFICIENT_CREDIT": "Solde insuffisant — recharge ton portefeuille (min. 5 €).",
       "UNKNOWN": "Impossible de lancer l'achat."
     },
     "actionPropose": "Proposer la mienne",
     "actionManage": "Gérer",
     "ownListingBadge": "Mon annonce",
     "ownListingYou": "Mon annonce",
+    "walletTopUpLink": "Recharger →",
     "reviews": "{count} avis",
     "emptyJp": "何もない",
     "emptyText": "Aucune annonce ne correspond à ces filtres.",
@@ -551,6 +554,37 @@
     "errorSchema": "Mise à jour base de données en cours — réessaie dans quelques minutes.",
     "errorInvalidSelection": "Version ou saison invalide pour cette carte.",
     "itemSeason": "Saison · {season}"
+  },
+  "wallet": {
+    "kicker": "Crédits · Marketplace",
+    "title": "Mon portefeuille",
+    "currentBalance": "Solde disponible",
+    "topUpTitle": "Recharger des crédits",
+    "topUpHint": "Minimum {min} € de crédit. Des frais de 5 % s'ajoutent au montant débité sur Stripe.",
+    "creditAmount": "Crédit souhaité (€)",
+    "creditLine": "Crédit ajouté",
+    "feeLine": "Frais plateforme (5 %)",
+    "totalLine": "Total débité (Stripe)",
+    "topUpCta": "Payer via Stripe",
+    "topUpPending": "Redirection…",
+    "topUpSuccess": "Crédits ajoutés à ton portefeuille.",
+    "topUpCancelled": "Recharge annulée.",
+    "historyTitle": "Historique",
+    "historyEmpty": "Aucune opération pour le moment.",
+    "entryType": {
+      "TOP_UP": "Recharge",
+      "PURCHASE": "Achat marketplace",
+      "REFUND": "Remboursement",
+      "SALE_PAYOUT": "Vente reçue",
+      "ADJUSTMENT": "Ajustement"
+    },
+    "topUpError": {
+      "UNAUTHORIZED": "Connexion requise.",
+      "VALIDATION": "Montant invalide.",
+      "TOP_UP_TOO_LOW": "Minimum 5 € de crédit.",
+      "STRIPE_NOT_CONFIGURED": "Paiement indisponible.",
+      "UNKNOWN": "Impossible de lancer la recharge."
+    }
   },
   "auctions": {
     "kicker": "Temps réel · anti-snipe",
@@ -841,7 +875,7 @@
     "qCollectionMissing": "Comment repérer les cartes manquantes ?",
     "aCollectionMissing": "Filtre « Manquantes » dans ton classeur ou la page Saison 1.",
     "qMarketplacePayment": "Puis-je payer sur la marketplace ?",
-    "aMarketplacePayment": "Non. La marketplace est une mise en relation : les prix sont indicatifs, aucun paiement ne transite sur The Park.",
+    "aMarketplacePayment": "Oui, via le portefeuille crédits : recharge min. 5 € via Stripe (+ 5 % de frais), puis achats débités du solde. Les vendeurs reçoivent le montant sur leur portefeuille à la clôture de la vente.",
     "qMarketplacePrice": "Les prix sont-ils garantis ?",
     "aMarketplacePrice": "Non, ce sont des indications entre membres. La valeur réelle dépend de l'état et du marché.",
     "qExchangeValidation": "Comment fonctionne la double validation ?",
@@ -889,9 +923,9 @@
       "phone": "Téléphone (optionnel)"
     },
     "payout": {
-      "title": "Compte de versement",
-      "desc": "Pour recevoir l'argent de tes ventes (Stripe Connect).",
-      "hint": "Bientôt disponible — non requis pour le moment."
+      "title": "Versements vendeur",
+      "desc": "Le montant de tes ventes est crédité sur ton portefeuille à la clôture.",
+      "hint": "Retrait bancaire via Stripe Connect — optionnel, bientôt disponible."
     }
   },
   "settings": {
@@ -1125,7 +1159,7 @@
     "minConditionLabel": "État minimum",
     "minConditionAny": "Indifférent",
     "stepPublish": "Publier",
-    "disclaimer": "Les recherches sont des mises en relation entre membres. Aucun encaissement ne transite sur The Park.",
+    "disclaimer": "Les recherches sont des mises en relation entre membres. L'achat se fait via le portefeuille crédits si une annonce correspond.",
     "publish": "Publier ma recherche",
     "publishing": "Publication…",
     "publishSuccess": "Recherche publiée !",

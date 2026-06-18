@@ -2,11 +2,16 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { getStripe } from "@/lib/stripe";
 import { isStripeConfigured } from "@/lib/env";
+import {
+  creditWalletForSalePayout,
+  creditWalletForSaleRefund,
+  isWalletFundedSale,
+} from "@/server/wallet/wallet.service";
 
 /**
  * Couche paiement escrow d'une vente marketplace (Payment kind=PURCHASE).
- * Modèle : pré-autorisation (manual capture) à l'achat, capture + virement vendeur
- * à la clôture, annulation/remboursement en cas d'échec/litige.
+ * Flux wallet : débit acheteur à l'achat, crédit vendeur à la clôture, remboursement wallet si annulé.
+ * Flux legacy Stripe PI : capture + virement Connect si dispo.
  * Sans Stripe configuré : tout est simulé en base (mode dev).
  */
 
@@ -30,7 +35,7 @@ export async function capturePurchase(paymentId: string): Promise<void> {
   });
 }
 
-/** Libère les fonds vers le vendeur (capture + virement Connect si dispo). Idempotent. */
+/** Libère les fonds vers le vendeur (wallet interne ou virement Connect). Idempotent. */
 export async function releaseToSeller(paymentId: string): Promise<void> {
   const payment = await prisma.payment.findUnique({ where: { id: paymentId }, include: { payee: true } });
   if (!payment) throw new Error("PAYMENT_NOT_FOUND");
@@ -38,13 +43,24 @@ export async function releaseToSeller(paymentId: string): Promise<void> {
 
   if (payment.status !== "CAPTURED") await capturePurchase(paymentId);
 
+  const net = Number(payment.amount) - Number(payment.applicationFee);
+  const walletFunded = payment.saleId ? await isWalletFundedSale(payment.saleId) : false;
+
+  if (walletFunded && payment.payeeId && payment.saleId && net > 0) {
+    await creditWalletForSalePayout({
+      userId: payment.payeeId,
+      saleId: payment.saleId,
+      amountEur: net,
+    });
+  }
+
   let stripeTransferId: string | null = null;
   if (
+    !walletFunded &&
     isStripeConfigured() &&
     payment.payee?.stripeConnectAccountId &&
     payment.payee.connectPayoutsEnabled
   ) {
-    const net = Number(payment.amount) - Number(payment.applicationFee);
     if (net > 0) {
       const transfer = await getStripe().transfers.create({
         amount: Math.round(net * 100),
@@ -62,15 +78,22 @@ export async function releaseToSeller(paymentId: string): Promise<void> {
   });
 }
 
-/** Rembourse l'acheteur (annulation avant capture, ou remboursement après). Idempotent. */
+/** Rembourse l'acheteur (wallet interne ou annulation PI Stripe). Idempotent. */
 export async function refundPurchase(paymentId: string): Promise<void> {
   const payment = await prisma.payment.findUnique({ where: { id: paymentId } });
   if (!payment) throw new Error("PAYMENT_NOT_FOUND");
   if (payment.status === "REFUNDED" || payment.status === "CANCELLED") return;
 
   const onlyAuthorized = payment.status === "AUTHORIZED" || payment.status === "REQUIRES_PAYMENT";
+  const walletFunded = payment.saleId ? await isWalletFundedSale(payment.saleId) : false;
 
-  if (isStripeConfigured() && payment.stripePaymentIntentId) {
+  if (walletFunded && payment.userId && payment.saleId) {
+    await creditWalletForSaleRefund({
+      userId: payment.userId,
+      saleId: payment.saleId,
+      amountEur: Number(payment.amount),
+    });
+  } else if (isStripeConfigured() && payment.stripePaymentIntentId) {
     try {
       if (onlyAuthorized) {
         await getStripe().paymentIntents.cancel(payment.stripePaymentIntentId);

@@ -1,7 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { isStripeConfigured } from "@/lib/env";
-import { assertStripeMinAmountEur } from "@/lib/stripe";
 import { markSalePaid } from "@/server/sale/sale-lifecycle.service";
 
 /** Commission plateforme sur une vente C2C (0 % pour l'instant). */
@@ -51,10 +50,6 @@ export async function createSaleFromListing(
   const price = Number(listing.price);
   const serviceFee = Math.round(price * SALE_SERVICE_FEE_PCT) / 100;
   const total = price + serviceFee;
-
-  if (isStripeConfigured()) {
-    assertStripeMinAmountEur(total);
-  }
 
   const { saleId, paymentId } = await prisma.$transaction(async (tx) => {
     const sale = await tx.sale.create({

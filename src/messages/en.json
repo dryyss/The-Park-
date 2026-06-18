@@ -20,7 +20,8 @@
     "loginGateDashboard": "Sign in or create an account to access your seller dashboard.",
     "loginGateAuction": "Sign in or create an account to place a bid.",
     "loginGateContact": "Sign in or create an account to contact this member.",
-    "loginGateBuy": "Sign in or create an account to buy this card."
+    "loginGateBuy": "Sign in or create an account to buy this card.",
+    "loginGateWallet": "Sign in or create an account to manage your wallet."
   },
   "nav": {
     "home": "Home",
@@ -392,8 +393,8 @@
     "reservePrice": "Reserve price",
     "reserveOptional": "Optional",
     "auctionHint": "The auction starts right away. The card is locked until the sale ends.",
-    "priceHint": "Indicative price — matching only, no payment here.",
-    "disclaimer": "Marketplace listings are member-to-member matching. No payment goes through The Park.",
+    "priceHint": "Listed price — buyers pay from their credit wallet (Stripe top-up, min. €5).",
+    "disclaimer": "Marketplace sales use the credit wallet: Stripe top-up (+ 5% fee), purchases debited from balance, seller paid on completion.",
     "publish": "Publish listing",
     "publishing": "Publishing…",
     "publishSuccess": "Listing published!",
@@ -439,12 +440,14 @@
       "STRIPE_MIN_AMOUNT": "Amount too low for secure payment (minimum €0.50).",
       "STRIPE_NOT_CONFIGURED": "Payment unavailable at the moment.",
       "STRIPE_ERROR": "Stripe error — try again or contact the seller.",
+      "INSUFFICIENT_CREDIT": "Insufficient balance — top up your wallet (min. €5).",
       "UNKNOWN": "Could not start purchase."
     },
     "actionPropose": "Offer mine",
     "actionManage": "Manage",
     "ownListingBadge": "My listing",
     "ownListingYou": "My listing",
+    "walletTopUpLink": "Top up →",
     "reviews": "{count} reviews",
     "emptyJp": "何もない",
     "emptyText": "No listing matches these filters.",
@@ -551,6 +554,37 @@
     "errorSchema": "Database update in progress — try again in a few minutes.",
     "errorInvalidSelection": "Invalid version or season for this card.",
     "itemSeason": "Season · {season}"
+  },
+  "wallet": {
+    "kicker": "Credits · Marketplace",
+    "title": "My wallet",
+    "currentBalance": "Available balance",
+    "topUpTitle": "Add credits",
+    "topUpHint": "Minimum {min} € credit. A 5% platform fee is added to the Stripe charge.",
+    "creditAmount": "Credit amount (€)",
+    "creditLine": "Credit added",
+    "feeLine": "Platform fee (5%)",
+    "totalLine": "Total charged (Stripe)",
+    "topUpCta": "Pay with Stripe",
+    "topUpPending": "Redirecting…",
+    "topUpSuccess": "Credits added to your wallet.",
+    "topUpCancelled": "Top-up cancelled.",
+    "historyTitle": "History",
+    "historyEmpty": "No transactions yet.",
+    "entryType": {
+      "TOP_UP": "Top-up",
+      "PURCHASE": "Marketplace purchase",
+      "REFUND": "Refund",
+      "SALE_PAYOUT": "Sale received",
+      "ADJUSTMENT": "Adjustment"
+    },
+    "topUpError": {
+      "UNAUTHORIZED": "Sign in required.",
+      "VALIDATION": "Invalid amount.",
+      "TOP_UP_TOO_LOW": "Minimum €5 credit.",
+      "STRIPE_NOT_CONFIGURED": "Payment unavailable.",
+      "UNKNOWN": "Could not start top-up."
+    }
   },
   "auctions": {
     "kicker": "Real-time · anti-snipe",
@@ -841,7 +875,7 @@
     "qCollectionMissing": "How do I find missing cards?",
     "aCollectionMissing": "Use the « Missing » filter in your binder or Season 1 page.",
     "qMarketplacePayment": "Can I pay on the marketplace?",
-    "aMarketplacePayment": "No. Marketplace is matchmaking only — prices are indicative.",
+    "aMarketplacePayment": "Yes, via the credit wallet: top up min. €5 via Stripe (+ 5% fee), then purchases are debited from your balance. Sellers receive the amount in their wallet when the sale completes.",
     "qMarketplacePrice": "Are prices guaranteed?",
     "aMarketplacePrice": "No, they are indicative between members.",
     "qExchangeValidation": "How does double validation work?",
@@ -889,9 +923,9 @@
       "phone": "Phone (optional)"
     },
     "payout": {
-      "title": "Payout account",
-      "desc": "To receive money from your sales (Stripe Connect).",
-      "hint": "Coming soon — not required for now."
+      "title": "Seller payouts",
+      "desc": "Sale proceeds are credited to your wallet when the sale completes.",
+      "hint": "Bank withdrawal via Stripe Connect — optional, coming soon."
     }
   },
   "settings": {
@@ -1125,7 +1159,7 @@
     "minConditionLabel": "Minimum condition",
     "minConditionAny": "Any",
     "stepPublish": "Publish",
-    "disclaimer": "Wants connect members directly. No payment goes through The Park.",
+    "disclaimer": "Wants connect members directly. Purchases use the credit wallet when a listing matches.",
     "publish": "Post my want",
     "publishing": "Posting…",
     "publishSuccess": "Want posted!",
