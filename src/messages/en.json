@@ -430,7 +430,8 @@
     "ownListingYou": "My listing",
     "reviews": "{count} reviews",
     "emptyJp": "何もない",
-    "emptyText": "No listing matches these filters."
+    "emptyText": "No listing matches these filters.",
+    "wantCtaPublish": "Post a want"
   },
   "notifications": {
     "kicker": "Activity · live",
@@ -1071,5 +1072,29 @@
         "step3": "Verdict: full/partial/no capture"
       }
     }
+  },
+  "want": {
+    "breadcrumbMarket": "Marketplace",
+    "breadcrumbWant": "Post a want",
+    "title": "I am looking for a card",
+    "subtitle": "Tell the community which card you are after — we will connect you with sellers.",
+    "stepPickCard": "Pick the card",
+    "searchPlaceholder": "Search a card, number…",
+    "noResults": "No card matches.",
+    "stepCriteria": "Your criteria",
+    "budgetLabel": "Max budget",
+    "budgetOptional": "optional",
+    "budgetNone": "Budget: open",
+    "minConditionLabel": "Minimum condition",
+    "minConditionAny": "Any",
+    "stepPublish": "Publish",
+    "disclaimer": "Wants connect members directly. No payment goes through The Park.",
+    "publish": "Post my want",
+    "publishing": "Posting…",
+    "publishSuccess": "Want posted!",
+    "publishError": "Could not post the want.",
+    "preview": "Preview",
+    "selectedNone": "Select a card above.",
+    "backToWants": "See wants"
   }
 }

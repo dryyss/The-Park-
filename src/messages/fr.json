@@ -430,7 +430,8 @@
     "ownListingYou": "Mon annonce",
     "reviews": "{count} avis",
     "emptyJp": "何もない",
-    "emptyText": "Aucune annonce ne correspond à ces filtres."
+    "emptyText": "Aucune annonce ne correspond à ces filtres.",
+    "wantCtaPublish": "Publier une recherche"
   },
   "notifications": {
     "kicker": "Activité · en direct",
@@ -1071,5 +1072,29 @@
         "step3": "Verdict : capture caution totale/partielle/aucune"
       }
     }
+  },
+  "want": {
+    "breadcrumbMarket": "Marketplace",
+    "breadcrumbWant": "Publier une recherche",
+    "title": "Je recherche une carte",
+    "subtitle": "Indique à la communauté la carte que tu cherches — on te met en relation avec les vendeurs.",
+    "stepPickCard": "Choisis la carte",
+    "searchPlaceholder": "Rechercher une carte, un n°…",
+    "noResults": "Aucune carte ne correspond.",
+    "stepCriteria": "Tes critères",
+    "budgetLabel": "Budget max",
+    "budgetOptional": "optionnel",
+    "budgetNone": "Budget : à discuter",
+    "minConditionLabel": "État minimum",
+    "minConditionAny": "Indifférent",
+    "stepPublish": "Publier",
+    "disclaimer": "Les recherches sont des mises en relation entre membres. Aucun encaissement ne transite sur The Park.",
+    "publish": "Publier ma recherche",
+    "publishing": "Publication…",
+    "publishSuccess": "Recherche publiée !",
+    "publishError": "Impossible de publier la recherche.",
+    "preview": "Aperçu",
+    "selectedNone": "Sélectionne une carte ci-dessus.",
+    "backToWants": "Voir les recherches"
   }
 }

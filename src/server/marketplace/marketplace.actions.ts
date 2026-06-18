@@ -61,6 +61,7 @@ export async function listCollectionItemAction(input: unknown): Promise<Marketpl
 const wantSchema = z.object({
   variantId: z.string().min(1),
   budgetMax: z.number().min(0).max(99999).optional(),
+  minCondition: conditionEnum.optional(),
 });
 
 const listingIdSchema = z.object({ listingId: z.string().min(1) });

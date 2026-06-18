@@ -64,22 +64,32 @@ export default async function MarketplacePage({
             {t("title")}
           </h1>
         </div>
-        <div className="mb-1 flex gap-1 rounded-xl border border-charbon-500 bg-charbon-800 p-1.5">
-          {tabs.map((tab) => {
-            const active = marketParams.intent === tab.intent;
-            return (
-              <Link
-                key={tab.intent}
-                href={intentHref(marketParams, tab.intent)}
-                className={[
-                  "font-display rounded-lg px-5 py-2.5 text-[13.5px] tracking-[1.5px] uppercase transition",
-                  active ? "bg-carmin text-white" : "text-texte-muet hover:text-blanc-casse",
-                ].join(" ")}
-              >
-                {tab.label} 〜 {tab.count}
-              </Link>
-            );
-          })}
+        <div className="mb-1 flex flex-wrap items-center gap-3">
+          <div className="flex gap-1 rounded-xl border border-charbon-500 bg-charbon-800 p-1.5">
+            {tabs.map((tab) => {
+              const active = marketParams.intent === tab.intent;
+              return (
+                <Link
+                  key={tab.intent}
+                  href={intentHref(marketParams, tab.intent)}
+                  className={[
+                    "font-display rounded-lg px-5 py-2.5 text-[13.5px] tracking-[1.5px] uppercase transition",
+                    active ? "bg-carmin text-white" : "text-texte-muet hover:text-blanc-casse",
+                  ].join(" ")}
+                >
+                  {tab.label} 〜 {tab.count}
+                </Link>
+              );
+            })}
+          </div>
+          {marketParams.intent === "want" && (
+            <Link
+              href="/marketplace/recherche"
+              className="font-display -skew-x-3 rounded-lg border-[1.5px] border-carmin bg-carmin/10 px-5 py-2.5 text-[12.5px] tracking-[1.5px] whitespace-nowrap text-carmin uppercase transition hover:bg-carmin hover:text-white"
+            >
+              {t("wantCtaPublish")}
+            </Link>
+          )}
         </div>
       </div>
 
@@ -120,6 +130,14 @@ export default async function MarketplacePage({
         <div className="py-[70px] text-center text-texte-faible">
           <div className="font-jp text-[34px] font-black text-charbon-500">{t("emptyJp")}</div>
           <div className="mt-2.5 text-[14px] font-bold">{t("emptyText")}</div>
+          {marketParams.intent === "want" && (
+            <Link
+              href="/marketplace/recherche"
+              className="font-display mt-5 inline-block -skew-x-3 rounded-lg bg-carmin px-6 py-3 text-[12.5px] tracking-[1.5px] text-white uppercase transition hover:bg-carmin-alt"
+            >
+              {t("wantCtaPublish")}
+            </Link>
+          )}
         </div>
       )}
     </main>

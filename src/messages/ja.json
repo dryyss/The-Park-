@@ -430,7 +430,8 @@
     "ownListingYou": "自分の出品",
     "reviews": "{count}件",
     "emptyJp": "何もない",
-    "emptyText": "条件に合う出品がありません。"
+    "emptyText": "条件に合う出品がありません。",
+    "wantCtaPublish": "募集を出す"
   },
   "notifications": {
     "kicker": "アクティビティ",
@@ -1071,5 +1072,29 @@
         "step3": "デポジット判定"
       }
     }
+  },
+  "want": {
+    "breadcrumbMarket": "マーケット",
+    "breadcrumbWant": "募集を出す",
+    "title": "カードを探しています",
+    "subtitle": "探しているカードをコミュニティに知らせましょう — 出品者とつなぎます。",
+    "stepPickCard": "カードを選ぶ",
+    "searchPlaceholder": "カード名・番号…",
+    "noResults": "該当するカードがありません。",
+    "stepCriteria": "条件",
+    "budgetLabel": "予算上限",
+    "budgetOptional": "任意",
+    "budgetNone": "予算：応相談",
+    "minConditionLabel": "最低状態",
+    "minConditionAny": "指定なし",
+    "stepPublish": "公開",
+    "disclaimer": "募集はメンバー間のマッチングです。The Park で決済は行われません。",
+    "publish": "募集を公開",
+    "publishing": "公開中…",
+    "publishSuccess": "募集を公開しました！",
+    "publishError": "募集を公開できませんでした。",
+    "preview": "プレビュー",
+    "selectedNone": "上でカードを選んでください。",
+    "backToWants": "募集を見る"
   }
 }
