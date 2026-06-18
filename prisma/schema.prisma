@@ -443,6 +443,7 @@ model Season {
   releaseDate DateTime?
   sortOrder   Int       @default(0)
   cards       Card[]
+  wishlists   WishlistItem[]
   createdAt   DateTime  @default(now())
 }
 
@@ -508,6 +509,7 @@ model CardVariant {
   listings        Listing[]
   auctions        Auction[]
   exchangeItems   ExchangeItem[]
+  wishlistItems   WishlistItem[]
 
   @@unique([cardId, versionTypeId, language])
 }
@@ -544,15 +546,23 @@ model CollectionItem {
 }
 
 model WishlistItem {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  card      Card     @relation(fields: [cardId], references: [id])
-  cardId    String
-  note      String?
-  createdAt DateTime @default(now())
+  id            String        @id @default(cuid())
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  card          Card          @relation(fields: [cardId], references: [id])
+  cardId        String
+  variant       CardVariant   @relation(fields: [variantId], references: [id])
+  variantId     String
+  season        Season        @relation(fields: [seasonId], references: [id])
+  seasonId      String
+  condition     CardCondition @default(EXCELLENT)
+  /// "first" | "unlimited" — édition recherchée (aligné collection / vente).
+  editionPreset String        @default("unlimited")
+  note          String?
+  createdAt     DateTime      @default(now())
 
-  @@unique([userId, cardId])
+  @@unique([userId, variantId, condition, editionPreset])
+  @@index([userId])
 }
 
 // ============================================================================

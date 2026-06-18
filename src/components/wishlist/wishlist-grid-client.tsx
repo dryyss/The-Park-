@@ -8,6 +8,7 @@ import type { WishlistCard } from "@/server/wishlist/wishlist.service";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { rarityMeta } from "@/lib/rarity";
+import { conditionColor } from "@/lib/condition";
 import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
 
 export function WishlistGridClient({
@@ -18,6 +19,8 @@ export function WishlistGridClient({
   isAuthenticated: boolean;
 }) {
   const t = useTranslations("wishlist");
+  const tCond = useTranslations("conditions");
+  const tCard = useTranslations("card");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [showLoginGate, setShowLoginGate] = useState(false);
@@ -65,6 +68,15 @@ export function WishlistGridClient({
                 </span>
               </div>
               <p className="mt-2.5 truncate text-[13px] font-extrabold text-blanc-casse">{card.name}</p>
+              <p className="mt-1 text-[10px] font-bold text-texte-dim">{t("itemSeason", { season: card.seasonName })}</p>
+              <p className="text-[11px] font-bold text-texte-doux">
+                {card.versionLabel}
+                {" · "}
+                <span style={{ color: conditionColor(card.conditionCode) }}>{tCond(card.conditionCode)}</span>
+              </p>
+              <p className="text-[10.5px] font-bold text-texte-faible">
+                {card.isFirstEdition ? tCard("editionFirst") : tCard("editionReedition")}
+              </p>
               <p className="text-[11px] font-bold text-texte-dim">{card.quoteValue}</p>
             </Link>
             <button

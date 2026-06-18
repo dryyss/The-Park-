@@ -148,6 +148,8 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
 
           <CardMemberActions
             cardId={card.id}
+            seasonId={card.seasonId}
+            seasonLabel={card.seasonLabel}
             isAuthenticated={!!authenticated}
             versions={card.versions}
           />

@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
-import { addToWishlistAction } from "@/server/wishlist/wishlist.actions";
 import { VariantConditionManager, type ConditionRow } from "@/components/collection/variant-condition-manager";
 import { VariantEditionEditor } from "@/components/collection/variant-edition-editor";
 import { LoginGatePrompt } from "@/components/collection/login-gate-prompt";
+import { WishlistAddForm } from "@/components/wishlist/wishlist-add-form";
 
 export type CardVersionRow = {
   variantId: string;
@@ -25,32 +24,21 @@ export type CardVersionRow = {
 
 export function CardMemberActions({
   cardId,
+  seasonId,
+  seasonLabel,
   isAuthenticated,
   versions,
 }: {
   cardId: string;
+  seasonId: string;
+  seasonLabel: string;
   isAuthenticated: boolean;
   versions: CardVersionRow[];
 }) {
   const t = useTranslations("card");
-  const router = useRouter();
-  const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
   const [showLoginGate, setShowLoginGate] = useState(false);
-
-  function handleWishlist() {
-    if (!isAuthenticated) {
-      setShowLoginGate(true);
-      return;
-    }
-    setMessage(null);
-    setShowLoginGate(false);
-    startTransition(async () => {
-      const res = await addToWishlistAction({ cardId });
-      if (res.ok) router.refresh();
-      else setMessage(res.error);
-    });
-  }
+  const [showWishlistForm, setShowWishlistForm] = useState(false);
 
   return (
     <div className="mt-6 rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
@@ -104,12 +92,32 @@ export function CardMemberActions({
         ))}
         <button
           type="button"
-          disabled={pending}
-          onClick={handleWishlist}
-          className="self-start rounded-lg border border-or/40 bg-or/10 px-3 py-2 text-[12px] font-extrabold text-or hover:bg-or/20 disabled:opacity-50"
+          onClick={() => {
+            if (!isAuthenticated) {
+              setShowLoginGate(true);
+              return;
+            }
+            setShowLoginGate(false);
+            setMessage(null);
+            setShowWishlistForm((v) => !v);
+          }}
+          className="self-start rounded-lg border border-or/40 bg-or/10 px-3 py-2 text-[12px] font-extrabold text-or hover:bg-or/20"
         >
           {t("addWishlist")}
         </button>
+        {showWishlistForm && isAuthenticated && (
+          <WishlistAddForm
+            cardId={cardId}
+            seasonId={seasonId}
+            seasonLabel={seasonLabel}
+            versions={versions.map((v) => ({
+              variantId: v.variantId,
+              label: v.label,
+              catalogEditionLabel: v.catalogEditionLabel,
+            }))}
+            onClose={() => setShowWishlistForm(false)}
+          />
+        )}
       </div>
       {showLoginGate && (
         <div className="mt-3">

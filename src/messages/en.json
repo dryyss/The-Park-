@@ -531,7 +531,19 @@
     "noUser": "Log in to see your wishlist.",
     "empty": "Your wishlist is empty.",
     "browse": "Browse catalog →",
-    "remove": "Remove"
+    "remove": "Remove",
+    "formTitle": "Specify what you're looking for",
+    "formHint": "Choose version, edition, season and condition.",
+    "fieldSeason": "Season",
+    "fieldVersion": "Version",
+    "fieldCondition": "Desired condition",
+    "confirmAdd": "Add to wishlist",
+    "adding": "Adding…",
+    "cancel": "Cancel",
+    "addedSuccess": "Added to your wishlist.",
+    "errorGeneric": "Could not add to wishlist.",
+    "errorDuplicate": "This combination is already on your wishlist.",
+    "itemSeason": "Season · {season}"
   },
   "auctions": {
     "kicker": "Real-time · anti-snipe",

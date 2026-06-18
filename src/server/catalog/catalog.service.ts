@@ -206,6 +206,10 @@ export interface CardDetail {
   name: string;
   image: string;
   description: string | null;
+  seasonId: string;
+  seasonCode: string;
+  seasonName: string;
+  seasonLabel: string;
   glyph: string;
   color: string;
   rarityLabel: string;
@@ -263,6 +267,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     where: { slug },
     include: {
       rarity: true,
+      season: true,
       variants: { include: { versionType: true } },
     },
   });
@@ -349,6 +354,10 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     name: card.name,
     image: cardImage(card.imageUrl),
     description: card.description,
+    seasonId: card.seasonId,
+    seasonCode: card.season.code,
+    seasonName: card.season.name,
+    seasonLabel: `${card.season.code} · ${card.season.name}`,
     glyph: card.rarity.symbol ?? meta.glyph,
     color: card.rarity.color ?? meta.color,
     rarityLabel: card.rarity.label,

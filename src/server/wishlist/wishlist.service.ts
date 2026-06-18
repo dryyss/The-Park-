@@ -2,6 +2,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { cardImage } from "@/lib/rarity";
 import { formatPrice } from "@/lib/format";
+import { wishlistEditionDisplayLabel, wishlistIsFirstEdition } from "@/server/wishlist/wishlist.mutations";
 
 export interface WishlistCard {
   id: string;
@@ -13,6 +14,12 @@ export interface WishlistCard {
   rarityCode: string;
   rarityLabel: string;
   quoteValue: string;
+  seasonCode: string;
+  seasonName: string;
+  versionLabel: string;
+  conditionCode: string;
+  editionLabel: string | null;
+  isFirstEdition: boolean;
   note: string | null;
   addedAt: Date;
 }
@@ -21,7 +28,11 @@ export async function getViewerWishlist(userId: string): Promise<WishlistCard[]>
   const items = await prisma.wishlistItem.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
-    include: { card: { include: { rarity: true } } },
+    include: {
+      card: { include: { rarity: true } },
+      variant: { include: { versionType: true } },
+      season: true,
+    },
   });
 
   return items.map((w) => ({
@@ -30,10 +41,16 @@ export async function getViewerWishlist(userId: string): Promise<WishlistCard[]>
     slug: w.card.slug,
     name: w.card.name,
     number: w.card.number,
-    image: cardImage(w.card.imageUrl),
+    image: cardImage(w.variant.imageUrl ?? w.card.imageUrl),
     rarityCode: w.card.rarity.code,
     rarityLabel: w.card.rarity.label,
     quoteValue: formatPrice(w.card.quoteValue),
+    seasonCode: w.season.code,
+    seasonName: w.season.name,
+    versionLabel: w.variant.versionType.label,
+    conditionCode: w.condition,
+    editionLabel: wishlistEditionDisplayLabel(w.editionPreset, w.variant.editionLabel),
+    isFirstEdition: wishlistIsFirstEdition(w.editionPreset, w.variant.editionLabel),
     note: w.note,
     addedAt: w.createdAt,
   }));

@@ -4,11 +4,17 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
 import { addWishlistItem, removeWishlistItem } from "@/server/wishlist/wishlist.mutations";
+import { EDITION_PRESET_CODES } from "@/lib/card-edition";
+import { CONDITION_ORDER } from "@/lib/condition";
 
 export type WishlistActionResult = { ok: true } | { ok: false; error: string };
 
 const addSchema = z.object({
   cardId: z.string().min(1),
+  variantId: z.string().min(1),
+  seasonId: z.string().min(1),
+  condition: z.enum(CONDITION_ORDER as [string, ...string[]]),
+  editionPreset: z.enum(EDITION_PRESET_CODES),
   note: z.string().max(200).optional(),
 });
 
@@ -20,12 +26,20 @@ export async function addToWishlistAction(input: unknown): Promise<WishlistActio
   if (!parsed.success) return { ok: false, error: "VALIDATION" };
 
   try {
-    await addWishlistItem(viewer.id, parsed.data.cardId, parsed.data.note);
+    await addWishlistItem(viewer.id, {
+      cardId: parsed.data.cardId,
+      variantId: parsed.data.variantId,
+      seasonId: parsed.data.seasonId,
+      condition: parsed.data.condition as import("@/generated/prisma/client").CardCondition,
+      editionPreset: parsed.data.editionPreset,
+      note: parsed.data.note,
+    });
     revalidatePath("/wishlist");
     revalidatePath("/carte", "layout");
     return { ok: true };
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+    const code = err instanceof Error ? err.message : "UNKNOWN";
+    return { ok: false, error: code };
   }
 }
 

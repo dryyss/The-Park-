@@ -531,7 +531,19 @@
     "noUser": "ログインして表示。",
     "empty": "ウィッシュリストは空です。",
     "browse": "カタログを見る →",
-    "remove": "削除"
+    "remove": "削除",
+    "formTitle": "希望条件を指定",
+    "formHint": "バージョン・版・シーズン・状態を選んでください。",
+    "fieldSeason": "シーズン",
+    "fieldVersion": "バージョン",
+    "fieldCondition": "希望状態",
+    "confirmAdd": "ウィッシュリストに追加",
+    "adding": "追加中…",
+    "cancel": "キャンセル",
+    "addedSuccess": "ウィッシュリストに追加しました。",
+    "errorGeneric": "追加できませんでした。",
+    "errorDuplicate": "同じ条件が既に登録されています。",
+    "itemSeason": "シーズン · {season}"
   },
   "auctions": {
     "kicker": "リアルタイム · アンチスナイプ",

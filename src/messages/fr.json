@@ -531,7 +531,19 @@
     "noUser": "Connecte-toi pour voir ta wishlist.",
     "empty": "Ta wishlist est vide.",
     "browse": "Parcourir le catalogue →",
-    "remove": "Retirer"
+    "remove": "Retirer",
+    "formTitle": "Précise ta recherche",
+    "formHint": "Indique la version, l'édition, la saison et l'état souhaités.",
+    "fieldSeason": "Saison",
+    "fieldVersion": "Version",
+    "fieldCondition": "État souhaité",
+    "confirmAdd": "Ajouter à la wishlist",
+    "adding": "Ajout…",
+    "cancel": "Annuler",
+    "addedSuccess": "Carte ajoutée à ta wishlist.",
+    "errorGeneric": "Impossible d'ajouter à la wishlist.",
+    "errorDuplicate": "Cette combinaison est déjà dans ta wishlist.",
+    "itemSeason": "Saison · {season}"
   },
   "auctions": {
     "kicker": "Temps réel · anti-snipe",

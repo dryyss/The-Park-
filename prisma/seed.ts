@@ -627,10 +627,26 @@ async function main() {
     for (const n of wishlistNums) {
       const card = await prisma.card.findFirst({ where: { number: n, seasonId: season.id } });
       if (!card) continue;
+      const variant = await prisma.cardVariant.findFirst({ where: { cardId: card.id }, orderBy: { id: "asc" } });
+      if (!variant) continue;
       await prisma.wishlistItem.upsert({
-        where: { userId_cardId: { userId: factoryId, cardId: card.id } },
+        where: {
+          userId_variantId_condition_editionPreset: {
+            userId: factoryId,
+            variantId: variant.id,
+            condition: "EXCELLENT",
+            editionPreset: "unlimited",
+          },
+        },
         update: {},
-        create: { userId: factoryId, cardId: card.id },
+        create: {
+          userId: factoryId,
+          cardId: card.id,
+          variantId: variant.id,
+          seasonId: season.id,
+          condition: "EXCELLENT",
+          editionPreset: "unlimited",
+        },
       });
     }
 
