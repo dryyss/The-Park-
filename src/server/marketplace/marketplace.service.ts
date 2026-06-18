@@ -6,6 +6,7 @@ import { rarityMeta, cardImage, cardNumberLabel, type HoloVariant } from "@/lib/
 import { conditionColor } from "@/lib/condition";
 import { formatPrice } from "@/lib/format";
 import { isActiveVersionCode } from "@/lib/card-versions";
+import { ACTIVE_SALE_STATUSES } from "@/server/sale/sale.mutations";
 
 /** "sell" = annonces où l'on propose une carte ; "want" = recherches. */
 export type MarketIntent = "sell" | "want";
@@ -37,6 +38,7 @@ export interface MarketplaceCard {
   conditionColor: string;
   isWant: boolean;
   priceLabel: string;
+  purchasable: boolean;
   sellerId: string;
   seller: { name: string; slug: string; initial: string; rating: string; reviews: number };
 }
@@ -124,6 +126,9 @@ function intentWhere(intent: MarketIntent): Prisma.ListingWhereInput {
 
 function buildWhere(f: MarketplaceFilters): Prisma.ListingWhereInput {
   const where: Prisma.ListingWhereInput = { status: "ACTIVE", ...intentWhere(f.intent) };
+  if (f.intent === "sell") {
+    where.NOT = { sales: { some: { status: { in: [...ACTIVE_SALE_STATUSES] } } } };
+  }
   if (f.condition) where.condition = f.condition as Prisma.EnumCardConditionFilter["equals"];
   if (f.rarity) where.variant = { card: { rarity: { code: f.rarity } } };
   if (f.version) {
@@ -170,6 +175,7 @@ function toMarketplaceCard(l: FullRow): MarketplaceCard {
     conditionColor: conditionColor(l.condition),
     isWant,
     priceLabel: isWant ? formatPrice(l.budgetMax) : formatPrice(l.price),
+    purchasable: !isWant && (l.type === "SELL" || l.type === "SELL_OR_TRADE") && l.price != null,
     sellerId: l.seller.id,
     seller: {
       name,

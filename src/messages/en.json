@@ -19,7 +19,8 @@
     "loginGateTrophies": "Sign in or create an account to unlock and track your trophies.",
     "loginGateDashboard": "Sign in or create an account to access your seller dashboard.",
     "loginGateAuction": "Sign in or create an account to place a bid.",
-    "loginGateContact": "Sign in or create an account to contact this member."
+    "loginGateContact": "Sign in or create an account to contact this member.",
+    "loginGateBuy": "Sign in or create an account to buy this card."
   },
   "nav": {
     "home": "Home",
@@ -410,7 +411,7 @@
     "auctionTitle": "Auction room",
     "auctionDesc": "Drive prices up or sell to the highest bidder — auto-bid, reserve price, anti-snipe extension.",
     "auctionCta": "Enter →",
-    "disclaimer": "Member-to-member matching — prices are indicative, no payment goes through here.",
+    "disclaimer": "Secured member-to-member purchases — the seller is notified and must honor the sale. Distinct from the official Lighton shop.",
     "filterRarity": "Rarity",
     "allRarities": "All rarities",
     "filterCondition": "Condition",
@@ -420,10 +421,22 @@
     "searchPlaceholder": "Search a card, a member…",
     "searchSubmit": "Search",
     "priceCaption": "Indicative price",
+    "priceFixed": "Price",
     "budgetCaption": "Max budget",
     "minCondition": "Min. condition",
     "wantedBadge": "Wanted",
     "actionContact": "Contact",
+    "actionBuy": "Buy",
+    "actionBuying": "Buying…",
+    "buyError": {
+      "UNAUTHORIZED": "Sign in required.",
+      "LISTING_UNAVAILABLE": "Listing unavailable.",
+      "NO_PRICE": "No price on this listing.",
+      "SELF_PURCHASE": "You cannot buy your own listing.",
+      "ALREADY_SOLD": "This card was just reserved.",
+      "VALIDATION": "Invalid data.",
+      "UNKNOWN": "Could not start purchase."
+    },
     "actionPropose": "Offer mine",
     "actionManage": "Manage",
     "ownListingBadge": "My listing",
@@ -1096,5 +1109,14 @@
     "preview": "Preview",
     "selectedNone": "Select a card above.",
     "backToWants": "See wants"
+  },
+  "saleCheckout": {
+    "breadcrumbMarket": "Marketplace",
+    "breadcrumbCheckout": "Purchase",
+    "titleSuccess": "Purchase confirmed",
+    "titlePending": "Payment in progress",
+    "sellerNotified": "The seller has been notified and must prepare shipment.",
+    "goMessages": "Contact seller",
+    "backMarket": "Back to marketplace"
   }
 }

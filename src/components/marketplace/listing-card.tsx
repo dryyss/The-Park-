@@ -3,6 +3,7 @@ import { HoloCard } from "@/components/cards/holo-card";
 import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { Link } from "@/i18n/navigation";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
+import { BuyListingButton } from "@/components/marketplace/buy-listing-button";
 import type { MarketplaceCard } from "@/server/marketplace/marketplace.service";
 
 const AV_GRADIENTS: Record<string, string> = {
@@ -84,7 +85,7 @@ export async function ListingCard({
         <div className="mt-auto flex items-center justify-between gap-2">
           <div>
             <div className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">
-              {l.isWant ? t("budgetCaption") : t("priceCaption")}
+              {l.isWant ? t("budgetCaption") : l.purchasable ? t("priceFixed") : t("priceCaption")}
             </div>
             <div className="font-display text-[21px] leading-tight text-blanc-casse">{l.priceLabel}</div>
           </div>
@@ -95,6 +96,21 @@ export async function ListingCard({
             >
               {t("actionManage")}
             </Link>
+          ) : l.purchasable ? (
+            <div className="flex flex-col items-end gap-1.5">
+              <BuyListingButton
+                listingId={l.id}
+                locale={locale}
+                className="font-display -skew-x-3 rounded-lg border-[1.5px] border-carmin bg-carmin px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap text-white uppercase transition hover:-translate-y-0.5 hover:bg-carmin-alt disabled:cursor-not-allowed disabled:opacity-60"
+              />
+              <ContactSellerButton
+                sellerSlug={l.seller.slug}
+                locale={locale}
+                className="text-[10px] font-extrabold tracking-wide text-texte-faible uppercase transition hover:text-carmin"
+              >
+                {t("actionContact")}
+              </ContactSellerButton>
+            </div>
           ) : (
             <ContactSellerButton
               sellerSlug={l.seller.slug}

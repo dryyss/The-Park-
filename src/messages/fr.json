@@ -19,7 +19,8 @@
     "loginGateTrophies": "Connecte-toi ou inscris-toi pour débloquer et suivre tes trophées.",
     "loginGateDashboard": "Connecte-toi ou inscris-toi pour accéder à ton dashboard vendeur.",
     "loginGateAuction": "Connecte-toi ou inscris-toi pour enchérir.",
-    "loginGateContact": "Connecte-toi ou inscris-toi pour contacter ce membre."
+    "loginGateContact": "Connecte-toi ou inscris-toi pour contacter ce membre.",
+    "loginGateBuy": "Connecte-toi ou inscris-toi pour acheter cette carte."
   },
   "nav": {
     "home": "Accueil",
@@ -410,7 +411,7 @@
     "auctionTitle": "Salle des enchères",
     "auctionDesc": "Fais monter les prix ou vends au plus offrant — enchère auto, prix de réserve, prolongation anti-snipe.",
     "auctionCta": "Entrer →",
-    "disclaimer": "Mise en relation entre membres — les prix sont indicatifs, aucun paiement ne transite ici.",
+    "disclaimer": "Achats sécurisés entre membres — le vendeur est notifié et doit honorer la vente. Distinct de la boutique officielle Lighton.",
     "filterRarity": "Rareté",
     "allRarities": "Toutes raretés",
     "filterCondition": "État",
@@ -420,10 +421,22 @@
     "searchPlaceholder": "Rechercher une carte, un membre…",
     "searchSubmit": "Rechercher",
     "priceCaption": "Prix indicatif",
+    "priceFixed": "Prix",
     "budgetCaption": "Budget max",
     "minCondition": "État min.",
     "wantedBadge": "Recherchée",
     "actionContact": "Contacter",
+    "actionBuy": "Acheter",
+    "actionBuying": "Achat…",
+    "buyError": {
+      "UNAUTHORIZED": "Connexion requise.",
+      "LISTING_UNAVAILABLE": "Annonce indisponible.",
+      "NO_PRICE": "Pas de prix sur cette annonce.",
+      "SELF_PURCHASE": "Tu ne peux pas acheter ta propre annonce.",
+      "ALREADY_SOLD": "Cette carte vient d'être réservée.",
+      "VALIDATION": "Données invalides.",
+      "UNKNOWN": "Impossible de lancer l'achat."
+    },
     "actionPropose": "Proposer la mienne",
     "actionManage": "Gérer",
     "ownListingBadge": "Mon annonce",
@@ -1096,5 +1109,14 @@
     "preview": "Aperçu",
     "selectedNone": "Sélectionne une carte ci-dessus.",
     "backToWants": "Voir les recherches"
+  },
+  "saleCheckout": {
+    "breadcrumbMarket": "Marketplace",
+    "breadcrumbCheckout": "Achat",
+    "titleSuccess": "Achat confirmé",
+    "titlePending": "Paiement en cours",
+    "sellerNotified": "Le vendeur a été notifié et doit préparer l'envoi.",
+    "goMessages": "Contacter le vendeur",
+    "backMarket": "Retour marketplace"
   }
 }

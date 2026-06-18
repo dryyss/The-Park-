@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { fulfillOrderFromStripeSession } from "@/server/checkout/checkout.service";
+import { fulfillSaleFromStripeSession } from "@/server/sale/sale-checkout.service";
 
 export const runtime = "nodejs";
 
@@ -31,7 +32,11 @@ export async function POST(request: Request) {
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
       if (session.payment_status === "paid" && session.id) {
-        await fulfillOrderFromStripeSession(session.id);
+        if (session.metadata?.kind === "PURCHASE" && session.metadata?.saleId) {
+          await fulfillSaleFromStripeSession(session.id);
+        } else if (session.metadata?.orderId) {
+          await fulfillOrderFromStripeSession(session.id);
+        }
       }
     }
   } catch (err) {

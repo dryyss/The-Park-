@@ -1,6 +1,5 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import { getStripe } from "@/lib/stripe";
 import { isStripeConfigured } from "@/lib/env";
 import { markSalePaid } from "@/server/sale/sale-lifecycle.service";
 
@@ -42,18 +41,8 @@ export async function createSaleFromListing(
     select: { id: true, buyerId: true, status: true },
   });
   if (existing) {
-    // Reprise de session pour le même acheteur encore en attente de paiement.
     if (existing.buyerId === buyerId && existing.status === "PENDING_PAYMENT") {
-      const pay = await prisma.payment.findFirst({
-        where: { saleId: existing.id, kind: "PURCHASE" },
-        orderBy: { createdAt: "desc" },
-      });
-      let clientSecret: string | null = null;
-      if (pay?.stripePaymentIntentId && isStripeConfigured()) {
-        const pi = await getStripe().paymentIntents.retrieve(pay.stripePaymentIntentId);
-        clientSecret = pi.client_secret;
-      }
-      return { saleId: existing.id, clientSecret };
+      return { saleId: existing.id, clientSecret: null };
     }
     throw new Error("ALREADY_SOLD");
   }
@@ -113,17 +102,10 @@ export async function createSaleFromListing(
   });
 
   if (isStripeConfigured()) {
-    const pi = await getStripe().paymentIntents.create({
-      amount: Math.round(total * 100),
-      currency: "eur",
-      capture_method: "manual",
-      metadata: { saleId, paymentId, kind: "PURCHASE" },
-    });
-    await prisma.payment.update({ where: { id: paymentId }, data: { stripePaymentIntentId: pi.id } });
-    return { saleId, clientSecret: pi.client_secret };
+    return { saleId, clientSecret: null };
   }
 
-  // Mode dev sans Stripe : on considère la pré-autorisation acquise.
+  // Mode dev sans Stripe : paiement simulé, vente confirmée immédiatement.
   await markSalePaid(saleId);
   return { saleId, clientSecret: null };
 }

@@ -19,7 +19,8 @@
     "loginGateTrophies": "トロフィーを解除・追跡するにはログインまたはアカウント作成が必要です。",
     "loginGateDashboard": "出品ダッシュボードにアクセスするにはログインまたはアカウント作成が必要です。",
     "loginGateAuction": "入札するにはログインまたはアカウント作成が必要です。",
-    "loginGateContact": "このメンバーに連絡するにはログインまたはアカウント作成が必要です。"
+    "loginGateContact": "このメンバーに連絡するにはログインまたはアカウント作成が必要です。",
+    "loginGateBuy": "このカードを購入するにはログインまたはアカウント作成が必要です。"
   },
   "nav": {
     "home": "ホーム",
@@ -410,7 +411,7 @@
     "auctionTitle": "オークション",
     "auctionDesc": "競り上げる、または最高入札者へ販売 — 自動入札・最低価格・スナイプ防止延長。",
     "auctionCta": "入る →",
-    "disclaimer": "メンバー間のマッチング — 価格は目安であり、決済はここを通りません。",
+    "disclaimer": "メンバー間の安全な購入 — 出品者に通知され、販売を履行する必要があります。公式 Lighton ショップとは別です。",
     "filterRarity": "レアリティ",
     "allRarities": "すべて",
     "filterCondition": "状態",
@@ -420,10 +421,22 @@
     "searchPlaceholder": "カード・メンバーを検索…",
     "searchSubmit": "検索",
     "priceCaption": "参考価格",
+    "priceFixed": "価格",
     "budgetCaption": "予算上限",
     "minCondition": "最低状態",
     "wantedBadge": "募集",
     "actionContact": "連絡する",
+    "actionBuy": "購入",
+    "actionBuying": "購入中…",
+    "buyError": {
+      "UNAUTHORIZED": "ログインが必要です。",
+      "LISTING_UNAVAILABLE": "出品は利用できません。",
+      "NO_PRICE": "価格が設定されていません。",
+      "SELF_PURCHASE": "自分の出品は購入できません。",
+      "ALREADY_SOLD": "このカードは予約されました。",
+      "VALIDATION": "無効なデータです。",
+      "UNKNOWN": "購入を開始できませんでした。"
+    },
     "actionPropose": "自分のを提案",
     "actionManage": "管理",
     "ownListingBadge": "自分の出品",
@@ -1096,5 +1109,14 @@
     "preview": "プレビュー",
     "selectedNone": "上でカードを選んでください。",
     "backToWants": "募集を見る"
+  },
+  "saleCheckout": {
+    "breadcrumbMarket": "マーケット",
+    "breadcrumbCheckout": "購入",
+    "titleSuccess": "購入完了",
+    "titlePending": "支払い処理中",
+    "sellerNotified": "出品者に通知されました。発送の準備が必要です。",
+    "goMessages": "出品者に連絡",
+    "backMarket": "マーケットに戻る"
   }
 }
