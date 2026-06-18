@@ -543,6 +543,10 @@
     "addedSuccess": "Added to your wishlist.",
     "errorGeneric": "Could not add to wishlist.",
     "errorDuplicate": "This combination is already on your wishlist.",
+    "errorUnauthorized": "Sign in to add to your wishlist.",
+    "errorValidation": "Please check the form fields.",
+    "errorSchema": "Database update in progress — try again in a few minutes.",
+    "errorInvalidSelection": "Invalid version or season for this card.",
     "itemSeason": "Season · {season}"
   },
   "auctions": {

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
-import { addWishlistItem, removeWishlistItem } from "@/server/wishlist/wishlist.mutations";
+import { addWishlistItem, removeWishlistItem, mapWishlistError } from "@/server/wishlist/wishlist.mutations";
 import { EDITION_PRESET_CODES } from "@/lib/card-edition";
 import { CONDITION_ORDER } from "@/lib/condition";
 
@@ -38,8 +38,8 @@ export async function addToWishlistAction(input: unknown): Promise<WishlistActio
     revalidatePath("/carte", "layout");
     return { ok: true };
   } catch (err) {
-    const code = err instanceof Error ? err.message : "UNKNOWN";
-    return { ok: false, error: code };
+    console.error("[wishlist] add failed:", err);
+    return { ok: false, error: mapWishlistError(err) };
   }
 }
 

@@ -1,7 +1,23 @@
 import "server-only";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { CardCondition } from "@/generated/prisma/client";
 import { editionPresetToLabel, isFirstEditionLabel, type EditionPresetCode } from "@/lib/card-edition";
+
+export function mapWishlistError(err: unknown): string {
+  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    if (err.code === "P2002") return "ALREADY_EXISTS";
+    if (err.code === "P2021" || err.code === "P2022") return "SCHEMA_OUTDATED";
+  }
+  if (err instanceof Error) {
+    if (err.message.includes("Unique constraint")) return "ALREADY_EXISTS";
+    if (/does not exist|Unknown column|column .* does not exist/i.test(err.message)) {
+      return "SCHEMA_OUTDATED";
+    }
+    return err.message;
+  }
+  return "UNKNOWN";
+}
 
 export async function addWishlistItem(
   userId: string,
@@ -23,34 +39,27 @@ export async function addWishlistItem(
 
   const editionPreset = input.editionPreset === "first" ? "first" : "unlimited";
 
-  try {
-    const item = await prisma.wishlistItem.upsert({
-      where: {
-        userId_variantId_condition_editionPreset: {
-          userId,
-          variantId: input.variantId,
-          condition: input.condition,
-          editionPreset,
-        },
-      },
-      create: {
+  const item = await prisma.wishlistItem.upsert({
+    where: {
+      userId_variantId_condition_editionPreset: {
         userId,
-        cardId: input.cardId,
         variantId: input.variantId,
-        seasonId: input.seasonId,
         condition: input.condition,
         editionPreset,
-        note: input.note ?? null,
       },
-      update: { note: input.note ?? null },
-    });
-    return item.id;
-  } catch (err) {
-    if (err instanceof Error && err.message.includes("Unique constraint")) {
-      throw new Error("ALREADY_EXISTS");
-    }
-    throw err;
-  }
+    },
+    create: {
+      userId,
+      cardId: input.cardId,
+      variantId: input.variantId,
+      seasonId: input.seasonId,
+      condition: input.condition,
+      editionPreset,
+      note: input.note ?? null,
+    },
+    update: { note: input.note ?? null },
+  });
+  return item.id;
 }
 
 export async function removeWishlistItem(userId: string, wishlistItemId: string): Promise<void> {

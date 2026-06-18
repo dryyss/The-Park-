@@ -543,6 +543,10 @@
     "addedSuccess": "ウィッシュリストに追加しました。",
     "errorGeneric": "追加できませんでした。",
     "errorDuplicate": "同じ条件が既に登録されています。",
+    "errorUnauthorized": "ウィッシュリストに追加するにはログインが必要です。",
+    "errorValidation": "入力内容を確認してください。",
+    "errorSchema": "データベース更新中です — 数分後にもう一度お試しください。",
+    "errorInvalidSelection": "このカードに対するバージョンまたはシーズンが無効です。",
     "itemSeason": "シーズン · {season}"
   },
   "auctions": {

@@ -8,6 +8,24 @@ import { CONDITION_ORDER, conditionColor } from "@/lib/condition";
 import type { ConditionCode } from "@/lib/condition";
 import type { EditionPresetCode } from "@/lib/card-edition";
 
+function wishlistErrorMessage(code: string, t: (key: string) => string): string {
+  switch (code) {
+    case "ALREADY_EXISTS":
+      return t("errorDuplicate");
+    case "UNAUTHORIZED":
+      return t("errorUnauthorized");
+    case "VALIDATION":
+      return t("errorValidation");
+    case "SCHEMA_OUTDATED":
+      return t("errorSchema");
+    case "VARIANT_NOT_FOUND":
+    case "SEASON_MISMATCH":
+      return t("errorInvalidSelection");
+    default:
+      return t("errorGeneric");
+  }
+}
+
 export type WishlistVersionOption = {
   variantId: string;
   label: string;
@@ -52,10 +70,12 @@ export function WishlistAddForm({
       });
       if (res.ok) {
         setSuccess(true);
+        setError(null);
         router.refresh();
-        onClose?.();
+        window.setTimeout(() => onClose?.(), 1200);
       } else {
-        setError(res.error === "ALREADY_EXISTS" ? t("errorDuplicate") : t("errorGeneric"));
+        setSuccess(false);
+        setError(wishlistErrorMessage(res.error, t));
       }
     });
   }

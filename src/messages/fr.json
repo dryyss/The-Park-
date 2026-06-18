@@ -543,6 +543,10 @@
     "addedSuccess": "Carte ajoutée à ta wishlist.",
     "errorGeneric": "Impossible d'ajouter à la wishlist.",
     "errorDuplicate": "Cette combinaison est déjà dans ta wishlist.",
+    "errorUnauthorized": "Connecte-toi pour ajouter à ta wishlist.",
+    "errorValidation": "Vérifie les champs du formulaire.",
+    "errorSchema": "Mise à jour base de données en cours — réessaie dans quelques minutes.",
+    "errorInvalidSelection": "Version ou saison invalide pour cette carte.",
     "itemSeason": "Saison · {season}"
   },
   "auctions": {
