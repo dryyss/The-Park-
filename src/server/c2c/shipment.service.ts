@@ -2,7 +2,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { ProofKind, ShipmentType } from "@/generated/prisma/client";
 
-function todayDropToken(): string {
+export function todayDropToken(): string {
   const d = new Date();
   return `TP-${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}`;
 }
