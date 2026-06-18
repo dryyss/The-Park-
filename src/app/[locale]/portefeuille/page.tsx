@@ -5,6 +5,7 @@ import { confirmWalletTopUpAction } from "@/server/wallet/wallet.actions";
 import { PageHeader } from "@/components/common/page-header";
 import { GuestAuthBanner } from "@/components/auth/login-gate-prompt";
 import { WalletTopUpForm } from "@/components/wallet/wallet-top-up-form";
+import { WalletEarnedPanel } from "@/components/wallet/wallet-earned-panel";
 import { formatWalletEur } from "@/lib/wallet";
 
 export const dynamic = "force-dynamic";
@@ -45,8 +46,13 @@ export default async function PortefeuillePage({
       )}
 
       {viewer && summary && (
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1fr]">
-          <WalletTopUpForm locale={locale} balanceEur={summary.balanceEur} />
+        <div className="mt-8 flex flex-col gap-6">
+          <WalletEarnedPanel
+            earnedBalanceEur={summary.earnedBalanceEur}
+            spendableBalanceEur={summary.spendableBalanceEur}
+          />
+          <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
+            <WalletTopUpForm locale={locale} depositBalanceEur={summary.depositBalanceEur} />
 
           <div className="rounded-2xl border border-charbon-500 bg-charbon-800 p-5">
             <p className="text-[11px] font-extrabold tracking-[2px] text-texte-dim uppercase">{t("historyTitle")}</p>
@@ -65,6 +71,7 @@ export default async function PortefeuillePage({
                 ))}
               </ul>
             )}
+          </div>
           </div>
         </div>
       )}

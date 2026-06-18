@@ -559,6 +559,12 @@
     "kicker": "Credits · Marketplace",
     "title": "My wallet",
     "currentBalance": "Available balance",
+    "depositBalance": "Deposit credits",
+    "depositHint": "Usable for marketplace purchases — not withdrawable.",
+    "earnedTitle": "Seller earnings",
+    "earnedBalance": "Available earnings",
+    "earnedHint": "From your sales — withdrawable to your bank (coming soon).",
+    "spendableBalance": "Total usable for purchases:",
     "topUpTitle": "Add credits",
     "topUpHint": "Minimum {min} € credit. A 5% platform fee is added to the Stripe charge.",
     "creditAmount": "Credit amount (€)",
@@ -875,7 +881,7 @@
     "qCollectionMissing": "How do I find missing cards?",
     "aCollectionMissing": "Use the « Missing » filter in your binder or Season 1 page.",
     "qMarketplacePayment": "Can I pay on the marketplace?",
-    "aMarketplacePayment": "Yes, via the credit wallet: top up min. €5 via Stripe (+ 5% fee), then purchases are debited from your balance. Sellers receive the amount in their wallet when the sale completes.",
+    "aMarketplacePayment": "Yes, via the wallet: top up min. €5 via Stripe (+ 5% fee) as deposit credits (not withdrawable). Sellers receive earnings in a separate balance, withdrawable to their bank.",
     "qMarketplacePrice": "Are prices guaranteed?",
     "aMarketplacePrice": "No, they are indicative between members.",
     "qExchangeValidation": "How does double validation work?",
@@ -924,7 +930,7 @@
     },
     "payout": {
       "title": "Seller payouts",
-      "desc": "Sale proceeds are credited to your wallet when the sale completes.",
+      "desc": "Sale earnings are credited to a separate balance, withdrawable to your bank.",
       "hint": "Bank withdrawal via Stripe Connect — optional, coming soon."
     }
   },

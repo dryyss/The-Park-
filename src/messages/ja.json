@@ -559,6 +559,12 @@
     "kicker": "クレジット · マーケット",
     "title": "ウォレット",
     "currentBalance": "利用可能残高",
+    "depositBalance": "チャージ残高",
+    "depositHint": "マーケット購入に利用可 — 出金不可。",
+    "earnedTitle": "販売収益",
+    "earnedBalance": "利用可能な収益",
+    "earnedHint": "販売による収益 — 銀行へ出金可能（近日公開）。",
+    "spendableBalance": "購入に使える合計：",
     "topUpTitle": "クレジットを追加",
     "topUpHint": "最低 {min} €。Stripe決済に5%の手数料が加算されます。",
     "creditAmount": "クレジット額 (€)",
@@ -875,7 +881,7 @@
     "qCollectionMissing": "未所持カードの見つけ方？",
     "aCollectionMissing": "コレクションまたはシーズン1で「未所持」フィルター。",
     "qMarketplacePayment": "マーケットで支払える？",
-    "aMarketplacePayment": "はい。クレジットウォレット経由：Stripeで最低5 €チャージ（+5%手数料）、残高から購入。売り手は取引完了時にウォレットへ入金されます。",
+    "aMarketplacePayment": "はい。ウォレット経由：Stripeで最低5 €チャージ（+5%手数料）→ チャージ残高（出金不可）。売り手は別の収益残高に入金され、銀行へ出金できます。",
     "qMarketplacePrice": "価格は保証？",
     "aMarketplacePrice": "いいえ、メンバー間の参考価格です。",
     "qExchangeValidation": "二重承認とは？",
@@ -924,7 +930,7 @@
     },
     "payout": {
       "title": "販売入金",
-      "desc": "販売代金は取引完了時にウォレットへ入金されます。",
+      "desc": "販売収益は別残高に入金され、銀行へ出金できます。",
       "hint": "Stripe Connect による銀行振込 — 任意、近日公開。"
     }
   },

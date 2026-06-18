@@ -5,7 +5,13 @@ import { useTranslations } from "next-intl";
 import { startWalletTopUpAction } from "@/server/wallet/wallet.actions";
 import { WALLET_MIN_TOP_UP_EUR, quoteWalletTopUp, formatWalletEur } from "@/lib/wallet";
 
-export function WalletTopUpForm({ locale, balanceEur }: { locale: string; balanceEur: number }) {
+export function WalletTopUpForm({
+  locale,
+  depositBalanceEur,
+}: {
+  locale: string;
+  depositBalanceEur: number;
+}) {
   const t = useTranslations("wallet");
   const [creditEur, setCreditEur] = useState(WALLET_MIN_TOP_UP_EUR);
   const [error, setError] = useState<string | null>(null);
@@ -28,9 +34,10 @@ export function WalletTopUpForm({ locale, balanceEur }: { locale: string; balanc
       <p className="text-[11px] font-extrabold tracking-[2px] text-or uppercase">{t("topUpTitle")}</p>
       <p className="mt-1 text-[12px] font-bold text-texte-dim">{t("topUpHint", { min: WALLET_MIN_TOP_UP_EUR })}</p>
       <p className="mt-3 text-[13px] font-bold text-texte-doux">
-        {t("currentBalance")}{" "}
-        <span className="font-display text-[22px] text-carmin">{formatWalletEur(balanceEur)} €</span>
+        {t("depositBalance")}{" "}
+        <span className="font-display text-[22px] text-carmin">{formatWalletEur(depositBalanceEur)} €</span>
       </p>
+      <p className="mt-1 text-[11px] font-semibold text-texte-faible">{t("depositHint")}</p>
 
       <div className="mt-4 flex flex-col gap-1.5">
         <label htmlFor="wallet-credit" className="text-[10px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">

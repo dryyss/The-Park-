@@ -98,7 +98,7 @@
 | `/marketplace` | Onglets Vendre / Recherche (want) | `marketplace.service` | `MarketplaceFilters` | ✅ | — | Disclaimer prix indicatifs | 2026-06-16 |
 | `/marketplace` | Filtres rareté/état/version | `marketplace.service` | `ListingCard` | ✅ | — | | 2026-06-16 |
 | `/marketplace` | Paiement marketplace | `wallet.service`, `sale.actions` | `BuyListingButton` | ✅ | — | Portefeuille crédits (recharge Stripe + 5 % frais) | 2026-06-18 |
-| `/portefeuille` | Recharge crédits (min. 5 €) | `wallet-topup.service` | `WalletTopUpForm` | ✅ | — | Débit achats marketplace | 2026-06-18 |
+| `/portefeuille` | Recharge crédits (min. 5 €) | `wallet-topup.service` | `WalletTopUpForm` | ✅ | — | 2 soldes : dépôt (achat) + gains (retrait à venir) | 2026-06-18 |
 | `/vendre` | Prérequis vendeur (âge, adresse, parental) | `seller-readiness.service` | `SellerReadiness` | ✅ | — | Versement vendeur → portefeuille | 2026-06-18 |
 | `/vendre` | Publication annonce fixe | `marketplace.actions` | `SellForm` | ✅ | — | Vérif possession | 2026-06-16 |
 | `/vendre` | Création enchère depuis vente | `auction.actions` | `SellForm` | ✅ | — | Redirige /encheres | 2026-06-16 |

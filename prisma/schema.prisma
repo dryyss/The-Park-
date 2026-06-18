@@ -561,13 +561,16 @@ enum WalletEntryType {
 }
 
 model WalletAccount {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @unique
-  balance   Decimal  @default(0) @db.Decimal(10, 2)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  entries   WalletLedgerEntry[]
+  id             String   @id @default(cuid())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String   @unique
+  /// Crédits déposés via Stripe — utilisables pour acheter, non retirables.
+  depositBalance Decimal  @default(0) @db.Decimal(10, 2)
+  /// Gains de ventes marketplace — retirables (Stripe Connect, à venir).
+  earnedBalance  Decimal  @default(0) @db.Decimal(10, 2)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  entries        WalletLedgerEntry[]
 }
 
 model WalletLedgerEntry {

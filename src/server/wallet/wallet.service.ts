@@ -3,7 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { roundEur } from "@/lib/wallet";
 
 export interface WalletSummary {
-  balanceEur: number;
+  depositBalanceEur: number;
+  earnedBalanceEur: number;
+  spendableBalanceEur: number;
   recentEntries: {
     id: string;
     type: string;
@@ -15,17 +17,22 @@ export interface WalletSummary {
   }[];
 }
 
+function totalBalance(deposit: number, earned: number): number {
+  return roundEur(deposit + earned);
+}
+
 export async function ensureWalletAccount(userId: string) {
   return prisma.walletAccount.upsert({
     where: { userId },
-    create: { userId, balance: 0 },
+    create: { userId, depositBalance: 0, earnedBalance: 0 },
     update: {},
   });
 }
 
-export async function getWalletBalanceEur(userId: string): Promise<number> {
+/** Solde utilisable pour acheter (dépôts + gains). */
+export async function getWalletSpendableBalanceEur(userId: string): Promise<number> {
   const account = await ensureWalletAccount(userId);
-  return Number(account.balance);
+  return totalBalance(Number(account.depositBalance), Number(account.earnedBalance));
 }
 
 export async function getWalletSummary(userId: string): Promise<WalletSummary> {
@@ -37,11 +44,16 @@ export async function getWalletSummary(userId: string): Promise<WalletSummary> {
   });
 
   if (!account) {
-    return { balanceEur: 0, recentEntries: [] };
+    return { depositBalanceEur: 0, earnedBalanceEur: 0, spendableBalanceEur: 0, recentEntries: [] };
   }
 
+  const depositBalanceEur = Number(account.depositBalance);
+  const earnedBalanceEur = Number(account.earnedBalance);
+
   return {
-    balanceEur: Number(account.balance),
+    depositBalanceEur,
+    earnedBalanceEur,
+    spendableBalanceEur: totalBalance(depositBalanceEur, earnedBalanceEur),
     recentEntries: account.entries.map((e) => ({
       id: e.id,
       type: e.type,
@@ -70,16 +82,17 @@ export async function creditWalletFromTopUp(input: {
   await prisma.$transaction(async (tx) => {
     const account = await tx.walletAccount.upsert({
       where: { userId: input.userId },
-      create: { userId: input.userId, balance: 0 },
+      create: { userId: input.userId, depositBalance: 0, earnedBalance: 0 },
       update: {},
     });
 
     const credit = roundEur(input.creditEur);
-    const balanceAfter = roundEur(Number(account.balance) + credit);
+    const depositAfter = roundEur(Number(account.depositBalance) + credit);
+    const earnedAfter = roundEur(Number(account.earnedBalance));
 
     await tx.walletAccount.update({
       where: { id: account.id },
-      data: { balance: balanceAfter },
+      data: { depositBalance: depositAfter },
     });
 
     await tx.walletLedgerEntry.create({
@@ -88,7 +101,7 @@ export async function creditWalletFromTopUp(input: {
         type: "TOP_UP",
         amount: credit,
         feeAmount: roundEur(input.feeEur),
-        balanceAfter,
+        balanceAfter: totalBalance(depositAfter, earnedAfter),
         stripeCheckoutSessionId: input.stripeCheckoutSessionId,
         note: "wallet.topUpNote",
       },
@@ -96,7 +109,10 @@ export async function creditWalletFromTopUp(input: {
   });
 }
 
-/** Débite le portefeuille pour une vente marketplace. */
+/**
+ * Débite le portefeuille pour une vente marketplace.
+ * Priorité : crédits déposés, puis gains vendeur si besoin.
+ */
 export async function debitWalletForSale(input: {
   userId: string;
   saleId: string;
@@ -115,14 +131,18 @@ export async function debitWalletForSale(input: {
     const account = await tx.walletAccount.findUnique({ where: { userId: input.userId } });
     if (!account) throw new Error("INSUFFICIENT_CREDIT");
 
-    const balance = Number(account.balance);
-    if (balance < amount) throw new Error("INSUFFICIENT_CREDIT");
+    const deposit = Number(account.depositBalance);
+    const earned = Number(account.earnedBalance);
+    if (deposit + earned < amount) throw new Error("INSUFFICIENT_CREDIT");
 
-    const balanceAfter = roundEur(balance - amount);
+    const fromDeposit = roundEur(Math.min(deposit, amount));
+    const fromEarned = roundEur(amount - fromDeposit);
+    const depositAfter = roundEur(deposit - fromDeposit);
+    const earnedAfter = roundEur(earned - fromEarned);
 
     await tx.walletAccount.update({
       where: { id: account.id },
-      data: { balance: balanceAfter },
+      data: { depositBalance: depositAfter, earnedBalance: earnedAfter },
     });
 
     await tx.walletLedgerEntry.create({
@@ -131,7 +151,7 @@ export async function debitWalletForSale(input: {
         type: "PURCHASE",
         amount: -amount,
         feeAmount: 0,
-        balanceAfter,
+        balanceAfter: totalBalance(depositAfter, earnedAfter),
         saleId: input.saleId,
         note: "wallet.purchaseNote",
       },
@@ -139,7 +159,7 @@ export async function debitWalletForSale(input: {
   });
 }
 
-/** Rembourse l'acheteur sur son portefeuille (annulation / litige). Idempotent par vente. */
+/** Rembourse l'acheteur en crédits dépôt (annulation / litige). Idempotent par vente. */
 export async function creditWalletForSaleRefund(input: {
   userId: string;
   saleId: string;
@@ -157,15 +177,16 @@ export async function creditWalletForSaleRefund(input: {
   await prisma.$transaction(async (tx) => {
     const account = await tx.walletAccount.upsert({
       where: { userId: input.userId },
-      create: { userId: input.userId, balance: 0 },
+      create: { userId: input.userId, depositBalance: 0, earnedBalance: 0 },
       update: {},
     });
 
-    const balanceAfter = roundEur(Number(account.balance) + amount);
+    const depositAfter = roundEur(Number(account.depositBalance) + amount);
+    const earnedAfter = roundEur(Number(account.earnedBalance));
 
     await tx.walletAccount.update({
       where: { id: account.id },
-      data: { balance: balanceAfter },
+      data: { depositBalance: depositAfter },
     });
 
     await tx.walletLedgerEntry.create({
@@ -174,7 +195,7 @@ export async function creditWalletForSaleRefund(input: {
         type: "REFUND",
         amount,
         feeAmount: 0,
-        balanceAfter,
+        balanceAfter: totalBalance(depositAfter, earnedAfter),
         saleId: input.saleId,
         note: "wallet.refundNote",
       },
@@ -182,7 +203,7 @@ export async function creditWalletForSaleRefund(input: {
   });
 }
 
-/** Crédite le vendeur à la clôture d'une vente payée via portefeuille. Idempotent par vente. */
+/** Crédite les gains vendeur (retirables). Idempotent par vente. */
 export async function creditWalletForSalePayout(input: {
   userId: string;
   saleId: string;
@@ -200,15 +221,16 @@ export async function creditWalletForSalePayout(input: {
   await prisma.$transaction(async (tx) => {
     const account = await tx.walletAccount.upsert({
       where: { userId: input.userId },
-      create: { userId: input.userId, balance: 0 },
+      create: { userId: input.userId, depositBalance: 0, earnedBalance: 0 },
       update: {},
     });
 
-    const balanceAfter = roundEur(Number(account.balance) + amount);
+    const depositAfter = roundEur(Number(account.depositBalance));
+    const earnedAfter = roundEur(Number(account.earnedBalance) + amount);
 
     await tx.walletAccount.update({
       where: { id: account.id },
-      data: { balance: balanceAfter },
+      data: { earnedBalance: earnedAfter },
     });
 
     await tx.walletLedgerEntry.create({
@@ -217,7 +239,7 @@ export async function creditWalletForSalePayout(input: {
         type: "SALE_PAYOUT",
         amount,
         feeAmount: 0,
-        balanceAfter,
+        balanceAfter: totalBalance(depositAfter, earnedAfter),
         saleId: input.saleId,
         note: "wallet.salePayoutNote",
       },
