@@ -1,6 +1,8 @@
 /** Règles portefeuille crédits marketplace. */
 export const WALLET_MIN_TOP_UP_EUR = 5;
 export const WALLET_TOP_UP_FEE_PCT = 0.05;
+/** Montant minimum de retrait bancaire (gains vendeur). */
+export const WALLET_MIN_WITHDRAW_EUR = 5;
 
 export interface WalletTopUpQuote {
   creditEur: number;
@@ -25,4 +27,12 @@ export function roundEur(value: number): number {
 
 export function formatWalletEur(value: number): string {
   return value.toFixed(2).replace(".", ",");
+}
+
+/** État onboarding Stripe Connect vendeur (partagé client/serveur). */
+export interface WalletConnectStatus {
+  hasAccount: boolean;
+  payoutsEnabled: boolean;
+  chargesEnabled: boolean;
+  detailsSubmitted: boolean;
 }

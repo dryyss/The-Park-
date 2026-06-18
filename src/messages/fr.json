@@ -563,8 +563,18 @@
     "depositHint": "Utilisables pour acheter sur la marketplace — non retirables.",
     "earnedTitle": "Gains vendeur",
     "earnedBalance": "Gains disponibles",
-    "earnedHint": "Provenant de tes ventes — retirables vers ta banque (bientôt).",
+    "earnedHint": "Provenant de tes ventes — retirable vers ta banque via Stripe Connect.",
     "spendableBalance": "Total utilisable pour acheter :",
+    "connectRequired": "Configure ton compte bancaire pour retirer tes gains.",
+    "connectCta": "Configurer mon compte bancaire",
+    "connectPending": "Redirection Stripe…",
+    "connectSuccess": "Compte bancaire configuré — tu peux retirer tes gains.",
+    "connectUpdate": "Mettre à jour mes coordonnées bancaires",
+    "withdrawHint": "Minimum {min} € — virement vers ton compte bancaire (délai Stripe habituel).",
+    "withdrawAmount": "Montant à retirer (€)",
+    "withdrawCta": "Retirer vers ma banque",
+    "withdrawPending": "Virement en cours…",
+    "withdrawSuccess": "Virement initié — les fonds arrivent sur ton compte sous quelques jours.",
     "topUpTitle": "Recharger des crédits",
     "topUpHint": "Minimum {min} € de crédit. Des frais de 5 % s'ajoutent au montant débité sur Stripe.",
     "creditAmount": "Crédit souhaité (€)",
@@ -582,7 +592,19 @@
       "PURCHASE": "Achat marketplace",
       "REFUND": "Remboursement",
       "SALE_PAYOUT": "Vente reçue",
+      "WITHDRAWAL": "Retrait bancaire",
       "ADJUSTMENT": "Ajustement"
+    },
+    "withdrawError": {
+      "UNAUTHORIZED": "Connexion requise.",
+      "VALIDATION": "Montant invalide.",
+      "WITHDRAW_TOO_LOW": "Minimum 5 € de retrait.",
+      "INSUFFICIENT_EARNED": "Solde gains insuffisant.",
+      "CONNECT_NOT_SETUP": "Configure d'abord ton compte bancaire.",
+      "CONNECT_PAYOUTS_DISABLED": "Compte bancaire incomplet — termine la configuration Stripe.",
+      "STRIPE_NOT_CONFIGURED": "Retrait indisponible.",
+      "STRIPE_ERROR": "Erreur Stripe — réessaie plus tard.",
+      "UNKNOWN": "Impossible d'initier le retrait."
     },
     "topUpError": {
       "UNAUTHORIZED": "Connexion requise.",
@@ -930,8 +952,9 @@
     },
     "payout": {
       "title": "Versements vendeur",
-      "desc": "Tes gains de vente sont crédités sur un solde séparé, retirable vers ta banque.",
-      "hint": "Retrait bancaire via Stripe Connect — optionnel, bientôt disponible."
+      "desc": "Configure ton compte bancaire sur la page Portefeuille pour retirer tes gains.",
+      "hint": "Optionnel pour vendre — requis uniquement pour retirer l'argent gagné.",
+      "link": "Portefeuille →"
     }
   },
   "settings": {

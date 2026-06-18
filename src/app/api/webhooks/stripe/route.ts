@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { fulfillOrderFromStripeSession } from "@/server/checkout/checkout.service";
 import { fulfillSaleFromStripeSession } from "@/server/sale/sale-checkout.service";
+import { syncConnectAccountByStripeId } from "@/server/wallet/wallet-connect.service";
 
 export const runtime = "nodejs";
 
@@ -41,6 +42,11 @@ export async function POST(request: Request) {
           await fulfillOrderFromStripeSession(session.id);
         }
       }
+    }
+
+    if (event.type === "account.updated") {
+      const account = event.data.object as Stripe.Account;
+      if (account.id) await syncConnectAccountByStripeId(account.id);
     }
   } catch (err) {
     console.error("[stripe webhook] traitement", event.type, err);

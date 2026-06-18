@@ -563,8 +563,18 @@
     "depositHint": "Usable for marketplace purchases — not withdrawable.",
     "earnedTitle": "Seller earnings",
     "earnedBalance": "Available earnings",
-    "earnedHint": "From your sales — withdrawable to your bank (coming soon).",
+    "earnedHint": "From your sales — withdraw to your bank via Stripe Connect.",
     "spendableBalance": "Total usable for purchases:",
+    "connectRequired": "Set up your bank account to withdraw earnings.",
+    "connectCta": "Set up bank account",
+    "connectPending": "Redirecting to Stripe…",
+    "connectSuccess": "Bank account configured — you can withdraw earnings.",
+    "connectUpdate": "Update bank details",
+    "withdrawHint": "Minimum {min} € — transfer to your bank (standard Stripe timing).",
+    "withdrawAmount": "Amount to withdraw (€)",
+    "withdrawCta": "Withdraw to bank",
+    "withdrawPending": "Processing transfer…",
+    "withdrawSuccess": "Transfer initiated — funds arrive in a few business days.",
     "topUpTitle": "Add credits",
     "topUpHint": "Minimum {min} € credit. A 5% platform fee is added to the Stripe charge.",
     "creditAmount": "Credit amount (€)",
@@ -582,7 +592,19 @@
       "PURCHASE": "Marketplace purchase",
       "REFUND": "Refund",
       "SALE_PAYOUT": "Sale received",
+      "WITHDRAWAL": "Bank withdrawal",
       "ADJUSTMENT": "Adjustment"
+    },
+    "withdrawError": {
+      "UNAUTHORIZED": "Sign in required.",
+      "VALIDATION": "Invalid amount.",
+      "WITHDRAW_TOO_LOW": "Minimum €5 withdrawal.",
+      "INSUFFICIENT_EARNED": "Insufficient earnings balance.",
+      "CONNECT_NOT_SETUP": "Set up your bank account first.",
+      "CONNECT_PAYOUTS_DISABLED": "Bank setup incomplete — finish Stripe onboarding.",
+      "STRIPE_NOT_CONFIGURED": "Withdrawal unavailable.",
+      "STRIPE_ERROR": "Stripe error — try again later.",
+      "UNKNOWN": "Could not start withdrawal."
     },
     "topUpError": {
       "UNAUTHORIZED": "Sign in required.",
@@ -930,8 +952,9 @@
     },
     "payout": {
       "title": "Seller payouts",
-      "desc": "Sale earnings are credited to a separate balance, withdrawable to your bank.",
-      "hint": "Bank withdrawal via Stripe Connect — optional, coming soon."
+      "desc": "Set up your bank account on the Wallet page to withdraw earnings.",
+      "hint": "Optional to sell — required only to withdraw earned money.",
+      "link": "Wallet →"
     }
   },
   "settings": {

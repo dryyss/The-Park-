@@ -2,6 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
 import { getWalletSummary } from "@/server/wallet/wallet.service";
 import { confirmWalletTopUpAction } from "@/server/wallet/wallet.actions";
+import { syncConnectAccountForUser } from "@/server/wallet/wallet-connect.service";
 import { PageHeader } from "@/components/common/page-header";
 import { GuestAuthBanner } from "@/components/auth/login-gate-prompt";
 import { WalletTopUpForm } from "@/components/wallet/wallet-top-up-form";
@@ -15,7 +16,7 @@ export default async function PortefeuillePage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ success?: string; session_id?: string; cancelled?: string }>;
+  searchParams: Promise<{ success?: string; session_id?: string; cancelled?: string; connect?: string }>;
 }) {
   const { locale } = await params;
   const sp = await searchParams;
@@ -25,6 +26,9 @@ export default async function PortefeuillePage({
   const viewer = await getAuthenticatedViewer();
   if (sp.success === "1" && sp.session_id && viewer) {
     await confirmWalletTopUpAction(sp.session_id);
+  }
+  if ((sp.connect === "success" || sp.connect === "refresh") && viewer) {
+    await syncConnectAccountForUser(viewer.id);
   }
 
   const summary = viewer ? await getWalletSummary(viewer.id) : null;
@@ -45,9 +49,17 @@ export default async function PortefeuillePage({
         </p>
       )}
 
+      {(sp.connect === "success") && viewer && (
+        <p className="mt-4 rounded-lg border border-statut-succes/40 bg-statut-succes/10 px-4 py-3 text-[13px] font-bold text-statut-succes">
+          {t("connectSuccess")}
+        </p>
+      )}
+
       {viewer && summary && (
         <div className="mt-8 flex flex-col gap-6">
           <WalletEarnedPanel
+            userId={viewer.id}
+            locale={locale}
             earnedBalanceEur={summary.earnedBalanceEur}
             spendableBalanceEur={summary.spendableBalanceEur}
           />

@@ -1,27 +1,26 @@
-import { formatWalletEur } from "@/lib/wallet";
 import { getTranslations } from "next-intl/server";
+import { getWalletConnectStatus } from "@/server/wallet/wallet-connect.service";
+import { WalletWithdrawForm, WalletEarnedBalances } from "@/components/wallet/wallet-withdraw-form";
 
 export async function WalletEarnedPanel({
+  userId,
+  locale,
   earnedBalanceEur,
   spendableBalanceEur,
 }: {
+  userId: string;
+  locale: string;
   earnedBalanceEur: number;
   spendableBalanceEur: number;
 }) {
   const t = await getTranslations("wallet");
+  const connectStatus = await getWalletConnectStatus(userId);
 
   return (
     <div className="rounded-2xl border border-charbon-500 bg-charbon-800 p-5">
       <p className="text-[11px] font-extrabold tracking-[2px] text-statut-succes uppercase">{t("earnedTitle")}</p>
-      <p className="mt-3 text-[13px] font-bold text-texte-doux">
-        {t("earnedBalance")}{" "}
-        <span className="font-display text-[22px] text-statut-succes">{formatWalletEur(earnedBalanceEur)} €</span>
-      </p>
-      <p className="mt-1 text-[11px] font-semibold text-texte-faible">{t("earnedHint")}</p>
-      <p className="mt-4 rounded-lg border border-charbon-600 bg-charbon px-3 py-2.5 text-[12px] font-bold text-texte-dim">
-        {t("spendableBalance")}{" "}
-        <span className="text-blanc-casse">{formatWalletEur(spendableBalanceEur)} €</span>
-      </p>
+      <WalletEarnedBalances earnedBalanceEur={earnedBalanceEur} spendableBalanceEur={spendableBalanceEur} />
+      <WalletWithdrawForm locale={locale} earnedBalanceEur={earnedBalanceEur} connectStatus={connectStatus} />
     </div>
   );
 }

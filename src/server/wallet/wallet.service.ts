@@ -255,3 +255,47 @@ export async function isWalletFundedSale(saleId: string): Promise<boolean> {
   });
   return Boolean(entry);
 }
+
+/** Débite les gains vendeur après virement Stripe Connect. Idempotent par transfer. */
+export async function debitWalletForWithdrawal(input: {
+  userId: string;
+  amountEur: number;
+  stripeTransferId: string;
+}): Promise<void> {
+  const amount = roundEur(input.amountEur);
+  if (amount <= 0) throw new Error("INVALID_AMOUNT");
+
+  const existing = await prisma.walletLedgerEntry.findUnique({
+    where: { stripeTransferId: input.stripeTransferId },
+    select: { id: true },
+  });
+  if (existing) return;
+
+  await prisma.$transaction(async (tx) => {
+    const account = await tx.walletAccount.findUnique({ where: { userId: input.userId } });
+    if (!account) throw new Error("INSUFFICIENT_EARNED");
+
+    const earned = Number(account.earnedBalance);
+    if (earned < amount) throw new Error("INSUFFICIENT_EARNED");
+
+    const depositAfter = roundEur(Number(account.depositBalance));
+    const earnedAfter = roundEur(earned - amount);
+
+    await tx.walletAccount.update({
+      where: { id: account.id },
+      data: { earnedBalance: earnedAfter },
+    });
+
+    await tx.walletLedgerEntry.create({
+      data: {
+        walletAccountId: account.id,
+        type: "WITHDRAWAL",
+        amount: -amount,
+        feeAmount: 0,
+        balanceAfter: totalBalance(depositAfter, earnedAfter),
+        stripeTransferId: input.stripeTransferId,
+        note: "wallet.withdrawNote",
+      },
+    });
+  });
+}

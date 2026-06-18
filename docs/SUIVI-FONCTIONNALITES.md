@@ -216,7 +216,8 @@
 | `GET /api/topbar` | Compteurs panier / notifs / messages | `cart`, `notification`, `conversation` services | ✅ | — | Polling client top-bar | 2026-06-16 |
 | `POST /api/pusher/auth` | Auth canal Pusher privé | `lib/pusher` | 🔧 | P1 | `PUSHER_*` | 2026-06-16 |
 | `POST /api/webhooks/stripe` | checkout.session.completed | `checkout.service`, `wallet-topup` | 🔧 | P0 | `STRIPE_WEBHOOK_SECRET` — boutique + wallet top-up | 2026-06-18 |
-| `POST /api/webhooks/stripe` | Webhooks caution C2C / Connect | — | ❌ | P2 | Retrait bancaire Connect vendeur non géré | 2026-06-18 |
+| `POST /api/webhooks/stripe` | account.updated (Connect) | `wallet-connect.service` | ✅ | P0 | Sync payouts_enabled vendeur | 2026-06-18 |
+| `/portefeuille` | Retrait gains → banque (Connect) | `wallet-withdraw.service` | `WalletWithdrawForm` | ✅ | — | Transfert plateforme → compte Express | 2026-06-18 |
 | `POST /api/cron/maintenance` | Expiration annonces | `marketplace.mutations` | ✅ | P0 | Bearer `CRON_SECRET` | 2026-06-16 |
 | `POST /api/cron/maintenance` | Clôture enchères | `auction.mutations` | ✅ | P0 | Scheduler externe requis | 2026-06-16 |
 | `POST /api/cron/maintenance` | Purge preuves C2C | `shipment.service` | ✅ | P1 | | 2026-06-16 |
@@ -290,7 +291,7 @@
 | 21 | Newsletter footer | S |
 | 22 | Ticketing support admin | M |
 | 23 | Recharts analytics admin | M |
-| 24 | Stripe Connect retrait bancaire vendeur (wallet → virement) | L |
+| 24 | ~~Stripe Connect retrait bancaire vendeur~~ | ✅ | 2026-06-18 |
 
 ---
 

@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
+import { Link } from "@/i18n/navigation";
 import type { SellerReadiness, SellerStep } from "@/server/marketplace/seller-readiness.service";
 import { setBirthDateAction, addAddressAction } from "@/server/marketplace/seller-readiness.actions";
 
@@ -132,7 +133,14 @@ function StepRow({
               {step.key === "account" && isAuthenticated && (
                 <p className="text-[12px] font-bold text-texte-faible">{t("account.hint")}</p>
               )}
-              {step.key === "payout" && <p className="text-[12px] font-bold text-texte-faible">{t("payout.hint")}</p>}
+              {step.key === "payout" && (
+                <p className="text-[12px] font-bold text-texte-faible">
+                  {t("payout.hint")}{" "}
+                  <Link href="/portefeuille" className="text-carmin underline">
+                    {t("payout.link")}
+                  </Link>
+                </p>
+              )}
             </div>
           )}
         </div>

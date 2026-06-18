@@ -557,6 +557,7 @@ enum WalletEntryType {
   PURCHASE
   REFUND
   SALE_PAYOUT
+  WITHDRAWAL
   ADJUSTMENT
 }
 
@@ -585,6 +586,7 @@ model WalletLedgerEntry {
   balanceAfter            Decimal         @db.Decimal(10, 2)
   saleId                  String?
   stripeCheckoutSessionId String?         @unique
+  stripeTransferId        String?         @unique
   note                    String?
   createdAt               DateTime        @default(now())
 

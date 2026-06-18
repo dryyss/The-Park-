@@ -563,8 +563,18 @@
     "depositHint": "マーケット購入に利用可 — 出金不可。",
     "earnedTitle": "販売収益",
     "earnedBalance": "利用可能な収益",
-    "earnedHint": "販売による収益 — 銀行へ出金可能（近日公開）。",
+    "earnedHint": "販売による収益 — Stripe Connect で銀行へ出金可能。",
     "spendableBalance": "購入に使える合計：",
+    "connectRequired": "収益を出金するには銀行口座の設定が必要です。",
+    "connectCta": "銀行口座を設定",
+    "connectPending": "Stripeへリダイレクト中…",
+    "connectSuccess": "銀行口座を設定しました — 出金できます。",
+    "connectUpdate": "銀行情報を更新",
+    "withdrawHint": "最低 {min} € — 銀行口座へ振込（Stripeの通常処理時間）。",
+    "withdrawAmount": "出金額 (€)",
+    "withdrawCta": "銀行へ出金",
+    "withdrawPending": "振込処理中…",
+    "withdrawSuccess": "振込を開始しました — 数営業日で口座に反映されます。",
     "topUpTitle": "クレジットを追加",
     "topUpHint": "最低 {min} €。Stripe決済に5%の手数料が加算されます。",
     "creditAmount": "クレジット額 (€)",
@@ -582,7 +592,19 @@
       "PURCHASE": "マーケット購入",
       "REFUND": "返金",
       "SALE_PAYOUT": "販売入金",
+      "WITHDRAWAL": "銀行出金",
       "ADJUSTMENT": "調整"
+    },
+    "withdrawError": {
+      "UNAUTHORIZED": "ログインが必要です。",
+      "VALIDATION": "無効な金額です。",
+      "WITHDRAW_TOO_LOW": "最低5 €の出金。",
+      "INSUFFICIENT_EARNED": "収益残高が不足しています。",
+      "CONNECT_NOT_SETUP": "先に銀行口座を設定してください。",
+      "CONNECT_PAYOUTS_DISABLED": "口座設定が未完了 — Stripeの設定を完了してください。",
+      "STRIPE_NOT_CONFIGURED": "出金を利用できません。",
+      "STRIPE_ERROR": "Stripeエラー — 後でもう一度お試しください。",
+      "UNKNOWN": "出金を開始できませんでした。"
     },
     "topUpError": {
       "UNAUTHORIZED": "ログインが必要です。",
@@ -930,8 +952,9 @@
     },
     "payout": {
       "title": "販売入金",
-      "desc": "販売収益は別残高に入金され、銀行へ出金できます。",
-      "hint": "Stripe Connect による銀行振込 — 任意、近日公開。"
+      "desc": "ウォレットページで銀行口座を設定して収益を出金できます。",
+      "hint": "出品には不要 — 収益の出金時のみ必要。",
+      "link": "ウォレット →"
     }
   },
   "settings": {
