@@ -394,7 +394,7 @@
     "reserveOptional": "Optional",
     "auctionHint": "The auction starts right away. The card is locked until the sale ends.",
     "priceHint": "Listed price — buyers pay from their credit wallet (Stripe top-up, min. €5).",
-    "disclaimer": "Marketplace sales use the credit wallet: Stripe top-up (+ 5% fee), purchases debited from balance, seller paid on completion.",
+    "disclaimer": "Top up deposit credits (not withdrawable) to buy. Seller earnings are credited separately and will be withdrawable.",
     "publish": "Publish listing",
     "publishing": "Publishing…",
     "publishSuccess": "Listing published!",
