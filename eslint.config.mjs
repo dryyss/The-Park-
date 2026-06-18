@@ -15,13 +15,9 @@ const eslintConfig = [
   prettier,
   {
     rules: {
-      // Routes Auth0 (/auth/*) : middleware, pas de pages Next localisées → <a> requis.
-      "@next/next/no-html-link-for-pages": [
-        "error",
-        {
-          allow: ["/auth/login", "/auth/logout", "/auth/signup", "/auth/callback"],
-        },
-      ],
+      // Projet App Router (pas de dossier `pages/`) : cette règle ne s'applique pas,
+      // et les routes Auth0 (/auth/*) sont gérées par le middleware → <a> requis.
+      "@next/next/no-html-link-for-pages": "off",
     },
   },
   {
@@ -32,6 +28,7 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
       "src/generated/**",
+      "_reference/**",
     ],
   },
 ];

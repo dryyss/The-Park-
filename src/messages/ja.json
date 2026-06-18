@@ -379,6 +379,10 @@
     "typeFixedDesc": "即購入、早い販売。",
     "typeAuction": "オークション",
     "typeAuctionDesc": "市場に価格を任せる。",
+    "saleKindLabel": "出品の種類",
+    "saleKindSell": "販売",
+    "saleKindTrade": "交換",
+    "saleKindBoth": "販売または交換",
     "salePrice": "販売価格",
     "startPrice": "開始価格",
     "auctionDuration": "期間",
@@ -392,7 +396,6 @@
     "publishing": "公開中…",
     "publishSuccess": "出品を公開しました！",
     "publishError": "出品を公開できませんでした。",
-    "publishSoon": "公開は近日対応",
     "preview": "プレビュー",
     "quoteRef": "参考価格",
     "ownedQty": "{count}枚",
@@ -493,7 +496,6 @@
     "viewExchange": "交換を見る",
     "inputPlaceholder": "メッセージを入力…",
     "send": "送信",
-    "sendSoon": "送信 — 近日",
     "report": "通報",
     "reportTitle": "このメッセージを通報",
     "reportPlaceholder": "問題を説明…",
@@ -539,7 +541,6 @@
     "errorSelfBid": "自分の出品には入札できないよ。",
     "errorEnded": "このオークションは終了したよ。",
     "errorGeneric": "入札できなかった。",
-    "bidSoon": "入札 — 近日",
     "disclaimer": "デモUI — 実決済なし",
     "bidHistory": "入札履歴",
     "noBids": "入札なし"
@@ -581,7 +582,6 @@
     "total": "合計",
     "payCta": "Stripeで支払う",
     "payProcessing": "リダイレクト中…",
-    "paySoon": "支払う — 近日",
     "loginRequired": "公式ストアの注文にはログインが必要です。",
     "loginCta": "ログイン",
     "cancelled": "支払いがキャンセルされました — いつでも再試行できます。",
@@ -649,7 +649,6 @@
     "manageCatalog": "カタログ",
     "manageSupport": "メンバーサポート",
     "manageSettings": "プラットフォーム設定",
-    "moreSoon": "モデレーション等 — 近日",
     "back": "管理コンソール",
     "nav": {
       "ariaLabel": "管理コンソールナビ",
@@ -662,10 +661,7 @@
       "support": "サポート",
       "staff": "ロール"
     },
-    "modules": {
-      "moderationSoon": "モデレーション — 近日",
-      "catalogSoon": "カタログ — 近日"
-    },
+    "modules": {},
     "roles": {
       "kicker": "Staff · RBAC",
       "title": "ロールと権限",
@@ -719,7 +715,9 @@
       "save": "保存",
       "saveSuccess": "商品を更新しました。",
       "saveError": "更新に失敗しました。",
-      "editSoon": "商品編集 — 近日"
+      "createProduct": "新規商品",
+      "create": "作成",
+      "cancel": "キャンセル"
     },
     "catalog": {
       "kicker": "カタログ · シーズン",
@@ -918,7 +916,8 @@
     "privacyCollection": "コレクション公開",
     "privacyProfile": "プロフィール公開",
     "privacyData": "データは販売しません。",
-    "exportSoon": "データエクスポート — 近日"
+    "exportData": "データをエクスポート（JSON）",
+    "exportPending": "エクスポート中…"
   },
   "trophies": {
     "kicker": "バッジ",
@@ -969,9 +968,9 @@
     "recipientPlaceholder": "ユーザー名",
     "message": "メッセージ",
     "messagePlaceholder": "交換に興味ありますか？",
+    "messageDefault": "こんにちは！このカード、交換しませんか？",
     "submit": "提案を送信",
     "submitting": "送信中…",
-    "submitSoon": "送信 — 近日",
     "error": "提案を送信できませんでした。",
     "back": "交換一覧"
   },
@@ -979,6 +978,7 @@
     "kicker": "C2C · デモ",
     "title": "安全配送",
     "noUser": "ログインが必要。",
+    "activeContext": "進行中の交換",
     "demoContext": "交換コンテキスト（デモ）",
     "exchangeRef": "交換{id} · {partner}",
     "itemCount": "{count}枚",
@@ -987,6 +987,30 @@
     "viewExchange": "交換を見る →",
     "noExchange": "デモ用の進行中交換なし。",
     "demoOnly": "デモUI — 実Stripe・動画アップロードなし",
+    "actions": {
+      "panelTitle": "アクション",
+      "status": "ステータス",
+      "token": "本日のトークン",
+      "createShipment": "発送を準備",
+      "authorizeCaution": "保証金を承認",
+      "trackingPlaceholder": "追跡番号…",
+      "markShipped": "発送を確定",
+      "proofUrlPlaceholder": "証拠動画のURL（ハッシュはローカルで計算）",
+      "recordProof": "証拠を保存",
+      "proofHint": "実メディアのアップロードは未接続 — メタデータとSHA-256ハッシュを記録。",
+      "markDelivered": "配達済みにする",
+      "confirmReceipt": "受領を確認 · 完了",
+      "disputePlaceholder": "問題を記入（10文字以上）…",
+      "openDispute": "紛争を申し立てる",
+      "errors": {
+        "UNAUTHORIZED": "ログインが必要です。",
+        "VALIDATION": "データが不正です。",
+        "NOT_FOUND": "交換が見つかりません。",
+        "EXCHANGE_NOT_FOUND": "対象外の交換です。",
+        "ZERO_CAUTION": "保証金がゼロです。",
+        "UNKNOWN": "予期しないエラー。"
+      }
+    },
     "steps": {
       "garantie": "保証",
       "option-envoi": "配送オプション",

@@ -25,7 +25,7 @@ export async function SecurityContextBanner({
 
   return (
     <div className="rounded-[14px] border border-carmin/30 bg-charbon-700 p-4">
-      <p className="text-[11px] font-extrabold tracking-[2px] text-carmin uppercase">{t("demoContext")}</p>
+      <p className="text-[11px] font-extrabold tracking-[2px] text-carmin uppercase">{t("activeContext")}</p>
       <p className="mt-1 text-[14px] font-extrabold text-blanc-casse">
         {t("exchangeRef", { id: exchange.shortId, partner: exchange.partnerName })}
       </p>

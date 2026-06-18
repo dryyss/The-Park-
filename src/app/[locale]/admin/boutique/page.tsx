@@ -5,6 +5,7 @@ import { requireModule } from "@/server/auth/admin-guard";
 import { getAdminShopProducts } from "@/server/admin/admin.service";
 import { PageHeader } from "@/components/common/page-header";
 import { AdminShopEditor } from "@/components/admin/admin-shop-editor";
+import { AdminProductCreateForm } from "@/components/admin/admin-product-create-form";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,7 @@ export default async function AdminBoutiquePage({ params }: { params: Promise<{ 
         <PageHeader kicker={t("shop.kicker")} title={t("shop.title")} jp="公式" />
       </div>
       <div className="mt-8">
+        <AdminProductCreateForm />
         <AdminShopEditor products={products} />
       </div>
     </main>

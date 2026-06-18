@@ -1,6 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { getViewerUser } from "@/server/user/user.service";
-import { getDemoExchangeForSecurity } from "@/server/messaging/conversation.service";
+import { requireAuthViewer } from "@/server/user/user.service";
+import { getSecurityContext } from "@/server/c2c/security.service";
 import { PageHeader } from "@/components/common/page-header";
 import { SecurityPageLayout } from "@/components/security/security-page-layout";
 
@@ -13,18 +13,14 @@ export async function renderSecurityPage(params: Promise<{ locale: string }>, pa
   setRequestLocale(locale);
   const t = await getTranslations("security");
 
-  const viewer = await getViewerUser();
-  if (!viewer) {
-    return <main className="mx-auto max-w-[900px] px-7 py-24 text-center text-texte-dim">{t("noUser")}</main>;
-  }
-
-  const exchange = await getDemoExchangeForSecurity(viewer.id);
+  const viewer = await requireAuthViewer(`/${locale}/securite/${pageKey}`);
+  const context = await getSecurityContext(viewer.id);
 
   return (
     <main className="mx-auto max-w-[900px] px-7 pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="安全" />
       <div className="mt-8">
-        <SecurityPageLayout pageKey={pageKey} exchange={exchange} />
+        <SecurityPageLayout pageKey={pageKey} context={context} />
       </div>
     </main>
   );

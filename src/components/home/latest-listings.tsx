@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { HoloCard } from "@/components/cards/holo-card";
+import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { Link } from "@/i18n/navigation";
 import { SectionHeading } from "./section-heading";
 import type { ListingDisplay } from "@/server/marketplace/marketplace.service";
@@ -10,7 +11,7 @@ export async function LatestListings({ listings }: { listings: ListingDisplay[] 
   if (listings.length === 0) return null;
 
   return (
-    <div className="animate-fade-up mt-[60px]">
+    <div className="mt-[60px]">
       <SectionHeading title={t("latestTitle")} jp={t("latestJp")}>
         <Link href="/marketplace" className="inline-block text-[13px] font-extrabold text-carmin transition hover:translate-x-[3px] hover:text-carmin-alt">
           {t("seeAllMarket")}
@@ -18,9 +19,11 @@ export async function LatestListings({ listings }: { listings: ListingDisplay[] 
       </SectionHeading>
       <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-6">
         {listings.map((l) => (
-          <Link key={l.id} href="/marketplace" className="animate-fade-up block">
+          <Link key={l.id} href="/marketplace" className="block">
             <div className="relative">
-              <HoloCard src={l.image} alt={l.name} tilt={l.tilt} holo={l.holo} variant={l.variant} />
+              <CatalogCardFrame rarityColor={l.color}>
+                <HoloCard src={l.image} alt={l.name} variant="none" className="rounded-none shadow-none" />
+              </CatalogCardFrame>
               <span className="absolute bottom-1.5 left-1.5 z-10 rounded-md bg-black/70 px-2 py-[3px] text-[10px] font-extrabold text-blanc-casse backdrop-blur-sm">
                 {l.price}
               </span>

@@ -2,7 +2,8 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { NotificationType, Prisma } from "@/generated/prisma/client";
 import { pushUserEvent } from "@/lib/pusher";
-import { sendTransactionalEmail } from "@/lib/resend";
+import { sendTransactionalEmail, isResendConfigured } from "@/lib/resend";
+import { buildNotificationEmail } from "@/server/notification/email-templates";
 import { getUserNotificationPrefs } from "@/server/user/settings.service";
 
 type PrefKey = "exchanges" | "messages" | "auctions" | "orders" | "marketing";
@@ -60,6 +61,17 @@ export async function dispatchNotification(input: {
     });
     if (user?.email) {
       await sendTransactionalEmail({ to: user.email, subject: input.emailSubject, html: input.emailHtml });
+    }
+  } else if (isResendConfigured()) {
+    const email = buildNotificationEmail(input.type, input.payload ?? {});
+    if (email) {
+      const user = await prisma.user.findUnique({
+        where: { id: input.userId },
+        select: { email: true },
+      });
+      if (user?.email) {
+        await sendTransactionalEmail({ to: user.email, subject: email.subject, html: email.html });
+      }
     }
   }
 

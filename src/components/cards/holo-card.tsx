@@ -32,7 +32,7 @@ export function HoloCard({
   variant = "rainbow",
   priority,
   className,
-  interactive = true,
+  interactive = false,
 }: HoloCardProps) {
   const ref = useRef<HTMLDivElement>(null);
 

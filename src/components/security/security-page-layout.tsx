@@ -1,21 +1,23 @@
 import { getTranslations } from "next-intl/server";
 import { SecurityContextBanner, SecurityStepList } from "@/components/security/security-sections";
+import { SecurityActionsPanel } from "@/components/security/security-actions-panel";
+import type { SecurityExchangeContext } from "@/server/c2c/security.service";
 
 type SecurityPageKey = "garantie" | "option-envoi" | "envoi" | "deballage" | "echange" | "etats" | "litige";
 
 export async function SecurityPageLayout({
   pageKey,
-  exchange,
+  context,
 }: {
   pageKey: SecurityPageKey;
-  exchange: Parameters<typeof SecurityContextBanner>[0]["exchange"];
+  context: SecurityExchangeContext | null;
 }) {
   const t = await getTranslations("security");
 
   return (
     <div className="flex flex-col gap-6">
       <SecurityStepList currentStep={pageKey} />
-      <SecurityContextBanner exchange={exchange} />
+      <SecurityContextBanner exchange={context} />
       <div className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-6">
         <h2 className="font-display text-[20px] tracking-wide text-blanc-casse uppercase">{t(`pages.${pageKey}.title`)}</h2>
         <p className="mt-4 text-[14px] font-semibold leading-relaxed text-texte-dim">{t(`pages.${pageKey}.desc`)}</p>
@@ -27,9 +29,11 @@ export async function SecurityPageLayout({
             </li>
           ))}
         </ul>
-        <div className="mt-6 rounded-[12px] border border-dashed border-charbon-500 bg-charbon-700/40 p-6 text-center">
-          <p className="text-[12px] font-extrabold tracking-wide text-texte-faible uppercase">{t("demoOnly")}</p>
-        </div>
+        {context ? (
+          <SecurityActionsPanel pageKey={pageKey} context={context} />
+        ) : (
+          <p className="mt-6 text-[13px] font-bold text-texte-dim">{t("noExchange")}</p>
+        )}
       </div>
     </div>
   );

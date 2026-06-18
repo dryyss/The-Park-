@@ -1,8 +1,7 @@
 "use client";
 
 // Les routes /auth/* sont servies par le middleware Auth0, pas par des pages Next :
-// on garde des <a> (navigation complète) et on désactive la règle pages.
-/* eslint-disable @next/next/no-html-link-for-pages */
+// on garde des <a> (navigation complète).
 import { useUser } from "@auth0/nextjs-auth0";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";

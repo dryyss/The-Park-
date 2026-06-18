@@ -1,5 +1,6 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { HoloCard } from "@/components/cards/holo-card";
+import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { Link } from "@/i18n/navigation";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import type { MarketplaceCard } from "@/server/marketplace/marketplace.service";
@@ -28,7 +29,9 @@ export async function ListingCard({
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-charbon-500 bg-charbon-800 transition hover:border-charbon-400">
       <div className="relative px-3.5 pt-3.5">
-        <HoloCard src={l.image} alt={l.name} tilt={l.tilt} holo={l.holo} variant={l.variant} />
+        <CatalogCardFrame rarityColor={l.color}>
+          <HoloCard src={l.image} alt={l.name} variant="none" className="rounded-none shadow-none" />
+        </CatalogCardFrame>
         <span
           className="absolute top-[26px] right-[26px] rounded-md bg-black/70 px-2.5 py-1 text-[10.5px] font-extrabold tracking-[1px] uppercase backdrop-blur-sm"
           style={{ color: l.conditionColor }}

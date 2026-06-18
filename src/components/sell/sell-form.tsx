@@ -18,6 +18,7 @@ export function SellForm({
   isAuthenticated?: boolean;
 }) {
   const t = useTranslations("sell");
+  const tc = useTranslations("conditions");
   const router = useRouter();
   const [selected, setSelected] = useState(0);
   const [listingType, setListingType] = useState<"fixed" | "auction">("fixed");
@@ -100,7 +101,7 @@ export function SellForm({
           <div className="flex gap-3 overflow-x-auto pb-2">
             {cards.map((cd, i) => (
               <button
-                key={cd.variantId}
+                key={`${cd.variantId}:${cd.condition}`}
                 type="button"
                 onClick={() => setSelected(i)}
                 className="w-[92px] shrink-0 cursor-pointer text-left"
@@ -117,6 +118,7 @@ export function SellForm({
                   </span>
                 </div>
                 <div className="mt-1.5 truncate text-center text-[9.5px] font-extrabold text-texte-doux">{cd.shortName}</div>
+                <div className="truncate text-center text-[8.5px] font-bold uppercase text-texte-faible">{tc(cd.condition)}</div>
                 {cd.quantity > 1 && (
                   <div className="mt-0.5 text-center text-[9px] font-bold tabular-nums text-carmin">×{cd.quantity}</div>
                 )}

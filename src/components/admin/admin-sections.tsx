@@ -29,7 +29,7 @@ export async function AdminOverviewPanel({
 
   return (
     <div>
-      <p className="mb-6 text-[13px] font-bold text-texte-dim">
+      <p className="text-texte-dim mb-6 text-[13px] font-bold">
         {t("roles.currentRole")}{" "}
         <span className="text-or">{t(`roles.staffRoles.${effectiveRole}`)}</span>
       </p>
@@ -40,8 +40,10 @@ export async function AdminOverviewPanel({
             key={s.key}
             className={`rounded-[14px] border p-4 ${s.alert ? "border-neon-orange/50 bg-charbon-700" : "border-charbon-500 bg-charbon-800"}`}
           >
-            <p className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t(`stats.${s.key}`)}</p>
-            <p className="mt-1 font-display text-[26px] text-blanc-casse">{s.value}</p>
+            <p className="text-texte-dim text-[10px] font-extrabold tracking-wide uppercase">
+              {t(`stats.${s.key}`)}
+            </p>
+            <p className="font-display text-blanc-casse mt-1 text-[26px]">{s.value}</p>
           </div>
         ))}
       </div>
@@ -51,13 +53,13 @@ export async function AdminOverviewPanel({
           <>
             <Link
               href="/admin/boutique"
-              className="font-display rounded-[12px] bg-or px-5 py-3 text-[13px] tracking-[1px] text-charbon uppercase shadow-[3px_3px_0_rgba(0,0,0,0.35)] transition hover:bg-or-clair"
+              className="font-display bg-or text-charbon hover:bg-or-clair rounded-[12px] px-5 py-3 text-[13px] tracking-[1px] uppercase shadow-[3px_3px_0_rgba(0,0,0,0.35)] transition"
             >
               {t("manageShop")}
             </Link>
             <Link
               href="/admin/commandes"
-              className="font-display rounded-[12px] border border-or/40 bg-or/10 px-5 py-3 text-[13px] tracking-[1px] text-or uppercase transition hover:bg-or/20"
+              className="font-display border-or/40 bg-or/10 text-or hover:bg-or/20 rounded-[12px] border px-5 py-3 text-[13px] tracking-[1px] uppercase transition"
             >
               {t("manageOrders")}
             </Link>
@@ -66,7 +68,7 @@ export async function AdminOverviewPanel({
         {modules.includes("staff") && (
           <Link
             href="/admin/roles"
-            className="font-display rounded-[12px] border border-carmin bg-carmin/10 px-5 py-3 text-[13px] tracking-[1px] text-carmin uppercase transition hover:bg-carmin hover:text-white"
+            className="font-display border-carmin bg-carmin/10 text-carmin hover:bg-carmin rounded-[12px] border px-5 py-3 text-[13px] tracking-[1px] uppercase transition hover:text-white"
           >
             {t("roles.manage")}
           </Link>
@@ -74,7 +76,7 @@ export async function AdminOverviewPanel({
         {modules.includes("moderation") && (
           <Link
             href="/admin/moderation"
-            className="font-display rounded-[12px] border border-neon-orange/50 bg-neon-orange/10 px-5 py-3 text-[13px] tracking-[1px] text-neon-orange uppercase transition hover:bg-neon-orange/20"
+            className="font-display border-neon-orange/50 bg-neon-orange/10 text-neon-orange hover:bg-neon-orange/20 rounded-[12px] border px-5 py-3 text-[13px] tracking-[1px] uppercase transition"
           >
             {t("manageModeration")}
           </Link>
@@ -82,7 +84,7 @@ export async function AdminOverviewPanel({
         {modules.includes("catalog") && (
           <Link
             href="/admin/catalogue"
-            className="font-display rounded-[12px] border border-carmin bg-carmin/10 px-5 py-3 text-[13px] tracking-[1px] text-carmin uppercase transition hover:bg-carmin hover:text-white"
+            className="font-display border-carmin bg-carmin/10 text-carmin hover:bg-carmin rounded-[12px] border px-5 py-3 text-[13px] tracking-[1px] uppercase transition hover:text-white"
           >
             {t("manageCatalog")}
           </Link>
@@ -90,7 +92,7 @@ export async function AdminOverviewPanel({
         {modules.includes("support") && (
           <Link
             href="/admin/support"
-            className="font-display rounded-[12px] border border-charbon-400 px-5 py-3 text-[13px] tracking-[1px] text-texte-doux uppercase transition hover:border-carmin hover:text-white"
+            className="font-display border-charbon-400 text-texte-doux hover:border-carmin rounded-[12px] border px-5 py-3 text-[13px] tracking-[1px] uppercase transition hover:text-white"
           >
             {t("manageSupport")}
           </Link>
@@ -98,7 +100,7 @@ export async function AdminOverviewPanel({
         {modules.includes("shop") && (
           <Link
             href="/admin/reglages"
-            className="font-display rounded-[12px] border border-charbon-400 px-5 py-3 text-[13px] tracking-[1px] text-texte-doux uppercase transition hover:border-carmin hover:text-white"
+            className="font-display border-charbon-400 text-texte-doux hover:border-carmin rounded-[12px] border px-5 py-3 text-[13px] tracking-[1px] uppercase transition hover:text-white"
           >
             {t("manageSettings")}
           </Link>
@@ -108,14 +110,18 @@ export async function AdminOverviewPanel({
   );
 }
 
-export async function AdminShopPanel({ products }: { products: import("@/server/admin/admin.service").AdminShopProduct[] }) {
+export async function AdminShopPanel({
+  products,
+}: {
+  products: import("@/server/admin/admin.service").AdminShopProduct[];
+}) {
   const t = await getTranslations("admin");
 
   return (
-    <div className="overflow-x-auto rounded-[16px] border border-charbon-500 bg-charbon-800">
+    <div className="border-charbon-500 bg-charbon-800 overflow-x-auto rounded-[16px] border">
       <table className="w-full min-w-[600px] text-left text-[13px]">
         <thead>
-          <tr className="border-b border-charbon-500 text-[11px] font-extrabold tracking-wide text-texte-dim uppercase">
+          <tr className="border-charbon-500 text-texte-dim border-b text-[11px] font-extrabold tracking-wide uppercase">
             <th className="px-4 py-3">{t("shop.sku")}</th>
             <th className="px-4 py-3">{t("shop.name")}</th>
             <th className="px-4 py-3">{t("shop.price")}</th>
@@ -125,13 +131,19 @@ export async function AdminShopPanel({ products }: { products: import("@/server/
         </thead>
         <tbody>
           {products.map((p) => (
-            <tr key={p.id} className="border-b border-charbon-600/50 hover:bg-charbon-700/50">
-              <td className="px-4 py-3 font-mono text-[12px] text-texte-dim">{p.sku}</td>
-              <td className="px-4 py-3 font-extrabold text-blanc-casse">{p.name}</td>
-              <td className="px-4 py-3 text-or">{p.price}</td>
-              <td className={`px-4 py-3 font-bold ${p.stock <= 5 ? "text-neon-orange" : "text-texte-dim"}`}>{p.stock}</td>
+            <tr key={p.id} className="border-charbon-600/50 hover:bg-charbon-700/50 border-b">
+              <td className="text-texte-dim px-4 py-3 font-mono text-[12px]">{p.sku}</td>
+              <td className="text-blanc-casse px-4 py-3 font-extrabold">{p.name}</td>
+              <td className="text-or px-4 py-3">{p.price}</td>
+              <td
+                className={`px-4 py-3 font-bold ${p.stock <= 5 ? "text-neon-orange" : "text-texte-dim"}`}
+              >
+                {p.stock}
+              </td>
               <td className="px-4 py-3">
-                <span className={`rounded-md px-2 py-0.5 text-[10px] font-extrabold uppercase ${p.active ? "bg-neon-vert/15 text-neon-vert" : "bg-charbon-600 text-texte-faible"}`}>
+                <span
+                  className={`rounded-md px-2 py-0.5 text-[10px] font-extrabold uppercase ${p.active ? "bg-neon-vert/15 text-neon-vert" : "bg-charbon-600 text-texte-faible"}`}
+                >
                   {p.active ? t("shop.active") : t("shop.inactive")}
                 </span>
               </td>
@@ -139,7 +151,6 @@ export async function AdminShopPanel({ products }: { products: import("@/server/
           ))}
         </tbody>
       </table>
-      <p className="p-4 text-center text-[11px] font-bold text-texte-faible">{t("shop.editSoon")}</p>
     </div>
   );
 }

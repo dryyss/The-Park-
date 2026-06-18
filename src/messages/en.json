@@ -379,6 +379,10 @@
     "typeFixedDesc": "Instant buy, quick sale.",
     "typeAuction": "Auction",
     "typeAuctionDesc": "Let the market set the price.",
+    "saleKindLabel": "Listing type",
+    "saleKindSell": "Sale",
+    "saleKindTrade": "Trade",
+    "saleKindBoth": "Sale or trade",
     "salePrice": "Sale price",
     "startPrice": "Starting price",
     "auctionDuration": "Duration",
@@ -392,7 +396,6 @@
     "publishing": "Publishing…",
     "publishSuccess": "Listing published!",
     "publishError": "Could not publish the listing.",
-    "publishSoon": "Publishing coming soon",
     "preview": "Preview",
     "quoteRef": "Quote ref.",
     "ownedQty": "{count, plural, one {# copy} other {# copies}}",
@@ -493,7 +496,6 @@
     "viewExchange": "View trade",
     "inputPlaceholder": "Write a message…",
     "send": "Send",
-    "sendSoon": "Send — coming soon",
     "report": "Report",
     "reportTitle": "Report this message",
     "reportPlaceholder": "Describe the issue…",
@@ -539,7 +541,6 @@
     "errorSelfBid": "You can't bid on your own listing.",
     "errorEnded": "This auction has ended.",
     "errorGeneric": "Couldn't place the bid.",
-    "bidSoon": "Place bid — coming soon",
     "disclaimer": "Demo UI — no real payment.",
     "bidHistory": "Bid history",
     "noBids": "No bids yet."
@@ -581,7 +582,6 @@
     "total": "Total",
     "payCta": "Pay with Stripe",
     "payProcessing": "Redirecting…",
-    "paySoon": "Pay — coming soon",
     "loginRequired": "Log in to complete your official shop order.",
     "loginCta": "Log in",
     "cancelled": "Payment cancelled — you can try again anytime.",
@@ -649,7 +649,6 @@
     "manageCatalog": "Catalog",
     "manageSupport": "Member support",
     "manageSettings": "Platform settings",
-    "moreSoon": "Moderation, catalog… — coming soon",
     "back": "Admin console",
     "nav": {
       "ariaLabel": "Admin console navigation",
@@ -662,10 +661,7 @@
       "support": "Support",
       "staff": "Roles"
     },
-    "modules": {
-      "moderationSoon": "Moderation — coming soon",
-      "catalogSoon": "Catalog — coming soon"
-    },
+    "modules": {},
     "roles": {
       "kicker": "Staff · RBAC",
       "title": "Roles & permissions",
@@ -719,7 +715,9 @@
       "save": "Save",
       "saveSuccess": "Product updated.",
       "saveError": "Update failed.",
-      "editSoon": "Product editing — coming soon"
+      "createProduct": "New product",
+      "create": "Create",
+      "cancel": "Cancel"
     },
     "catalog": {
       "kicker": "Catalog · seasons",
@@ -918,7 +916,8 @@
     "privacyCollection": "Collection visibility: public",
     "privacyProfile": "Public profile: enabled",
     "privacyData": "Your data is never sold.",
-    "exportSoon": "Export my data — coming soon"
+    "exportData": "Export my data (JSON)",
+    "exportPending": "Exporting…"
   },
   "trophies": {
     "kicker": "Badges · achievements",
@@ -969,9 +968,9 @@
     "recipientPlaceholder": "Username or collector link",
     "message": "Message",
     "messagePlaceholder": "Hi, interested in a trade?",
+    "messageDefault": "Hey! Want to swap these cards?",
     "submit": "Send proposal",
     "submitting": "Sending…",
-    "submitSoon": "Send proposal — coming soon",
     "error": "Could not send the proposal.",
     "back": "My trades"
   },
@@ -979,6 +978,7 @@
     "kicker": "C2C layer · demo",
     "title": "Secured shipping",
     "noUser": "Log in to access secured flow.",
+    "activeContext": "Active trade",
     "demoContext": "Trade context (demo)",
     "exchangeRef": "Trade {id} with {partner}",
     "itemCount": "{count} card(s)",
@@ -987,6 +987,30 @@
     "viewExchange": "View trade →",
     "noExchange": "No active trade for demo.",
     "demoOnly": "Demo UI — no real Stripe or video upload",
+    "actions": {
+      "panelTitle": "Actions",
+      "status": "Status",
+      "token": "Today's token",
+      "createShipment": "Prepare my shipment",
+      "authorizeCaution": "Authorize the deposit",
+      "trackingPlaceholder": "Tracking number…",
+      "markShipped": "Confirm shipment",
+      "proofUrlPlaceholder": "Video proof URL (hash computed locally)",
+      "recordProof": "Save proof",
+      "proofHint": "Real media upload to be wired — metadata + SHA-256 hash recorded.",
+      "markDelivered": "Mark as delivered",
+      "confirmReceipt": "Confirm receipt · close",
+      "disputePlaceholder": "Describe the issue (min. 10 characters)…",
+      "openDispute": "Open a dispute",
+      "errors": {
+        "UNAUTHORIZED": "Login required.",
+        "VALIDATION": "Invalid data.",
+        "NOT_FOUND": "Trade not found.",
+        "EXCHANGE_NOT_FOUND": "Trade not eligible.",
+        "ZERO_CAUTION": "Deposit value is zero.",
+        "UNKNOWN": "Unexpected error."
+      }
+    },
     "steps": {
       "garantie": "Guarantee",
       "option-envoi": "Shipping option",

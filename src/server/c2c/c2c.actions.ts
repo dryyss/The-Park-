@@ -8,6 +8,8 @@ import {
   markShipmentShipped,
   recordShipmentProof,
 } from "@/server/c2c/shipment.service";
+import { authorizeExchangeCaution } from "@/server/c2c/caution.service";
+import { confirmExchangeReceipt, markShipmentDelivered } from "@/server/c2c/exchange-lifecycle.service";
 import { prisma } from "@/lib/prisma";
 
 export type C2CActionResult = { ok: true; id?: string } | { ok: false; error: string };
@@ -102,4 +104,48 @@ export async function openDisputeAction(exchangeId: string, reason: string): Pro
 
   revalidatePath("/securite", "layout");
   return { ok: true };
+}
+
+export async function authorizeCautionAction(exchangeId: string): Promise<C2CActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  try {
+    const shipment = await prisma.shipment.findFirst({
+      where: { exchangeId, shipperId: viewer.id },
+      select: { id: true },
+    });
+    const { paymentId } = await authorizeExchangeCaution(exchangeId, viewer.id, shipment?.id);
+    revalidatePath("/securite", "layout");
+    return { ok: true, id: paymentId };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
+export async function markDeliveredAction(shipmentId: string): Promise<C2CActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  try {
+    await markShipmentDelivered(shipmentId, viewer.id);
+    revalidatePath("/securite", "layout");
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
+export async function confirmReceiptAction(exchangeId: string): Promise<C2CActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  try {
+    await confirmExchangeReceipt(exchangeId, viewer.id);
+    revalidatePath("/securite", "layout");
+    revalidatePath("/echanges");
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
 }

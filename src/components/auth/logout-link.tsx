@@ -1,5 +1,4 @@
 // Route Auth0 hors App Router localisé — navigation complète requise.
-/* eslint-disable @next/next/no-html-link-for-pages */
 
 type LogoutLinkProps = {
   label: string;

@@ -1,0 +1,186 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
+import type { SecurityExchangeContext } from "@/server/c2c/security.service";
+import {
+  authorizeCautionAction,
+  confirmReceiptAction,
+  createExchangeShipmentAction,
+  markDeliveredAction,
+  markShippedAction,
+  openDisputeAction,
+  recordProofAction,
+} from "@/server/c2c/c2c.actions";
+
+type PageKey = "garantie" | "option-envoi" | "envoi" | "deballage" | "echange" | "etats" | "litige";
+
+async function sha256Hex(text: string): Promise<string> {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+export function SecurityActionsPanel({
+  pageKey,
+  context,
+}: {
+  pageKey: PageKey;
+  context: SecurityExchangeContext;
+}) {
+  const t = useTranslations("security.actions");
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  const [tracking, setTracking] = useState("");
+  const [disputeReason, setDisputeReason] = useState("");
+  const [proofUrl, setProofUrl] = useState("");
+
+  const shipment = context.viewerShipment;
+
+  function run(fn: () => Promise<{ ok: boolean; error?: string }>) {
+    setError(null);
+    startTransition(async () => {
+      const res = await fn();
+      if (!res.ok) setError(res.error ?? "UNKNOWN");
+      else router.refresh();
+    });
+  }
+
+  if (!context) return null;
+
+  return (
+    <div className="mt-6 rounded-[12px] border border-charbon-500 bg-charbon-700/50 p-5">
+      <p className="text-[10px] font-extrabold tracking-[2px] text-carmin uppercase">{t("panelTitle")}</p>
+      <p className="mt-1 text-[12px] font-bold text-texte-dim">
+        {t("status")} : <span className="text-blanc-casse">{context.status}</span>
+        {shipment?.dropToken && (
+          <>
+            {" "}
+            · {t("token")} : <span className="font-mono text-or">{shipment.dropToken}</span>
+          </>
+        )}
+      </p>
+
+      {pageKey === "echange" && context.status === "ACCEPTED" && (
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => run(() => createExchangeShipmentAction(context.id))}
+          className="mt-4 rounded-[11px] bg-carmin px-5 py-2.5 font-display text-[12px] tracking-wide text-white uppercase disabled:opacity-50"
+        >
+          {t("createShipment")}
+        </button>
+      )}
+
+      {pageKey === "option-envoi" && context.secured && (
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => run(() => authorizeCautionAction(context.id))}
+          className="mt-4 rounded-[11px] bg-or px-5 py-2.5 font-display text-[12px] tracking-wide text-charbon uppercase disabled:opacity-50"
+        >
+          {t("authorizeCaution")}
+        </button>
+      )}
+
+      {pageKey === "envoi" && shipment?.isShipper && shipment.status === "PENDING" && (
+        <div className="mt-4 flex flex-col gap-2">
+          <input
+            value={tracking}
+            onChange={(e) => setTracking(e.target.value)}
+            placeholder={t("trackingPlaceholder")}
+            className="rounded-[11px] border border-charbon-500 bg-charbon px-4 py-2 text-[13px] text-blanc-casse"
+          />
+          <button
+            type="button"
+            disabled={pending || tracking.trim().length < 3}
+            onClick={() =>
+              run(() => markShippedAction({ shipmentId: shipment.id, trackingNumber: tracking.trim() }))
+            }
+            className="rounded-[11px] bg-carmin px-5 py-2.5 font-display text-[12px] tracking-wide text-white uppercase disabled:opacity-50"
+          >
+            {t("markShipped")}
+          </button>
+        </div>
+      )}
+
+      {(pageKey === "envoi" || pageKey === "deballage") && shipment && (
+        <div className="mt-4 flex flex-col gap-2">
+          <input
+            value={proofUrl}
+            onChange={(e) => setProofUrl(e.target.value)}
+            placeholder={t("proofUrlPlaceholder")}
+            className="rounded-[11px] border border-charbon-500 bg-charbon px-4 py-2 text-[13px] text-blanc-casse"
+          />
+          <button
+            type="button"
+            disabled={pending || !proofUrl.trim()}
+            onClick={() =>
+              run(async () => {
+                const hash = await sha256Hex(proofUrl.trim());
+                return recordProofAction({
+                  shipmentId: shipment.id,
+                  kind: pageKey === "envoi" ? "PRESENTATION" : "UNBOXING",
+                  mediaUrl: proofUrl.trim(),
+                  mediaHash: hash,
+                  durationSec: 30,
+                });
+              })
+            }
+            className="rounded-[11px] border border-carmin px-5 py-2.5 font-display text-[12px] tracking-wide text-carmin uppercase disabled:opacity-50"
+          >
+            {t("recordProof")}
+          </button>
+          <p className="text-[10px] font-bold text-texte-faible">{t("proofHint")}</p>
+        </div>
+      )}
+
+      {pageKey === "garantie" && shipment && !shipment.isShipper && shipment.status === "SHIPPED" && (
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => run(() => markDeliveredAction(shipment.id))}
+          className="mt-4 rounded-[11px] bg-neon-vert/20 px-5 py-2.5 font-display text-[12px] tracking-wide text-neon-vert uppercase disabled:opacity-50"
+        >
+          {t("markDelivered")}
+        </button>
+      )}
+
+      {pageKey === "garantie" && ["DELIVERED_WINDOW", "DELIVERED"].includes(context.status) && (
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => run(() => confirmReceiptAction(context.id))}
+          className="mt-4 rounded-[11px] bg-neon-vert px-5 py-2.5 font-display text-[12px] tracking-wide text-charbon uppercase disabled:opacity-50"
+        >
+          {t("confirmReceipt")}
+        </button>
+      )}
+
+      {pageKey === "litige" && (
+        <div className="mt-4 flex flex-col gap-2">
+          <textarea
+            value={disputeReason}
+            onChange={(e) => setDisputeReason(e.target.value)}
+            placeholder={t("disputePlaceholder")}
+            rows={3}
+            className="rounded-[11px] border border-charbon-500 bg-charbon px-4 py-2 text-[13px] text-blanc-casse"
+          />
+          <button
+            type="button"
+            disabled={pending || disputeReason.trim().length < 10}
+            onClick={() => run(() => openDisputeAction(context.id, disputeReason.trim()))}
+            className="rounded-[11px] bg-neon-rouge/20 px-5 py-2.5 font-display text-[12px] tracking-wide text-neon-rouge uppercase disabled:opacity-50"
+          >
+            {t("openDispute")}
+          </button>
+        </div>
+      )}
+
+      {error && <p className="mt-3 text-[12px] font-bold text-neon-rouge">{t(`errors.${error}`, { default: error })}</p>}
+    </div>
+  );
+}

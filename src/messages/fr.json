@@ -379,6 +379,10 @@
     "typeFixedDesc": "Achat immédiat, vente rapide.",
     "typeAuction": "Enchère",
     "typeAuctionDesc": "Laisse le marché fixer le prix.",
+    "saleKindLabel": "Type d'annonce",
+    "saleKindSell": "Vente",
+    "saleKindTrade": "Échange",
+    "saleKindBoth": "Vente ou échange",
     "salePrice": "Prix de vente",
     "startPrice": "Prix de départ",
     "auctionDuration": "Durée",
@@ -392,7 +396,6 @@
     "publishing": "Publication…",
     "publishSuccess": "Annonce publiée !",
     "publishError": "Impossible de publier l'annonce.",
-    "publishSoon": "Publication bientôt disponible",
     "preview": "Aperçu",
     "quoteRef": "Cote ref.",
     "ownedQty": "{count, plural, one {# exemplaire} other {# exemplaires}}",
@@ -493,7 +496,6 @@
     "viewExchange": "Voir l'échange",
     "inputPlaceholder": "Écrire un message…",
     "send": "Envoyer",
-    "sendSoon": "Envoi bientôt",
     "report": "Signaler",
     "reportTitle": "Signaler ce message",
     "reportPlaceholder": "Décris le problème…",
@@ -539,7 +541,6 @@
     "errorSelfBid": "Tu ne peux pas enchérir sur ta propre vente.",
     "errorEnded": "Cette enchère est terminée.",
     "errorGeneric": "Impossible de placer l'enchère.",
-    "bidSoon": "Enchérir — bientôt",
     "disclaimer": "Démo UI — pas d'encaissement réel.",
     "bidHistory": "Historique",
     "noBids": "Aucune enchère pour l'instant."
@@ -581,7 +582,6 @@
     "total": "Total",
     "payCta": "Payer avec Stripe",
     "payProcessing": "Redirection…",
-    "paySoon": "Payer — bientôt",
     "loginRequired": "Connecte-toi pour finaliser ta commande boutique.",
     "loginCta": "Se connecter",
     "cancelled": "Paiement annulé — tu peux réessayer quand tu veux.",
@@ -649,7 +649,6 @@
     "manageCatalog": "Catalogue",
     "manageSupport": "Support membres",
     "manageSettings": "Réglages plateforme",
-    "moreSoon": "Modération, catalogue… — bientôt",
     "back": "Console admin",
     "nav": {
       "ariaLabel": "Navigation console admin",
@@ -662,10 +661,7 @@
       "support": "Support",
       "staff": "Rôles"
     },
-    "modules": {
-      "moderationSoon": "Modération — bientôt",
-      "catalogSoon": "Catalogue — bientôt"
-    },
+    "modules": {},
     "roles": {
       "kicker": "Staff · RBAC",
       "title": "Rôles & permissions",
@@ -719,7 +715,9 @@
       "save": "Enregistrer",
       "saveSuccess": "Produit mis à jour.",
       "saveError": "Échec de la mise à jour.",
-      "editSoon": "Édition produits — bientôt disponible"
+      "createProduct": "Nouveau produit",
+      "create": "Créer",
+      "cancel": "Annuler"
     },
     "catalog": {
       "kicker": "Catalogue · saisons",
@@ -918,7 +916,8 @@
     "privacyCollection": "Visibilité collection : publique",
     "privacyProfile": "Profil public : activé",
     "privacyData": "Tes données ne sont jamais revendues.",
-    "exportSoon": "Exporter mes données — bientôt"
+    "exportData": "Exporter mes données (JSON)",
+    "exportPending": "Export en cours…"
   },
   "trophies": {
     "kicker": "Badges · accomplissements",
@@ -969,24 +968,49 @@
     "recipientPlaceholder": "Pseudo ou lien collectionneur",
     "message": "Message",
     "messagePlaceholder": "Bonjour, intéressé par un échange ?",
+    "messageDefault": "Salut ! Ça te dirait qu'on échange ces cartes ?",
     "submit": "Envoyer la proposition",
     "submitting": "Envoi…",
-    "submitSoon": "Envoyer la proposition — bientôt",
     "error": "Impossible d'envoyer la proposition.",
     "back": "Mes échanges"
   },
   "security": {
-    "kicker": "Couche C2C · démo",
+    "kicker": "Couche C2C · envoi sécurisé",
     "title": "Envoi sécurisé",
     "noUser": "Connecte-toi pour accéder au flux sécurisé.",
+    "activeContext": "Échange en cours",
     "demoContext": "Contexte échange (démo)",
     "exchangeRef": "Échange {id} avec {partner}",
     "itemCount": "{count} carte(s)",
     "securedOn": "Envoi sécurisé activé",
     "securedOff": "Envoi standard",
     "viewExchange": "Voir l'échange →",
-    "noExchange": "Aucun échange actif pour la démo. Lance un échange depuis la page Échanges.",
+    "noExchange": "Aucun échange actif. Accepte un échange depuis la page Échanges pour accéder au flux sécurisé.",
     "demoOnly": "Interface démo — pas de Stripe ni upload vidéo réel",
+    "actions": {
+      "panelTitle": "Actions",
+      "status": "Statut",
+      "token": "Jeton du jour",
+      "createShipment": "Préparer mon envoi",
+      "authorizeCaution": "Autoriser la caution",
+      "trackingPlaceholder": "N° de suivi Colissimo…",
+      "markShipped": "Confirmer l'expédition",
+      "proofUrlPlaceholder": "URL de la preuve vidéo (hash calculé localement)",
+      "recordProof": "Enregistrer la preuve",
+      "proofHint": "Upload média réel à brancher — métadonnées + hash SHA-256 enregistrés.",
+      "markDelivered": "Marquer comme livré",
+      "confirmReceipt": "Confirmer réception · clôturer",
+      "disputePlaceholder": "Décris le problème (min. 10 caractères)…",
+      "openDispute": "Ouvrir un litige",
+      "errors": {
+        "UNAUTHORIZED": "Connexion requise.",
+        "VALIDATION": "Données invalides.",
+        "NOT_FOUND": "Échange introuvable.",
+        "EXCHANGE_NOT_FOUND": "Échange non éligible.",
+        "ZERO_CAUTION": "Valeur de caution nulle.",
+        "UNKNOWN": "Erreur inattendue."
+      }
+    },
     "steps": {
       "garantie": "Garantie",
       "option-envoi": "Option envoi",

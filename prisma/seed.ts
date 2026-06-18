@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
-// @ts-ignore - module de données JS sans types (catalogue fourni par le client)
+// Module de données JS sans types (catalogue fourni par le client).
 import { CARDS, CARD_EXTRA_VERSIONS, DEFAULT_S01_EDITION_LABEL, CARD_EDITION_LABELS } from "./cards-data.mjs";
 import { VERSION_TYPE_DEFINITIONS } from "../src/lib/card-versions";
 import { RARITY_DEFINITIONS, isSpecialRarity } from "../src/lib/rarities";

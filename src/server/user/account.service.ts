@@ -36,3 +36,29 @@ export async function getAccountSettings(userId: string): Promise<AccountSetting
     passwordResetUrl,
   };
 }
+
+/** Export RGPD — snapshot JSON des données personnelles du membre. */
+export async function exportUserData(userId: string): Promise<Record<string, unknown>> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      displayName: true,
+      slug: true,
+      bio: true,
+      birthDate: true,
+      role: true,
+      notificationPrefs: true,
+      createdAt: true,
+      addresses: true,
+      collectionItems: {
+        select: { variantId: true, condition: true, quantity: true, acquiredAt: true },
+      },
+      wishlistItems: { select: { cardId: true, createdAt: true } },
+      notifications: { take: 100, orderBy: { createdAt: "desc" }, select: { type: true, createdAt: true, readAt: true } },
+    },
+  });
+  if (!user) throw new Error("NOT_FOUND");
+  return { exportedAt: new Date().toISOString(), user };
+}

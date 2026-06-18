@@ -49,9 +49,7 @@ export function OwnedVariantStack({
       <HoloCard
         src={only?.image ?? fallbackImage}
         alt={alt}
-        tilt={tilt}
-        holo={holo}
-        variant={variant}
+        variant="none"
         priority={priority}
       />
     );
@@ -81,9 +79,7 @@ export function OwnedVariantStack({
                 <HoloCard
                   src={c.image}
                   alt={`${alt} · ${c.label}`}
-                  tilt={tilt}
-                  holo={holo}
-                  variant={variant}
+                  variant="none"
                   priority={priority}
                   className="h-full w-full"
                 />

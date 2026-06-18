@@ -7,6 +7,7 @@ import type { NotificationPrefs } from "@/server/user/settings.service";
 import { Link } from "@/i18n/navigation";
 import { ProfileIdentityForm } from "@/components/settings/profile-identity-form";
 import { AddressBook } from "@/components/settings/address-book";
+import { ExportDataButton } from "@/components/settings/export-data-button";
 import type { UserAddress } from "@/server/user/address.service";
 
 export function SettingsForm({
@@ -114,9 +115,7 @@ export function SettingsForm({
           <p>{t("privacyProfile")}</p>
           <p>{t("privacyData")}</p>
         </div>
-        <button type="button" disabled className="mt-4 rounded-lg border border-charbon-500 px-4 py-2 text-[12px] font-extrabold text-texte-faible uppercase">
-          {t("exportSoon")}
-        </button>
+        <ExportDataButton />
       </section>
     </div>
   );
