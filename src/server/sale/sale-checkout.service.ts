@@ -1,7 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { getAppBaseUrl, isStripeConfigured } from "@/lib/env";
-import { getStripe } from "@/lib/stripe";
+import { assertStripeMinAmountEur, getStripe, stripePublicImageUrl } from "@/lib/stripe";
 import { cardImage } from "@/lib/rarity";
 import { markSalePaid } from "@/server/sale/sale-lifecycle.service";
 
@@ -27,9 +27,11 @@ export async function createSaleCheckoutSession(
 
   const card = sale.listing.variant.card;
   const total = Number(sale.price) + Number(sale.serviceFee);
+  assertStripeMinAmountEur(total);
+
   const stripe = getStripe();
   const baseUrl = getAppBaseUrl();
-  const image = card.imageUrl ? cardImage(card.imageUrl) : null;
+  const image = stripePublicImageUrl(baseUrl, cardImage(card.imageUrl));
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
@@ -42,7 +44,7 @@ export async function createSaleCheckoutSession(
           product_data: {
             name: card.name,
             description: `Marketplace · #${String(card.number).padStart(2, "0")}`,
-            ...(image ? { images: [`${baseUrl}${image}`] } : {}),
+            ...(image ? { images: [image] } : {}),
           },
         },
         quantity: 1,

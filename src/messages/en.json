@@ -436,6 +436,9 @@
       "SELF_PURCHASE": "You cannot buy your own listing.",
       "ALREADY_SOLD": "This card was just reserved.",
       "VALIDATION": "Invalid data.",
+      "STRIPE_MIN_AMOUNT": "Amount too low for secure payment (minimum €0.50).",
+      "STRIPE_NOT_CONFIGURED": "Payment unavailable at the moment.",
+      "STRIPE_ERROR": "Stripe error — try again or contact the seller.",
       "UNKNOWN": "Could not start purchase."
     },
     "actionPropose": "Offer mine",

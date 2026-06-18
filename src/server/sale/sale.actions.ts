@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { isStripeConfigured } from "@/lib/env";
+import { mapStripeCheckoutError } from "@/lib/stripe";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
 import { createSaleFromListing } from "@/server/sale/sale.mutations";
 import { createSaleCheckoutSession, fulfillSaleFromStripeSession } from "@/server/sale/sale-checkout.service";
@@ -15,7 +16,27 @@ export type BuyListingError =
   | "SELF_PURCHASE"
   | "ALREADY_SOLD"
   | "VALIDATION"
+  | "STRIPE_MIN_AMOUNT"
+  | "STRIPE_NOT_CONFIGURED"
+  | "STRIPE_ERROR"
   | "UNKNOWN";
+
+const BUY_ERRORS = new Set<BuyListingError>([
+  "UNAUTHORIZED",
+  "LISTING_UNAVAILABLE",
+  "NO_PRICE",
+  "SELF_PURCHASE",
+  "ALREADY_SOLD",
+  "VALIDATION",
+  "STRIPE_MIN_AMOUNT",
+  "STRIPE_NOT_CONFIGURED",
+  "STRIPE_ERROR",
+  "UNKNOWN",
+]);
+
+function toBuyListingError(code: string): BuyListingError {
+  return BUY_ERRORS.has(code as BuyListingError) ? (code as BuyListingError) : "UNKNOWN";
+}
 
 const buySchema = z.object({
   listingId: z.string().min(1),
@@ -45,17 +66,20 @@ export async function buyListingAction(
     if (!conversationId) return { ok: false, error: "UNKNOWN" };
     return { ok: true, redirectUrl: `/${parsed.data.locale}/messages/${conversationId}?purchased=1` };
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "UNKNOWN";
-    if (
-      msg === "LISTING_UNAVAILABLE" ||
-      msg === "NO_PRICE" ||
-      msg === "SELF_PURCHASE" ||
-      msg === "ALREADY_SOLD"
-    ) {
-      return { ok: false, error: msg };
+    if (err instanceof Error) {
+      const known = err.message;
+      if (
+        known === "LISTING_UNAVAILABLE" ||
+        known === "NO_PRICE" ||
+        known === "SELF_PURCHASE" ||
+        known === "ALREADY_SOLD" ||
+        known === "STRIPE_MIN_AMOUNT"
+      ) {
+        return { ok: false, error: toBuyListingError(known) };
+      }
     }
     console.error("[sale:buy]", err);
-    return { ok: false, error: "UNKNOWN" };
+    return { ok: false, error: toBuyListingError(mapStripeCheckoutError(err)) };
   }
 }
 

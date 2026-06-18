@@ -436,6 +436,9 @@
       "SELF_PURCHASE": "自分の出品は購入できません。",
       "ALREADY_SOLD": "このカードは予約されました。",
       "VALIDATION": "無効なデータです。",
+      "STRIPE_MIN_AMOUNT": "安全決済の最低金額（0,50 €）を下回っています。",
+      "STRIPE_NOT_CONFIGURED": "現在お支払いを利用できません。",
+      "STRIPE_ERROR": "Stripeエラー — 再試行するか出品者に連絡してください。",
       "UNKNOWN": "購入を開始できませんでした。"
     },
     "actionPropose": "自分のを提案",

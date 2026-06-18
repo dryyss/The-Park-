@@ -436,6 +436,9 @@
       "SELF_PURCHASE": "Tu ne peux pas acheter ta propre annonce.",
       "ALREADY_SOLD": "Cette carte vient d'être réservée.",
       "VALIDATION": "Données invalides.",
+      "STRIPE_MIN_AMOUNT": "Montant trop bas pour le paiement sécurisé (minimum 0,50 €).",
+      "STRIPE_NOT_CONFIGURED": "Paiement indisponible pour le moment.",
+      "STRIPE_ERROR": "Erreur Stripe — réessaie ou contacte le vendeur.",
       "UNKNOWN": "Impossible de lancer l'achat."
     },
     "actionPropose": "Proposer la mienne",
