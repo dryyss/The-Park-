@@ -110,29 +110,31 @@ export function Footer() {
         </div>
 
         {/* Barre légale */}
-        <div className="flex flex-wrap items-center justify-between gap-3.5 border-t border-charbon-600 py-[18px] pb-[30px]">
-          <div className="flex flex-wrap items-center gap-[18px]">
+        <div className="grid grid-cols-1 items-center gap-5 border-t border-charbon-600 py-[18px] pb-[30px] md:grid-cols-[1fr_auto_1fr] md:gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-[18px] md:justify-start">
             <span className="text-[12px] font-bold text-texte-faible">{t("rights")}</span>
             <Link href="/aide" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("terms")}</Link>
             <Link href="/aide" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("privacy")}</Link>
             <Link href="/aide" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("shipping")}</Link>
             <Link href="/aide" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("help")}</Link>
           </div>
-          <div className="flex flex-wrap items-center gap-5">
+
+          <div className="flex flex-col items-center gap-2.5 rounded-xl bg-white/[0.04] px-6 py-4 ring-1 ring-white/10">
+            <span className="text-xs font-extrabold tracking-widest text-texte-doux uppercase">{t("developedBy")}</span>
+            <Image
+              src="/magar-developpement-logo.svg"
+              alt={t("developedByAlt")}
+              width={240}
+              height={72}
+              className="h-14 w-auto drop-shadow-[0_0_12px_rgba(255,255,255,0.35)] brightness-125 contrast-110 transition hover:scale-105 hover:brightness-150 md:h-16 lg:h-[72px]"
+            />
+          </div>
+
+          <div className="flex items-center justify-center md:justify-end">
             <span className="flex items-center gap-[7px] text-[12px] font-bold text-texte-faible">
               <span className="h-1.5 w-1.5 rounded-full bg-statut-succes" />
               {t("status")}
             </span>
-            <div className="flex items-center gap-2.5">
-              <span className="text-[11px] font-bold text-texte-faible">{t("developedBy")}</span>
-              <Image
-                src="/magar-developpement-logo.svg"
-                alt={t("developedByAlt")}
-                width={88}
-                height={24}
-                className="h-6 w-auto opacity-80 transition hover:opacity-100"
-              />
-            </div>
           </div>
         </div>
       </div>
