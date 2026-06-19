@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { useRouter, Link } from "@/i18n/navigation";
 import type { ModerationDisputeRow, ModerationReportRow } from "@/server/moderation/moderation.service";
 import { resolveReportAction, updateDisputeStatusAction } from "@/server/moderation/moderation.actions";
 
@@ -65,7 +65,11 @@ export function AdminModerationPanel({
                 {d.type} · {d.claimantName} vs {d.respondentName}
               </p>
               <p className="mt-1 text-[13px] text-texte-dim">{d.reason}</p>
-              <select
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <Link href={`/admin/moderation/litiges/${d.id}`} className="rounded bg-carmin/20 px-3 py-1 text-[11px] font-extrabold text-carmin uppercase hover:bg-carmin hover:text-white">
+                  {t("openDispute")}
+                </Link>
+                <select
                 defaultValue={d.status}
                 disabled={pending}
                 onChange={(e) => updateDispute(d.id, e.target.value as "UNDER_REVIEW" | "RESOLVED" | "CLOSED")}
@@ -75,6 +79,7 @@ export function AdminModerationPanel({
                 <option value="RESOLVED">{t("resolve")}</option>
                 <option value="CLOSED">{t("close")}</option>
               </select>
+              </div>
             </div>
           ))}
           {disputes.length === 0 && <p className="text-[13px] text-texte-dim">{t("noDisputes")}</p>}

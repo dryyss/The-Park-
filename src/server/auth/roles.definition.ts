@@ -1,25 +1,58 @@
 import type { AdminRole, UserRole } from "@/generated/prisma/client";
 
 /** Modules admin — masqués côté UI et vérifiés côté serveur. */
-export type AdminModule = "overview" | "moderation" | "users" | "catalog" | "shop" | "support" | "staff";
+export type AdminModule =
+  | "overview"
+  | "moderation"
+  | "users"
+  | "catalog"
+  | "shop"
+  | "support"
+  | "staff"
+  | "marketplace"
+  | "transactions"
+  | "auctions"
+  | "finance"
+  | "content";
 
 /** Entrée de navigation console admin (liée à un module RBAC). */
 export interface AdminDashboard {
   module: AdminModule;
   href: string;
-  labelKey: "overview" | "moderation" | "users" | "catalog" | "shop" | "orders" | "settings" | "support" | "staff";
+  labelKey:
+    | "overview"
+    | "moderation"
+    | "users"
+    | "catalog"
+    | "shop"
+    | "orders"
+    | "settings"
+    | "support"
+    | "staff"
+    | "marketplace"
+    | "transactions"
+    | "auctions"
+    | "finance"
+    | "content"
+    | "messages";
 }
 
 /** Dashboards disponibles — filtrés par MODULES_BY_STAFF_ROLE côté serveur. */
 export const ADMIN_DASHBOARDS: AdminDashboard[] = [
   { module: "overview", href: "/admin", labelKey: "overview" },
   { module: "moderation", href: "/admin/moderation", labelKey: "moderation" },
+  { module: "moderation", href: "/admin/messages", labelKey: "messages" },
   { module: "users", href: "/admin/utilisateurs", labelKey: "users" },
   { module: "catalog", href: "/admin/catalogue", labelKey: "catalog" },
   { module: "shop", href: "/admin/boutique", labelKey: "shop" },
   { module: "shop", href: "/admin/commandes", labelKey: "orders" },
   { module: "shop", href: "/admin/reglages", labelKey: "settings" },
   { module: "support", href: "/admin/support", labelKey: "support" },
+  { module: "marketplace", href: "/admin/marketplace", labelKey: "marketplace" },
+  { module: "transactions", href: "/admin/transactions", labelKey: "transactions" },
+  { module: "auctions", href: "/admin/encheres", labelKey: "auctions" },
+  { module: "finance", href: "/admin/finances", labelKey: "finance" },
+  { module: "content", href: "/admin/contenu", labelKey: "content" },
   { module: "staff", href: "/admin/roles", labelKey: "staff" },
 ];
 
@@ -123,14 +156,28 @@ export const ALL_ADMIN_MODULES: AdminModule[] = [
   "shop",
   "support",
   "staff",
+  "marketplace",
+  "transactions",
+  "auctions",
+  "finance",
+  "content",
 ];
 
 /** Matrice des permissions par sous-rôle (CDC §6). */
 export const MODULES_BY_STAFF_ROLE: Record<AdminRole, AdminModule[]> = {
   // L'owner a toutes les fonctionnalités de tous les rôles, par construction.
   OWNER: [...ALL_ADMIN_MODULES],
-  MODERATOR: ["overview", "moderation", "users", "support"],
-  CATALOG_MANAGER: ["overview", "catalog"],
-  SHOP_MANAGER: ["overview", "shop"],
-  SUPPORT: ["overview", "support"],
+  MODERATOR: [
+    "overview",
+    "moderation",
+    "users",
+    "support",
+    "marketplace",
+    "transactions",
+    "auctions",
+    "content",
+  ],
+  CATALOG_MANAGER: ["overview", "catalog", "content"],
+  SHOP_MANAGER: ["overview", "shop", "finance"],
+  SUPPORT: ["overview", "support", "users", "finance"],
 };

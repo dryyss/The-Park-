@@ -2,9 +2,10 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
 import { requireModule } from "@/server/auth/admin-guard";
 import { getAccessibleModules, resolveStaffRole } from "@/server/auth/permissions.service";
-import { getAdminOverview } from "@/server/admin/admin.service";
+import { getAdminDashboardData, getAdminChartSeries } from "@/server/admin/overview.service";
 import { PageHeader } from "@/components/common/page-header";
-import { AdminOverviewPanel } from "@/components/admin/admin-sections";
+import { AdminOverviewDashboard } from "@/components/admin/admin-overview-dashboard";
+import { AdminOverviewCharts } from "@/components/admin/admin-overview-charts";
 
 export const dynamic = "force-dynamic";
 
@@ -19,14 +20,18 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
     notFound();
   }
 
-  const overview = await getAdminOverview();
   const modules = getAccessibleModules(access.user);
+  const [data, chartSeries] = await Promise.all([
+    getAdminDashboardData(modules),
+    getAdminChartSeries(),
+  ]);
 
   return (
     <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="管理" />
-      <div className="mt-8">
-        <AdminOverviewPanel overview={overview} modules={modules} staffRole={resolveStaffRole(access.user)} />
+      <div className="mt-8 space-y-10">
+        <AdminOverviewCharts data={chartSeries} />
+        <AdminOverviewDashboard data={data} modules={modules} staffRole={resolveStaffRole(access.user)} />
       </div>
     </main>
   );
