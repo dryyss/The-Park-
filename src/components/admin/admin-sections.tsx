@@ -81,6 +81,14 @@ export async function AdminOverviewPanel({
             {t("manageModeration")}
           </Link>
         )}
+        {modules.includes("users") && (
+          <Link
+            href="/admin/utilisateurs"
+            className="font-display border-neon-orange/50 bg-neon-orange/10 text-neon-orange hover:bg-neon-orange/20 rounded-[12px] border px-5 py-3 text-[13px] tracking-[1px] uppercase transition"
+          >
+            {t("manageUsers")}
+          </Link>
+        )}
         {modules.includes("catalog") && (
           <Link
             href="/admin/catalogue"

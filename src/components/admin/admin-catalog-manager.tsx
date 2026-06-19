@@ -1,0 +1,420 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
+import type {
+  AdminCatalogSeason,
+  AdminCardFull,
+  AdminRarityOption,
+  AdminVersionTypeOption,
+} from "@/server/admin/admin.mutations";
+import { updateSeasonAction } from "@/server/admin/shop.actions";
+import {
+  createCardAction,
+  updateCardAction,
+  deleteCardAction,
+  createCardVariantAction,
+  updateCardVariantAction,
+  deleteCardVariantAction,
+} from "@/server/admin/catalog.actions";
+
+const LANGUAGES = ["FR", "EN", "JP", "DE", "US"] as const;
+
+const num = (fd: FormData, k: string): number | undefined => {
+  const v = String(fd.get(k) ?? "").trim();
+  if (!v) return undefined;
+  const n = parseFloat(v.replace(",", "."));
+  return Number.isFinite(n) ? n : undefined;
+};
+const str = (fd: FormData, k: string): string => String(fd.get(k) ?? "").trim();
+const optStr = (fd: FormData, k: string): string | null => str(fd, k) || null;
+
+export function AdminCatalogManager({
+  seasons,
+  rarities,
+  versionTypes,
+}: {
+  seasons: AdminCatalogSeason[];
+  rarities: AdminRarityOption[];
+  versionTypes: AdminVersionTypeOption[];
+}) {
+  const t = useTranslations("admin.catalog");
+  const [openSeasons, setOpenSeasons] = useState<Set<string>>(() => new Set(seasons.map((s) => s.id)));
+
+  function toggleSeason(id: string) {
+    setOpenSeasons((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      {seasons.map((s) => (
+        <section key={s.id} className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
+          <SeasonHeader season={s} open={openSeasons.has(s.id)} onToggle={() => toggleSeason(s.id)} />
+          {openSeasons.has(s.id) && (
+            <div className="mt-5 flex flex-col gap-4">
+              <NewCardForm seasonId={s.id} rarities={rarities} />
+              {s.cards.length === 0 ? (
+                <p className="text-[12px] font-bold text-texte-faible">{t("noCards")}</p>
+              ) : (
+                s.cards.map((c) => (
+                  <CardEditor key={c.id} card={c} rarities={rarities} versionTypes={versionTypes} />
+                ))
+              )}
+            </div>
+          )}
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function useAction() {
+  const router = useRouter();
+  const t = useTranslations("admin.catalog");
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  function run(fn: () => Promise<{ ok: boolean; error?: string }>, onDone?: () => void) {
+    setError(null);
+    startTransition(async () => {
+      const res = await fn();
+      if (res.ok) {
+        onDone?.();
+        router.refresh();
+      } else {
+        setError(errLabel(t, res.error));
+      }
+    });
+  }
+
+  return { pending, error, run };
+}
+
+function errLabel(t: ReturnType<typeof useTranslations>, code?: string): string {
+  switch (code) {
+    case "NUMBER_TAKEN":
+      return t("errNumberTaken");
+    case "CARD_IN_USE":
+      return t("errCardInUse");
+    case "VARIANT_EXISTS":
+      return t("errVariantExists");
+    case "VARIANT_IN_USE":
+      return t("errVariantInUse");
+    case "VALIDATION":
+      return t("errValidation");
+    case "UNAUTHORIZED":
+    case "FORBIDDEN":
+      return t("errForbidden");
+    default:
+      return t("errUnknown");
+  }
+}
+
+function SeasonHeader({
+  season,
+  open,
+  onToggle,
+}: {
+  season: AdminCatalogSeason;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const t = useTranslations("admin.catalog");
+  const { pending, run } = useAction();
+
+  function save(fd: FormData) {
+    const releaseRaw = str(fd, "releaseDate");
+    run(() =>
+      updateSeasonAction({
+        seasonId: season.id,
+        name: str(fd, "name"),
+        releaseDate: releaseRaw ? new Date(releaseRaw).toISOString() : null,
+      }),
+    );
+  }
+
+  return (
+    <div className="flex flex-wrap items-end gap-4">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="font-display flex h-9 w-9 items-center justify-center rounded-lg border border-charbon-500 text-[16px] text-or hover:border-or"
+        aria-label={open ? t("collapse") : t("expand")}
+      >
+        {open ? "−" : "+"}
+      </button>
+      <div>
+        <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("code")}</label>
+        <p className="font-mono text-[14px] text-or">{season.code}</p>
+      </div>
+      <form action={(fd) => save(fd)} className="flex flex-1 flex-wrap items-end gap-4">
+        <div className="min-w-[160px] flex-1">
+          <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("name")}</label>
+          <input name="name" defaultValue={season.name} className="mt-1 w-full rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse" />
+        </div>
+        <div>
+          <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("cards")}</label>
+          <p className="text-[14px] font-bold text-blanc-casse">{season.cards.length}</p>
+        </div>
+        <div>
+          <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("release")}</label>
+          <input
+            name="releaseDate"
+            type="datetime-local"
+            defaultValue={season.releaseDate ? new Date(season.releaseDate).toISOString().slice(0, 16) : ""}
+            className="mt-1 rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse"
+          />
+        </div>
+        <button type="submit" disabled={pending} className="rounded-lg bg-carmin px-4 py-2 text-[12px] font-extrabold text-white uppercase disabled:opacity-50">
+          {t("save")}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+function NewCardForm({ seasonId, rarities }: { seasonId: string; rarities: AdminRarityOption[] }) {
+  const t = useTranslations("admin.catalog");
+  const [open, setOpen] = useState(false);
+  const { pending, error, run } = useAction();
+
+  function submit(fd: FormData) {
+    run(
+      () =>
+        createCardAction({
+          seasonId,
+          number: num(fd, "number") ?? 0,
+          name: str(fd, "name"),
+          rarityId: str(fd, "rarityId"),
+          quoteValue: num(fd, "quoteValue") ?? 0,
+          imageUrl: optStr(fd, "imageUrl"),
+          country: optStr(fd, "country"),
+          isUnique: fd.get("isUnique") === "on",
+        }),
+      () => setOpen(false),
+    );
+  }
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="font-display w-fit rounded-lg border border-dashed border-or/50 px-4 py-2 text-[12px] tracking-wide text-or uppercase hover:bg-or/10"
+      >
+        + {t("newCard")}
+      </button>
+    );
+  }
+
+  return (
+    <form action={(fd) => submit(fd)} className="rounded-[14px] border border-or/30 bg-charbon-900/40 p-4">
+      <h4 className="font-display text-[13px] tracking-wide text-or uppercase">{t("newCard")}</h4>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <Field label={t("number")}><input name="number" type="number" required className={inputCls} /></Field>
+        <Field label={t("name")}><input name="name" required className={inputCls} /></Field>
+        <Field label={t("rarity")}>
+          <select name="rarityId" required className={inputCls}>
+            {rarities.map((r) => (
+              <option key={r.id} value={r.id} className="bg-charbon-800">{r.label}</option>
+            ))}
+          </select>
+        </Field>
+        <Field label={t("quote")}><input name="quoteValue" type="number" step="0.01" defaultValue={0} className={inputCls} /></Field>
+        <Field label={t("country")}><input name="country" maxLength={8} className={inputCls} /></Field>
+        <Field label={t("image")}><input name="imageUrl" placeholder="https://…" className={inputCls} /></Field>
+      </div>
+      <label className="mt-3 flex items-center gap-2 text-[12px] font-bold text-texte-doux">
+        <input type="checkbox" name="isUnique" className="accent-carmin" /> {t("isUnique")}
+      </label>
+      {error && <p className="mt-2 text-[12px] font-bold text-neon-rouge">{error}</p>}
+      <div className="mt-3 flex gap-2">
+        <button type="submit" disabled={pending} className="rounded-lg bg-or px-4 py-2 text-[11px] font-extrabold text-charbon uppercase disabled:opacity-50">{t("create")}</button>
+        <button type="button" onClick={() => setOpen(false)} className="rounded-lg border border-charbon-500 px-4 py-2 text-[11px] font-extrabold text-texte-dim uppercase">{t("cancel")}</button>
+      </div>
+    </form>
+  );
+}
+
+function CardEditor({
+  card,
+  rarities,
+  versionTypes,
+}: {
+  card: AdminCardFull;
+  rarities: AdminRarityOption[];
+  versionTypes: AdminVersionTypeOption[];
+}) {
+  const t = useTranslations("admin.catalog");
+  const { pending, error, run } = useAction();
+  const [showVariants, setShowVariants] = useState(false);
+
+  function save(fd: FormData) {
+    run(() =>
+      updateCardAction({
+        cardId: card.id,
+        number: num(fd, "number"),
+        name: str(fd, "name"),
+        rarityId: str(fd, "rarityId"),
+        quoteValue: num(fd, "quoteValue"),
+        imageUrl: optStr(fd, "imageUrl"),
+        powerCh: num(fd, "powerCh") ?? null,
+        weightKg: num(fd, "weightKg") ?? null,
+        country: optStr(fd, "country"),
+        description: optStr(fd, "description"),
+        isUnique: fd.get("isUnique") === "on",
+      }),
+    );
+  }
+
+  function remove() {
+    if (!confirm(t("confirmDeleteCard", { name: card.name }))) return;
+    run(() => deleteCardAction({ cardId: card.id }));
+  }
+
+  return (
+    <div className="rounded-[14px] border border-charbon-500 bg-charbon-700/40 p-4">
+      <form action={(fd) => save(fd)} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <Field label={t("number")}><input name="number" type="number" defaultValue={card.number} className={inputCls} /></Field>
+        <Field label={t("name")}><input name="name" defaultValue={card.name} className={inputCls} /></Field>
+        <Field label={t("rarity")}>
+          <select name="rarityId" defaultValue={card.rarityId} className={inputCls}>
+            {rarities.map((r) => (
+              <option key={r.id} value={r.id} className="bg-charbon-800">{r.label}</option>
+            ))}
+          </select>
+        </Field>
+        <Field label={t("quote")}><input name="quoteValue" type="number" step="0.01" defaultValue={card.quoteValue} className={inputCls} /></Field>
+        <Field label={t("power")}><input name="powerCh" type="number" defaultValue={card.powerCh ?? ""} className={inputCls} /></Field>
+        <Field label={t("weight")}><input name="weightKg" type="number" defaultValue={card.weightKg ?? ""} className={inputCls} /></Field>
+        <Field label={t("country")}><input name="country" maxLength={8} defaultValue={card.country ?? ""} className={inputCls} /></Field>
+        <Field label={t("image")}><input name="imageUrl" defaultValue={card.imageUrl ?? ""} placeholder="https://…" className={inputCls} /></Field>
+        <Field label={t("description")} className="sm:col-span-2 lg:col-span-4">
+          <textarea name="description" defaultValue={card.description ?? ""} rows={2} className={`${inputCls} resize-none`} />
+        </Field>
+        <label className="flex items-center gap-2 text-[12px] font-bold text-texte-doux">
+          <input type="checkbox" name="isUnique" defaultChecked={card.isUnique} className="accent-carmin" /> {t("isUnique")}
+        </label>
+        <div className="flex items-end gap-2 sm:col-span-2 lg:col-span-3 lg:justify-end">
+          <button type="submit" disabled={pending} className="rounded-lg bg-carmin px-4 py-2 text-[11px] font-extrabold text-white uppercase disabled:opacity-50">{t("save")}</button>
+          <button type="button" onClick={remove} disabled={pending} className="rounded-lg border border-neon-rouge/50 px-4 py-2 text-[11px] font-extrabold text-neon-rouge uppercase hover:bg-neon-rouge/10 disabled:opacity-50">{t("delete")}</button>
+        </div>
+      </form>
+
+      <button
+        type="button"
+        onClick={() => setShowVariants((v) => !v)}
+        className="mt-3 text-[11px] font-extrabold tracking-wide text-or uppercase hover:underline"
+      >
+        {t("variants")} ({card.variants.length}) {showVariants ? "▾" : "▸"}
+      </button>
+      {error && <p className="mt-2 text-[12px] font-bold text-neon-rouge">{error}</p>}
+
+      {showVariants && <CardVariants card={card} versionTypes={versionTypes} />}
+    </div>
+  );
+}
+
+function CardVariants({ card, versionTypes }: { card: AdminCardFull; versionTypes: AdminVersionTypeOption[] }) {
+  const t = useTranslations("admin.catalog");
+  const { pending, error, run } = useAction();
+  const [adding, setAdding] = useState(false);
+
+  function add(fd: FormData) {
+    run(
+      () =>
+        createCardVariantAction({
+          cardId: card.id,
+          versionTypeId: str(fd, "versionTypeId"),
+          language: str(fd, "language"),
+          editionLabel: optStr(fd, "editionLabel"),
+        }),
+      () => setAdding(false),
+    );
+  }
+
+  return (
+    <div className="mt-3 rounded-lg border border-charbon-500 bg-charbon-900/40 p-3">
+      <div className="flex flex-col gap-2">
+        {card.variants.length === 0 && <p className="text-[11px] font-bold text-texte-faible">{t("noVariants")}</p>}
+        {card.variants.map((v) => (
+          <form
+            key={v.id}
+            action={(fd) =>
+              run(() =>
+                updateCardVariantAction({
+                  variantId: v.id,
+                  versionTypeId: str(fd, "versionTypeId"),
+                  language: str(fd, "language"),
+                  editionLabel: optStr(fd, "editionLabel"),
+                }),
+              )
+            }
+            className="flex flex-wrap items-center gap-2 rounded-md bg-charbon-800 px-2 py-1.5"
+          >
+            <select name="versionTypeId" defaultValue={v.versionTypeId} className={`${inputCls} w-auto`}>
+              {versionTypes.map((vt) => (
+                <option key={vt.id} value={vt.id} className="bg-charbon-800">{vt.label}</option>
+              ))}
+            </select>
+            <select name="language" defaultValue={v.language} className={`${inputCls} w-auto`}>
+              {LANGUAGES.map((l) => (
+                <option key={l} value={l} className="bg-charbon-800">{l}</option>
+              ))}
+            </select>
+            <input name="editionLabel" defaultValue={v.editionLabel ?? ""} placeholder={t("editionLabel")} className={`${inputCls} w-auto flex-1`} />
+            <button type="submit" disabled={pending} className="rounded-md bg-charbon-600 px-2.5 py-1.5 text-[10.5px] font-extrabold text-blanc-casse uppercase disabled:opacity-50">{t("save")}</button>
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => run(() => deleteCardVariantAction({ variantId: v.id }))}
+              className="text-[10.5px] font-bold text-neon-rouge hover:underline disabled:opacity-50"
+            >
+              {t("delete")}
+            </button>
+          </form>
+        ))}
+      </div>
+
+      {adding ? (
+        <form action={(fd) => add(fd)} className="mt-2 flex flex-wrap items-center gap-2 rounded-md border border-or/30 bg-charbon-800 px-2 py-2">
+          <select name="versionTypeId" required className={`${inputCls} w-auto`}>
+            {versionTypes.map((vt) => (
+              <option key={vt.id} value={vt.id} className="bg-charbon-800">{vt.label}</option>
+            ))}
+          </select>
+          <select name="language" defaultValue="FR" className={`${inputCls} w-auto`}>
+            {LANGUAGES.map((l) => (
+              <option key={l} value={l} className="bg-charbon-800">{l}</option>
+            ))}
+          </select>
+          <input name="editionLabel" placeholder={t("editionLabel")} className={`${inputCls} w-auto flex-1`} />
+          <button type="submit" disabled={pending} className="rounded-md bg-or px-2.5 py-1.5 text-[10.5px] font-extrabold text-charbon uppercase disabled:opacity-50">{t("create")}</button>
+          <button type="button" onClick={() => setAdding(false)} className="text-[10.5px] font-bold text-texte-dim">{t("cancel")}</button>
+        </form>
+      ) : (
+        <button type="button" onClick={() => setAdding(true)} className="mt-2 text-[11px] font-extrabold text-or uppercase hover:underline">
+          + {t("addVariant")}
+        </button>
+      )}
+      {error && <p className="mt-2 text-[11px] font-bold text-neon-rouge">{error}</p>}
+    </div>
+  );
+}
+
+const inputCls = "w-full rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-[13px] text-blanc-casse outline-none focus:border-carmin";
+
+function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
+  return (
+    <div className={className}>
+      <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{label}</label>
+      <div className="mt-1">{children}</div>
+    </div>
+  );
+}

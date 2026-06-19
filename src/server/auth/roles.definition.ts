@@ -1,19 +1,20 @@
 import type { AdminRole, UserRole } from "@/generated/prisma/client";
 
 /** Modules admin — masqués côté UI et vérifiés côté serveur. */
-export type AdminModule = "overview" | "moderation" | "catalog" | "shop" | "support" | "staff";
+export type AdminModule = "overview" | "moderation" | "users" | "catalog" | "shop" | "support" | "staff";
 
 /** Entrée de navigation console admin (liée à un module RBAC). */
 export interface AdminDashboard {
   module: AdminModule;
   href: string;
-  labelKey: "overview" | "moderation" | "catalog" | "shop" | "orders" | "settings" | "support" | "staff";
+  labelKey: "overview" | "moderation" | "users" | "catalog" | "shop" | "orders" | "settings" | "support" | "staff";
 }
 
 /** Dashboards disponibles — filtrés par MODULES_BY_STAFF_ROLE côté serveur. */
 export const ADMIN_DASHBOARDS: AdminDashboard[] = [
   { module: "overview", href: "/admin", labelKey: "overview" },
   { module: "moderation", href: "/admin/moderation", labelKey: "moderation" },
+  { module: "users", href: "/admin/utilisateurs", labelKey: "users" },
   { module: "catalog", href: "/admin/catalogue", labelKey: "catalog" },
   { module: "shop", href: "/admin/boutique", labelKey: "shop" },
   { module: "shop", href: "/admin/commandes", labelKey: "orders" },
@@ -115,8 +116,8 @@ export function staffRoleToAuth0Name(staffRole: AdminRole): Auth0RoleName {
 
 /** Matrice des permissions par sous-rôle (CDC §6). */
 export const MODULES_BY_STAFF_ROLE: Record<AdminRole, AdminModule[]> = {
-  OWNER: ["overview", "moderation", "catalog", "shop", "support", "staff"],
-  MODERATOR: ["overview", "moderation", "support"],
+  OWNER: ["overview", "moderation", "users", "catalog", "shop", "support", "staff"],
+  MODERATOR: ["overview", "moderation", "users", "support"],
   CATALOG_MANAGER: ["overview", "catalog"],
   SHOP_MANAGER: ["overview", "shop"],
   SUPPORT: ["overview", "support"],

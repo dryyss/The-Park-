@@ -13,7 +13,7 @@ Légende : ☐ à faire · 🔄 en cours · ✅ fait · 🔴 bloquant juridique/
 - ☐ **TP-001** Init Next.js 15 + TS strict + ESLint/Prettier + pnpm + structure de dossiers.
 - ☐ **TP-002** Setup Prisma + PostgreSQL ; **modèle de données multi-versions** (User, Card, Season, Rarity, Version, Language, Ownership, CardState).
 - ☐ **TP-003** Intégration **Auth0** (login, rôles, champ âge, flag consentement parental).
-- ☐ **TP-004** Setup **Payload CMS v3** (collections : Card, Season, Rarity, Version, Language).
+- ✅ **TP-004** ~~Payload CMS v3~~ **abandonné** — le catalogue (Card, Season, Rarity, VersionType, Language) est géré par **Prisma/PostgreSQL** + le back-office admin maison (`/admin/catalogue`, CRUD cartes & variantes). Pas de second outil de migration sur la base.
 - ☐ **TP-005** Design system The Park : tokens, composants de base (Button, Card, Badge, Table, Input), layout + thème JDM.
 - ☐ **TP-006** i18n FR/JA/EN (structure `messages/`, provider, sélecteur de langue).
 - ☐ **TP-007** CI/CD Vercel/Clever Cloud (UE) + `.env.example` + secrets.

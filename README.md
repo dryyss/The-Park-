@@ -21,7 +21,7 @@ Un suivi de collection riche (multi-versions, raretés, états), une marketplace
 | Front-end           | **Next.js 15** (App Router), **React 19**, **TypeScript**         |
 | Back-end / données  | **Prisma** + **PostgreSQL** (modèle multi-versions & marketplace) |
 | Authentification    | **Auth0** (comptes, âge, consentement parental)                   |
-| CMS / contenu       | **Payload CMS v3** (catalogue, saisons, versions)                 |
+| Catalogue / contenu | **Prisma** + back-office admin (cartes, saisons, versions)        |
 | Temps réel (chat)   | **WebSocket / Pusher** (messagerie contextualisée à l'échange)    |
 | Visualisations      | **Recharts** (statistiques, progression)                          |
 | E-mails             | **Resend** (validation, consentement, notifications)              |
@@ -119,7 +119,7 @@ pnpm dev                    # http://localhost:3000
 
 Après seed, **toutes les données métier** (cartes, annonces, boutique, échanges…) proviennent de PostgreSQL. Le fichier `prisma/cards-data.mjs` sert uniquement au peuplement initial.
 
-Variables d'env attendues : `DATABASE_URL`, `AUTH0_*`, `STRIPE_*`, `PUSHER_*`, `RESEND_API_KEY`, `PAYLOAD_SECRET`, `NEXT_PUBLIC_APP_URL`.
+Variables d'env attendues : `DATABASE_URL`, `AUTH0_*`, `STRIPE_*`, `PUSHER_*`, `RESEND_API_KEY`, `NEXT_PUBLIC_APP_URL`.
 
 ---
 
@@ -136,8 +136,7 @@ the-park/
 ├─ components/          # UI réutilisable (design system The Park)
 ├─ lib/                 # clients (prisma, stripe, auth0, pusher, resend)
 ├─ server/             # logique métier, machine à états, services
-├─ prisma/              # schema.prisma + migrations
-├─ cms/                 # Payload collections (cartes, saisons, versions)
+├─ prisma/              # schema.prisma + migrations (catalogue inclus)
 ├─ messages/            # i18n FR / JA / EN
 └─ docs/                # CDC, devis, plan sécurité, roadmap
 ```

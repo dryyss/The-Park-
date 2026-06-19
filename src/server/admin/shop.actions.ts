@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { requireModule } from "@/server/auth/admin-guard";
 import { createProduct, updateOrderStatus, updateProduct, updateSeason } from "@/server/admin/admin.mutations";
@@ -83,6 +83,7 @@ export async function updateSeasonAction(input: unknown): Promise<AdminActionRes
     });
     revalidatePath("/admin/catalogue");
     revalidatePath("/saison-1");
+    revalidateTag("catalog");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

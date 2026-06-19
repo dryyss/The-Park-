@@ -9,7 +9,7 @@ Tu es l'assistant de développement du projet **The Park**, une plateforme web T
 - **Next.js 15** (App Router uniquement, pas de Pages Router) · **React 19** · **TypeScript strict**.
 - **Prisma + PostgreSQL** pour les données. Toute évolution de schéma passe par une migration Prisma.
 - **Auth0** pour l'auth (comptes, âge, consentement parental).
-- **Payload CMS v3** pour le catalogue (cartes, saisons, versions, langues).
+- **Catalogue géré par Prisma** + back-office admin maison (`/admin/catalogue`, CRUD cartes & variantes). Payload CMS abandonné — pas de second outil de schéma sur la base.
 - **Pusher / WebSocket** pour le chat contextualisé.
 - **Stripe** pour la boutique (+ Stripe Connect pour la couche sécurité C2C).
 - **Resend** pour les e-mails. **Recharts** pour les graphes.

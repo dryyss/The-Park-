@@ -2,9 +2,9 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { requireModule } from "@/server/auth/admin-guard";
-import { getAdminSeasons } from "@/server/admin/admin.mutations";
+import { getAdminCatalog, getAdminRarities, getAdminVersionTypes } from "@/server/admin/admin.mutations";
 import { PageHeader } from "@/components/common/page-header";
-import { AdminCatalogPanel } from "@/components/admin/admin-catalog-panel";
+import { AdminCatalogManager } from "@/components/admin/admin-catalog-manager";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +19,11 @@ export default async function AdminCataloguePage({ params }: { params: Promise<{
     notFound();
   }
 
-  const seasons = await getAdminSeasons();
+  const [seasons, rarities, versionTypes] = await Promise.all([
+    getAdminCatalog(),
+    getAdminRarities(),
+    getAdminVersionTypes(),
+  ]);
 
   return (
     <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
@@ -30,7 +34,7 @@ export default async function AdminCataloguePage({ params }: { params: Promise<{
         <PageHeader kicker={t("catalog.kicker")} title={t("catalog.title")} jp="カタログ" />
       </div>
       <div className="mt-8">
-        <AdminCatalogPanel seasons={seasons} />
+        <AdminCatalogManager seasons={seasons} rarities={rarities} versionTypes={versionTypes} />
       </div>
     </main>
   );
