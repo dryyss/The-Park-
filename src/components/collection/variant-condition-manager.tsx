@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { CONDITION_ORDER, conditionColor, type ConditionCode } from "@/lib/condition";
-import { adjustCollectionVariantAction, updateCollectionGradingAction } from "@/server/collection/collection.actions";
+import { adjustCollectionVariantAction, updateCollectionGradingAction, updateCollectionSignatureAction } from "@/server/collection/collection.actions";
 import { listCollectionItemAction, cancelListingAction } from "@/server/marketplace/marketplace.actions";
+import { CollectionPhotoManager } from "@/components/collection/collection-photo-manager";
 import { QuantityStepper } from "@/components/collection/quantity-stepper";
+import type { CollectionItemPhotoView } from "@/server/collection/collection-photos.service";
 
 type ListingType = "SELL" | "TRADE" | "SELL_OR_TRADE";
 
@@ -16,6 +18,9 @@ export type ConditionRow = {
   reservedQuantity: number;
   available: number;
   isGraded: boolean;
+  isSigned: boolean;
+  signatureAuthor: string | null;
+  photos: CollectionItemPhotoView[];
   listing: { id: string; type: string; price: string | null } | null;
 };
 
@@ -103,6 +108,17 @@ export function VariantConditionManager({
             ))}
           </div>
 
+          <SignatureAuthorField
+            variantId={variantId}
+            condition={c.condition}
+            isSigned={c.isSigned}
+            signatureAuthor={c.signatureAuthor}
+            pending={pending}
+            onRun={run}
+          />
+
+          <CollectionPhotoManager variantId={variantId} condition={c.condition} photos={c.photos} />
+
           <div className="mt-2 flex flex-wrap items-center gap-2">
             {c.listing ? (
               <>
@@ -175,6 +191,92 @@ export function VariantConditionManager({
       </div>
 
       {error && <p className="text-[10.5px] font-bold text-neon-rouge">{t("listingError")}</p>}
+    </div>
+  );
+}
+
+function SignatureAuthorField({
+  variantId,
+  condition,
+  isSigned,
+  signatureAuthor,
+  pending,
+  onRun,
+}: {
+  variantId: string;
+  condition: string;
+  isSigned: boolean;
+  signatureAuthor: string | null;
+  pending: boolean;
+  onRun: (fn: () => Promise<{ ok: boolean; error?: string }>) => void;
+}) {
+  const t = useTranslations("card");
+  const [author, setAuthor] = useState(signatureAuthor ?? "");
+
+  useEffect(() => {
+    setAuthor(signatureAuthor ?? "");
+  }, [signatureAuthor, condition]);
+
+  return (
+    <div className="mt-2 flex flex-col gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("signedLabel")}</span>
+        {([true, false] as const).map((signed) => (
+          <button
+            key={signed ? "yes" : "no"}
+            type="button"
+            disabled={pending}
+            onClick={() =>
+              onRun(() =>
+                updateCollectionSignatureAction({
+                  variantId,
+                  condition,
+                  isSigned: signed,
+                  signatureAuthor: signed ? author : null,
+                }),
+              )
+            }
+            className={[
+              "rounded-md border px-2.5 py-1 text-[10.5px] font-extrabold transition disabled:opacity-50",
+              isSigned === signed
+                ? "border-or/70 bg-or/12 text-blanc-casse"
+                : "border-charbon-500 text-texte-dim hover:border-charbon-400",
+            ].join(" ")}
+          >
+            {signed ? t("gradingYes") : t("gradingNo")}
+          </button>
+        ))}
+      </div>
+      {isSigned && (
+        <label className="flex flex-col gap-1">
+          <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("signatureAuthorLabel")}</span>
+          <input
+            type="text"
+            value={author}
+            maxLength={120}
+            disabled={pending}
+            placeholder={t("signatureAuthorPlaceholder")}
+            onChange={(e) => setAuthor(e.target.value)}
+            onBlur={() => {
+              if ((signatureAuthor ?? "") === author.trim()) return;
+              onRun(() =>
+                updateCollectionSignatureAction({
+                  variantId,
+                  condition,
+                  isSigned: true,
+                  signatureAuthor: author,
+                }),
+              );
+            }}
+            onKeyDown={(e) => {
+              if (e.key !== "Enter") return;
+              e.preventDefault();
+              (e.target as HTMLInputElement).blur();
+            }}
+            className="w-full max-w-sm rounded-md border border-charbon-500 bg-charbon-700 px-2.5 py-1.5 text-[12px] font-bold text-blanc-casse outline-none placeholder:text-texte-faible focus:border-or"
+          />
+        </label>
+      )}
     </div>
   );
 }

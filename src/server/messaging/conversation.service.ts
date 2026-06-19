@@ -18,6 +18,7 @@ export interface ConversationListItem {
 export interface ThreadMessage {
   id: string;
   body: string;
+  attachments: string[];
   senderId: string;
   senderName: string;
   senderInitial: string;
@@ -88,6 +89,14 @@ export async function getViewerConversations(userId: string): Promise<Conversati
     const last = conv.messages[0];
     const partner = await getPartner(conv, userId);
     const unread = last != null && (p.lastReadAt == null || last.createdAt > p.lastReadAt) && last.senderId !== userId;
+    const lastPreview =
+      last == null
+        ? null
+        : last.body.trim()
+          ? last.body
+          : last.attachments.length > 0
+            ? "📷 Photo"
+            : null;
 
     items.push({
       id: conv.id,
@@ -96,7 +105,7 @@ export async function getViewerConversations(userId: string): Promise<Conversati
       partnerName: partner.name,
       partnerInitial: partner.initial,
       partnerSlug: partner.slug,
-      lastMessage: last?.body ?? null,
+      lastMessage: lastPreview,
       lastMessageAt: last?.createdAt ?? null,
       unread,
       exchangeId: conv.exchangeId,
@@ -171,7 +180,8 @@ export async function getConversationThread(
     exchangeId: conv.exchangeId,
     messages: conv.messages.map((m) => ({
       id: m.id,
-      body: m.body,
+      body: m.body.trim() ? m.body : "",
+      attachments: m.attachments,
       senderId: m.senderId,
       senderName: m.sender.displayName,
       senderInitial: m.sender.displayName.charAt(0).toUpperCase(),

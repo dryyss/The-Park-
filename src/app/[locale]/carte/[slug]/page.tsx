@@ -2,10 +2,12 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { OwnedVariantStack } from "@/components/cards/owned-variant-stack";
+import { CardCommunityPhotos } from "@/components/collection/card-community-photos";
 import { getCardDetail } from "@/server/catalog/catalog.service";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import { getViewerUser, getAuthenticatedViewer } from "@/server/user/user.service";
 import { CardMemberActions } from "@/components/cards/card-member-actions";
+import { CardWantButton } from "@/components/cards/card-want-button";
 import { avatarGradient } from "@/lib/avatars";
 import { isFirstEditionLabel } from "@/lib/card-edition";
 
@@ -57,24 +59,31 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
         )}
       </nav>
 
-      <div className="mt-6 grid items-start gap-11 lg:grid-cols-[380px_1fr]">
-        <div className="lg:sticky lg:top-[90px]">
-          <OwnedVariantStack
-            cards={ownedVariantCards}
-            fallbackImage={card.image}
-            alt={card.name}
-            tilt={card.tilt}
-            holo={card.holo}
-            variant={card.variant}
-            rarityColor={card.color}
-            priority
-          />
-          {showFirstEditionBadge && (
-            <span className="font-display absolute left-0 top-3.5 -rotate-3 bg-carmin px-3 py-1 text-[11px] tracking-[1.5px] text-white">
-              {t("firstEditionBadge")}
-            </span>
+      <div className="mt-6 grid items-start gap-6 lg:grid-cols-2 lg:gap-4 xl:grid-cols-[380px_1fr]">
+        <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
+          <div className="relative min-w-0 flex-1 lg:sticky lg:top-[90px]">
+            <OwnedVariantStack
+              cards={ownedVariantCards}
+              fallbackImage={card.image}
+              alt={card.name}
+              tilt={card.tilt}
+              holo={card.holo}
+              variant={card.variant}
+              rarityColor={card.color}
+              priority
+            />
+            {showFirstEditionBadge && (
+              <span className="font-display absolute left-0 top-3.5 -rotate-3 bg-carmin px-3 py-1 text-[11px] tracking-[1.5px] text-white">
+                {t("firstEditionBadge")}
+              </span>
+            )}
+            <p className="mt-3 text-center text-[11.5px] font-bold text-texte-faible">{t("holoHint")}</p>
+          </div>
+          {card.communityPhotos.length > 0 && (
+            <div className="min-w-0 flex-1">
+              <CardCommunityPhotos photos={card.communityPhotos} />
+            </div>
           )}
-          <p className="mt-3 text-center text-[11.5px] font-bold text-texte-faible">{t("holoHint")}</p>
         </div>
 
         <div>
@@ -162,6 +171,11 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
               {t("ctaExchange")}
             </Link>
           </div>
+
+          <CardWantButton
+            versions={card.versions.map((v) => ({ variantId: v.variantId, label: v.label }))}
+            isAuthenticated={!!authenticated}
+          />
         </div>
       </div>
 

@@ -542,10 +542,29 @@ model CollectionItem {
   gradeCompany String?
   gradeScore   Float?
 
+  /// Exemplaire signé (autographe artiste / créateur).
+  isSigned        Boolean @default(false)
+  signatureAuthor String?
+
+  photos CollectionItemPhoto[]
+
   acquiredAt DateTime @default(now())
 
   @@unique([userId, variantId, condition])
   @@index([userId])
+}
+
+/// Photo réelle d'un exemplaire possédé (upload collectionneur, visible publiquement).
+model CollectionItemPhoto {
+  id               String         @id @default(cuid())
+  collectionItem   CollectionItem @relation(fields: [collectionItemId], references: [id], onDelete: Cascade)
+  collectionItemId String
+  /// Chemin public (ex. /uploads/collection/…).
+  url              String
+  sortOrder        Int            @default(0)
+  createdAt        DateTime       @default(now())
+
+  @@index([collectionItemId, sortOrder])
 }
 
 // ============================================================================

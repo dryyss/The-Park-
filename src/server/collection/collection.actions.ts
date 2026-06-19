@@ -11,6 +11,7 @@ import {
   adjustCollectionVariantQuantity,
   updateCollectionEdition,
   updateCollectionGrading,
+  updateCollectionSignature,
 } from "@/server/collection/collection.mutations";
 import { editionPresetToLabel, type EditionPresetCode } from "@/lib/card-edition";
 
@@ -57,6 +58,13 @@ const gradingSchema = z.object({
   variantId: z.string().min(1),
   condition: conditionEnum,
   isGraded: z.boolean(),
+});
+
+const signatureSchema = z.object({
+  variantId: z.string().min(1),
+  condition: conditionEnum,
+  isSigned: z.boolean(),
+  signatureAuthor: z.string().trim().max(120).nullish(),
 });
 
 function revalidateCollection() {
@@ -159,6 +167,28 @@ export async function updateCollectionGradingAction(input: unknown): Promise<Col
 
   try {
     await updateCollectionGrading(viewer.id, parsed.data.variantId, parsed.data.condition, parsed.data.isGraded);
+    revalidateCollection();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
+export async function updateCollectionSignatureAction(input: unknown): Promise<CollectionActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  const parsed = signatureSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+
+  try {
+    await updateCollectionSignature(
+      viewer.id,
+      parsed.data.variantId,
+      parsed.data.condition,
+      parsed.data.isSigned,
+      parsed.data.signatureAuthor,
+    );
     revalidateCollection();
     return { ok: true };
   } catch (err) {

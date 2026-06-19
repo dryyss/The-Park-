@@ -5,7 +5,8 @@ import type { Prisma } from "@/generated/prisma/client";
 import { rarityMeta, cardImage, cardNumberLabel, type HoloVariant } from "@/lib/rarity";
 import { conditionColor } from "@/lib/condition";
 import { formatPrice } from "@/lib/format";
-import { isActiveVersionCode } from "@/lib/card-versions";
+import { VERSION_TYPE_DEFINITIONS } from "@/lib/card-versions";
+import { RARITY_ORDER } from "@/lib/rarity";
 import { ACTIVE_SALE_STATUSES } from "@/server/sale/sale.mutations";
 
 /** "sell" = annonces où l'on propose une carte ; "want" = recherches. */
@@ -228,10 +229,9 @@ export async function getMarketplaceFacets(): Promise<MarketplaceFacets> {
 }
 
 async function fetchMarketplaceFacets(): Promise<MarketplaceFacets> {
-  const [sellCount, wantCount, versions] = await Promise.all([
+  const [sellCount, wantCount] = await Promise.all([
     prisma.listing.count({ where: { status: "ACTIVE", type: { in: [...SELL_TYPES] } } }),
     prisma.listing.count({ where: { status: "ACTIVE", type: "WANT" } }),
-    prisma.versionType.findMany({ orderBy: { sortOrder: "asc" }, select: { code: true, label: true } }),
   ]);
 
   const rarityGroups = await prisma.rarity.findMany({
@@ -245,7 +245,10 @@ async function fetchMarketplaceFacets(): Promise<MarketplaceFacets> {
   return {
     sellCount,
     wantCount,
-    versions: versions.filter((v) => isActiveVersionCode(v.code)),
-    rarities: rarityGroups.map((r) => ({ code: r.code, count: r._count.cards })),
+    versions: VERSION_TYPE_DEFINITIONS.map((v) => ({ code: v.code, label: v.label })),
+    rarities: RARITY_ORDER.map((code) => ({
+      code,
+      count: rarityGroups.find((r) => r.code === code)?._count.cards ?? 0,
+    })).filter((r) => r.count > 0),
   };
 }

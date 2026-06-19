@@ -4,7 +4,10 @@ import {
   staffRoleToAuth0Name,
   getDefaultDashboardForStaffRole,
   getDashboardsForStaffRole,
+  MODULES_BY_STAFF_ROLE,
+  ADMIN_DASHBOARDS,
 } from "@/server/auth/roles.definition";
+import type { AdminRole } from "@/generated/prisma/client";
 
 describe("mapAuth0RoleNames", () => {
   it("sans rôle reconnu → MEMBER / staffRole null", () => {
@@ -58,5 +61,40 @@ describe("getDashboardsForStaffRole", () => {
     expect(hrefs).not.toContain("/admin/boutique");
     expect(hrefs).not.toContain("/admin/roles");
     expect(hrefs).toContain("/admin/support");
+  });
+
+  it("le dashboard Utilisateurs n'apparaît que pour OWNER et MODERATOR", () => {
+    const has = (role: Parameters<typeof getDashboardsForStaffRole>[0]) =>
+      getDashboardsForStaffRole(role)
+        .map((d) => d.href)
+        .includes("/admin/utilisateurs");
+    expect(has("OWNER")).toBe(true);
+    expect(has("MODERATOR")).toBe(true);
+    expect(has("CATALOG_MANAGER")).toBe(false);
+    expect(has("SHOP_MANAGER")).toBe(false);
+    expect(has("SUPPORT")).toBe(false);
+  });
+});
+
+describe("OWNER — superset de tous les rôles", () => {
+  it("possède tous les modules de chaque autre rôle", () => {
+    const owner = new Set(MODULES_BY_STAFF_ROLE.OWNER);
+    for (const role of Object.keys(MODULES_BY_STAFF_ROLE) as AdminRole[]) {
+      for (const m of MODULES_BY_STAFF_ROLE[role]) {
+        expect(owner.has(m)).toBe(true);
+      }
+    }
+  });
+
+  it("couvre tous les dashboards admin existants", () => {
+    const owner = new Set(MODULES_BY_STAFF_ROLE.OWNER);
+    for (const d of ADMIN_DASHBOARDS) {
+      expect(owner.has(d.module)).toBe(true);
+    }
+  });
+
+  it("voit donc l'intégralité des dashboards", () => {
+    const ownerHrefs = getDashboardsForStaffRole("OWNER").map((d) => d.href);
+    expect(ownerHrefs).toEqual(ADMIN_DASHBOARDS.map((d) => d.href));
   });
 });

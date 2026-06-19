@@ -8,6 +8,7 @@ import { CollectionCardTile } from "@/components/collection/collection-card-tile
 import { CollectionDisplayControls } from "@/components/collection/collection-display-controls";
 import { CollectionGuestBanner } from "@/components/collection/collection-guest-banner";
 import { collectionGridClassName, parseCollectionGridCols, parseCollectionSort } from "@/lib/collection-grid";
+import { ScrollToTopButton } from "@/components/common/scroll-to-top-button";
 
 export const dynamic = "force-dynamic";
 
@@ -92,6 +93,7 @@ export default async function CollectionPage({
           </div>
         </section>
       ))}
+      <ScrollToTopButton />
     </main>
   );
 }

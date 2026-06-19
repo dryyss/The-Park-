@@ -15,15 +15,6 @@ export async function ShopOfficialBanner() {
           <div className="text-[10px] font-extrabold tracking-wide text-or uppercase">{t("officialSub")}</div>
         </div>
       </div>
-      <div className="flex items-center gap-2 text-[12.5px] font-bold text-texte-dim">
-        <span
-          className="font-display flex h-6 w-6 items-center justify-center rounded-full text-[11px] text-white"
-          style={{ background: "linear-gradient(135deg,#D81B60,#7A0F37)" }}
-        >
-          L
-        </span>
-        {t("signedBy")} <strong className="text-blanc-casse">Lighton</strong>
-      </div>
       <div className="flex-1" />
       <Link
         href="/marketplace"

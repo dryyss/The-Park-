@@ -5,7 +5,7 @@
 
 export const META = {
   c: { glyph: "◆", color: "#9BA3B2", label: "Commune", tilt: 3, holo: "0.3" },
-  r: { glyph: "◈", color: "#4FA3FF", label: "Rare Holo", tilt: 5, holo: "0.5" },
+  r: { glyph: "◈", color: "#4FA3FF", label: "Rare", tilt: 5, holo: "0.5" },
   u: { glyph: "✦", color: "#B05CFF", label: "Ultra Rare", tilt: 6, holo: "0.65" },
   l: { glyph: "❀", color: "#FF2E63", label: "Légendaire", tilt: 8, holo: "0.8" },
   g: { glyph: "✸", color: "#E8B23A", label: "Gold", tilt: 8, holo: "0.85" },
@@ -921,11 +921,9 @@ export const CARDS = RAW.map((r) => ({
 export const CARD_EXTRA_VERSIONS = {
   0: ["promotional", "special", "signed"],
   68: ["special"],
-  69: ["special"],
   70: ["collaboration"],
   72: ["collaboration", "signed"],
   74: ["collaboration"],
-  77: ["promotional"],
   78: ["unique"],
   79: ["unique"],
 };

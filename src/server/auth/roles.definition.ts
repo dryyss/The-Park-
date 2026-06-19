@@ -114,9 +114,21 @@ export function staffRoleToAuth0Name(staffRole: AdminRole): Auth0RoleName {
   return def.name;
 }
 
+/** Tous les modules admin existants — l'owner les possède intégralement. */
+export const ALL_ADMIN_MODULES: AdminModule[] = [
+  "overview",
+  "moderation",
+  "users",
+  "catalog",
+  "shop",
+  "support",
+  "staff",
+];
+
 /** Matrice des permissions par sous-rôle (CDC §6). */
 export const MODULES_BY_STAFF_ROLE: Record<AdminRole, AdminModule[]> = {
-  OWNER: ["overview", "moderation", "users", "catalog", "shop", "support", "staff"],
+  // L'owner a toutes les fonctionnalités de tous les rôles, par construction.
+  OWNER: [...ALL_ADMIN_MODULES],
   MODERATOR: ["overview", "moderation", "users", "support"],
   CATALOG_MANAGER: ["overview", "catalog"],
   SHOP_MANAGER: ["overview", "shop"],

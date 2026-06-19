@@ -53,11 +53,6 @@ export function CollectionCardTile({
                 </span>
               </div>
             )}
-            {(card.hasFirstEdition || card.isPromo) && card.owned && (
-              <span className="font-display absolute -left-1 top-2.5 -rotate-3 bg-carmin px-2.5 py-1 text-[9.5px] tracking-[1.5px] text-white shadow-[2px_2px_0_rgba(0,0,0,0.4)]">
-                1ÈRE ÉDITION
-              </span>
-            )}
           </div>
         </CatalogCardFrame>
       </Link>

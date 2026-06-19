@@ -126,7 +126,13 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     if (filters.segment === "owned" && !c.owned) return false;
     if (filters.segment === "missing" && c.owned) return false;
     if (filters.rarity && cardByNumber.get(c.number)?.rarity.code !== filters.rarity) return false;
-    if (q && !c.name.toLowerCase().includes(q) && !String(c.number).includes(q)) return false;
+    if (q) {
+      const nameMatch = c.name.toLowerCase().includes(q);
+      const numPadded = String(c.number).padStart(2, "0");
+      const numMatch = numPadded.includes(q);
+      const promoMatch = q.includes("promo") && isPromoRarity(cardByNumber.get(c.number)?.rarity.code ?? "");
+      if (!nameMatch && !numMatch && !promoMatch) return false;
+    }
     return true;
   });
 

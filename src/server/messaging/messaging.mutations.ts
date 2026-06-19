@@ -3,15 +3,18 @@ import { prisma } from "@/lib/prisma";
 import { pushUserEvent } from "@/lib/pusher";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
 
-/** Envoie un message dans une conversation contextualisée. */
+/** Envoie un message dans une conversation contextualisée (texte et/ou photos). */
 export async function sendConversationMessage(
   senderId: string,
   conversationId: string,
   body: string,
+  attachmentUrls: string[] = [],
 ): Promise<string> {
   const trimmed = body.trim();
-  if (!trimmed) throw new Error("EMPTY_MESSAGE");
+  const attachments = attachmentUrls.filter(Boolean);
+  if (!trimmed && attachments.length === 0) throw new Error("EMPTY_MESSAGE");
   if (trimmed.length > 2000) throw new Error("TOO_LONG");
+  if (attachments.length > 4) throw new Error("TOO_MANY_ATTACHMENTS");
 
   const participation = await prisma.conversationParticipant.findUnique({
     where: { conversationId_userId: { conversationId, userId: senderId } },
@@ -27,7 +30,12 @@ export async function sendConversationMessage(
 
   const message = await prisma.$transaction(async (tx) => {
     const created = await tx.message.create({
-      data: { conversationId, senderId, body: trimmed },
+      data: {
+        conversationId,
+        senderId,
+        body: trimmed || " ",
+        attachments,
+      },
       include: { sender: { select: { displayName: true } } },
     });
     await tx.conversationParticipant.update({
@@ -37,11 +45,14 @@ export async function sendConversationMessage(
     return created;
   });
 
+  const preview = trimmed || (attachments.length > 0 ? "📷 Photo" : "");
+
   const chatPayload = {
     conversationId,
     message: {
       id: message.id,
-      body: message.body,
+      body: message.body.trim() ? message.body : "",
+      attachments: message.attachments,
       senderId,
       senderName: message.sender.displayName,
       senderInitial: message.sender.displayName.charAt(0).toUpperCase(),
@@ -56,7 +67,7 @@ export async function sendConversationMessage(
       actorId: senderId,
       entityType: "CONVERSATION",
       entityId: conversationId,
-      payload: { preview: trimmed.slice(0, 120) },
+      payload: { preview: preview.slice(0, 120) },
     });
     await pushUserEvent(p.userId, "chat-message", {
       ...chatPayload,

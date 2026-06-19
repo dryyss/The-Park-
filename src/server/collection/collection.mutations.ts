@@ -191,3 +191,27 @@ export async function updateCollectionGrading(
       : { isGraded: false, gradeCompany: null, gradeScore: null },
   });
 }
+
+/** Active ou désactive la signature sur un exemplaire (par état). */
+export async function updateCollectionSignature(
+  userId: string,
+  variantId: string,
+  condition: CardCondition,
+  isSigned: boolean,
+  signatureAuthor?: string | null,
+): Promise<void> {
+  const item = await prisma.collectionItem.findUnique({
+    where: { userId_variantId_condition: { userId, variantId, condition } },
+    select: { id: true },
+  });
+  if (!item) throw new Error("NOT_FOUND");
+
+  const author = signatureAuthor?.trim() || null;
+
+  await prisma.collectionItem.update({
+    where: { id: item.id },
+    data: isSigned
+      ? { isSigned: true, signatureAuthor: author }
+      : { isSigned: false, signatureAuthor: null },
+  });
+}

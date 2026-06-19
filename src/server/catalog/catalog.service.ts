@@ -7,6 +7,11 @@ import { formatPrice } from "@/lib/format";
 import { isActiveVersionCode } from "@/lib/card-versions";
 import { isFirstEditionLabel, resolveEditionLabel } from "@/lib/card-edition";
 import { CONDITION_ORDER } from "@/lib/condition";
+import {
+  listCommunityPhotosForCard,
+  type CommunityPhotoView,
+  type CollectionItemPhotoView,
+} from "@/server/collection/collection-photos.service";
 
 // Ordre d'affichage des états (du meilleur au plus abîmé).
 const CONDITION_SORT: readonly string[] = CONDITION_ORDER;
@@ -246,8 +251,12 @@ export interface CardDetail {
       available: number;
       listing: { id: string; type: string; price: string | null } | null;
       isGraded: boolean;
+      isSigned: boolean;
+      signatureAuthor: string | null;
+      photos: CollectionItemPhotoView[];
     }[];
   }[];
+  communityPhotos: CommunityPhotoView[];
   listings: {
     id: string;
     sellerId: string;
@@ -273,7 +282,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
   });
   if (!card) return null;
 
-  const [neighbors, listings, ownedVariants, viewerListings] = await Promise.all([
+  const [neighbors, listings, ownedVariants, viewerListings, communityPhotos] = await Promise.all([
     prisma.card.findMany({
       where: { seasonId: card.seasonId },
       orderBy: { number: "asc" },
@@ -291,7 +300,17 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     viewerUserId
       ? prisma.collectionItem.findMany({
           where: { userId: viewerUserId, variant: { cardId: card.id } },
-          select: { variantId: true, condition: true, quantity: true, reservedQuantity: true, editionLabel: true, isGraded: true },
+          select: {
+            id: true,
+            variantId: true,
+            condition: true,
+            quantity: true,
+            reservedQuantity: true,
+            editionLabel: true,
+            isGraded: true,
+            isSigned: true,
+            signatureAuthor: true,
+          },
         })
       : Promise.resolve([]),
     viewerUserId
@@ -300,7 +319,27 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
           select: { id: true, variantId: true, condition: true, type: true, price: true },
         })
       : Promise.resolve([]),
+    listCommunityPhotosForCard(card.id),
   ]);
+
+  const ownedItemIds = ownedVariants.filter((o) => o.quantity > 0).map((o) => o.id);
+  const itemPhotoRows =
+    ownedItemIds.length > 0
+      ? await prisma.collectionItemPhoto.findMany({
+          where: { collectionItemId: { in: ownedItemIds } },
+          orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+          select: { id: true, url: true, sortOrder: true, createdAt: true, collectionItemId: true },
+        })
+      : [];
+  const photosByItemId = new Map<string, CollectionItemPhotoView[]>();
+  for (const p of itemPhotoRows) {
+    const list = photosByItemId.get(p.collectionItemId) ?? [];
+    list.push({ id: p.id, url: p.url, sortOrder: p.sortOrder, createdAt: p.createdAt });
+    photosByItemId.set(p.collectionItemId, list);
+  }
+  const itemIdByVariantCondition = new Map(
+    ownedVariants.filter((o) => o.quantity > 0).map((o) => [`${o.variantId}:${o.condition}`, o.id]),
+  );
 
   // Annonce active du viewer par (variante, état) — pour signaler ce qui est déjà listé.
   const viewerListingByKey = new Map<string, { id: string; type: string; price: string | null }>();
@@ -314,7 +353,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
   // Détail des états possédés par variante.
   const conditionsByVariant = new Map<
     string,
-    { condition: string; quantity: number; reservedQuantity: number; isGraded: boolean }[]
+    { condition: string; quantity: number; reservedQuantity: number; isGraded: boolean; isSigned: boolean; signatureAuthor: string | null }[]
   >();
   for (const o of ownedVariants) {
     if (o.quantity <= 0) continue;
@@ -324,6 +363,8 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
       quantity: o.quantity,
       reservedQuantity: o.reservedQuantity,
       isGraded: o.isGraded,
+      isSigned: o.isSigned,
+      signatureAuthor: o.signatureAuthor,
     });
     conditionsByVariant.set(o.variantId, list);
   }
@@ -385,14 +426,20 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
       const conditions = (conditionsByVariant.get(v.id) ?? [])
         .slice()
         .sort((a, b) => CONDITION_SORT.indexOf(a.condition) - CONDITION_SORT.indexOf(b.condition))
-        .map((c) => ({
-          condition: c.condition,
-          quantity: c.quantity,
-          reservedQuantity: c.reservedQuantity,
-          available: c.quantity - c.reservedQuantity,
-          listing: viewerListingByKey.get(`${v.id}:${c.condition}`) ?? null,
-          isGraded: c.isGraded,
-        }));
+        .map((c) => {
+          const itemId = itemIdByVariantCondition.get(`${v.id}:${c.condition}`);
+          return {
+            condition: c.condition,
+            quantity: c.quantity,
+            reservedQuantity: c.reservedQuantity,
+            available: c.quantity - c.reservedQuantity,
+            listing: viewerListingByKey.get(`${v.id}:${c.condition}`) ?? null,
+            isGraded: c.isGraded,
+            isSigned: c.isSigned,
+            signatureAuthor: c.signatureAuthor,
+            photos: itemId ? (photosByItemId.get(itemId) ?? []) : [],
+          };
+        });
       return {
         variantId: v.id,
         code: v.versionType.code,
@@ -409,6 +456,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
         conditions,
       };
     }),
+    communityPhotos,
     listings: listings.map((l) => ({
       id: l.id,
       sellerId: l.sellerId,

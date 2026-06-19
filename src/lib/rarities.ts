@@ -16,7 +16,7 @@ export interface RarityDefinition {
 /** Raretés du catalogue Pocket Drifterz (paramétrables admin). */
 export const RARITY_DEFINITIONS = [
   { code: "c", label: "Commune", title: "Communes", jp: "一般", symbol: "◆", color: "#9BA3B2", tilt: 3, holo: 0.3, variant: "rainbow", sortOrder: 0 },
-  { code: "r", label: "Rare Holo", title: "Rares Holo", jp: "レア", symbol: "◈", color: "#4FA3FF", tilt: 5, holo: 0.5, variant: "rainbow", sortOrder: 1 },
+  { code: "r", label: "Rare", title: "Rares", jp: "レア", symbol: "◈", color: "#4FA3FF", tilt: 5, holo: 0.5, variant: "rainbow", sortOrder: 1 },
   { code: "u", label: "Ultra Rare", title: "Ultra Rares", jp: "ウルトラ", symbol: "✦", color: "#B05CFF", tilt: 6, holo: 0.65, variant: "rainbow", sortOrder: 2 },
   { code: "l", label: "Légendaire", title: "Légendaires", jp: "伝説", symbol: "❀", color: "#FF2E63", tilt: 8, holo: 0.8, variant: "rainbow", sortOrder: 3 },
   { code: "g", label: "Gold", title: "Gold", jp: "金", symbol: "✸", color: "#E8B23A", tilt: 8, holo: 0.85, variant: "gold", sortOrder: 4 },
