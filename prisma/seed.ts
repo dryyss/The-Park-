@@ -190,6 +190,23 @@ async function main() {
         create: { cardId: card.id, versionTypeId, language: "FR", editionLabel },
       });
     }
+
+    const allowedTypeIds = new Set([
+      vtByCode["standard"],
+      ...extras.map((code) => vtByCode[code]).filter(Boolean),
+    ]);
+    const staleVariants = await prisma.cardVariant.findMany({
+      where: { cardId: card.id, versionTypeId: { notIn: [...allowedTypeIds] } },
+      select: { id: true },
+    });
+    if (staleVariants.length > 0) {
+      const staleIds = staleVariants.map((v) => v.id);
+      await prisma.exchangeItem.deleteMany({ where: { variantId: { in: staleIds } } });
+      await prisma.auction.deleteMany({ where: { variantId: { in: staleIds } } });
+      await prisma.listing.deleteMany({ where: { variantId: { in: staleIds } } });
+      await prisma.collectionItem.deleteMany({ where: { variantId: { in: staleIds } } });
+      await prisma.cardVariant.deleteMany({ where: { id: { in: staleIds } } });
+    }
   }
 
   console.log("→ Badges (CDC Module 9)");

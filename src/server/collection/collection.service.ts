@@ -93,11 +93,15 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     const own = ownedByCard.get(card.number);
     const owned = !!own && own.qty > 0;
     const standardVariant = card.variants.find((v) => v.versionType.code === "standard");
+    const imageFile =
+      card.imageUrl ??
+      card.variants.find((v) => v.imageUrl)?.imageUrl ??
+      null;
     return {
       number: card.number,
       slug: card.slug,
       name: card.name,
-      image: card.imageUrl ? cardImage(card.imageUrl) : null,
+      image: imageFile ? cardImage(imageFile) : null,
       glyph: card.rarity.symbol ?? meta.glyph,
       color: card.rarity.color ?? meta.color,
       tilt: meta.tilt,
