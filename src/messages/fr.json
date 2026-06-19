@@ -255,7 +255,7 @@
   "season": {
     "kicker": "Saison 1 · disponible",
     "title": "Moteur Forgé",
-    "desc": "La première édition Pocket Drifterz : 78 cartes numérotées — Standard pour toutes, plus Unique, Promotionnelle, Carte spéciale, Collaboration ou Signé selon les tirages.",
+    "desc": "La première édition Pocket Drifterz : 80 cartes numérotées — Standard pour toutes, plus Unique, Promotionnelle, Carte spéciale, Collaboration ou Signé selon les tirages.",
     "trackCompletion": "Suivre ma complétion"
   },
   "profile": {
@@ -1070,6 +1070,8 @@
     "message": "Message",
     "messagePlaceholder": "Bonjour, intéressé par un échange ?",
     "messageDefault": "Salut ! Ça te dirait qu'on échange ces cartes ?",
+    "securedTitle": "Envoi sécurisé",
+    "securedHint": "Caution Stripe (100 % de la valeur reçue), preuves vidéo guidées et fenêtre garantie 72 h. Les frais sont à ta charge.",
     "submit": "Envoyer la proposition",
     "submitting": "Envoi…",
     "error": "Impossible d'envoyer la proposition.",

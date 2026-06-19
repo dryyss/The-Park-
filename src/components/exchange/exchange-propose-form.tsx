@@ -34,6 +34,7 @@ export function ExchangeProposeForm({
   // Pré-rempli avec un message d'amorce réel (et non un simple placeholder),
   // pour qu'une proposition parte toujours avec un mot d'accroche éditable.
   const [message, setMessage] = useState(() => t("messageDefault"));
+  const [secured, setSecured] = useState(false);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [showLoginGate, setShowLoginGate] = useState(false);
@@ -58,6 +59,7 @@ export function ExchangeProposeForm({
         recipientSlug: recipient.trim(),
         giveVariantIds: [...selected],
         message: message.trim() || undefined,
+        secured,
       });
       if (res.ok) {
         router.push("/echanges");
@@ -112,6 +114,20 @@ export function ExchangeProposeForm({
             placeholder={t("messagePlaceholder")}
             className="mt-3 w-full resize-none rounded-lg border border-charbon-500 bg-charbon-700 px-4 py-3 text-[13px] text-blanc-casse outline-none focus:border-carmin"
           />
+        </div>
+        <div className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              checked={secured}
+              onChange={(e) => setSecured(e.target.checked)}
+              className="mt-1 h-4 w-4 accent-carmin"
+            />
+            <span>
+              <span className="font-display text-[14px] tracking-wide text-blanc-casse uppercase">{t("securedTitle")}</span>
+              <span className="mt-1 block text-[12px] font-semibold leading-relaxed text-texte-dim">{t("securedHint")}</span>
+            </span>
+          </label>
         </div>
         {error && <p className="text-[12px] font-bold text-neon-rouge">{t("error")}</p>}
         {showLoginGate && <LoginGatePrompt compact messageKey="loginGateExchanges" />}

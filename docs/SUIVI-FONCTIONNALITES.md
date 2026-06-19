@@ -120,7 +120,7 @@
 | `/echanges` | Opportunités d'échange | `exchange.service` | `ExchangeBoard` | ✅ | — | Visible invités (lecture) | 2026-06-16 |
 | `/echanges` | Badge envoi sécurisé | `exchange.service` | `ExchangeBoard` | ⚠️ | P2 | Affichage seulement | 2026-06-16 |
 | `/echanges/proposer` | Proposition échange (cartes + message) | `exchange.actions` | `ExchangeProposeForm` | ✅ | — | | 2026-06-16 |
-| `/echanges/proposer` | Option envoi sécurisé (`secured`) | `exchange.actions` | — | ❌ | P2 | Backend prêt, UI absente | 2026-06-16 |
+| `/echanges/proposer` | Option envoi sécurisé (`secured`) | `exchange.actions` | `ExchangeProposeForm` | ✅ | P2 | Checkbox + caution Stripe webhook | 2026-06-19 |
 | `/messages` | Liste conversations contextualisées | `conversation.service` | `ConversationList` | ✅ | — | Pas de MP libre | 2026-06-16 |
 | `/messages/[id]` | Thread + envoi message | `messaging.actions` | `MessageComposeForm` | ✅ | — | | 2026-06-16 |
 | `/messages/[id]` | Temps réel Pusher | `/api/pusher/auth` | `ConversationMessageList` | 🔧 | P1 | Polling si Pusher absent | 2026-06-16 |
@@ -186,7 +186,7 @@
 | `/securite/*` | Suivi transporteur agrégateur | — | — | ❌ | P2 | La Poste, Chronopost, MR… | 2026-06-16 |
 | `/securite/*` | Choix croisé envoi sécurisé | `exchange.mutations` | — | ❌ | P2 | Flag BDD, UI proposition absente | 2026-06-16 |
 | `/securite/*` | Purge preuves RGPD 60 j | `shipment.service` | — | ✅ | P1 | Via cron maintenance | 2026-06-16 |
-| `/securite/*` | Webhook Stripe caution | — | — | ❌ | P2 | Seul checkout boutique webhooké | 2026-06-16 |
+| `POST /api/webhooks/stripe` | payment_intent.* (caution C2C) | `caution.service` | ✅ | P2 | amount_capturable_updated + canceled | 2026-06-19 |
 
 ---
 
@@ -218,7 +218,7 @@
 | `POST /api/webhooks/stripe` | checkout.session.completed | `checkout.service`, `wallet-topup` | 🔧 | P0 | `STRIPE_WEBHOOK_SECRET` — boutique + wallet top-up | 2026-06-18 |
 | `POST /api/webhooks/stripe` | account.updated (Connect) | `wallet-connect.service` | ✅ | P0 | Sync payouts_enabled vendeur | 2026-06-18 |
 | `/portefeuille` | Retrait gains → banque (Connect) | `wallet-withdraw.service` | `WalletWithdrawForm` | ✅ | — | Transfert plateforme → compte Express | 2026-06-18 |
-| `POST /api/cron/maintenance` | Expiration annonces | `marketplace.mutations` | ✅ | P0 | Bearer `CRON_SECRET` | 2026-06-16 |
+| `POST /api/cron/maintenance` | Expiration annonces + enchères + timeouts | API maintenance | ✅ | P0 | GET/POST horaire via vercel.json | 2026-06-19 |
 | `POST /api/cron/maintenance` | Clôture enchères | `auction.mutations` | ✅ | P0 | Scheduler externe requis | 2026-06-16 |
 | `POST /api/cron/maintenance` | Purge preuves C2C | `shipment.service` | ✅ | P1 | | 2026-06-16 |
 | `POST /api/cron/maintenance` | Timeouts échanges C2C | `exchange-lifecycle.service` | ✅ | P1 | | 2026-06-16 |
@@ -238,10 +238,8 @@
 | Notifs | Pusher temps réel | 🔧 | P1 | Fallback polling | 2026-06-16 |
 | Badges | Déblocage automatique | ✅ | — | `badge.service` | 2026-06-16 |
 | Footer | Newsletter | ❌ | P3 | Form sans handler | 2026-06-16 |
-| Tests | Vitest / e2e | ❌ | P1 | 0 test automatisé | 2026-06-16 |
-| CMS | Payload cartes/saisons | ❌ | P2 | Seed Prisma uniquement | 2026-06-16 |
-| DB orphelins | Sale, TrackingEvent, DisputeResolution… | ⚠️ | P2 | Cycle vente + wallet actifs ; Connect retrait à brancher | 2026-06-18 |
-| Config | `.env.example` versionné | ❌ | P0 | À créer | 2026-06-16 |
+| Tests | Vitest (wallet, auth, enchères…) | ✅ | P1 | 65 tests — `pnpm test` | 2026-06-19 |
+| Config | `.env.example` versionné | ✅ | P0 | Stripe Connect + cron + Resend | 2026-06-19 |
 | LCEN | ConnectionLog | ❌ | P1 | Modèle présent, non branché | 2026-06-16 |
 | Rate limiting | Endpoints sensibles | ❌ | P1 | Non implémenté | 2026-06-16 |
 

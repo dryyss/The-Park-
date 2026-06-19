@@ -48,6 +48,22 @@ export async function POST(request: Request) {
       const account = event.data.object as Stripe.Account;
       if (account.id) await syncConnectAccountByStripeId(account.id);
     }
+
+    if (event.type === "payment_intent.amount_capturable_updated") {
+      const pi = event.data.object as Stripe.PaymentIntent;
+      if (pi.metadata?.kind === "CAUTION" && pi.status === "requires_capture") {
+        const { markCautionAuthorized } = await import("@/server/c2c/caution.service");
+        await markCautionAuthorized(pi.id);
+      }
+    }
+
+    if (event.type === "payment_intent.canceled") {
+      const pi = event.data.object as Stripe.PaymentIntent;
+      if (pi.metadata?.kind === "CAUTION") {
+        const { markCautionCancelled } = await import("@/server/c2c/caution.service");
+        await markCautionCancelled(pi.id);
+      }
+    }
   } catch (err) {
     console.error("[stripe webhook] traitement", event.type, err);
     return NextResponse.json({ error: "Traitement échoué" }, { status: 500 });

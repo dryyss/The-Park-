@@ -55,7 +55,7 @@ export function rarityJp(code: string): string {
   return rarityDefinition(code)?.jp ?? "";
 }
 
-/** Libellé du numéro affiché sous la carte (ex. 03/78 ou 00 · PROMO). */
+/** Libellé du numéro affiché sous la carte (ex. 03/80 ou 00 · PROMO). */
 export function cardNumberLabel(number: number, rarityCode: string): string {
   const n = String(number).padStart(2, "0");
   if (isPromoRarity(rarityCode)) return `${n} · PROMO`;
@@ -63,5 +63,5 @@ export function cardNumberLabel(number: number, rarityCode: string): string {
     const label = rarityDefinition(rarityCode)?.label ?? rarityCode;
     return `${n} · ${label.toUpperCase()}`;
   }
-  return `${n}/78`;
+  return `${n}/80`;
 }

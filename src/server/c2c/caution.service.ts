@@ -80,10 +80,30 @@ export async function authorizeExchangeCaution(
   return { paymentId: payment.id, clientSecret };
 }
 
-/** Confirme l'autorisation après succès Stripe (webhook ou retour client). */
-export async function markCautionAuthorized(paymentId: string, stripePaymentIntentId: string): Promise<void> {
-  await prisma.payment.updateMany({
-    where: { id: paymentId, stripePaymentIntentId },
+/** Confirme l'autorisation après succès Stripe (webhook ou retour client). Idempotent. */
+export async function markCautionAuthorized(paymentIntentId: string): Promise<void> {
+  const payment = await prisma.payment.findFirst({
+    where: { stripePaymentIntentId: paymentIntentId, kind: "CAUTION" },
+    select: { id: true, status: true },
+  });
+  if (!payment || payment.status === "AUTHORIZED") return;
+
+  await prisma.payment.update({
+    where: { id: payment.id },
     data: { status: "AUTHORIZED" },
+  });
+}
+
+/** Annule une caution non finalisée (PI annulé côté Stripe). Idempotent. */
+export async function markCautionCancelled(paymentIntentId: string): Promise<void> {
+  const payment = await prisma.payment.findFirst({
+    where: { stripePaymentIntentId: paymentIntentId, kind: "CAUTION" },
+    select: { id: true, status: true },
+  });
+  if (!payment || payment.status === "CANCELLED") return;
+
+  await prisma.payment.update({
+    where: { id: payment.id },
+    data: { status: "CANCELLED" },
   });
 }

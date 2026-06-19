@@ -255,7 +255,7 @@
   "season": {
     "kicker": "Season 1 · available",
     "title": "Forged Engine",
-    "desc": "The first Pocket Drifterz edition: 78 numbered cards — Standard for all, plus Unique, Promotional, Special, Collaboration or Signed where applicable.",
+    "desc": "The first Pocket Drifterz edition: 80 numbered cards — Standard for all, plus Unique, Promotional, Special, Collaboration or Signed where applicable.",
     "trackCompletion": "Track my completion"
   },
   "profile": {
@@ -1070,6 +1070,8 @@
     "message": "Message",
     "messagePlaceholder": "Hi, interested in a trade?",
     "messageDefault": "Hey! Want to swap these cards?",
+    "securedTitle": "Secured shipping",
+    "securedHint": "Stripe deposit (100% of received value), guided video proofs and 72 h guarantee window. Fees are on you.",
     "submit": "Send proposal",
     "submitting": "Sending…",
     "error": "Could not send the proposal.",

@@ -878,6 +878,28 @@ const RAW = [
     "JP",
     "Entièrement façonnée en carbone, elle s'évapore dans les virages de Tokyo comme une ombre.",
   ],
+  [
+    78,
+    "TOYOTA COROLLA AE86 LEVIN POCKET DRIFTER",
+    "unique",
+    "78_TOYOTA_COROLLA_AE86_LEVIN_POCKET_DRIFTER.png",
+    100,
+    280,
+    940,
+    "JP",
+    "Édition artistique Pocket Drifter — la légende des montagnes repensée en full drift. Tout en travers !",
+  ],
+  [
+    79,
+    "MAZDA SAVANNA RX-7 FB",
+    "unique",
+    "79_MAZDA_SAVANNA_RX7_FB_UNIQUE.png",
+    100,
+    350,
+    1050,
+    "JP",
+    "La FB en finition or Moteur Forge — rotatif de légende, silhouette Savanna, unique 01/01.",
+  ],
 ];
 
 export const CARDS = RAW.map((r) => ({
@@ -904,6 +926,8 @@ export const CARD_EXTRA_VERSIONS = {
   72: ["collaboration", "signed"],
   74: ["collaboration"],
   77: ["unique"],
+  78: ["unique"],
+  79: ["unique"],
 };
 
 /** Libellé d'édition catalogue par défaut (Saison 1). */
@@ -913,4 +937,7 @@ export const DEFAULT_S01_EDITION_LABEL = "1ère édition";
  * Surcharge d'édition par numéro de carte (null = illimitée).
  * Absent = DEFAULT_S01_EDITION_LABEL pour toute la saison.
  */
-export const CARD_EDITION_LABELS = {};
+export const CARD_EDITION_LABELS = {
+  78: "Pocket Drifter Edition 2023",
+  79: "Moteur Forge édition 2024",
+};

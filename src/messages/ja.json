@@ -255,7 +255,7 @@
   "season": {
     "kicker": "シーズン1 · 公開中",
     "title": "鍛造エンジン",
-    "desc": "Pocket Drifterz初版：78枚 — 全カードにスタンダード版。一部はユニーク・プロモ・スペシャル・コラボ・サイン入り版あり。",
+    "desc": "Pocket Drifterz初版：80枚 — 全カードにスタンダード版。一部はユニーク・プロモ・スペシャル・コラボ・サイン入り版あり。",
     "trackCompletion": "コンプリートを追跡"
   },
   "profile": {
@@ -1070,6 +1070,8 @@
     "message": "メッセージ",
     "messagePlaceholder": "交換に興味ありますか？",
     "messageDefault": "こんにちは！このカード、交換しませんか？",
+    "securedTitle": "安全配送",
+    "securedHint": "Stripeデポジット（受取価値の100%）、ガイド付き動画証拠、72時間保証。手数料は自分負担。",
     "submit": "提案を送信",
     "submitting": "送信中…",
     "error": "提案を送信できませんでした。",
