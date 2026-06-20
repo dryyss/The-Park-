@@ -5,6 +5,8 @@ import { getUnreadNotificationCount } from "@/server/notification/notification.s
 import { getUnreadConversationCount } from "@/server/messaging/conversation.service";
 import { resolveStaffRole } from "@/server/auth/permissions.service";
 import { getDefaultDashboardForStaffRole } from "@/server/auth/roles.definition";
+import { getWalletSpendableBalanceEur } from "@/server/wallet/wallet.service";
+import { getMarketplaceCartItemCount } from "@/server/marketplace-cart/marketplace-cart.service";
 
 export const dynamic = "force-dynamic";
 
@@ -19,13 +21,17 @@ export async function GET() {
       messages: 0,
       staffRole: null,
       staffDashboardHref: null,
+      walletBalanceEur: null,
+      marketplaceCart: 0,
     });
   }
 
-  const [cart, notifications, messages] = await Promise.all([
+  const [cart, notifications, messages, walletBalanceEur, marketplaceCart] = await Promise.all([
     getCartItemCount(viewer.id),
     getUnreadNotificationCount(viewer.id),
     getUnreadConversationCount(viewer.id),
+    getWalletSpendableBalanceEur(viewer.id),
+    getMarketplaceCartItemCount(viewer.id),
   ]);
 
   const staffRole = resolveStaffRole(viewer);
@@ -38,5 +44,7 @@ export async function GET() {
     messages,
     staffRole,
     staffDashboardHref,
+    walletBalanceEur,
+    marketplaceCart,
   });
 }

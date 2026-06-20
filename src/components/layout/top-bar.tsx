@@ -9,6 +9,7 @@ import { useUser } from "@auth0/nextjs-auth0";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { UserMenu } from "@/components/layout/user-menu";
 import { LogoutLink } from "@/components/auth/logout-link";
+import { formatWalletEur } from "@/lib/wallet";
 
 type NavItem = { href: string; key: "home" | "collection" | "marketplace" | "shop" | "exchanges" | "rankings" | "profile"; official?: boolean };
 
@@ -55,6 +56,7 @@ export function TopBar() {
     notifications: 0,
     messages: 0,
     staffDashboardHref: null as string | null,
+    walletBalanceEur: null as number | null,
   });
   useEffect(() => {
     let active = true;
@@ -67,6 +69,7 @@ export function TopBar() {
             notifications: Number(data.notifications) || 0,
             messages: Number(data.messages) || 0,
             staffDashboardHref: typeof data.staffDashboardHref === "string" ? data.staffDashboardHref : null,
+            walletBalanceEur: typeof data.walletBalanceEur === "number" ? data.walletBalanceEur : null,
           });
         }
       })
@@ -92,7 +95,7 @@ export function TopBar() {
       </Link>
 
       {/* Nav desktop */}
-      <nav className="hidden flex-1 items-center justify-center gap-1.5 lg:flex">
+      <nav className="hidden flex-1 items-center justify-center gap-1.5 md:flex">
         {NAV_ITEMS.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           return (
@@ -117,20 +120,34 @@ export function TopBar() {
       </nav>
 
       {/* Actions */}
-      <div className="ml-auto flex items-center gap-2.5 lg:ml-0">
+      <div className="ml-auto flex items-center gap-2.5 md:ml-0">
         <IconButton href="/recherche" title={t("search")}>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
             <circle cx="11" cy="11" r="7" />
             <line x1="21" y1="21" x2="16.5" y2="16.5" />
           </svg>
         </IconButton>
-        <IconButton href="/portefeuille" title={t("wallet")}>
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <Link
+          href="/portefeuille"
+          title={t("wallet")}
+          aria-label={
+            user && live.walletBalanceEur !== null
+              ? `${t("wallet")} — ${formatWalletEur(live.walletBalanceEur)} €`
+              : t("wallet")
+          }
+          className="relative flex h-[35px] items-center gap-1.5 rounded-[9px] border border-charbon-500 bg-charbon-800 px-2 text-texte-doux transition hover:-translate-y-0.5 hover:border-carmin hover:text-white sm:px-2.5"
+        >
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <rect x="2" y="6" width="20" height="14" rx="2" />
             <path d="M2 10h20" />
             <circle cx="17" cy="14" r="1.5" fill="currentColor" stroke="none" />
           </svg>
-        </IconButton>
+          {user && live.walletBalanceEur !== null && (
+            <span className="font-display text-[11px] tracking-[0.5px] text-carmin tabular-nums">
+              {formatWalletEur(live.walletBalanceEur)} €
+            </span>
+          )}
+        </Link>
         <span className="hidden sm:contents">
           <IconButton href="/notifications" title={t("notifications")} badge={live.notifications > 0 ? "dot" : undefined}>
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">

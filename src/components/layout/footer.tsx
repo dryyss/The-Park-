@@ -31,7 +31,7 @@ export function Footer() {
   const t = useTranslations("footer");
 
   return (
-    <footer className="mt-16 border-t border-charbon-600">
+    <footer className="mt-16 hidden border-t border-charbon-600 md:block">
       <div className="mx-auto max-w-[1320px] px-7">
         <div className="grid grid-cols-1 gap-9 py-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           {/* Marque + newsletter */}

@@ -33,6 +33,7 @@ const TYPE_KEYS: Record<NotificationType, { title: string; body: string }> = {
   REVIEW_RECEIVED: { title: "reviewReceived", body: "reviewReceivedBody" },
   BADGE_UNLOCKED: { title: "badgeUnlocked", body: "badgeUnlockedBody" },
   LISTING_SOLD: { title: "listingSold", body: "listingSoldBody" },
+  LISTING_IN_CART: { title: "listingInCart", body: "listingInCartBody" },
   LISTING_EXPIRING: { title: "listingExpiring", body: "listingExpiringBody" },
   ORDER_UPDATE: { title: "orderUpdate", body: "orderUpdateBody" },
   MESSAGE_RECEIVED: { title: "messageReceived", body: "messageReceivedBody" },

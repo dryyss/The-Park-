@@ -79,8 +79,10 @@ describe("hasModuleAccess — matrice RBAC", () => {
 });
 
 describe("getAccessibleModules", () => {
-  it("renvoie la liste exacte du rôle", () => {
-    expect(getAccessibleModules(id("MEMBER", "SHOP_MANAGER"))).toEqual(["overview", "shop"]);
+  it("renvoie la liste du sous-rôle résolu", () => {
+    // Robuste : suit la matrice MODULES_BY_STAFF_ROLE plutôt qu'une liste figée.
+    expect(getAccessibleModules(id("MEMBER", "SHOP_MANAGER"))).toEqual(MODULES_BY_STAFF_ROLE.SHOP_MANAGER);
+    expect(getAccessibleModules(id("ADMIN"))).toEqual(MODULES_BY_STAFF_ROLE.OWNER);
   });
 
   it("renvoie une liste vide pour un membre", () => {

@@ -18,6 +18,7 @@ const TYPE_PREF: Partial<Record<NotificationType, PrefKey>> = {
   AUCTION_ENDED: "auctions",
   ORDER_UPDATE: "orders",
   LISTING_SOLD: "exchanges",
+  LISTING_IN_CART: "exchanges",
   LISTING_EXPIRING: "exchanges",
   BADGE_UNLOCKED: "marketing",
 };

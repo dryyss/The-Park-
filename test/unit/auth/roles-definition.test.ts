@@ -63,16 +63,16 @@ describe("getDashboardsForStaffRole", () => {
     expect(hrefs).toContain("/admin/support");
   });
 
-  it("le dashboard Utilisateurs n'apparaît que pour OWNER et MODERATOR", () => {
-    const has = (role: Parameters<typeof getDashboardsForStaffRole>[0]) =>
-      getDashboardsForStaffRole(role)
+  it("le dashboard Utilisateurs suit le module 'users' de chaque rôle", () => {
+    // Robuste : la visibilité du dashboard reflète exactement la matrice RBAC.
+    for (const role of Object.keys(MODULES_BY_STAFF_ROLE) as AdminRole[]) {
+      const sees = getDashboardsForStaffRole(role)
         .map((d) => d.href)
         .includes("/admin/utilisateurs");
-    expect(has("OWNER")).toBe(true);
-    expect(has("MODERATOR")).toBe(true);
-    expect(has("CATALOG_MANAGER")).toBe(false);
-    expect(has("SHOP_MANAGER")).toBe(false);
-    expect(has("SUPPORT")).toBe(false);
+      expect(sees).toBe(MODULES_BY_STAFF_ROLE[role].includes("users"));
+    }
+    // OWNER l'a forcément (superset).
+    expect(getDashboardsForStaffRole("OWNER").map((d) => d.href)).toContain("/admin/utilisateurs");
   });
 });
 

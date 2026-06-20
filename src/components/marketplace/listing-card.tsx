@@ -3,7 +3,7 @@ import { HoloCard } from "@/components/cards/holo-card";
 import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { Link } from "@/i18n/navigation";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
-import { BuyListingButton } from "@/components/marketplace/buy-listing-button";
+import { AddToMarketplaceCartButton } from "@/components/marketplace/add-to-marketplace-cart-button";
 import type { MarketplaceCard } from "@/server/marketplace/marketplace.service";
 
 const AV_GRADIENTS: Record<string, string> = {
@@ -98,9 +98,8 @@ export async function ListingCard({
             </Link>
           ) : l.purchasable ? (
             <div className="flex flex-col items-end gap-1.5">
-              <BuyListingButton
+              <AddToMarketplaceCartButton
                 listingId={l.id}
-                locale={locale}
                 className="font-display -skew-x-3 rounded-lg border-[1.5px] border-carmin bg-carmin px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap text-white uppercase transition hover:-translate-y-0.5 hover:bg-carmin-alt disabled:cursor-not-allowed disabled:opacity-60"
               />
               <ContactSellerButton

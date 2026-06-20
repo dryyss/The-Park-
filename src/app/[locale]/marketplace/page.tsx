@@ -6,6 +6,7 @@ import {
   type MarketIntent,
 } from "@/server/marketplace/marketplace.service";
 import { getViewerUser } from "@/server/user/user.service";
+import { getMarketplaceCartItemCount } from "@/server/marketplace-cart/marketplace-cart.service";
 import { MarketplaceFilters, type MarketParams } from "@/components/marketplace/marketplace-filters";
 import { ListingCard } from "@/components/marketplace/listing-card";
 
@@ -40,10 +41,11 @@ export default async function MarketplacePage({
     q: sp.q || undefined,
   };
 
-  const [listings, facets, viewer] = await Promise.all([
+  const viewer = await getViewerUser();
+  const [listings, facets, marketplaceCartCount] = await Promise.all([
     getMarketplaceListings(marketParams),
     getMarketplaceFacets(),
-    getViewerUser(),
+    viewer ? getMarketplaceCartItemCount(viewer.id) : Promise.resolve(0),
   ]);
 
   const tabs: { intent: MarketIntent; label: string; count: number }[] = [
@@ -82,6 +84,19 @@ export default async function MarketplacePage({
               );
             })}
           </div>
+          {marketParams.intent === "sell" && viewer && (
+            <Link
+              href="/marketplace/panier"
+              className="font-display relative -skew-x-3 rounded-lg border-[1.5px] border-charbon-400 bg-charbon-800 px-5 py-2.5 text-[12.5px] tracking-[1.5px] whitespace-nowrap text-blanc-casse uppercase transition hover:border-carmin"
+            >
+              {t("viewCart")}
+              {marketplaceCartCount > 0 && (
+                <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-md bg-carmin px-1 text-[10px] font-extrabold text-white">
+                  {marketplaceCartCount > 99 ? "99+" : marketplaceCartCount}
+                </span>
+              )}
+            </Link>
+          )}
           {marketParams.intent === "want" && (
             <Link
               href="/marketplace/recherche"

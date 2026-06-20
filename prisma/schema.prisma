@@ -290,9 +290,22 @@ enum NotificationType {
   REVIEW_RECEIVED
   BADGE_UNLOCKED
   LISTING_SOLD
+  LISTING_IN_CART
   LISTING_EXPIRING
   ORDER_UPDATE
   MESSAGE_RECEIVED
+}
+
+enum MarketplaceCheckoutStatus {
+  PENDING
+  PAID
+  CANCELLED
+  FAILED
+}
+
+enum MarketplaceInvoiceRecipient {
+  BUYER
+  SELLER
 }
 
 // ============================================================================
@@ -353,6 +366,9 @@ model User {
   wishlistItems   WishlistItem[]
   listings        Listing[]
   cartItems       CartItem[]
+  marketplaceCartItems MarketplaceCartItem[]
+  marketplaceCheckouts MarketplaceCheckout[]
+  marketplaceInvoices  MarketplaceInvoice[]
   orders          Order[]
 
   auctionsSelling Auction[] @relation("AuctionSeller")
@@ -660,11 +676,79 @@ model Listing {
   updatedAt DateTime  @updatedAt
 
   sales Sale[]
+  marketplaceCartItems MarketplaceCartItem[]
 
   @@index([variantId])
   @@index([sellerId])
   @@index([status, type])
   @@index([variantId, status])
+}
+
+/// Panier marketplace — réservation temporaire d'une annonce (1 acheteur à la fois).
+model MarketplaceCartItem {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listingId String   @unique
+  createdAt DateTime @default(now())
+
+  @@unique([userId, listingId])
+  @@index([userId])
+}
+
+model MarketplaceCheckout {
+  id                      String                    @id @default(cuid())
+  checkoutNumber          String                    @unique
+  buyerId                 String
+  buyer                   User                      @relation(fields: [buyerId], references: [id])
+  status                  MarketplaceCheckoutStatus @default(PENDING)
+  subtotal                Decimal                   @db.Decimal(10, 2)
+  total                   Decimal                   @db.Decimal(10, 2)
+  stripeCheckoutSessionId String?                   @unique
+  paidAt                  DateTime?
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  lines                   MarketplaceCheckoutLine[]
+  invoices                MarketplaceInvoice[]
+
+  @@index([buyerId])
+  @@index([status])
+}
+
+model MarketplaceCheckoutLine {
+  id         String              @id @default(cuid())
+  checkoutId String
+  checkout   MarketplaceCheckout @relation(fields: [checkoutId], references: [id], onDelete: Cascade)
+  saleId     String              @unique
+  sale       Sale                @relation(fields: [saleId], references: [id])
+  cartItemId String?
+  listingId  String
+  sellerId   String
+  cardName   String
+  unitPrice  Decimal             @db.Decimal(10, 2)
+
+  @@index([checkoutId])
+  @@index([sellerId])
+}
+
+model MarketplaceInvoice {
+  id                    String                      @id @default(cuid())
+  checkoutId            String
+  checkout              MarketplaceCheckout         @relation(fields: [checkoutId], references: [id], onDelete: Cascade)
+  invoiceNumber         String                      @unique
+  recipient             MarketplaceInvoiceRecipient
+  userId                String
+  user                  User                        @relation(fields: [userId], references: [id])
+  sellerId              String?
+  amount                Decimal                     @db.Decimal(10, 2)
+  lineItems             Json
+  stripePaymentIntentId String?
+  createdAt             DateTime                    @default(now())
+  emailedAt             DateTime?
+
+  @@index([checkoutId])
+  @@index([userId])
 }
 
 // ============================================================================
@@ -863,6 +947,7 @@ model Sale {
   disputes     Dispute[]
   conversation Conversation?
   reviews      Review[]
+  checkoutLine MarketplaceCheckoutLine?
 
   createdAt   DateTime  @default(now())
   completedAt DateTime?

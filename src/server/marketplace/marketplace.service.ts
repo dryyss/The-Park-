@@ -8,6 +8,7 @@ import { formatPrice } from "@/lib/format";
 import { VERSION_TYPE_DEFINITIONS } from "@/lib/card-versions";
 import { RARITY_ORDER } from "@/lib/rarity";
 import { ACTIVE_SALE_STATUSES } from "@/server/sale/sale.mutations";
+import { LISTING_NOT_IN_CART } from "@/server/marketplace-cart/marketplace-cart.service";
 
 /** "sell" = annonces où l'on propose une carte ; "want" = recherches. */
 export type MarketIntent = "sell" | "want";
@@ -106,7 +107,7 @@ function toListingDisplay(l: ListingRow): ListingDisplay {
 /** Dernières annonces actives (marketplace), de la plus récente à la plus ancienne. */
 async function fetchRecentListings(limit: number) {
   const listings = await prisma.listing.findMany({
-    where: { status: "ACTIVE" },
+    where: { status: "ACTIVE", marketplaceCartItems: LISTING_NOT_IN_CART.marketplaceCartItems },
     orderBy: { createdAt: "desc" },
     take: limit,
     include: listingInclude,
@@ -129,6 +130,7 @@ function buildWhere(f: MarketplaceFilters): Prisma.ListingWhereInput {
   const where: Prisma.ListingWhereInput = { status: "ACTIVE", ...intentWhere(f.intent) };
   if (f.intent === "sell") {
     where.NOT = { sales: { some: { status: { in: [...ACTIVE_SALE_STATUSES] } } } };
+    where.marketplaceCartItems = LISTING_NOT_IN_CART.marketplaceCartItems;
   }
   if (f.condition) where.condition = f.condition as Prisma.EnumCardConditionFilter["equals"];
   if (f.rarity) where.variant = { card: { rarity: { code: f.rarity } } };
@@ -229,8 +231,14 @@ export async function getMarketplaceFacets(): Promise<MarketplaceFacets> {
 }
 
 async function fetchMarketplaceFacets(): Promise<MarketplaceFacets> {
+  const sellWhere = {
+    status: "ACTIVE" as const,
+    type: { in: [...SELL_TYPES] },
+    NOT: { sales: { some: { status: { in: [...ACTIVE_SALE_STATUSES] } } } },
+    marketplaceCartItems: LISTING_NOT_IN_CART.marketplaceCartItems,
+  };
   const [sellCount, wantCount] = await Promise.all([
-    prisma.listing.count({ where: { status: "ACTIVE", type: { in: [...SELL_TYPES] } } }),
+    prisma.listing.count({ where: sellWhere }),
     prisma.listing.count({ where: { status: "ACTIVE", type: "WANT" } }),
   ]);
 

@@ -18,7 +18,7 @@ export function MobileTabs() {
   const is = (p: string) => (p === "/" ? pathname === "/" : pathname.startsWith(p));
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-charbon-500 bg-charbon/[0.92] px-3.5 pt-3 pb-7 backdrop-blur-md lg:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-charbon-500 bg-charbon/[0.92] px-3.5 pt-3 pb-7 backdrop-blur-md md:hidden">
       <Tab href="/" label={t("home")} active={is("/")}>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 11l9-8 9 8" />
