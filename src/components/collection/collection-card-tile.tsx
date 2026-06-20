@@ -3,6 +3,7 @@ import { HoloCard } from "@/components/cards/holo-card";
 import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { Link } from "@/i18n/navigation";
 import { CollectionQuantityControls } from "@/components/collection/collection-quantity-controls";
+import { WishlistQuickAddButton } from "@/components/wishlist/wishlist-quick-add-button";
 import { versionTypeLabel } from "@/lib/card-versions";
 
 export function CollectionCardTile({
@@ -10,11 +11,13 @@ export function CollectionCardTile({
   missingLabel,
   showControls = false,
   isAuthenticated = false,
+  inWishlist = false,
 }: {
   card: Card;
   missingLabel: string;
   showControls?: boolean;
   isAuthenticated?: boolean;
+  inWishlist?: boolean;
 }) {
   const missing = !card.owned;
 
@@ -73,6 +76,17 @@ export function CollectionCardTile({
             ))}
         </div>
       </div>
+      {missing && (
+        <div className="mt-2">
+          <WishlistQuickAddButton
+            cardId={card.cardId}
+            variantId={card.standardVariantId}
+            seasonId={card.seasonId}
+            isAuthenticated={isAuthenticated}
+            inWishlist={inWishlist}
+          />
+        </div>
+      )}
       {showControls && card.standardVariantId && (
         <div className={missing ? "opacity-70" : undefined}>
           <CollectionQuantityControls

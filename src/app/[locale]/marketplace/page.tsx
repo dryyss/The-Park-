@@ -6,7 +6,12 @@ import {
   type MarketIntent,
 } from "@/server/marketplace/marketplace.service";
 import { getViewerUser } from "@/server/user/user.service";
-import { getMarketplaceCartItemCount } from "@/server/marketplace-cart/marketplace-cart.service";
+import { getViewerOwnedCardNumbers } from "@/server/collection/collection.service";
+import {
+  getMarketplaceCartItemCount,
+  getMarketplaceCartListingIds,
+} from "@/server/marketplace-cart/marketplace-cart.service";
+import { getViewerWishlistCardIds } from "@/server/wishlist/wishlist.service";
 import { MarketplaceFilters, type MarketParams } from "@/components/marketplace/marketplace-filters";
 import { ListingCard } from "@/components/marketplace/listing-card";
 
@@ -42,11 +47,18 @@ export default async function MarketplacePage({
   };
 
   const viewer = await getViewerUser();
-  const [listings, facets, marketplaceCartCount] = await Promise.all([
-    getMarketplaceListings(marketParams),
-    getMarketplaceFacets(),
-    viewer ? getMarketplaceCartItemCount(viewer.id) : Promise.resolve(0),
-  ]);
+  const [listings, facets, marketplaceCartCount, cartListingIds, ownedCardNumbers, wishlistCardIds] =
+    await Promise.all([
+      getMarketplaceListings(marketParams),
+      getMarketplaceFacets(),
+      viewer ? getMarketplaceCartItemCount(viewer.id) : Promise.resolve(0),
+      viewer ? getMarketplaceCartListingIds(viewer.id) : Promise.resolve([]),
+      viewer ? getViewerOwnedCardNumbers(viewer.id) : Promise.resolve([]),
+      viewer ? getViewerWishlistCardIds(viewer.id) : Promise.resolve([]),
+    ]);
+  const cartListingIdSet = new Set(cartListingIds);
+  const ownedCardNumberSet = new Set(ownedCardNumbers);
+  const wishlistCardIdSet = new Set(wishlistCardIds);
 
   const tabs: { intent: MarketIntent; label: string; count: number }[] = [
     { intent: "sell", label: t("tabSell"), count: facets.sellCount },
@@ -138,7 +150,15 @@ export default async function MarketplacePage({
       {listings.length > 0 ? (
         <div className="mt-5 grid grid-cols-2 gap-4.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {listings.map((l) => (
-            <ListingCard key={l.id} listing={l} isOwnListing={viewer?.id === l.sellerId} />
+            <ListingCard
+              key={l.id}
+              listing={l}
+              isOwnListing={viewer?.id === l.sellerId}
+              inCart={cartListingIdSet.has(l.id)}
+              viewerOwnsCard={ownedCardNumberSet.has(l.number)}
+              inWishlist={wishlistCardIdSet.has(l.cardId)}
+              isAuthenticated={!!viewer}
+            />
           ))}
         </div>
       ) : (

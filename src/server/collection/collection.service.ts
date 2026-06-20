@@ -15,6 +15,9 @@ export interface CollectionFilters {
 }
 
 export interface CollectionCard {
+  cardId: string;
+  seasonId: string;
+  seasonLabel: string;
   number: number;
   slug: string;
   name: string;
@@ -58,7 +61,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
   const [cards, items, versionTypes, totalVariants] = await Promise.all([
     prisma.card.findMany({
       orderBy: { number: "asc" },
-      include: { rarity: true, variants: { include: { versionType: true } } },
+      include: { rarity: true, season: true, variants: { include: { versionType: true } } },
     }),
     userId
       ? prisma.collectionItem.findMany({
@@ -98,6 +101,9 @@ export async function getUserCollection(userId: string | null, filters: Collecti
       card.variants.find((v) => v.imageUrl)?.imageUrl ??
       null;
     return {
+      cardId: card.id,
+      seasonId: card.seasonId,
+      seasonLabel: card.season.name,
       number: card.number,
       slug: card.slug,
       name: card.name,
@@ -195,6 +201,15 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     sections,
     counts: { all: enriched.length, owned: ownedCards, missing: missingCards },
   };
+}
+
+/** Numéros de cartes possédées par le membre (au moins 1 exemplaire). */
+export async function getViewerOwnedCardNumbers(userId: string): Promise<number[]> {
+  const items = await prisma.collectionItem.findMany({
+    where: { userId, quantity: { gt: 0 } },
+    select: { variant: { select: { card: { select: { number: true } } } } },
+  });
+  return [...new Set(items.map((item) => item.variant.card.number))];
 }
 
 /** Complétion d'un membre (profil public). */

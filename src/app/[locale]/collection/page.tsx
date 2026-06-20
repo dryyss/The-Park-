@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getViewerUser } from "@/server/user/user.service";
 import { getUserCollection } from "@/server/collection/collection.service";
+import { getViewerWishlistCardIds } from "@/server/wishlist/wishlist.service";
 import { PageHeader } from "@/components/common/page-header";
 import { CompletionPanel, CollectionFiltersBar } from "@/components/collection/collection-filters";
 import { CollectionCardTile } from "@/components/collection/collection-card-tile";
@@ -37,7 +38,11 @@ export default async function CollectionPage({
     sort: parseCollectionSort(sp.sort),
   };
 
-  const data = await getUserCollection(viewer?.id ?? null, collParams);
+  const [data, wishlistCardIds] = await Promise.all([
+    getUserCollection(viewer?.id ?? null, collParams),
+    viewer ? getViewerWishlistCardIds(viewer.id) : Promise.resolve([]),
+  ]);
+  const wishlistCardIdSet = new Set(wishlistCardIds);
   const gridClass = collectionGridClassName(collParams.cols);
 
   return (
@@ -88,6 +93,7 @@ export default async function CollectionPage({
                 missingLabel={t("missing")}
                 showControls
                 isAuthenticated={isAuthenticated}
+                inWishlist={wishlistCardIdSet.has(card.cardId)}
               />
             ))}
           </div>

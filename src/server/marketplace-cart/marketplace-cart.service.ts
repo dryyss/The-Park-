@@ -38,6 +38,14 @@ export async function getMarketplaceCartItemCount(userId: string): Promise<numbe
   return prisma.marketplaceCartItem.count({ where: { userId } });
 }
 
+export async function getMarketplaceCartListingIds(userId: string): Promise<string[]> {
+  const items = await prisma.marketplaceCartItem.findMany({
+    where: { userId },
+    select: { listingId: true },
+  });
+  return items.map((item) => item.listingId);
+}
+
 export async function getViewerMarketplaceCart(userId: string): Promise<MarketplaceCartSummary> {
   const items = await prisma.marketplaceCartItem.findMany({
     where: { userId },

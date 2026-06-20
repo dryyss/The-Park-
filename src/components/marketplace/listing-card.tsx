@@ -4,6 +4,7 @@ import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { Link } from "@/i18n/navigation";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import { AddToMarketplaceCartButton } from "@/components/marketplace/add-to-marketplace-cart-button";
+import { WishlistQuickAddButton } from "@/components/wishlist/wishlist-quick-add-button";
 import type { MarketplaceCard } from "@/server/marketplace/marketplace.service";
 
 const AV_GRADIENTS: Record<string, string> = {
@@ -18,9 +19,17 @@ const AV_GRADIENTS: Record<string, string> = {
 export async function ListingCard({
   listing,
   isOwnListing = false,
+  inCart = false,
+  viewerOwnsCard = false,
+  inWishlist = false,
+  isAuthenticated = false,
 }: {
   listing: MarketplaceCard;
   isOwnListing?: boolean;
+  inCart?: boolean;
+  viewerOwnsCard?: boolean;
+  inWishlist?: boolean;
+  isAuthenticated?: boolean;
 }) {
   const t = await getTranslations("marketplace");
   const tc = await getTranslations("conditions");
@@ -82,47 +91,55 @@ export async function ListingCard({
           )}
         </Link>
 
-        <div className="mt-auto flex items-center justify-between gap-2">
-          <div>
-            <div className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">
-              {l.isWant ? t("budgetCaption") : l.purchasable ? t("priceFixed") : t("priceCaption")}
+        <div className="mt-auto flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <div>
+              <div className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">
+                {l.isWant ? t("budgetCaption") : l.purchasable ? t("priceFixed") : t("priceCaption")}
+              </div>
+              <div className="font-display text-[21px] leading-tight text-blanc-casse">{l.priceLabel}</div>
             </div>
-            <div className="font-display text-[21px] leading-tight text-blanc-casse">{l.priceLabel}</div>
-          </div>
-          {isOwnListing ? (
-            <Link
-              href="/dashboard"
-              className="font-display -skew-x-3 rounded-lg border-[1.5px] border-or bg-or/10 px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap text-or uppercase transition hover:bg-or/20"
-            >
-              {t("actionManage")}
-            </Link>
-          ) : l.purchasable ? (
-            <div className="flex flex-col items-end gap-1.5">
-              <AddToMarketplaceCartButton
-                listingId={l.id}
-                className="font-display -skew-x-3 rounded-lg border-[1.5px] border-carmin bg-carmin px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap text-white uppercase transition hover:-translate-y-0.5 hover:bg-carmin-alt disabled:cursor-not-allowed disabled:opacity-60"
-              />
+            {isOwnListing ? (
+              <Link
+                href="/dashboard"
+                className="font-display -skew-x-3 rounded-lg border-[1.5px] border-or bg-or/10 px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap text-or uppercase transition hover:bg-or/20"
+              >
+                {t("actionManage")}
+              </Link>
+            ) : l.purchasable ? (
+              <div className="flex flex-col items-end gap-1.5">
+                <AddToMarketplaceCartButton listingId={l.id} inCart={inCart} />
+                <ContactSellerButton
+                  sellerSlug={l.seller.slug}
+                  locale={locale}
+                  className="text-[10px] font-extrabold tracking-wide text-texte-faible uppercase transition hover:text-carmin"
+                >
+                  {t("actionContact")}
+                </ContactSellerButton>
+              </div>
+            ) : (
               <ContactSellerButton
                 sellerSlug={l.seller.slug}
                 locale={locale}
-                className="text-[10px] font-extrabold tracking-wide text-texte-faible uppercase transition hover:text-carmin"
+                className={[
+                  "font-display -skew-x-3 rounded-lg border-[1.5px] px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap uppercase transition hover:-translate-y-0.5",
+                  l.isWant
+                    ? "border-charbon-400 text-blanc-casse hover:border-carmin"
+                    : "border-carmin bg-carmin text-white hover:bg-carmin-alt",
+                ].join(" ")}
               >
-                {t("actionContact")}
+                {l.isWant ? t("actionPropose") : t("actionContact")}
               </ContactSellerButton>
-            </div>
-          ) : (
-            <ContactSellerButton
-              sellerSlug={l.seller.slug}
-              locale={locale}
-              className={[
-                "font-display -skew-x-3 rounded-lg border-[1.5px] px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap uppercase transition hover:-translate-y-0.5",
-                l.isWant
-                  ? "border-charbon-400 text-blanc-casse hover:border-carmin"
-                  : "border-carmin bg-carmin text-white hover:bg-carmin-alt",
-              ].join(" ")}
-            >
-              {l.isWant ? t("actionPropose") : t("actionContact")}
-            </ContactSellerButton>
+            )}
+          </div>
+          {!isOwnListing && !viewerOwnsCard && (
+            <WishlistQuickAddButton
+              cardId={l.cardId}
+              variantId={l.variantId}
+              seasonId={l.seasonId}
+              isAuthenticated={isAuthenticated}
+              inWishlist={inWishlist}
+            />
           )}
         </div>
       </div>

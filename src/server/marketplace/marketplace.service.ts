@@ -25,6 +25,10 @@ export interface MarketplaceFilters {
 
 export interface MarketplaceCard {
   id: string;
+  cardId: string;
+  variantId: string;
+  seasonId: string;
+  seasonLabel: string;
   number: number;
   numberLabel: string;
   name: string;
@@ -150,7 +154,7 @@ function buildWhere(f: MarketplaceFilters): Prisma.ListingWhereInput {
 const fullInclude = {
   seller: { select: { id: true, displayName: true, slug: true, ratingAvg: true, reviewCount: true } },
   variant: {
-    include: { versionType: true, card: { include: { rarity: true } } },
+    include: { versionType: true, card: { include: { rarity: true, season: true } } },
   },
 } as const;
 
@@ -163,6 +167,10 @@ function toMarketplaceCard(l: FullRow): MarketplaceCard {
   const name = l.seller.displayName;
   return {
     id: l.id,
+    cardId: card.id,
+    variantId: l.variant.id,
+    seasonId: card.seasonId,
+    seasonLabel: card.season.name,
     number: card.number,
     numberLabel: cardNumberLabel(card.number, card.rarity.code),
     name: card.name,

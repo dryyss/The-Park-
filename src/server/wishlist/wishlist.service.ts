@@ -55,3 +55,13 @@ export async function getViewerWishlist(userId: string): Promise<WishlistCard[]>
     addedAt: w.createdAt,
   }));
 }
+
+/** Identifiants de cartes déjà présentes dans la wishlist du membre. */
+export async function getViewerWishlistCardIds(userId: string): Promise<string[]> {
+  const items = await prisma.wishlistItem.findMany({
+    where: { userId },
+    select: { cardId: true },
+    distinct: ["cardId"],
+  });
+  return items.map((item) => item.cardId);
+}

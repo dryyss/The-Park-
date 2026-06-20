@@ -35,6 +35,8 @@ export async function addToWishlistAction(input: unknown): Promise<WishlistActio
       note: parsed.data.note,
     });
     revalidatePath("/wishlist");
+    revalidatePath("/collection");
+    revalidatePath("/marketplace");
     revalidatePath("/carte", "layout");
     return { ok: true };
   } catch (err) {
