@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { cardImage } from "@/lib/rarity";
@@ -19,6 +19,9 @@ import {
   updateCardVariantAction,
   deleteCardVariantAction,
 } from "@/server/admin/catalog.actions";
+import { AdminImageDropzone } from "@/components/admin/admin-image-dropzone";
+import { AdminFilterBar, AdminFilterSelect, matchAdminSearch } from "@/components/admin/admin-filter-bar";
+import { isHorsSerieSeasonCode } from "@/lib/seasons";
 
 const LANGUAGES = ["FR", "EN", "JP", "DE", "US"] as const;
 
@@ -41,7 +44,33 @@ export function AdminCatalogManager({
   versionTypes: AdminVersionTypeOption[];
 }) {
   const t = useTranslations("admin.catalog");
+  const tFilters = useTranslations("admin.filters");
   const [openSeasons, setOpenSeasons] = useState<Set<string>>(() => new Set(seasons.map((s) => s.id)));
+  const [q, setQ] = useState("");
+  const [seasonFilter, setSeasonFilter] = useState("");
+  const [rarityFilter, setRarityFilter] = useState("");
+
+  const filteredSeasons = useMemo(() => {
+    const hasCardFilter = Boolean(q.trim() || rarityFilter);
+    return seasons
+      .filter((s) => !seasonFilter || s.id === seasonFilter)
+      .map((s) => ({
+        ...s,
+        cards: s.cards.filter((c) => {
+          if (rarityFilter && c.rarityId !== rarityFilter) return false;
+          return matchAdminSearch(q, c.name, c.number, c.country, c.slug);
+        }),
+      }))
+      .filter((s) => !hasCardFilter || s.cards.length > 0);
+  }, [seasons, q, seasonFilter, rarityFilter]);
+
+  const resultCount = useMemo(
+    () => filteredSeasons.reduce((sum, s) => sum + s.cards.length, 0),
+    [filteredSeasons],
+  );
+
+  const hasFilters = Boolean(q.trim() || seasonFilter || rarityFilter);
+  const visibleOpenSeasons = hasFilters ? new Set(filteredSeasons.map((s) => s.id)) : openSeasons;
 
   function toggleSeason(id: string) {
     setOpenSeasons((prev) => {
@@ -52,25 +81,78 @@ export function AdminCatalogManager({
     });
   }
 
+  function resetFilters() {
+    setQ("");
+    setSeasonFilter("");
+    setRarityFilter("");
+  }
+
   return (
     <div className="flex flex-col gap-6">
-      {seasons.map((s) => (
-        <section key={s.id} className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
-          <SeasonHeader season={s} open={openSeasons.has(s.id)} onToggle={() => toggleSeason(s.id)} />
-          {openSeasons.has(s.id) && (
+      <AdminFilterBar
+        live
+        search={q}
+        onSearchChange={setQ}
+        searchPlaceholder={t("searchPlaceholder")}
+        onReset={hasFilters ? resetFilters : undefined}
+      >
+        <AdminFilterSelect
+          label={t("filterSeason")}
+          value={seasonFilter}
+          onChange={setSeasonFilter}
+          options={[
+            { value: "", label: t("seasonAll") },
+            ...seasons.map((s) => ({
+              value: s.id,
+              label: isHorsSerieSeasonCode(s.code) ? t("horsSerieLabel") : `${s.code} · ${s.name}`,
+            })),
+          ]}
+        />
+        <AdminFilterSelect
+          label={t("filterRarity")}
+          value={rarityFilter}
+          onChange={setRarityFilter}
+          options={[
+            { value: "", label: t("rarityAll") },
+            ...rarities.map((r) => ({ value: r.id, label: r.label })),
+          ]}
+        />
+      </AdminFilterBar>
+
+      {hasFilters && (
+        <p className="text-[12px] font-bold text-texte-faible">{tFilters("resultsCount", { count: resultCount })}</p>
+      )}
+
+      {filteredSeasons.length === 0 ? (
+        <p className="rounded-[14px] border border-charbon-500 bg-charbon-800 px-4 py-8 text-center text-[13px] font-bold text-texte-dim">
+          {tFilters("noResults")}
+        </p>
+      ) : (
+        filteredSeasons.map((s) => (
+        <section
+          key={s.id}
+          className={`rounded-[16px] border p-5 ${
+            isHorsSerieSeasonCode(s.code)
+              ? "border-or/45 bg-gradient-to-br from-or/8 to-charbon-800"
+              : "border-charbon-500 bg-charbon-800"
+          }`}
+        >
+          <SeasonHeader season={s} open={visibleOpenSeasons.has(s.id)} onToggle={() => toggleSeason(s.id)} />
+          {visibleOpenSeasons.has(s.id) && (
             <div className="mt-5 flex flex-col gap-4">
-              <NewCardForm seasonId={s.id} rarities={rarities} />
+              <NewCardForm seasonId={s.id} seasonCode={s.code} rarities={rarities} />
               {s.cards.length === 0 ? (
                 <p className="text-[12px] font-bold text-texte-faible">{t("noCards")}</p>
               ) : (
                 s.cards.map((c) => (
-                  <CardEditor key={c.id} card={c} rarities={rarities} versionTypes={versionTypes} />
+                  <CardEditor key={c.id} card={c} seasonCode={s.code} rarities={rarities} versionTypes={versionTypes} />
                 ))
               )}
             </div>
           )}
         </section>
-      ))}
+        ))
+      )}
     </div>
   );
 }
@@ -130,6 +212,7 @@ function SeasonHeader({
 }) {
   const t = useTranslations("admin.catalog");
   const { pending, run } = useAction();
+  const horsSerie = isHorsSerieSeasonCode(season.code);
 
   function save(fd: FormData) {
     const releaseRaw = str(fd, "releaseDate");
@@ -155,6 +238,11 @@ function SeasonHeader({
       <div>
         <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("code")}</label>
         <p className="font-mono text-[14px] text-or">{season.code}</p>
+        {horsSerie && (
+          <span className="mt-1 inline-block rounded-md bg-or/15 px-2 py-0.5 text-[9px] font-extrabold tracking-wide text-or uppercase">
+            {t("horsSerieBadge")}
+          </span>
+        )}
       </div>
       <form action={(fd) => save(fd)} className="flex flex-1 flex-wrap items-end gap-4">
         <div className="min-w-[160px] flex-1">
@@ -182,10 +270,19 @@ function SeasonHeader({
   );
 }
 
-function NewCardForm({ seasonId, rarities }: { seasonId: string; rarities: AdminRarityOption[] }) {
+function NewCardForm({
+  seasonId,
+  seasonCode,
+  rarities,
+}: {
+  seasonId: string;
+  seasonCode: string;
+  rarities: AdminRarityOption[];
+}) {
   const t = useTranslations("admin.catalog");
   const [open, setOpen] = useState(false);
   const { pending, error, run } = useAction();
+  const horsSerie = isHorsSerieSeasonCode(seasonCode);
 
   function submit(fd: FormData) {
     run(
@@ -198,6 +295,7 @@ function NewCardForm({ seasonId, rarities }: { seasonId: string; rarities: Admin
           quoteValue: num(fd, "quoteValue") ?? 0,
           imageUrl: optStr(fd, "imageUrl"),
           country: optStr(fd, "country"),
+          description: optStr(fd, "description"),
           isUnique: fd.get("isUnique") === "on",
         }),
       () => setOpen(false),
@@ -220,8 +318,8 @@ function NewCardForm({ seasonId, rarities }: { seasonId: string; rarities: Admin
     <form action={(fd) => submit(fd)} className="rounded-[14px] border border-or/30 bg-charbon-900/40 p-4">
       <h4 className="font-display text-[13px] tracking-wide text-or uppercase">{t("newCard")}</h4>
       <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <Field label={t("number")} hint={t("numberHint")}>
-          <input name="number" type="number" min={0} required placeholder="0" className={inputCls} />
+        <Field label={t("number")} hint={horsSerie ? t("numberHintHorsSerie") : t("numberHint")}>
+          <input name="number" type="number" min={0} required placeholder={horsSerie ? "1" : "0"} className={inputCls} />
         </Field>
         <Field label={t("name")}><input name="name" required className={inputCls} /></Field>
         <Field label={t("rarity")}>
@@ -233,7 +331,10 @@ function NewCardForm({ seasonId, rarities }: { seasonId: string; rarities: Admin
         </Field>
         <Field label={t("quote")}><input name="quoteValue" type="number" step="0.01" defaultValue={0} className={inputCls} /></Field>
         <Field label={t("country")}><input name="country" maxLength={8} className={inputCls} /></Field>
-        <ImageUrlField />
+        <ImageUrlField className="sm:col-span-2 lg:col-span-3" />
+        <Field label={t("description")} className="sm:col-span-2 lg:col-span-3">
+          <textarea name="description" rows={3} className={`${inputCls} resize-none`} />
+        </Field>
       </div>
       <label className="mt-3 flex items-center gap-2 text-[12px] font-bold text-texte-doux">
         <input type="checkbox" name="isUnique" className="accent-carmin" /> {t("isUnique")}
@@ -249,16 +350,19 @@ function NewCardForm({ seasonId, rarities }: { seasonId: string; rarities: Admin
 
 function CardEditor({
   card,
+  seasonCode,
   rarities,
   versionTypes,
 }: {
   card: AdminCardFull;
+  seasonCode: string;
   rarities: AdminRarityOption[];
   versionTypes: AdminVersionTypeOption[];
 }) {
   const t = useTranslations("admin.catalog");
   const { pending, error, run } = useAction();
   const [showVariants, setShowVariants] = useState(false);
+  const horsSerie = isHorsSerieSeasonCode(seasonCode);
 
   function save(fd: FormData) {
     run(() =>
@@ -286,7 +390,7 @@ function CardEditor({
   return (
     <div className="rounded-[14px] border border-charbon-500 bg-charbon-700/40 p-4">
       <form action={(fd) => save(fd)} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Field label={t("number")} hint={t("numberHint")}>
+        <Field label={t("number")} hint={horsSerie ? t("numberHintHorsSerie") : t("numberHint")}>
           <input name="number" type="number" min={0} defaultValue={card.number} className={inputCls} />
         </Field>
         <Field label={t("name")}><input name="name" defaultValue={card.name} className={inputCls} /></Field>
@@ -426,8 +530,16 @@ function ImageUrlField({ defaultValue = "", className }: { defaultValue?: string
   const src = trimmed ? cardImage(trimmed) : null;
 
   return (
-    <Field label={t("image")} className={className}>
-      <div className="mt-1 flex flex-wrap items-start gap-4">
+    <Field label={t("image")} hint={t("imageDropHint")} className={className}>
+      <AdminImageDropzone
+        scope="catalog"
+        compact
+        onUploaded={(fileName) => {
+          setValue(fileName);
+          setFailed(false);
+        }}
+      />
+      <div className="mt-2 flex flex-wrap items-start gap-4">
         <input
           name="imageUrl"
           value={value}

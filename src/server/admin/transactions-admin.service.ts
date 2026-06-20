@@ -37,12 +37,25 @@ export interface AdminShipmentRow {
 
 export async function listAdminSales(input: {
   status?: SaleStatus;
+  q?: string;
   page?: number;
   pageSize?: number;
 }): Promise<{ rows: AdminSaleRow[]; total: number; page: number; pageSize: number }> {
   const page = Math.max(1, input.page ?? 1);
   const pageSize = Math.min(50, Math.max(10, input.pageSize ?? 25));
-  const where: Prisma.SaleWhereInput = input.status ? { status: input.status } : {};
+  const q = input.q?.trim();
+  const where: Prisma.SaleWhereInput = {
+    ...(input.status ? { status: input.status } : {}),
+    ...(q
+      ? {
+          OR: [
+            { buyer: { OR: [{ displayName: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }] } },
+            { seller: { OR: [{ displayName: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }] } },
+            { listing: { variant: { card: { name: { contains: q, mode: "insensitive" } } } } },
+          ],
+        }
+      : {}),
+  };
 
   const [total, rows] = await Promise.all([
     prisma.sale.count({ where }),
@@ -79,12 +92,24 @@ export async function listAdminSales(input: {
 
 export async function listAdminExchanges(input: {
   status?: ExchangeStatus;
+  q?: string;
   page?: number;
   pageSize?: number;
 }): Promise<{ rows: AdminExchangeRow[]; total: number; page: number; pageSize: number }> {
   const page = Math.max(1, input.page ?? 1);
   const pageSize = Math.min(50, Math.max(10, input.pageSize ?? 25));
-  const where: Prisma.ExchangeWhereInput = input.status ? { status: input.status } : {};
+  const q = input.q?.trim();
+  const where: Prisma.ExchangeWhereInput = {
+    ...(input.status ? { status: input.status } : {}),
+    ...(q
+      ? {
+          OR: [
+            { initiator: { OR: [{ displayName: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }] } },
+            { recipient: { OR: [{ displayName: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }] } },
+          ],
+        }
+      : {}),
+  };
 
   const [total, rows] = await Promise.all([
     prisma.exchange.count({ where }),
@@ -119,6 +144,7 @@ export async function listAdminExchanges(input: {
 
 export async function listAdminShipments(input: {
   urgentOnly?: boolean;
+  q?: string;
   page?: number;
   pageSize?: number;
 }): Promise<{ rows: AdminShipmentRow[]; total: number; page: number; pageSize: number }> {
@@ -126,10 +152,16 @@ export async function listAdminShipments(input: {
   const pageSize = Math.min(50, Math.max(10, input.pageSize ?? 25));
   const now = new Date();
   const soon = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  const q = input.q?.trim();
 
-  const where: Prisma.ShipmentWhereInput = input.urgentOnly
-    ? { status: "PENDING", notShipDeadline: { lte: soon, gte: now } }
-    : {};
+  const where: Prisma.ShipmentWhereInput = {
+    ...(input.urgentOnly ? { status: "PENDING", notShipDeadline: { lte: soon, gte: now } } : {}),
+    ...(q
+      ? {
+          trackingNumber: { contains: q, mode: "insensitive" as const },
+        }
+      : {}),
+  };
 
   const [total, rows] = await Promise.all([
     prisma.shipment.count({ where }),

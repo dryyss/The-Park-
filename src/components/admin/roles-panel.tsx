@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import type { AdminRole } from "@/generated/prisma/client";
@@ -10,14 +10,29 @@ import {
   revokeStaffRoleAction,
   setupAuth0RolesAction,
 } from "@/server/admin/roles.actions";
+import { AdminFilterBar, AdminFilterSelect, matchAdminSearch } from "@/components/admin/admin-filter-bar";
 
 const STAFF_ROLES: AdminRole[] = ["OWNER", "MODERATOR", "CATALOG_MANAGER", "SHOP_MANAGER", "SUPPORT"];
 
 export function RolesAdminPanel({ members, isOwner }: { members: StaffMemberRow[]; isOwner: boolean }) {
   const t = useTranslations("admin.roles");
+  const tFilters = useTranslations("admin.filters");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
+  const [q, setQ] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
+
+  const filteredMembers = useMemo(
+    () =>
+      members.filter((m) => {
+        if (roleFilter && m.staffRole !== roleFilter) return false;
+        return matchAdminSearch(q, m.displayName, m.email);
+      }),
+    [members, q, roleFilter],
+  );
+
+  const hasFilters = Boolean(q.trim() || roleFilter);
 
   function handleSetupRoles() {
     setMessage(null);
@@ -80,6 +95,24 @@ export function RolesAdminPanel({ members, isOwner }: { members: StaffMemberRow[
         </p>
       )}
 
+      <AdminFilterBar
+        live
+        search={q}
+        onSearchChange={setQ}
+        searchPlaceholder={t("searchPlaceholder")}
+        onReset={hasFilters ? () => { setQ(""); setRoleFilter(""); } : undefined}
+      >
+        <AdminFilterSelect
+          label={t("filterRole")}
+          value={roleFilter}
+          onChange={setRoleFilter}
+          options={[
+            { value: "", label: t("roleAll") },
+            ...STAFF_ROLES.map((r) => ({ value: r, label: t(`staffRoles.${r}`) })),
+          ]}
+        />
+      </AdminFilterBar>
+
       <div className="overflow-x-auto rounded-[16px] border border-charbon-500 bg-charbon-800">
         <table className="w-full min-w-[640px] text-left text-[13px]">
           <thead>
@@ -91,7 +124,7 @@ export function RolesAdminPanel({ members, isOwner }: { members: StaffMemberRow[
             </tr>
           </thead>
           <tbody>
-            {members.map((m) => (
+            {filteredMembers.map((m) => (
               <tr key={m.id} className="border-b border-charbon-600/50">
                 <td className="px-4 py-3">
                   <p className="font-extrabold text-blanc-casse">{m.displayName}</p>
@@ -132,7 +165,11 @@ export function RolesAdminPanel({ members, isOwner }: { members: StaffMemberRow[
             ))}
           </tbody>
         </table>
-        {members.length === 0 && <p className="p-8 text-center text-[13px] font-bold text-texte-dim">{t("empty")}</p>}
+        {filteredMembers.length === 0 && (
+          <p className="p-8 text-center text-[13px] font-bold text-texte-dim">
+            {hasFilters ? tFilters("noResults") : t("empty")}
+          </p>
+        )}
       </div>
 
       <p className="text-[11px] font-bold text-texte-faible">{t("triggerHint")}</p>

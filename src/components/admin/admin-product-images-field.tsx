@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { cardImage } from "@/lib/rarity";
+import { AdminImageDropzone } from "@/components/admin/admin-image-dropzone";
 
 const inputCls =
   "min-w-0 flex-1 rounded-md border border-charbon-500 bg-charbon-700/80 px-2 py-1.5 text-[12px] text-blanc-casse outline-none focus:border-or/60";
@@ -93,6 +94,16 @@ export function AdminProductImagesField({
           + {t("addImage")}
         </button>
       </div>
+
+      <AdminImageDropzone
+        scope="shop"
+        compact
+        disabled={images.length >= max}
+        onUploaded={(fileName) => {
+          if (images.length >= max) return;
+          onChange([...images, fileName]);
+        }}
+      />
 
       {images.length === 0 ? (
         <p className="rounded-md border border-dashed border-charbon-500 px-3 py-4 text-center text-[12px] font-bold text-texte-dim">

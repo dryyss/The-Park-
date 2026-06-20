@@ -1,3 +1,5 @@
+import { isHorsSerieSeasonCode } from "@/lib/seasons";
+
 export type HoloVariant = "rainbow" | "gold" | "none";
 
 export interface RarityDefinition {
@@ -55,9 +57,10 @@ export function rarityJp(code: string): string {
   return rarityDefinition(code)?.jp ?? "";
 }
 
-/** Libellé du numéro affiché sous la carte (ex. 03/80 ou 00 · PROMO). */
-export function cardNumberLabel(number: number, rarityCode: string): string {
+/** Libellé du numéro affiché sous la carte (ex. 03/80, 01 · HS, 00 · PROMO). */
+export function cardNumberLabel(number: number, rarityCode: string, seasonCode?: string): string {
   const n = String(number).padStart(2, "0");
+  if (seasonCode && isHorsSerieSeasonCode(seasonCode)) return `${n} · HS`;
   if (isPromoRarity(rarityCode)) return `${n} · PROMO`;
   if (isSpecialRarity(rarityCode)) {
     const label = rarityDefinition(rarityCode)?.label ?? rarityCode;

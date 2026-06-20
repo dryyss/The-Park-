@@ -70,6 +70,7 @@ const updateVariantSchema = z.object({
 function revalidateCatalog() {
   revalidatePath("/admin/catalogue");
   revalidatePath("/saison-1");
+  revalidatePath("/hors-serie");
   revalidateTag("catalog");
 }
 

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import type { AdminStockProduct, AdminStockMovementRow, AdminStockStats } from "@/server/admin/stocks.service";
 import { adjustStockAction } from "@/server/admin/stocks.actions";
+import { AdminFilterBar, AdminFilterSelect, matchAdminSearch } from "@/components/admin/admin-filter-bar";
 
 const STATUS_CLASSES: Record<string, string> = {
   IN_STOCK: "bg-emerald-900/40 text-emerald-400 border-emerald-700/50",
@@ -35,8 +36,12 @@ export function AdminStocksPanel({
   tab: Tab;
 }) {
   const t = useTranslations("admin.stocks");
+  const tFilters = useTranslations("admin.filters");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>(tab);
+  const [q, setQ] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [movementTypeFilter, setMovementTypeFilter] = useState("");
   const [adjustProductId, setAdjustProductId] = useState<string | null>(null);
   const [adjustDelta, setAdjustDelta] = useState("");
   const [adjustType, setAdjustType] = useState<string>("RESTOCK");
@@ -93,6 +98,26 @@ export function AdminStocksPanel({
     { key: "movements", label: t("tabs.movements") },
   ];
 
+  const filteredProducts = useMemo(
+    () =>
+      products.filter((p) => {
+        if (statusFilter && p.status !== statusFilter) return false;
+        return matchAdminSearch(q, p.name, p.sku, p.type);
+      }),
+    [products, q, statusFilter],
+  );
+
+  const filteredMovements = useMemo(
+    () =>
+      movements.filter((m) => {
+        if (movementTypeFilter && m.type !== movementTypeFilter) return false;
+        return matchAdminSearch(q, m.productName, m.productSku, m.reference, m.reason, m.performedBy);
+      }),
+    [movements, q, movementTypeFilter],
+  );
+
+  const hasFilters = Boolean(q.trim() || statusFilter || movementTypeFilter);
+
   return (
     <div className="space-y-6">
       {/* KPI cards */}
@@ -130,6 +155,50 @@ export function AdminStocksPanel({
           </button>
         ))}
       </div>
+
+      <AdminFilterBar
+        live
+        search={q}
+        onSearchChange={setQ}
+        searchPlaceholder={t("searchPlaceholder")}
+        onReset={hasFilters ? () => { setQ(""); setStatusFilter(""); setMovementTypeFilter(""); } : undefined}
+      >
+        {activeTab === "products" ? (
+          <AdminFilterSelect
+            label={t("filterStatus")}
+            value={statusFilter}
+            onChange={setStatusFilter}
+            options={[
+              { value: "", label: t("statusAll") },
+              { value: "IN_STOCK", label: t("status.IN_STOCK") },
+              { value: "LOW", label: t("status.LOW") },
+              { value: "OUT", label: t("status.OUT") },
+              { value: "DISCONTINUED", label: t("status.DISCONTINUED") },
+            ]}
+          />
+        ) : (
+          <AdminFilterSelect
+            label={t("filterMovementType")}
+            value={movementTypeFilter}
+            onChange={setMovementTypeFilter}
+            options={[
+              { value: "", label: t("typeAll") },
+              ...(["RESTOCK", "SALE", "RETURN", "ADJUSTMENT", "LOSS"] as const).map((type) => ({
+                value: type,
+                label: t(`movementType.${type}`),
+              })),
+            ]}
+          />
+        )}
+      </AdminFilterBar>
+
+      {hasFilters && (
+        <p className="text-[12px] font-bold text-texte-faible">
+          {tFilters("resultsCount", {
+            count: activeTab === "products" ? filteredProducts.length : filteredMovements.length,
+          })}
+        </p>
+      )}
 
       {/* Modal ajustement */}
       {adjustProductId && (
@@ -224,7 +293,7 @@ export function AdminStocksPanel({
               </tr>
             </thead>
             <tbody>
-              {products.map((p) => (
+              {filteredProducts.map((p) => (
                 <tr key={p.id} className="border-b border-charbon-600/50 hover:bg-charbon-700/30">
                   <td className="px-4 py-3 font-mono text-[11px] text-texte-dim">{p.sku}</td>
                   <td className="px-4 py-3 font-bold text-blanc-casse">{p.name}</td>
@@ -251,9 +320,11 @@ export function AdminStocksPanel({
                   </td>
                 </tr>
               ))}
-              {products.length === 0 && (
+              {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-4 py-12 text-center text-texte-dim">{t("table.empty")}</td>
+                  <td colSpan={8} className="px-4 py-12 text-center text-texte-dim">
+                    {hasFilters ? tFilters("noResults") : t("table.empty")}
+                  </td>
                 </tr>
               )}
             </tbody>
@@ -278,7 +349,7 @@ export function AdminStocksPanel({
               </tr>
             </thead>
             <tbody>
-              {movements.map((m) => (
+              {filteredMovements.map((m) => (
                 <tr key={m.id} className="border-b border-charbon-600/50 hover:bg-charbon-700/30">
                   <td className="px-4 py-3 text-[11px] text-texte-dim whitespace-nowrap">
                     {new Intl.DateTimeFormat("fr-FR", { dateStyle: "short", timeStyle: "short" }).format(m.createdAt)}
@@ -299,9 +370,11 @@ export function AdminStocksPanel({
                   <td className="px-4 py-3 text-[11px] text-texte-dim">{m.performedBy ?? "—"}</td>
                 </tr>
               ))}
-              {movements.length === 0 && (
+              {filteredMovements.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-4 py-12 text-center text-texte-dim">{t("movements.empty")}</td>
+                  <td colSpan={8} className="px-4 py-12 text-center text-texte-dim">
+                    {hasFilters ? tFilters("noResults") : t("movements.empty")}
+                  </td>
                 </tr>
               )}
             </tbody>

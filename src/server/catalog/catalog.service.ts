@@ -86,9 +86,9 @@ export const getCatalogStats = unstable_cache(fetchCatalogStats, ["catalog-stats
  * Couche service catalogue (.cursorrules : pas de Prisma direct dans les composants).
  * Résumé de la saison courante pour l'accueil / les tableaux de complétion.
  */
-async function fetchCatalogSummary() {
-  const season = await prisma.season.findFirst({
-    orderBy: { sortOrder: "asc" },
+async function fetchCatalogSummary(seasonCode = "S01") {
+  const season = await prisma.season.findUnique({
+    where: { code: seasonCode },
   });
 
   if (!season) {
@@ -120,8 +120,8 @@ async function fetchCatalogSummary() {
   return { season, totalCards, byRarity };
 }
 
-export async function getCatalogSummary() {
-  return unstable_cache(fetchCatalogSummary, ["catalog-summary"], {
+export async function getCatalogSummary(seasonCode = "S01") {
+  return unstable_cache(() => fetchCatalogSummary(seasonCode), ["catalog-summary", seasonCode], {
     revalidate: 120,
     tags: ["catalog"],
   })();
@@ -389,7 +389,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     id: card.id,
     slug: card.slug,
     number: card.number,
-    numberLabel: cardNumberLabel(card.number, card.rarity.code),
+    numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code),
     name: card.name,
     image: cardImage(card.imageUrl),
     description: card.description,

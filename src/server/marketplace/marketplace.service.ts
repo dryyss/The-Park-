@@ -172,7 +172,7 @@ function toMarketplaceCard(l: FullRow): MarketplaceCard {
     seasonId: card.seasonId,
     seasonLabel: card.season.name,
     number: card.number,
-    numberLabel: cardNumberLabel(card.number, card.rarity.code),
+    numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code),
     name: card.name,
     slug: card.slug,
     image: cardImage(card.imageUrl),

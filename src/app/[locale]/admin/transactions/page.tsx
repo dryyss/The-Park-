@@ -24,6 +24,7 @@ export default async function AdminTransactionsPage({
     saleStatus?: string;
     exchangeStatus?: string;
     urgent?: string;
+    q?: string;
   }>;
 }) {
   const { locale } = await params;
@@ -41,9 +42,9 @@ export default async function AdminTransactionsPage({
   const urgentOnly = sp.urgent === "1";
 
   const [sales, exchanges, shipments, stats] = await Promise.all([
-    listAdminSales({ status: sp.saleStatus as SaleStatus | undefined }),
-    listAdminExchanges({ status: sp.exchangeStatus as ExchangeStatus | undefined }),
-    listAdminShipments({ urgentOnly }),
+    listAdminSales({ status: sp.saleStatus as SaleStatus | undefined, q: sp.q }),
+    listAdminExchanges({ status: sp.exchangeStatus as ExchangeStatus | undefined, q: sp.q }),
+    listAdminShipments({ urgentOnly, q: sp.q }),
     getTransactionsAdminStats(),
   ]);
 
@@ -63,6 +64,7 @@ export default async function AdminTransactionsPage({
           saleStatus={sp.saleStatus ?? ""}
           exchangeStatus={sp.exchangeStatus ?? ""}
           urgentOnly={urgentOnly}
+          query={sp.q ?? ""}
         />
       </div>
     </main>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { cardImage } from "@/lib/rarity";
@@ -14,6 +14,8 @@ import {
   releaseDatesEqual,
   toDatetimeLocalValue,
 } from "@/components/admin/admin-product-images-field";
+import { AdminFilterBar, AdminFilterSelect, matchAdminSearch } from "@/components/admin/admin-filter-bar";
+import type { ProductType } from "@/generated/prisma/client";
 
 const inputCls =
   "w-full rounded-md border border-charbon-500 bg-charbon-700/80 px-2 py-1.5 text-[12px] text-blanc-casse outline-none transition focus:border-or/60";
@@ -246,8 +248,33 @@ function ShopProductPanel({ product }: { product: AdminShopProduct }) {
 
 export function AdminShopEditor({ products }: { products: AdminShopProduct[] }) {
   const t = useTranslations("admin.shop");
+  const tFilters = useTranslations("admin.filters");
+  const [q, setQ] = useState("");
+  const [activeFilter, setActiveFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [stockFilter, setStockFilter] = useState("");
+
+  const productTypes = useMemo(
+    () => [...new Set(products.map((p) => p.type))].sort() as ProductType[],
+    [products],
+  );
+
+  const filteredProducts = useMemo(
+    () =>
+      products.filter((p) => {
+        if (activeFilter === "active" && !p.active) return false;
+        if (activeFilter === "inactive" && p.active) return false;
+        if (typeFilter && p.type !== typeFilter) return false;
+        if (stockFilter === "low" && !(p.active && p.stock <= 5 && p.stock > 0)) return false;
+        if (stockFilter === "out" && p.stock !== 0) return false;
+        return matchAdminSearch(q, p.name, p.sku, p.slug);
+      }),
+    [products, q, activeFilter, typeFilter, stockFilter],
+  );
+
   const activeCount = products.filter((p) => p.active).length;
   const lowStockCount = products.filter((p) => p.active && p.stock <= 5).length;
+  const hasFilters = Boolean(q.trim() || activeFilter || typeFilter || stockFilter);
 
   return (
     <section className="admin-panel overflow-hidden p-0!">
@@ -263,10 +290,55 @@ export function AdminShopEditor({ products }: { products: AdminShopProduct[] }) 
         )}
       </div>
 
+      <div className="border-b border-admin-border px-4 py-3">
+        <AdminFilterBar
+          live
+          search={q}
+          onSearchChange={setQ}
+          searchPlaceholder={t("searchPlaceholder")}
+          onReset={hasFilters ? () => { setQ(""); setActiveFilter(""); setTypeFilter(""); setStockFilter(""); } : undefined}
+        >
+          <AdminFilterSelect
+            label={t("filterActive")}
+            value={activeFilter}
+            onChange={setActiveFilter}
+            options={[
+              { value: "", label: t("activeAll") },
+              { value: "active", label: t("activeYes") },
+              { value: "inactive", label: t("activeNo") },
+            ]}
+          />
+          <AdminFilterSelect
+            label={t("filterType")}
+            value={typeFilter}
+            onChange={setTypeFilter}
+            options={[
+              { value: "", label: tFilters("all") },
+              ...productTypes.map((type) => ({ value: type, label: t(`productTypes.${type}`) })),
+            ]}
+          />
+          <AdminFilterSelect
+            label={t("filterStock")}
+            value={stockFilter}
+            onChange={setStockFilter}
+            options={[
+              { value: "", label: t("stockAll") },
+              { value: "low", label: t("stockLow") },
+              { value: "out", label: t("stockOut") },
+            ]}
+          />
+        </AdminFilterBar>
+        {hasFilters && (
+          <p className="text-[12px] font-bold text-texte-faible">{tFilters("resultsCount", { count: filteredProducts.length })}</p>
+        )}
+      </div>
+
       {products.length === 0 ? (
         <p className="px-4 py-10 text-center text-[13px] font-bold text-texte-dim">{t("empty")}</p>
+      ) : filteredProducts.length === 0 ? (
+        <p className="px-4 py-10 text-center text-[13px] font-bold text-texte-dim">{tFilters("noResults")}</p>
       ) : (
-        <div>{products.map((p) => <ShopProductPanel key={p.id} product={p} />)}</div>
+        <div>{filteredProducts.map((p) => <ShopProductPanel key={p.id} product={p} />)}</div>
       )}
     </section>
   );

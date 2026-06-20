@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import type { AdminExchangeRow, AdminSaleRow, AdminShipmentRow } from "@/server/admin/transactions-admin.service";
+import { AdminFilterBar, AdminFilterCheckbox } from "@/components/admin/admin-filter-bar";
 
 const SALE_STATUSES = [
   "PENDING_PAYMENT", "PAID", "AWAITING_SHIPMENT", "SHIPPED", "DELIVERED_WINDOW",
@@ -23,6 +25,7 @@ export function AdminTransactionsPanel({
   saleStatus,
   exchangeStatus,
   urgentOnly,
+  query,
 }: {
   tab: string;
   sales: { rows: AdminSaleRow[]; total: number; page: number; pageSize: number };
@@ -32,13 +35,32 @@ export function AdminTransactionsPanel({
   saleStatus: string;
   exchangeStatus: string;
   urgentOnly: boolean;
+  query: string;
 }) {
   const t = useTranslations("admin.transactions");
   const router = useRouter();
   const activeTab = tab || "sales";
+  const [q, setQ] = useState(query);
+  const [saleSt, setSaleSt] = useState(saleStatus);
+  const [exchangeSt, setExchangeSt] = useState(exchangeStatus);
+  const [urgent, setUrgent] = useState(urgentOnly);
 
-  function navigate(nextTab: string, extra?: Record<string, string>) {
-    const sp = new URLSearchParams({ tab: nextTab, ...extra });
+  function buildParams(extra?: Record<string, string>) {
+    const sp = new URLSearchParams({ tab: activeTab, ...extra });
+    if (q.trim()) sp.set("q", q.trim());
+    if (activeTab === "sales" && saleSt) sp.set("saleStatus", saleSt);
+    if (activeTab === "exchanges" && exchangeSt) sp.set("exchangeStatus", exchangeSt);
+    if (activeTab === "shipments" && urgent) sp.set("urgent", "1");
+    return sp.toString();
+  }
+
+  function applyFilters() {
+    router.push(`/admin/transactions?${buildParams()}`);
+  }
+
+  function navigate(nextTab: string) {
+    const sp = new URLSearchParams({ tab: nextTab });
+    if (q.trim()) sp.set("q", q.trim());
     router.push(`/admin/transactions?${sp.toString()}`);
   }
 
@@ -72,18 +94,56 @@ export function AdminTransactionsPanel({
         ))}
       </div>
 
+      <AdminFilterBar
+        search={q}
+        onSearchChange={setQ}
+        searchPlaceholder={t("searchPlaceholder")}
+        onApply={applyFilters}
+        onReset={() => {
+          setQ("");
+          setSaleSt("");
+          setExchangeSt("");
+          setUrgent(false);
+          router.push(`/admin/transactions?tab=${activeTab}`);
+        }}
+      >
+        {activeTab === "sales" && (
+          <div className="min-w-[160px]">
+            <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("colStatus")}</label>
+            <select
+              value={saleSt}
+              onChange={(e) => setSaleSt(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-[13px] text-blanc-casse outline-none focus:border-carmin"
+            >
+              <option value="" className="bg-charbon-800">{t("allStatuses")}</option>
+              {SALE_STATUSES.map((s) => (
+                <option key={s} value={s} className="bg-charbon-800">{t(`saleStatuses.${s}`)}</option>
+              ))}
+            </select>
+          </div>
+        )}
+        {activeTab === "exchanges" && (
+          <div className="min-w-[160px]">
+            <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("colStatus")}</label>
+            <select
+              value={exchangeSt}
+              onChange={(e) => setExchangeSt(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-[13px] text-blanc-casse outline-none focus:border-carmin"
+            >
+              <option value="" className="bg-charbon-800">{t("allStatuses")}</option>
+              {EXCHANGE_STATUSES.map((s) => (
+                <option key={s} value={s} className="bg-charbon-800">{t(`exchangeStatuses.${s}`)}</option>
+              ))}
+            </select>
+          </div>
+        )}
+        {activeTab === "shipments" && (
+          <AdminFilterCheckbox label={t("urgentOnly")} checked={urgent} onChange={setUrgent} />
+        )}
+      </AdminFilterBar>
+
       {activeTab === "sales" && (
         <>
-          <select
-            value={saleStatus}
-            onChange={(e) => navigate("sales", e.target.value ? { saleStatus: e.target.value } : {})}
-            className="rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-[13px] text-blanc-casse"
-          >
-            <option value="">{t("allStatuses")}</option>
-            {SALE_STATUSES.map((s) => (
-              <option key={s} value={s}>{t(`saleStatuses.${s}`)}</option>
-            ))}
-          </select>
           <DataTable
             headers={[t("colCard"), t("colBuyer"), t("colSeller"), t("colPrice"), t("colStatus"), t("colSecured"), t("colDate")]}
             rows={sales.rows.map((s) => [
@@ -102,16 +162,6 @@ export function AdminTransactionsPanel({
 
       {activeTab === "exchanges" && (
         <>
-          <select
-            value={exchangeStatus}
-            onChange={(e) => navigate("exchanges", e.target.value ? { exchangeStatus: e.target.value } : {})}
-            className="rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-[13px] text-blanc-casse"
-          >
-            <option value="">{t("allStatuses")}</option>
-            {EXCHANGE_STATUSES.map((s) => (
-              <option key={s} value={s}>{t(`exchangeStatuses.${s}`)}</option>
-            ))}
-          </select>
           <DataTable
             headers={[t("colInitiator"), t("colRecipient"), t("colItems"), t("colStatus"), t("colSecured"), t("colDate")]}
             rows={exchanges.rows.map((e) => [
@@ -129,14 +179,6 @@ export function AdminTransactionsPanel({
 
       {activeTab === "shipments" && (
         <>
-          <label className="flex items-center gap-2 text-[12px] font-bold text-texte-dim">
-            <input
-              type="checkbox"
-              checked={urgentOnly}
-              onChange={(e) => navigate("shipments", e.target.checked ? { urgent: "1" } : {})}
-            />
-            {t("urgentOnly")}
-          </label>
           <DataTable
             headers={[t("colType"), t("colStatus"), t("colTracking"), t("colDeadline"), t("colSecured")]}
             rows={shipments.rows.map((s) => [

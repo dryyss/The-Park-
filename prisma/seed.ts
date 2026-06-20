@@ -67,6 +67,13 @@ async function main() {
     },
   });
 
+  console.log("→ Hors série");
+  await prisma.season.upsert({
+    where: { code: "HS" },
+    update: { name: "Hors série" },
+    create: { code: "HS", name: "Hors série", sortOrder: 90 },
+  });
+
   console.log("→ Raretés");
   const rarityByCode: Record<string, string> = {};
   for (let i = 0; i < RARITY_ORDER.length; i++) {
