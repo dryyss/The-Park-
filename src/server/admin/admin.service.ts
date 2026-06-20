@@ -17,10 +17,14 @@ export interface AdminShopProduct {
   sku: string;
   name: string;
   slug: string;
+  type: import("@/generated/prisma/client").ProductType;
   price: string;
   priceValue: number;
   stock: number;
   active: boolean;
+  description: string | null;
+  images: string[];
+  releaseDate: string | null;
 }
 
 export async function getAdminOverview(): Promise<AdminOverview> {
@@ -55,10 +59,14 @@ export async function getAdminShopProducts(): Promise<AdminShopProduct[]> {
     sku: p.sku,
     name: p.name,
     slug: p.slug,
+    type: p.type,
     price: new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(Number(p.price)),
     priceValue: Number(p.price),
     stock: p.stock,
     active: p.active,
+    description: p.description,
+    images: p.images,
+    releaseDate: p.releaseDate?.toISOString() ?? null,
   }));
 }
 

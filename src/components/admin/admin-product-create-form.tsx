@@ -4,6 +4,11 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { createProductAction } from "@/server/admin/shop.actions";
+import {
+  AdminProductImagesField,
+  fromDatetimeLocalValue,
+  normalizeProductImages,
+} from "@/components/admin/admin-product-images-field";
 
 const PRODUCT_TYPES = [
   "BOOSTER",
@@ -17,12 +22,25 @@ const PRODUCT_TYPES = [
 const inputCls =
   "rounded-lg border border-charbon-500 bg-charbon-700/80 px-3 py-2 text-[13px] text-blanc-casse outline-none focus:border-or/60";
 
+const textareaCls =
+  "w-full resize-y rounded-lg border border-charbon-500 bg-charbon-700/80 px-3 py-2 text-[13px] leading-relaxed text-blanc-casse outline-none focus:border-or/60";
+
 export function AdminProductCreateForm() {
   const t = useTranslations("admin.shop");
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [description, setDescription] = useState("");
+  const [images, setImages] = useState<string[]>([]);
+  const [releaseDateLocal, setReleaseDateLocal] = useState("");
+
+  function resetForm() {
+    setDescription("");
+    setImages([]);
+    setReleaseDateLocal("");
+    setError(null);
+  }
 
   function submit(form: FormData) {
     setError(null);
@@ -34,9 +52,13 @@ export function AdminProductCreateForm() {
         type: String(form.get("type")) as (typeof PRODUCT_TYPES)[number],
         price: parseFloat(String(form.get("price")).replace(",", ".")),
         stock: parseInt(String(form.get("stock")), 10),
+        description: description.trim() || null,
+        images: normalizeProductImages(images),
+        releaseDate: fromDatetimeLocalValue(releaseDateLocal),
       });
       if (res.ok) {
         setOpen(false);
+        resetForm();
         router.refresh();
       } else {
         setError(res.error);
@@ -59,22 +81,22 @@ export function AdminProductCreateForm() {
   }
 
   return (
-    <form
-      action={(fd) => submit(fd)}
-      className="admin-panel border-or/30"
-    >
+    <form action={(fd) => submit(fd)} className="admin-panel space-y-4 border-or/30">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="admin-section-title">{t("createProduct")}</h3>
         <button
           type="button"
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            setOpen(false);
+            resetForm();
+          }}
           className="text-[11px] font-extrabold tracking-wide text-texte-dim uppercase hover:text-blanc-casse"
         >
           {t("cancel")}
         </button>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <label className="grid gap-1">
           <span className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("sku")}</span>
           <input name="sku" required className={inputCls} />
@@ -105,11 +127,34 @@ export function AdminProductCreateForm() {
           <span className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("stock")}</span>
           <input name="stock" type="number" min={0} required defaultValue={0} className={inputCls} />
         </label>
+        <label className="grid gap-1 sm:col-span-2 lg:col-span-3">
+          <span className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("releaseDate")}</span>
+          <input
+            type="datetime-local"
+            value={releaseDateLocal}
+            onChange={(e) => setReleaseDateLocal(e.target.value)}
+            className={`${inputCls} max-w-xs`}
+          />
+        </label>
       </div>
 
-      {error && <p className="mt-3 text-[12px] font-bold text-neon-rouge">{error}</p>}
+      <label className="grid gap-1.5">
+        <span className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("description")}</span>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={4}
+          maxLength={4000}
+          placeholder={t("descriptionPlaceholder")}
+          className={textareaCls}
+        />
+      </label>
 
-      <div className="mt-4 flex gap-2">
+      <AdminProductImagesField images={images} onChange={setImages} />
+
+      {error && <p className="text-[12px] font-bold text-neon-rouge">{error}</p>}
+
+      <div className="flex gap-2">
         <button
           type="submit"
           disabled={pending}

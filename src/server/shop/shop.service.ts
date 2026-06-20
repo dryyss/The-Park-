@@ -20,6 +20,7 @@ export interface ShopProduct {
   inStock: boolean;
   lowStock: boolean;
   image: string | null;
+  images: string[];
   description: string | null;
   tag?: string;
 }
@@ -68,6 +69,7 @@ function mapProduct(p: {
     inStock: p.stock > 0,
     lowStock: p.stock > 0 && p.stock <= 15,
     image: p.images[0] ?? null,
+    images: p.images,
     description: p.description,
     tag: p.type === "LIMITED_EDITION" ? "Édition limitée" : p.stock === 0 ? undefined : p.stock <= 5 ? "Stock faible" : undefined,
   };

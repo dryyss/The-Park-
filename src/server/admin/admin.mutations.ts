@@ -3,16 +3,6 @@ import { prisma } from "@/lib/prisma";
 import type { Language, ProductType } from "@/generated/prisma/client";
 import { slugify } from "@/lib/slug";
 
-export interface AdminOrderRow {
-  id: string;
-  orderNumber: string;
-  status: string;
-  total: string;
-  customerName: string;
-  itemCount: number;
-  createdAt: Date;
-}
-
 export interface AdminSeasonRow {
   id: string;
   code: string;
@@ -28,27 +18,6 @@ export interface AdminCardRow {
   slug: string;
   rarityLabel: string;
   quoteValue: string;
-}
-
-export async function getAdminOrders(): Promise<AdminOrderRow[]> {
-  const orders = await prisma.order.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 100,
-    include: {
-      user: { select: { displayName: true } },
-      _count: { select: { items: true } },
-    },
-  });
-
-  return orders.map((o) => ({
-    id: o.id,
-    orderNumber: o.orderNumber,
-    status: o.status,
-    total: new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(Number(o.total)),
-    customerName: o.user.displayName,
-    itemCount: o._count.items,
-    createdAt: o.createdAt,
-  }));
 }
 
 export async function getAdminSeasons(): Promise<AdminSeasonRow[]> {
@@ -88,7 +57,9 @@ export async function updateProduct(
     price?: number;
     stock?: number;
     active?: boolean;
-    description?: string;
+    description?: string | null;
+    images?: string[];
+    releaseDate?: Date | null;
   },
 ): Promise<void> {
   await prisma.product.update({
@@ -99,6 +70,8 @@ export async function updateProduct(
       ...(data.stock !== undefined ? { stock: data.stock } : {}),
       ...(data.active !== undefined ? { active: data.active } : {}),
       ...(data.description !== undefined ? { description: data.description } : {}),
+      ...(data.images !== undefined ? { images: data.images } : {}),
+      ...(data.releaseDate !== undefined ? { releaseDate: data.releaseDate } : {}),
     },
   });
 }
@@ -110,7 +83,9 @@ export async function createProduct(data: {
   type: ProductType;
   price: number;
   stock: number;
-  description?: string;
+  description?: string | null;
+  images?: string[];
+  releaseDate?: Date | null;
 }): Promise<string> {
   const p = await prisma.product.create({
     data: {
@@ -120,8 +95,9 @@ export async function createProduct(data: {
       type: data.type,
       price: data.price,
       stock: data.stock,
-      description: data.description ?? null,
-      images: [],
+      description: data.description?.trim() || null,
+      images: data.images ?? [],
+      releaseDate: data.releaseDate ?? null,
       active: true,
     },
   });
@@ -144,7 +120,35 @@ export async function updateSeason(
 export async function updateOrderStatus(orderId: string, status: import("@/generated/prisma/client").OrderStatus): Promise<void> {
   await prisma.order.update({
     where: { id: orderId },
-    data: { status },
+    data: {
+      status,
+      ...(status === "SHIPPED" ? { shippedAt: new Date() } : {}),
+    },
+  });
+}
+
+export async function updateOrderFulfillment(
+  orderId: string,
+  data: {
+    trackingNumber?: string | null;
+    shippingMethod?: string | null;
+    status?: import("@/generated/prisma/client").OrderStatus;
+  },
+): Promise<void> {
+  const now = new Date();
+  const nextStatus = data.status;
+  await prisma.order.update({
+    where: { id: orderId },
+    data: {
+      ...(data.trackingNumber !== undefined ? { trackingNumber: data.trackingNumber || null } : {}),
+      ...(data.shippingMethod !== undefined ? { shippingMethod: data.shippingMethod || null } : {}),
+      ...(nextStatus !== undefined
+        ? {
+            status: nextStatus,
+            ...(nextStatus === "SHIPPED" ? { shippedAt: now } : {}),
+          }
+        : {}),
+    },
   });
 }
 
