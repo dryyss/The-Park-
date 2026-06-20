@@ -165,14 +165,20 @@ function useAction() {
 
   function run(fn: () => Promise<{ ok: boolean; error?: string }>, onDone?: () => void) {
     setError(null);
-    startTransition(async () => {
-      const res = await fn();
-      if (res.ok) {
-        onDone?.();
-        router.refresh();
-      } else {
-        setError(errLabel(t, res.error));
-      }
+    startTransition(() => {
+      void (async () => {
+        try {
+          const res = await fn();
+          if (res.ok) {
+            onDone?.();
+            router.refresh();
+          } else {
+            setError(errLabel(t, res.error));
+          }
+        } catch {
+          setError(t("errUnknown"));
+        }
+      })();
     });
   }
 
@@ -191,6 +197,10 @@ function errLabel(t: ReturnType<typeof useTranslations>, code?: string): string 
       return t("errVariantExists");
     case "VARIANT_IN_USE":
       return t("errVariantInUse");
+    case "LAST_VARIANT":
+      return t("errLastVariant");
+    case "NOT_FOUND":
+      return t("errNotFound");
     case "VALIDATION":
       return t("errValidation");
     case "UNAUTHORIZED":
@@ -450,6 +460,12 @@ function CardVariants({ card, versionTypes }: { card: AdminCardFull; versionType
     );
   }
 
+  function removeVariant(v: AdminCardFull["variants"][number]) {
+    const label = [v.versionTypeLabel, v.language, v.editionLabel].filter(Boolean).join(" · ");
+    if (!confirm(t("confirmDeleteVariant", { label }))) return;
+    run(() => deleteCardVariantAction({ variantId: v.id }));
+  }
+
   return (
     <div className="mt-3 rounded-lg border border-charbon-500 bg-charbon-900/40 p-3">
       <div className="flex flex-col gap-2">
@@ -484,7 +500,7 @@ function CardVariants({ card, versionTypes }: { card: AdminCardFull; versionType
             <button
               type="button"
               disabled={pending}
-              onClick={() => run(() => deleteCardVariantAction({ variantId: v.id }))}
+              onClick={() => removeVariant(v)}
               className="text-[10.5px] font-bold text-neon-rouge hover:underline disabled:opacity-50"
             >
               {t("delete")}

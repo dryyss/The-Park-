@@ -1087,6 +1087,7 @@
       "cancel": "Annuler",
       "delete": "Supprimer",
       "confirmDeleteCard": "Supprimer la carte « {name} » ?",
+      "confirmDeleteVariant": "Supprimer la variante « {label} » ? Les collections et annonces liées seront aussi retirées.",
       "variants": "Variantes",
       "noVariants": "Aucune variante.",
       "addVariant": "Ajouter une variante",
@@ -1105,7 +1106,9 @@
       "errNumberTaken": "Ce numéro est déjà pris dans la saison.",
       "errCardInUse": "Carte utilisée (collections/annonces) — suppression impossible.",
       "errVariantExists": "Cette variante (version + langue) existe déjà.",
-      "errVariantInUse": "Variante utilisée (collections/annonces) — suppression impossible.",
+      "errVariantInUse": "Variante liée à un échange ou litige actif — suppression impossible.",
+      "errLastVariant": "Impossible de supprimer la dernière variante d'une carte.",
+      "errNotFound": "Variante introuvable.",
       "errValidation": "Données invalides.",
       "errForbidden": "Accès refusé.",
       "errUnknown": "Une erreur est survenue."

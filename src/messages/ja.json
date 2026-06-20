@@ -1087,6 +1087,7 @@
       "cancel": "キャンセル",
       "delete": "削除",
       "confirmDeleteCard": "カード「{name}」を削除しますか？",
+      "confirmDeleteVariant": "バリアント「{label}」を削除しますか？関連するコレクションと出品も削除されます。",
       "variants": "バリアント",
       "noVariants": "バリアントがありません。",
       "addVariant": "バリアントを追加",
@@ -1105,7 +1106,9 @@
       "errNumberTaken": "この番号はシーズン内で既に使用されています。",
       "errCardInUse": "使用中のカード（コレクション/出品）— 削除できません。",
       "errVariantExists": "このバリアント（バージョン＋言語）は既に存在します。",
-      "errVariantInUse": "使用中のバリアント（コレクション/出品）— 削除できません。",
+      "errVariantInUse": "進行中の交換または紛争に紐づくバリアント — 削除できません。",
+      "errLastVariant": "カードの最後のバリアントは削除できません。",
+      "errNotFound": "バリアントが見つかりません。",
       "errValidation": "データが無効です。",
       "errForbidden": "アクセスが拒否されました。",
       "errUnknown": "エラーが発生しました。"

@@ -1087,6 +1087,7 @@
       "cancel": "Cancel",
       "delete": "Delete",
       "confirmDeleteCard": "Delete card “{name}”?",
+      "confirmDeleteVariant": "Delete variant “{label}”? Linked collections and listings will also be removed.",
       "variants": "Variants",
       "noVariants": "No variant.",
       "addVariant": "Add a variant",
@@ -1105,7 +1106,9 @@
       "errNumberTaken": "This number is already used in the season.",
       "errCardInUse": "Card in use (collections/listings) — cannot delete.",
       "errVariantExists": "This variant (version + language) already exists.",
-      "errVariantInUse": "Variant in use (collections/listings) — cannot delete.",
+      "errVariantInUse": "Variant tied to an active exchange or dispute — cannot delete.",
+      "errLastVariant": "Cannot delete the last variant of a card.",
+      "errNotFound": "Variant not found.",
       "errValidation": "Invalid data.",
       "errForbidden": "Access denied.",
       "errUnknown": "Something went wrong."

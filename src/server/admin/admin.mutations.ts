@@ -1,7 +1,9 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import type { Language, ProductType } from "@/generated/prisma/client";
+import type { Language, Prisma, ProductType } from "@/generated/prisma/client";
 import { slugify } from "@/lib/slug";
+
+type Tx = Prisma.TransactionClient;
 
 export interface AdminSeasonRow {
   id: string;
@@ -412,9 +414,88 @@ export async function updateCardVariant(variantId: string, data: UpdateVariantIn
   }
 }
 
+async function purgeListingsForVariant(tx: Tx, variantId: string): Promise<void> {
+  const listingIds = (
+    await tx.listing.findMany({ where: { variantId }, select: { id: true } })
+  ).map((l) => l.id);
+  if (listingIds.length === 0) return;
+
+  const saleIds = (
+    await tx.sale.findMany({ where: { listingId: { in: listingIds } }, select: { id: true } })
+  ).map((s) => s.id);
+
+  if (saleIds.length > 0) {
+    await tx.marketplaceCheckoutLine.deleteMany({ where: { saleId: { in: saleIds } } });
+    await tx.review.deleteMany({ where: { saleId: { in: saleIds } } });
+    await tx.conversation.deleteMany({ where: { saleId: { in: saleIds } } });
+
+    const saleDisputeIds = (
+      await tx.dispute.findMany({ where: { saleId: { in: saleIds } }, select: { id: true } })
+    ).map((d) => d.id);
+    if (saleDisputeIds.length > 0) {
+      await tx.conversation.deleteMany({ where: { disputeId: { in: saleDisputeIds } } });
+      await tx.dispute.deleteMany({ where: { id: { in: saleDisputeIds } } });
+    }
+
+    const shipmentIds = (
+      await tx.shipment.findMany({ where: { saleId: { in: saleIds } }, select: { id: true } })
+    ).map((s) => s.id);
+    if (shipmentIds.length > 0) {
+      await tx.payment.deleteMany({ where: { shipmentId: { in: shipmentIds } } });
+      await tx.trackingEvent.deleteMany({ where: { shipmentId: { in: shipmentIds } } });
+      await tx.shipment.deleteMany({ where: { id: { in: shipmentIds } } });
+    }
+
+    await tx.payment.deleteMany({ where: { saleId: { in: saleIds } } });
+    await tx.sale.deleteMany({ where: { id: { in: saleIds } } });
+  }
+
+  await tx.marketplaceCartItem.deleteMany({ where: { listingId: { in: listingIds } } });
+  await tx.listing.deleteMany({ where: { id: { in: listingIds } } });
+}
+
+async function purgeAuctionsForVariant(tx: Tx, variantId: string): Promise<void> {
+  const auctionIds = (
+    await tx.auction.findMany({ where: { variantId }, select: { id: true } })
+  ).map((a) => a.id);
+  if (auctionIds.length === 0) return;
+
+  await tx.bid.deleteMany({ where: { auctionId: { in: auctionIds } } });
+  await tx.conversation.deleteMany({ where: { auctionId: { in: auctionIds } } });
+
+  const auctionDisputeIds = (
+    await tx.dispute.findMany({ where: { auctionId: { in: auctionIds } }, select: { id: true } })
+  ).map((d) => d.id);
+  if (auctionDisputeIds.length > 0) {
+    await tx.conversation.deleteMany({ where: { disputeId: { in: auctionDisputeIds } } });
+    await tx.dispute.deleteMany({ where: { id: { in: auctionDisputeIds } } });
+  }
+
+  await tx.payment.deleteMany({ where: { auctionId: { in: auctionIds } } });
+  await tx.auction.deleteMany({ where: { id: { in: auctionIds } } });
+}
+
+async function purgeCardVariantGraph(tx: Tx, variantId: string): Promise<void> {
+  await purgeListingsForVariant(tx, variantId);
+  await purgeAuctionsForVariant(tx, variantId);
+  await tx.exchangeItem.deleteMany({ where: { variantId } });
+  await tx.collectionItem.deleteMany({ where: { variantId } });
+  await tx.wishlistItem.deleteMany({ where: { variantId } });
+  await tx.cardVariant.delete({ where: { id: variantId } });
+}
+
 export async function deleteCardVariant(variantId: string): Promise<void> {
+  const variant = await prisma.cardVariant.findUnique({
+    where: { id: variantId },
+    select: {
+      card: { select: { _count: { select: { variants: true } } } },
+    },
+  });
+  if (!variant) throw new Error("NOT_FOUND");
+  if (variant.card._count.variants <= 1) throw new Error("LAST_VARIANT");
+
   try {
-    await prisma.cardVariant.delete({ where: { id: variantId } });
+    await prisma.$transaction((tx) => purgeCardVariantGraph(tx, variantId));
   } catch (err) {
     if (isPrismaErr(err, "P2003") || isPrismaErr(err, "P2014")) throw new Error("VARIANT_IN_USE");
     throw err;
