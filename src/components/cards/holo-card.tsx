@@ -61,7 +61,7 @@ export function HoloCard({
   const blend = variant === "gold" ? "screen" : "overlay";
   const showOverlay = interactive && variant !== "none";
   // Assets catalogue déjà compressés dans /public/uploads — évite l'optimiseur Next (souvent capricieux sur Windows / mozjpeg).
-  const unoptimized = src.startsWith("/uploads/");
+  const unoptimized = src.startsWith("/uploads/") || src.startsWith("http");
 
   return (
     <div

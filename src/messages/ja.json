@@ -952,6 +952,7 @@
       "uploadErrorSize": "ファイルが大きすぎます（最大 5 MB）。",
       "uploadErrorType": "非対応形式（JPEG, PNG, WebP）。",
       "uploadErrorForbidden": "アクセスが拒否されました。",
+      "uploadErrorStorage": "サーバーに画像ストレージが設定されていません（Vercel Blob）。管理者に連絡してください。",
       "uploadError": "アップロードに失敗しました。"
     },
     "filters": {

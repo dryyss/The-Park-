@@ -1,7 +1,8 @@
 import "server-only";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import { put } from "@vercel/blob";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const MAX_EDGE = 2000;
@@ -20,8 +21,11 @@ function safeBaseName(originalName: string): string {
   );
 }
 
-/** Enregistre une image admin (catalogue / boutique) dans public/uploads. Retourne le nom de fichier seul. */
-export async function saveAdminImageFile(file: File): Promise<string> {
+function useBlobStorage(): boolean {
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+}
+
+async function processImageToJpeg(file: File): Promise<Buffer> {
   if (file.size > MAX_BYTES) {
     throw new Error("FILE_TOO_LARGE");
   }
@@ -32,17 +36,42 @@ export async function saveAdminImageFile(file: File): Promise<string> {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  await mkdir(UPLOAD_ROOT, { recursive: true });
-
-  const fileName = `${safeBaseName(file.name)}-${randomUUID().slice(0, 8)}.jpg`;
-  const outPath = path.join(UPLOAD_ROOT, fileName);
-
   const sharp = (await import("sharp")).default;
-  await sharp(buffer)
+  return sharp(buffer)
     .rotate()
     .resize(MAX_EDGE, MAX_EDGE, { fit: "inside", withoutEnlargement: true })
     .jpeg({ quality: 88, mozjpeg: true })
-    .toFile(outPath);
+    .toBuffer();
+}
+
+/**
+ * Enregistre une image admin (catalogue / boutique).
+ * - Prod Vercel : Vercel Blob (BLOB_READ_WRITE_TOKEN) → URL HTTPS publique
+ * - Dev local : public/uploads → nom de fichier seul
+ */
+export async function saveAdminImageFile(file: File): Promise<string> {
+  const jpeg = await processImageToJpeg(file);
+  const fileName = `${safeBaseName(file.name)}-${randomUUID().slice(0, 8)}.jpg`;
+
+  if (useBlobStorage()) {
+    const blob = await put(`admin/${fileName}`, jpeg, {
+      access: "public",
+      contentType: "image/jpeg",
+      addRandomSuffix: false,
+    });
+    return blob.url;
+  }
+
+  if (process.env.VERCEL) {
+    throw new Error("STORAGE_NOT_CONFIGURED");
+  }
+
+  try {
+    await mkdir(UPLOAD_ROOT, { recursive: true });
+    await writeFile(path.join(UPLOAD_ROOT, fileName), jpeg);
+  } catch {
+    throw new Error("WRITE_FAILED");
+  }
 
   return fileName;
 }

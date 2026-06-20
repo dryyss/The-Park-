@@ -9,6 +9,7 @@ function mapUploadError(t: ReturnType<typeof useTranslations>, code: string): st
   if (code === "FILE_TOO_LARGE") return t("uploadErrorSize");
   if (code === "INVALID_TYPE") return t("uploadErrorType");
   if (code === "UNAUTHORIZED" || code === "FORBIDDEN") return t("uploadErrorForbidden");
+  if (code === "STORAGE_NOT_CONFIGURED" || code === "WRITE_FAILED") return t("uploadErrorStorage");
   return t("uploadError");
 }
 

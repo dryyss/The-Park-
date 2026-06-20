@@ -952,6 +952,7 @@
       "uploadErrorSize": "Fichier trop lourd (max 5 Mo).",
       "uploadErrorType": "Format non supporté (JPEG, PNG, WebP).",
       "uploadErrorForbidden": "Accès refusé.",
+      "uploadErrorStorage": "Stockage images non configuré sur le serveur (Vercel Blob). Contacte l'administrateur.",
       "uploadError": "Échec de l'envoi."
     },
     "filters": {

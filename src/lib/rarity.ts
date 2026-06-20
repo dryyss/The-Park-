@@ -39,8 +39,10 @@ export function rarityMeta(code: string): RarityMeta {
   return RARITY_META[code] ?? RARITY_META.c;
 }
 
-/** Chemin public d'une image de carte (Card.imageUrl / CardVariant.imageUrl = nom de fichier). */
+/** Chemin public d'une image de carte (Card.imageUrl / CardVariant.imageUrl = nom de fichier ou URL). */
 export function cardImage(fileName: string | null | undefined): string {
   if (!fileName) return "/uploads/placeholder.jpg";
-  return fileName.startsWith("/") ? fileName : `/uploads/${fileName}`;
+  const trimmed = fileName.trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return trimmed.startsWith("/") ? trimmed : `/uploads/${trimmed}`;
 }

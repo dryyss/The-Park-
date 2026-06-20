@@ -952,6 +952,7 @@
       "uploadErrorSize": "File too large (max 5 MB).",
       "uploadErrorType": "Unsupported format (JPEG, PNG, WebP).",
       "uploadErrorForbidden": "Access denied.",
+      "uploadErrorStorage": "Image storage is not configured on the server (Vercel Blob). Contact the administrator.",
       "uploadError": "Upload failed."
     },
     "filters": {
