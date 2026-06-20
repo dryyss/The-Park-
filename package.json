@@ -22,7 +22,8 @@
     "auth0:setup": "tsx scripts/setup-auth0-triggers.ts",
     "auth0:disable-google": "tsx scripts/disable-auth0-google.ts",
     "staff:seed": "tsx scripts/seed-staff-accounts.ts",
-    "test:resend": "tsx scripts/test-resend.ts"
+    "test:resend": "tsx scripts/test-resend.ts",
+    "check:neon": "tsx scripts/check-neon.ts"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.22.0",

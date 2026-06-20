@@ -72,8 +72,13 @@ function revalidateCollection() {
   revalidatePath("/carte", "layout");
   revalidatePath("/vendre");
   revalidatePath("/saison-1");
+  revalidatePath("/hors-serie");
   revalidatePath("/echanges");
   revalidatePath("/echanges/proposer");
+  // Carousel accueil : comptes possédés par rareté (lecture Neon live).
+  for (const locale of ["fr", "en", "ja"] as const) {
+    revalidatePath(`/${locale}`);
+  }
 }
 
 export async function addToCollectionAction(input: unknown): Promise<CollectionActionResult> {

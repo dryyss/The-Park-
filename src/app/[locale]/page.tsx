@@ -14,8 +14,8 @@ import { LatestListings } from "@/components/home/latest-listings";
 import { ActivityFeed } from "@/components/home/activity-feed";
 import { TopCollectors } from "@/components/home/top-collectors";
 
-// Données catalogue mises en cache côté serveur (120 s) — évite un aller-retour Neon à chaque navigation.
-export const revalidate = 60;
+// Catalogue en cache (unstable_cache 120 s) ; comptes membre lus live depuis Neon.
+export const dynamic = "force-dynamic";
 
 export default async function Home({
   params,
