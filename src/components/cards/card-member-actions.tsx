@@ -59,11 +59,6 @@ export function CardMemberActions({
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2">
                 <div className={`text-[13px] font-extrabold ${v.owned ? "text-blanc-casse" : "text-texte-dim"}`}>{v.label}</div>
-                {v.isFirstEdition && (
-                  <span className="font-display rounded bg-carmin px-2 py-0.5 text-[9px] tracking-[1px] text-white">
-                    {t("firstEditionBadge")}
-                  </span>
-                )}
                 <span className={`text-[11px] font-bold ${v.owned ? "text-statut-succes" : "text-texte-faible"}`}>
                   {v.owned ? t("versionQty", { count: v.quantity }) : t("versionMissing")}
                 </span>

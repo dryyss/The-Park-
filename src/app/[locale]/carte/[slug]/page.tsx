@@ -9,7 +9,6 @@ import { getViewerUser, getAuthenticatedViewer } from "@/server/user/user.servic
 import { CardMemberActions } from "@/components/cards/card-member-actions";
 import { CardWantButton } from "@/components/cards/card-want-button";
 import { avatarGradient } from "@/lib/avatars";
-import { isFirstEditionLabel } from "@/lib/card-edition";
 
 export const dynamic = "force-dynamic";
 
@@ -36,10 +35,6 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
       editionLabel: v.editionLabel,
       isFirstEdition: v.isFirstEdition,
     }));
-  const showFirstEditionBadge =
-    card.versions.some((v) => v.isFirstEdition) ||
-    card.versions.some((v) => isFirstEditionLabel(v.catalogEditionLabel));
-
   return (
     <main className="mx-auto max-w-[1240px] px-7 pt-5 pb-[60px]">
       <nav className="flex items-center gap-3 text-[12.5px] font-bold text-texte-dim">
@@ -72,11 +67,6 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
               rarityColor={card.color}
               priority
             />
-            {showFirstEditionBadge && (
-              <span className="font-display absolute left-0 top-3.5 -rotate-3 bg-carmin px-3 py-1 text-[11px] tracking-[1.5px] text-white">
-                {t("firstEditionBadge")}
-              </span>
-            )}
             <p className="mt-3 text-center text-[11.5px] font-bold text-texte-faible">{t("holoHint")}</p>
           </div>
           {card.communityPhotos.length > 0 && (
