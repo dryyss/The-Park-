@@ -106,6 +106,7 @@
     "topCollectorsTitle": "トップコレクター",
     "seeFullRanking": "ランキング全体を見る",
     "rarityCount": "{count}枚",
+    "rarityOwnedCount": "{count}枚所持",
     "rarityPrev": "前のレアリティ",
     "rarityNext": "次のレアリティ"
   },

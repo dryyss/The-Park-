@@ -1,7 +1,9 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getCatalogSummary, getCatalogStats, getFeaturedCards, getHeroCards } from "@/server/catalog/catalog.service";
+import { getUserOwnedCountByRarity } from "@/server/collection/collection.service";
 import { getRecentListings } from "@/server/marketplace/marketplace.service";
 import { getTopCollectors, getRecentActivity } from "@/server/community/community.service";
+import { getViewerUser } from "@/server/user/user.service";
 import { rarityMeta } from "@/lib/rarity";
 import { HeroSection } from "@/components/home/hero-section";
 import { type RarityStripItem } from "@/components/home/rarity-strip";
@@ -27,7 +29,7 @@ export default async function Home({
   setRequestLocale(locale);
   const tAuth = authError ? await getTranslations("auth") : null;
 
-  const [stats, summary, heroCards, featured, listings, collectors, activity] = await Promise.all([
+  const [stats, summary, heroCards, featured, listings, collectors, activity, viewer] = await Promise.all([
     getCatalogStats(),
     getCatalogSummary(),
     getHeroCards(),
@@ -35,11 +37,19 @@ export default async function Home({
     getRecentListings(6),
     getTopCollectors(5),
     getRecentActivity(5),
+    getViewerUser(),
   ]);
+
+  const ownedByRarity = viewer ? await getUserOwnedCountByRarity(viewer.id) : null;
 
   const rarities: RarityStripItem[] = summary.byRarity.map((r) => {
     const meta = rarityMeta(r.code);
-    return { glyph: r.symbol ?? meta.glyph, label: r.label, count: r.count, color: r.color ?? meta.color };
+    return {
+      glyph: r.symbol ?? meta.glyph,
+      label: r.label,
+      count: ownedByRarity ? (ownedByRarity.get(r.code) ?? 0) : r.count,
+      color: r.color ?? meta.color,
+    };
   });
 
   return (
@@ -52,7 +62,7 @@ export default async function Home({
       <HeroSection stats={stats} heroCards={heroCards} />
 
       <div className="mx-auto max-w-[1320px] px-7 pb-[60px]">
-        <RarityCarousel rarities={rarities} />
+        <RarityCarousel rarities={rarities} showOwned={!!viewer} />
         <FeaturedCards cards={featured.slice(3, 8)} />
         <SeasonBanner />
         <LatestListings listings={listings} />

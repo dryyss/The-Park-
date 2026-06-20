@@ -7,19 +7,16 @@ const FAN_SLOTS = [
     position:
       "left-[0%] top-[18%] z-[1] w-[44%] max-w-[200px] sm:max-w-[210px] lg:left-[0%] lg:top-[72px] lg:w-[38%] lg:max-w-[220px]",
     rotation: "-14deg",
-    delay: "0s",
   },
   {
     position:
       "left-[26%] top-0 z-[3] w-[50%] max-w-[230px] sm:max-w-[250px] lg:left-[28%] lg:w-[44%] lg:max-w-[280px]",
     rotation: "-2deg",
-    delay: "0.6s",
   },
   {
     position:
       "left-[52%] top-[20%] z-[2] w-[44%] max-w-[200px] sm:max-w-[210px] lg:left-[54%] lg:top-[88px] lg:w-[38%] lg:max-w-[220px]",
     rotation: "12deg",
-    delay: "1.2s",
   },
 ] as const;
 
@@ -34,8 +31,8 @@ export function HeroCardFan({ cards }: { cards: CardDisplay[] }) {
           <Link
             key={card.slug}
             href={`/carte/${card.slug}`}
-            className={["animate-floaty absolute block origin-center", slot.position].join(" ")}
-            style={{ ["--rot" as string]: slot.rotation, animationDelay: slot.delay }}
+            className={["absolute block origin-center", slot.position].join(" ")}
+            style={{ transform: `rotate(${slot.rotation})` }}
           >
             <HoloCard
               src={card.image}

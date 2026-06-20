@@ -106,6 +106,7 @@
     "topCollectorsTitle": "Top collectors",
     "seeFullRanking": "See the full ranking",
     "rarityCount": "{count} cards",
+    "rarityOwnedCount": "{count} cards owned",
     "rarityPrev": "Previous rarity",
     "rarityNext": "Next rarity"
   },

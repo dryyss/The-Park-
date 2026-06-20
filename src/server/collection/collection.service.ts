@@ -206,6 +206,24 @@ export async function getUserCollection(userId: string | null, filters: Collecti
   };
 }
 
+/** Quantités possédées par code de rareté, toutes saisons confondues (y compris hors série). */
+export async function getUserOwnedCountByRarity(userId: string): Promise<Map<string, number>> {
+  const items = await prisma.collectionItem.findMany({
+    where: { userId, quantity: { gt: 0 } },
+    select: {
+      quantity: true,
+      variant: { select: { card: { select: { rarity: { select: { code: true } } } } } },
+    },
+  });
+
+  const counts = new Map<string, number>();
+  for (const item of items) {
+    const code = item.variant.card.rarity.code;
+    counts.set(code, (counts.get(code) ?? 0) + item.quantity);
+  }
+  return counts;
+}
+
 /** Numéros de cartes possédées par le membre (au moins 1 exemplaire). */
 export async function getViewerOwnedCardNumbers(userId: string): Promise<number[]> {
   const items = await prisma.collectionItem.findMany({

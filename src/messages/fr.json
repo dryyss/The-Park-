@@ -106,6 +106,7 @@
     "topCollectorsTitle": "Top collectionneurs",
     "seeFullRanking": "Voir le classement complet",
     "rarityCount": "{count} cartes",
+    "rarityOwnedCount": "{count} cartes possédées",
     "rarityPrev": "Rareté précédente",
     "rarityNext": "Rareté suivante"
   },
