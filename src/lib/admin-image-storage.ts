@@ -25,27 +25,33 @@ function isBlobStorageReady(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
 
-async function processImageToJpeg(file: File): Promise<Buffer> {
-  if (file.size > MAX_BYTES) {
-    throw new Error("FILE_TOO_LARGE");
-  }
+/**
+ * Tente de traiter l'image avec sharp (resize + conversion JPEG).
+ * Si sharp n'est pas disponible (binaire natif absent), renvoie le buffer brut
+ * avec le type MIME d'origine — Vercel Blob accepte JPEG/PNG/WebP nativement.
+ */
+async function prepareImageBuffer(file: File): Promise<{ buffer: Buffer; contentType: string; ext: string }> {
+  if (file.size > MAX_BYTES) throw new Error("FILE_TOO_LARGE");
 
   const mime = file.type.toLowerCase();
   if (!["image/jpeg", "image/png", "image/webp"].includes(mime)) {
     throw new Error("INVALID_TYPE");
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const sharp = (await import("sharp")).default;
+  const raw = Buffer.from(await file.arrayBuffer());
+
   try {
-    return await sharp(buffer)
+    const sharp = (await import("sharp")).default;
+    const jpeg = await sharp(raw)
       .rotate()
       .resize(MAX_EDGE, MAX_EDGE, { fit: "inside", withoutEnlargement: true })
       .jpeg({ quality: 88 })
       .toBuffer();
-  } catch (err) {
-    console.error("[admin-upload] sharp failed", err);
-    throw new Error("IMAGE_PROCESS_FAILED");
+    return { buffer: jpeg, contentType: "image/jpeg", ext: "jpg" };
+  } catch {
+    // sharp indisponible (binaire natif manquant sur ce runtime) — fallback raw
+    const extMap: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
+    return { buffer: raw, contentType: mime, ext: extMap[mime] ?? "jpg" };
   }
 }
 
@@ -55,14 +61,14 @@ async function processImageToJpeg(file: File): Promise<Buffer> {
  * - Dev local : public/uploads → nom de fichier seul
  */
 export async function saveAdminImageFile(file: File): Promise<string> {
-  const jpeg = await processImageToJpeg(file);
-  const fileName = `${safeBaseName(file.name)}-${randomUUID().slice(0, 8)}.jpg`;
+  const { buffer, contentType, ext } = await prepareImageBuffer(file);
+  const fileName = `${safeBaseName(file.name)}-${randomUUID().slice(0, 8)}.${ext}`;
 
   if (isBlobStorageReady()) {
     try {
-      const blob = await put(`admin/${fileName}`, jpeg, {
+      const blob = await put(`admin/${fileName}`, buffer, {
         access: "public",
-        contentType: "image/jpeg",
+        contentType,
         addRandomSuffix: false,
       });
       return blob.url;
@@ -82,7 +88,7 @@ export async function saveAdminImageFile(file: File): Promise<string> {
 
   try {
     await mkdir(UPLOAD_ROOT, { recursive: true });
-    await writeFile(path.join(UPLOAD_ROOT, fileName), jpeg);
+    await writeFile(path.join(UPLOAD_ROOT, fileName), buffer);
   } catch {
     throw new Error("WRITE_FAILED");
   }
