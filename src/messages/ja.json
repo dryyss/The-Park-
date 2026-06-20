@@ -855,6 +855,7 @@
       "transactions": "C2C取引",
       "auctions": "オークション",
       "finance": "財務",
+      "stocks": "在庫",
       "content": "コンテンツ"
     },
     "overview": {
@@ -1417,6 +1418,69 @@
         "STORE_ORDER": "ショップ注文",
         "AUCTION_PAYMENT": "オークション決済",
         "WALLET_TOP_UP": "ウォレット入金"
+      }
+    },
+    "stocks": {
+      "kicker": "ショップ · 在庫",
+      "title": "在庫管理",
+      "tabs": {
+        "products": "商品",
+        "movements": "入出庫"
+      },
+      "stats": {
+        "totalProducts": "商品数",
+        "inStock": "在庫あり",
+        "low": "在庫僅少",
+        "out": "在庫切れ",
+        "discontinued": "無効"
+      },
+      "status": {
+        "IN_STOCK": "在庫あり",
+        "LOW": "僅少",
+        "OUT": "在庫切れ",
+        "DISCONTINUED": "無効"
+      },
+      "movementType": {
+        "RESTOCK": "補充",
+        "SALE": "販売",
+        "RETURN": "返品",
+        "ADJUSTMENT": "調整",
+        "LOSS": "損失 / 破損"
+      },
+      "table": {
+        "sku": "SKU",
+        "name": "商品",
+        "type": "タイプ",
+        "stock": "在庫",
+        "status": "状態",
+        "price": "価格",
+        "lastMovement": "最終入出庫",
+        "adjust": "調整",
+        "empty": "商品が見つかりません。"
+      },
+      "movements": {
+        "date": "日付",
+        "product": "商品",
+        "type": "タイプ",
+        "quantity": "数量",
+        "before": "変更前",
+        "after": "変更後",
+        "reason": "理由",
+        "by": "担当者",
+        "empty": "入出庫記録がありません。"
+      },
+      "adjust": {
+        "title": "在庫を調整",
+        "type": "入出庫タイプ",
+        "quantity": "数量",
+        "quantityHint": "絶対値で入力してください — 符号はタイプによって決まります。",
+        "reason": "理由（任意）",
+        "reasonPlaceholder": "例：月次棚卸し",
+        "cancel": "キャンセル",
+        "save": "確定",
+        "saving": "保存中…",
+        "success": "在庫を更新しました。",
+        "errorDelta": "数量はゼロ以外の整数で入力してください。"
       }
     },
     "content": {

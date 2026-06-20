@@ -7,6 +7,7 @@ export type AdminModule =
   | "users"
   | "catalog"
   | "shop"
+  | "stocks"
   | "support"
   | "staff"
   | "marketplace"
@@ -25,6 +26,7 @@ export interface AdminDashboard {
     | "users"
     | "catalog"
     | "shop"
+    | "stocks"
     | "orders"
     | "settings"
     | "support"
@@ -46,6 +48,7 @@ export const ADMIN_DASHBOARDS: AdminDashboard[] = [
   { module: "catalog", href: "/admin/catalogue", labelKey: "catalog" },
   { module: "shop", href: "/admin/boutique", labelKey: "shop" },
   { module: "shop", href: "/admin/commandes", labelKey: "orders" },
+  { module: "stocks", href: "/admin/stocks", labelKey: "stocks" },
   { module: "shop", href: "/admin/reglages", labelKey: "settings" },
   { module: "support", href: "/admin/support", labelKey: "support" },
   { module: "marketplace", href: "/admin/marketplace", labelKey: "marketplace" },
@@ -154,6 +157,7 @@ export const ALL_ADMIN_MODULES: AdminModule[] = [
   "users",
   "catalog",
   "shop",
+  "stocks",
   "support",
   "staff",
   "marketplace",
@@ -178,6 +182,6 @@ export const MODULES_BY_STAFF_ROLE: Record<AdminRole, AdminModule[]> = {
     "content",
   ],
   CATALOG_MANAGER: ["overview", "catalog", "content"],
-  SHOP_MANAGER: ["overview", "shop", "finance"],
+  SHOP_MANAGER: ["overview", "shop", "stocks", "finance"],
   SUPPORT: ["overview", "support", "users", "finance"],
 };

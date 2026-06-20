@@ -121,6 +121,14 @@ enum ProductType {
   LIMITED_EDITION
 }
 
+enum StockMovementType {
+  RESTOCK    // Réassort (entrée)
+  SALE       // Sortie automatique après vente
+  RETURN     // Retour client (rentrée)
+  ADJUSTMENT // Ajustement manuel admin
+  LOSS       // Perte / casse
+}
+
 enum OrderStatus {
   PENDING
   PAID
@@ -770,8 +778,9 @@ model Product {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  orderItems OrderItem[]
-  cartItems  CartItem[]
+  orderItems      OrderItem[]
+  cartItems       CartItem[]
+  stockMovements  StockMovement[]
 }
 
 model CartItem {
@@ -828,6 +837,22 @@ model OrderItem {
   productId String
   quantity  Int     @default(1)
   unitPrice Decimal @db.Decimal(10, 2)
+}
+
+model StockMovement {
+  id          String            @id @default(cuid())
+  product     Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId   String
+  type        StockMovementType
+  quantity    Int               // positif = entrée, négatif = sortie
+  reason      String?
+  reference   String?           // orderId ou autre référence externe
+  performedBy String?           // displayName ou userId de l'admin
+  stockBefore Int
+  stockAfter  Int
+  createdAt   DateTime          @default(now())
+
+  @@index([productId, createdAt])
 }
 
 // ============================================================================

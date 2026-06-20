@@ -855,6 +855,7 @@
       "transactions": "Transactions C2C",
       "auctions": "Enchères",
       "finance": "Finances",
+      "stocks": "Stocks",
       "content": "Contenu"
     },
     "overview": {
@@ -1417,6 +1418,69 @@
         "STORE_ORDER": "Commande boutique",
         "AUCTION_PAYMENT": "Paiement enchère",
         "WALLET_TOP_UP": "Recharge portefeuille"
+      }
+    },
+    "stocks": {
+      "kicker": "Boutique · inventaire",
+      "title": "Gestion des stocks",
+      "tabs": {
+        "products": "Produits",
+        "movements": "Mouvements"
+      },
+      "stats": {
+        "totalProducts": "Produits",
+        "inStock": "En stock",
+        "low": "Stock faible",
+        "out": "Rupture",
+        "discontinued": "Inactifs"
+      },
+      "status": {
+        "IN_STOCK": "En stock",
+        "LOW": "Faible",
+        "OUT": "Rupture",
+        "DISCONTINUED": "Inactif"
+      },
+      "movementType": {
+        "RESTOCK": "Réassort",
+        "SALE": "Vente",
+        "RETURN": "Retour",
+        "ADJUSTMENT": "Ajustement",
+        "LOSS": "Perte / casse"
+      },
+      "table": {
+        "sku": "SKU",
+        "name": "Produit",
+        "type": "Type",
+        "stock": "Stock",
+        "status": "Statut",
+        "price": "Prix",
+        "lastMovement": "Dernier mouvement",
+        "adjust": "Ajuster",
+        "empty": "Aucun produit trouvé."
+      },
+      "movements": {
+        "date": "Date",
+        "product": "Produit",
+        "type": "Type",
+        "quantity": "Quantité",
+        "before": "Avant",
+        "after": "Après",
+        "reason": "Raison",
+        "by": "Par",
+        "empty": "Aucun mouvement enregistré."
+      },
+      "adjust": {
+        "title": "Ajuster le stock",
+        "type": "Type de mouvement",
+        "quantity": "Quantité",
+        "quantityHint": "Entrez la quantité en valeur absolue — le signe est déterminé par le type.",
+        "reason": "Raison (facultatif)",
+        "reasonPlaceholder": "ex : inventaire mensuel",
+        "cancel": "Annuler",
+        "save": "Valider",
+        "saving": "Enregistrement…",
+        "success": "Stock mis à jour.",
+        "errorDelta": "La quantité doit être un entier non nul."
       }
     },
     "content": {

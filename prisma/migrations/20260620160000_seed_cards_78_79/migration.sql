@@ -1,6 +1,7 @@
 -- Insère les cartes 78-79 (unique) et leurs CardVariants en production.
 -- Le seed Prisma n'est pas relancé automatiquement au déploiement ; cette
 -- migration comble le manque de façon idempotente (ON CONFLICT DO NOTHING / DO UPDATE).
+-- Guard : skip silencieux si la saison S01 n'existe pas (shadow DB vide).
 
 DO $$
 DECLARE
@@ -11,10 +12,15 @@ DECLARE
   v_c78        TEXT;
   v_c79        TEXT;
 BEGIN
-  SELECT id INTO v_season_id FROM "Season"       WHERE code = 'S01';
+  SELECT id INTO v_season_id  FROM "Season"      WHERE code = 'S01';
   SELECT id INTO v_rar_unique FROM "Rarity"      WHERE code = 'unique';
   SELECT id INTO v_vt_std     FROM "VersionType" WHERE code = 'standard';
   SELECT id INTO v_vt_unique  FROM "VersionType" WHERE code = 'unique';
+
+  -- Skip si les données de référence n'existent pas (shadow DB / fresh install)
+  IF v_season_id IS NULL OR v_rar_unique IS NULL OR v_vt_std IS NULL THEN
+    RETURN;
+  END IF;
 
   -- ── Carte 78 ─────────────────────────────────────────────────────────────
   INSERT INTO "Card" (

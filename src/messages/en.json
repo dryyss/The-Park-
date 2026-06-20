@@ -855,6 +855,7 @@
       "transactions": "C2C transactions",
       "auctions": "Auctions",
       "finance": "Finance",
+      "stocks": "Stocks",
       "content": "Content"
     },
     "overview": {
@@ -1417,6 +1418,69 @@
         "STORE_ORDER": "Shop order",
         "AUCTION_PAYMENT": "Auction payment",
         "WALLET_TOP_UP": "Wallet top-up"
+      }
+    },
+    "stocks": {
+      "kicker": "Shop · inventory",
+      "title": "Stock management",
+      "tabs": {
+        "products": "Products",
+        "movements": "Movements"
+      },
+      "stats": {
+        "totalProducts": "Products",
+        "inStock": "In stock",
+        "low": "Low stock",
+        "out": "Out of stock",
+        "discontinued": "Inactive"
+      },
+      "status": {
+        "IN_STOCK": "In stock",
+        "LOW": "Low",
+        "OUT": "Out of stock",
+        "DISCONTINUED": "Inactive"
+      },
+      "movementType": {
+        "RESTOCK": "Restock",
+        "SALE": "Sale",
+        "RETURN": "Return",
+        "ADJUSTMENT": "Adjustment",
+        "LOSS": "Loss / damage"
+      },
+      "table": {
+        "sku": "SKU",
+        "name": "Product",
+        "type": "Type",
+        "stock": "Stock",
+        "status": "Status",
+        "price": "Price",
+        "lastMovement": "Last movement",
+        "adjust": "Adjust",
+        "empty": "No products found."
+      },
+      "movements": {
+        "date": "Date",
+        "product": "Product",
+        "type": "Type",
+        "quantity": "Quantity",
+        "before": "Before",
+        "after": "After",
+        "reason": "Reason",
+        "by": "By",
+        "empty": "No movements recorded."
+      },
+      "adjust": {
+        "title": "Adjust stock",
+        "type": "Movement type",
+        "quantity": "Quantity",
+        "quantityHint": "Enter the absolute quantity — the sign is determined by the movement type.",
+        "reason": "Reason (optional)",
+        "reasonPlaceholder": "e.g. monthly inventory",
+        "cancel": "Cancel",
+        "save": "Confirm",
+        "saving": "Saving…",
+        "success": "Stock updated.",
+        "errorDelta": "Quantity must be a non-zero integer."
       }
     },
     "content": {
