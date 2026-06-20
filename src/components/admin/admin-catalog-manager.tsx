@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { cardImage } from "@/lib/rarity";
 import type {
   AdminCatalogSeason,
   AdminCardFull,
@@ -228,7 +229,7 @@ function NewCardForm({ seasonId, rarities }: { seasonId: string; rarities: Admin
         </Field>
         <Field label={t("quote")}><input name="quoteValue" type="number" step="0.01" defaultValue={0} className={inputCls} /></Field>
         <Field label={t("country")}><input name="country" maxLength={8} className={inputCls} /></Field>
-        <Field label={t("image")}><input name="imageUrl" placeholder="https://…" className={inputCls} /></Field>
+        <ImageUrlField />
       </div>
       <label className="mt-3 flex items-center gap-2 text-[12px] font-bold text-texte-doux">
         <input type="checkbox" name="isUnique" className="accent-carmin" /> {t("isUnique")}
@@ -294,7 +295,7 @@ function CardEditor({
         <Field label={t("power")}><input name="powerCh" type="number" defaultValue={card.powerCh ?? ""} className={inputCls} /></Field>
         <Field label={t("weight")}><input name="weightKg" type="number" defaultValue={card.weightKg ?? ""} className={inputCls} /></Field>
         <Field label={t("country")}><input name="country" maxLength={8} defaultValue={card.country ?? ""} className={inputCls} /></Field>
-        <Field label={t("image")}><input name="imageUrl" defaultValue={card.imageUrl ?? ""} placeholder="https://…" className={inputCls} /></Field>
+        <ImageUrlField key={`${card.id}-${card.imageUrl ?? ""}`} defaultValue={card.imageUrl ?? ""} className="sm:col-span-2 lg:col-span-4" />
         <Field label={t("description")} className="sm:col-span-2 lg:col-span-4">
           <textarea name="description" defaultValue={card.description ?? ""} rows={2} className={`${inputCls} resize-none`} />
         </Field>
@@ -409,6 +410,54 @@ function CardVariants({ card, versionTypes }: { card: AdminCardFull; versionType
 }
 
 const inputCls = "w-full rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-[13px] text-blanc-casse outline-none focus:border-carmin";
+
+function ImageUrlField({ defaultValue = "", className }: { defaultValue?: string; className?: string }) {
+  const t = useTranslations("admin.catalog");
+  const [value, setValue] = useState(defaultValue);
+  const [failed, setFailed] = useState(false);
+
+  const trimmed = value.trim();
+  const src = trimmed ? cardImage(trimmed) : null;
+
+  return (
+    <Field label={t("image")} className={className}>
+      <div className="mt-1 flex flex-wrap items-start gap-4">
+        <input
+          name="imageUrl"
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value);
+            setFailed(false);
+          }}
+          placeholder={t("imagePlaceholder")}
+          className={`${inputCls} min-w-[220px] flex-1`}
+        />
+        <div className="flex shrink-0 flex-col items-center gap-1.5">
+          <div
+            className="relative aspect-5/7 w-[96px] overflow-hidden rounded-lg border border-charbon-500 bg-charbon-900 shadow-inner"
+            aria-live="polite"
+          >
+            {src && !failed ? (
+              // eslint-disable-next-line @next/next/no-img-element -- aperçu admin temps réel (fichiers /uploads locaux)
+              <img
+                key={src}
+                src={src}
+                alt={t("imagePreviewAlt")}
+                className="h-full w-full object-cover"
+                onError={() => setFailed(true)}
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center px-2 text-center text-[10px] leading-snug font-bold text-texte-faible">
+                {!trimmed ? t("imagePreviewEmpty") : t("imagePreviewError")}
+              </div>
+            )}
+          </div>
+          <span className="text-[9px] font-extrabold tracking-wide text-texte-dim uppercase">{t("imagePreview")}</span>
+        </div>
+      </div>
+    </Field>
+  );
+}
 
 function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
   return (

@@ -973,7 +973,13 @@
     "shop": {
       "kicker": "公式ストア",
       "title": "ストア管理",
+      "listTitle": "商品カタログ",
+      "listCount": "{count} 商品 · {active} 有効",
+      "lowStockCount": "在庫僅少 {count}",
+      "empty": "商品がありません。上で最初の商品を作成してください。",
       "sku": "SKU",
+      "slug": "スラッグ",
+      "type": "タイプ",
       "name": "商品",
       "price": "価格",
       "stock": "在庫",
@@ -982,11 +988,21 @@
       "inactive": "無効",
       "actions": "操作",
       "save": "保存",
+      "saved": "保存済み",
+      "revert": "元に戻す",
       "saveSuccess": "商品を更新しました。",
       "saveError": "更新に失敗しました。",
       "createProduct": "新規商品",
       "create": "作成",
-      "cancel": "キャンセル"
+      "cancel": "キャンセル",
+      "productTypes": {
+        "BOOSTER": "Booster",
+        "DISPLAY": "Display",
+        "STARTER_DECK": "Starter deck",
+        "PROMO_PACK": "Promo pack",
+        "MERCH": "Merch",
+        "LIMITED_EDITION": "限定版"
+      }
     },
     "catalog": {
       "kicker": "カタログ · シーズン",
@@ -1002,6 +1018,11 @@
       "rarity": "レアリティ",
       "quote": "参考価格 (€)",
       "image": "画像 (URL)",
+      "imagePlaceholder": "ファイル名.jpg または /uploads/…",
+      "imagePreview": "プレビュー",
+      "imagePreviewAlt": "カードプレビュー",
+      "imagePreviewEmpty": "画像なし",
+      "imagePreviewError": "画像が見つかりません",
       "power": "パワー (ch)",
       "weight": "重量 (kg)",
       "country": "国",

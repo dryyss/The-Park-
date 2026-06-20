@@ -5,6 +5,18 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { createProductAction } from "@/server/admin/shop.actions";
 
+const PRODUCT_TYPES = [
+  "BOOSTER",
+  "DISPLAY",
+  "STARTER_DECK",
+  "PROMO_PACK",
+  "MERCH",
+  "LIMITED_EDITION",
+] as const;
+
+const inputCls =
+  "rounded-lg border border-charbon-500 bg-charbon-700/80 px-3 py-2 text-[13px] text-blanc-casse outline-none focus:border-or/60";
+
 export function AdminProductCreateForm() {
   const t = useTranslations("admin.shop");
   const router = useRouter();
@@ -19,7 +31,7 @@ export function AdminProductCreateForm() {
         sku: String(form.get("sku")),
         slug: String(form.get("slug")),
         name: String(form.get("name")),
-        type: String(form.get("type")) as "BOOSTER" | "DISPLAY" | "STARTER_DECK" | "PROMO_PACK" | "MERCH" | "LIMITED_EDITION",
+        type: String(form.get("type")) as (typeof PRODUCT_TYPES)[number],
         price: parseFloat(String(form.get("price")).replace(",", ".")),
         stock: parseInt(String(form.get("stock")), 10),
       });
@@ -34,39 +46,76 @@ export function AdminProductCreateForm() {
 
   if (!open) {
     return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="mb-4 font-display rounded-lg border border-dashed border-or/50 px-4 py-2 text-[12px] tracking-wide text-or uppercase hover:bg-or/10"
-      >
-        + {t("createProduct")}
-      </button>
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="rounded-lg border border-dashed border-or/50 px-4 py-2 text-[12px] tracking-wide text-or uppercase transition hover:bg-or/10"
+        >
+          + {t("createProduct")}
+        </button>
+      </div>
     );
   }
 
   return (
-    <form action={(fd) => submit(fd)} className="mb-6 rounded-[16px] border border-or/30 bg-charbon-800 p-5">
-      <h3 className="font-display text-[14px] tracking-wide text-or uppercase">{t("createProduct")}</h3>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        <input name="sku" required placeholder={t("sku")} className="rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse" />
-        <input name="slug" required placeholder="slug-url" className="rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse" />
-        <input name="name" required placeholder={t("name")} className="sm:col-span-2 rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse" />
-        <select name="type" className="rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse">
-          <option value="BOOSTER">Booster</option>
-          <option value="DISPLAY">Display</option>
-          <option value="LIMITED_EDITION">Édition limitée</option>
-          <option value="MERCH">Merch</option>
-        </select>
-        <input name="price" type="number" step="0.01" required placeholder={t("price")} className="rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-or" />
-        <input name="stock" type="number" required defaultValue={0} placeholder={t("stock")} className="rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse" />
-      </div>
-      {error && <p className="mt-2 text-[12px] font-bold text-neon-rouge">{error}</p>}
-      <div className="mt-3 flex gap-2">
-        <button type="submit" disabled={pending} className="rounded-lg bg-or px-4 py-2 text-[11px] font-extrabold text-charbon uppercase disabled:opacity-50">
-          {t("create")}
-        </button>
-        <button type="button" onClick={() => setOpen(false)} className="rounded-lg border border-charbon-500 px-4 py-2 text-[11px] font-extrabold text-texte-dim uppercase">
+    <form
+      action={(fd) => submit(fd)}
+      className="admin-panel border-or/30"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="admin-section-title">{t("createProduct")}</h3>
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="text-[11px] font-extrabold tracking-wide text-texte-dim uppercase hover:text-blanc-casse"
+        >
           {t("cancel")}
+        </button>
+      </div>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <label className="grid gap-1">
+          <span className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("sku")}</span>
+          <input name="sku" required className={inputCls} />
+        </label>
+        <label className="grid gap-1">
+          <span className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("slug")}</span>
+          <input name="slug" required placeholder="booster-saison-1" className={inputCls} />
+        </label>
+        <label className="grid gap-1 sm:col-span-2 lg:col-span-1">
+          <span className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("type")}</span>
+          <select name="type" defaultValue="BOOSTER" className={inputCls}>
+            {PRODUCT_TYPES.map((type) => (
+              <option key={type} value={type} className="bg-charbon-800">
+                {t(`productTypes.${type}`)}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="grid gap-1 sm:col-span-2">
+          <span className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("name")}</span>
+          <input name="name" required className={inputCls} />
+        </label>
+        <label className="grid gap-1">
+          <span className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("price")}</span>
+          <input name="price" type="number" step="0.01" min={0} required className={`${inputCls} text-or`} />
+        </label>
+        <label className="grid gap-1">
+          <span className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("stock")}</span>
+          <input name="stock" type="number" min={0} required defaultValue={0} className={inputCls} />
+        </label>
+      </div>
+
+      {error && <p className="mt-3 text-[12px] font-bold text-neon-rouge">{error}</p>}
+
+      <div className="mt-4 flex gap-2">
+        <button
+          type="submit"
+          disabled={pending}
+          className="rounded-lg bg-or px-4 py-2 text-[11px] font-extrabold text-charbon uppercase disabled:opacity-50"
+        >
+          {t("create")}
         </button>
       </div>
     </form>

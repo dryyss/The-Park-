@@ -30,7 +30,7 @@ export default async function AdminBoutiquePage({ params }: { params: Promise<{ 
       <div className="mt-4">
         <PageHeader kicker={t("shop.kicker")} title={t("shop.title")} jp="公式" />
       </div>
-      <div className="mt-8">
+      <div className="mt-8 space-y-4">
         <AdminProductCreateForm />
         <AdminShopEditor products={products} />
       </div>

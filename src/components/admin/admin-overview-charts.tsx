@@ -23,8 +23,8 @@ export function AdminOverviewCharts({ data }: { data: AdminChartPoint[] }) {
 
   return (
     <section>
-      <h2 className="font-display text-blanc-casse mb-4 text-[16px] tracking-wide uppercase">{t("title")}</h2>
-      <div className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-4">
+      <h2 className="admin-section-title mb-4">{t("title")}</h2>
+      <div className="admin-chart-panel">
         <ResponsiveContainer width="100%" height={280}>
           <AreaChart data={formatted} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <defs>
@@ -37,14 +37,15 @@ export function AdminOverviewCharts({ data }: { data: AdminChartPoint[] }) {
                 <stop offset="95%" stopColor="#E8B23A" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#2a3232" />
-            <XAxis dataKey="label" tick={{ fill: "#8a9494", fontSize: 11 }} />
-            <YAxis allowDecimals={false} tick={{ fill: "#8a9494", fontSize: 11 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#455052" />
+            <XAxis dataKey="label" tick={{ fill: "#a8b4b1", fontSize: 12 }} />
+            <YAxis allowDecimals={false} tick={{ fill: "#a8b4b1", fontSize: 12 }} />
             <Tooltip
-              contentStyle={{ background: "#1E2424", border: "1px solid #3a4444", borderRadius: 8, fontSize: 12 }}
-              labelStyle={{ color: "#FBF4F6" }}
+              contentStyle={{ background: "#252c2e", border: "1px solid #455052", borderRadius: 8, fontSize: 13 }}
+              labelStyle={{ color: "#f5f2ea", fontWeight: 600 }}
+              itemStyle={{ color: "#ffffff" }}
             />
-            <Legend wrapperStyle={{ fontSize: 11, color: "#8a9494" }} />
+            <Legend wrapperStyle={{ fontSize: 12, color: "#a8b4b1" }} />
             <Area type="monotone" dataKey="members" name={t("members")} stroke="#D6004F" fill="url(#gradMembers)" strokeWidth={2} />
             <Area type="monotone" dataKey="orders" name={t("orders")} stroke="#E8B23A" fill="url(#gradOrders)" strokeWidth={2} />
             <Area type="monotone" dataKey="sales" name={t("sales")} stroke="#4ade80" fill="transparent" strokeWidth={1.5} />

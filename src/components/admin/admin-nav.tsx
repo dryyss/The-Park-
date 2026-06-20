@@ -49,7 +49,7 @@ export function AdminNav({
                     "rounded-lg px-3 py-2.5 text-[12px]",
                     active
                       ? "bg-carmin text-white shadow-[2px_2px_0_rgba(0,0,0,0.35)]"
-                      : "text-texte-muet hover:bg-charbon-700 hover:text-blanc-casse",
+                      : "text-admin-label hover:bg-admin-panel hover:text-blanc-casse",
                   ].join(" ")
                 : [
                     "rounded-[8px] px-3 py-2 text-[11px]",

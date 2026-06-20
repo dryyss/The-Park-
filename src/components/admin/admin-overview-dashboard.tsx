@@ -19,26 +19,22 @@ export async function AdminOverviewDashboard({
 
   return (
     <div className="space-y-10">
-      <p className="text-texte-dim text-[13px] font-bold">
+      <p className="admin-meta">
         {t("currentRole")}{" "}
         <span className="text-or">{tRoles(effectiveRole)}</span>
       </p>
 
       {data.actionQueue.length > 0 && (
         <section>
-          <h2 className="font-display text-blanc-casse mb-4 text-[16px] tracking-wide uppercase">
-            {t("actionQueue")}
-          </h2>
+          <h2 className="admin-section-title mb-4">{t("actionQueue")}</h2>
           <div className="flex flex-col gap-2">
             {data.actionQueue.map((item) => (
               <Link
                 key={item.id}
                 href={item.href}
                 className={[
-                  "flex flex-wrap items-center justify-between gap-3 rounded-[12px] border px-4 py-3 transition hover:border-carmin",
-                  item.involvesMinor
-                    ? "border-neon-orange/50 bg-charbon-700"
-                    : "border-charbon-500 bg-charbon-800",
+                  "admin-action-row flex flex-wrap items-center justify-between gap-3 px-4 py-3",
+                  item.involvesMinor ? "admin-action-row--priority" : "",
                 ].join(" ")}
               >
                 <div className="min-w-0 flex-1">
@@ -47,15 +43,15 @@ export async function AdminOverviewDashboard({
                       {t(`actionKinds.${item.kind}`)}
                     </span>
                     {item.involvesMinor && (
-                      <span className="rounded bg-neon-orange/20 px-1.5 py-0.5 text-[9px] font-extrabold text-neon-orange uppercase">
+                      <span className="rounded bg-neon-orange/20 px-1.5 py-0.5 text-[10px] font-extrabold text-neon-orange uppercase">
                         {t("minorPriority")}
                       </span>
                     )}
                   </div>
-                  <p className="text-blanc-casse mt-1 text-[13px] font-extrabold">{item.title}</p>
-                  <p className="text-texte-dim mt-0.5 truncate text-[12px]">{item.subtitle}</p>
+                  <p className="mt-1 text-[14px] font-extrabold text-blanc-casse">{item.title}</p>
+                  <p className="mt-0.5 truncate text-[12px] text-admin-label">{item.subtitle}</p>
                 </div>
-                <span className="text-texte-faible shrink-0 text-[11px] font-bold">
+                <span className="shrink-0 text-[11px] font-bold text-admin-label">
                   {item.createdAt.toISOString().slice(0, 10)}
                 </span>
               </Link>
@@ -65,12 +61,10 @@ export async function AdminOverviewDashboard({
       )}
 
       <section>
-        <h2 className="font-display text-blanc-casse mb-4 text-[16px] tracking-wide uppercase">
-          {t("perspectives")}
-        </h2>
+        <h2 className="admin-section-title mb-4">{t("perspectives")}</h2>
         <div className="grid gap-5 lg:grid-cols-2">
           {data.perspectives.map((p) => (
-            <div key={p.key} className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
+            <div key={p.key} className="admin-panel">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <h3 className="font-display text-[14px] tracking-wide text-blanc-casse uppercase">
                   {t(`perspectiveKeys.${p.key}`)}
@@ -86,12 +80,10 @@ export async function AdminOverviewDashboard({
                 {p.stats.map((s) => (
                   <div
                     key={s.key}
-                    className={`rounded-[10px] border p-3 ${s.alert ? "border-neon-orange/40 bg-charbon-700" : "border-charbon-600 bg-charbon-900/50"}`}
+                    className={s.alert ? "admin-stat-tile admin-stat-tile--alert" : "admin-stat-tile"}
                   >
-                    <p className="text-texte-dim text-[9px] font-extrabold tracking-wide uppercase">
-                      {t(`stats.${s.key}`)}
-                    </p>
-                    <p className="font-display text-blanc-casse mt-1 text-[22px]">{s.value}</p>
+                    <p className="admin-stat-label">{t(`stats.${s.key}`)}</p>
+                    <p className={`admin-stat-value ${s.alert ? "admin-stat-value--alert" : ""}`}>{s.value}</p>
                   </div>
                 ))}
               </div>
@@ -101,9 +93,7 @@ export async function AdminOverviewDashboard({
       </section>
 
       <section>
-        <h2 className="font-display text-blanc-casse mb-4 text-[16px] tracking-wide uppercase">
-          {t("quickLinks")}
-        </h2>
+        <h2 className="admin-section-title mb-4">{t("quickLinks")}</h2>
         <div className="flex flex-wrap gap-3">
           {modules.includes("shop") && (
             <>
@@ -168,7 +158,7 @@ function QuickLink({
     carmin: "bg-carmin text-white hover:bg-carmin-alt shadow-[2px_2px_0_rgba(0,0,0,0.35)]",
     "carmin-outline": "border-carmin bg-carmin/10 text-carmin hover:bg-carmin hover:text-white border",
     orange: "border-neon-orange/50 bg-neon-orange/10 text-neon-orange hover:bg-neon-orange/20 border",
-    muted: "border-charbon-400 text-texte-doux hover:border-carmin hover:text-white border",
+    muted: "border-admin-border text-admin-label hover:border-carmin hover:text-white border",
   };
 
   return (

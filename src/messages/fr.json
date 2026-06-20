@@ -973,7 +973,13 @@
     "shop": {
       "kicker": "Boutique officielle",
       "title": "Gestion boutique",
+      "listTitle": "Catalogue produits",
+      "listCount": "{count} produits · {active} actifs",
+      "lowStockCount": "{count} stock faible",
+      "empty": "Aucun produit. Crée le premier ci-dessus.",
       "sku": "SKU",
+      "slug": "Slug URL",
+      "type": "Type",
       "name": "Produit",
       "price": "Prix",
       "stock": "Stock",
@@ -982,11 +988,21 @@
       "inactive": "Inactif",
       "actions": "Actions",
       "save": "Enregistrer",
+      "saved": "Enregistré",
+      "revert": "Annuler",
       "saveSuccess": "Produit mis à jour.",
       "saveError": "Échec de la mise à jour.",
       "createProduct": "Nouveau produit",
       "create": "Créer",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "productTypes": {
+        "BOOSTER": "Booster",
+        "DISPLAY": "Display",
+        "STARTER_DECK": "Starter deck",
+        "PROMO_PACK": "Pack promo",
+        "MERCH": "Merch",
+        "LIMITED_EDITION": "Édition limitée"
+      }
     },
     "catalog": {
       "kicker": "Catalogue · saisons",
@@ -1002,6 +1018,11 @@
       "rarity": "Rareté",
       "quote": "Cote (€)",
       "image": "Image (URL)",
+      "imagePlaceholder": "nom-fichier.jpg ou /uploads/…",
+      "imagePreview": "Aperçu",
+      "imagePreviewAlt": "Aperçu de la carte",
+      "imagePreviewEmpty": "Aucune image",
+      "imagePreviewError": "Image introuvable",
       "power": "Puissance (ch)",
       "weight": "Poids (kg)",
       "country": "Pays",

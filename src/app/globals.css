@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../styles/admin-theme.css";
 
 /*
   Design system — The Park (univers JDM / "garage de nuit").
@@ -38,6 +39,18 @@
   --color-statut-succes: #5ed99a;
   --color-statut-alerte: #ff9f43;
   --color-statut-danger: #ff3b5c;
+
+  /* Alias utilisés dans l’admin (alignés sur les statuts) */
+  --color-neon-orange: #ff9f43;
+  --color-neon-vert: #5ed99a;
+
+  /* Surfaces admin — lisibilité données / chiffres */
+  --color-admin-shell: #1c2224;
+  --color-admin-panel: #252c2e;
+  --color-admin-stat: #2e3638;
+  --color-admin-border: #455052;
+  --color-admin-label: #a8b4b1;
+  --color-admin-value: #ffffff;
 
   /* Couleurs de rareté */
   --color-rarete-commune: #9ba3b2;
