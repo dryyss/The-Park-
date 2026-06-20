@@ -20,6 +20,7 @@ interface HoloCardProps {
   variant?: HoloVariant;
   priority?: boolean;
   className?: string;
+  objectFit?: "cover" | "contain";
   /** Désactive tilt + overlay holographique (grilles catalogue/collection). */
   interactive?: boolean;
 }
@@ -32,6 +33,7 @@ export function HoloCard({
   variant = "rainbow",
   priority,
   className,
+  objectFit = "cover",
   interactive = false,
 }: HoloCardProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -79,7 +81,7 @@ export function HoloCard({
         sizes="(max-width: 768px) 40vw, 220px"
         priority={priority}
         unoptimized={unoptimized}
-        className="object-cover"
+        className={objectFit === "contain" ? "object-contain" : "object-cover"}
       />
       {showOverlay && (
         <div

@@ -49,6 +49,30 @@ function toCardDisplay(card: {
   };
 }
 
+/** Cartes du hero accueil (éventail maquette client : 68 · 76 · 74). */
+const HERO_CARD_NUMBERS = [68, 76, 74] as const;
+
+async function fetchHeroCards(): Promise<CardDisplay[]> {
+  const cards = await prisma.card.findMany({
+    where: {
+      number: { in: [...HERO_CARD_NUMBERS] },
+      season: { code: "S01" },
+    },
+    include: { rarity: true },
+  });
+  const byNumber = new Map(cards.map((c) => [c.number, c]));
+  const ordered = HERO_CARD_NUMBERS.map((n) => byNumber.get(n)).filter(Boolean).map((c) => toCardDisplay(c!));
+  if (ordered.length >= 3) return ordered;
+  return fetchFeaturedCards(3);
+}
+
+export async function getHeroCards(): Promise<CardDisplay[]> {
+  return unstable_cache(fetchHeroCards, ["hero-cards"], {
+    revalidate: 120,
+    tags: ["catalog"],
+  })();
+}
+
 /** Cartes vedettes : les plus cotées de la saison courante. */
 async function fetchFeaturedCards(limit: number) {
   const cards = await prisma.card.findMany({

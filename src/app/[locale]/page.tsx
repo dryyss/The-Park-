@@ -1,5 +1,5 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { getCatalogSummary, getCatalogStats, getFeaturedCards } from "@/server/catalog/catalog.service";
+import { getCatalogSummary, getCatalogStats, getFeaturedCards, getHeroCards } from "@/server/catalog/catalog.service";
 import { getRecentListings } from "@/server/marketplace/marketplace.service";
 import { getTopCollectors, getRecentActivity } from "@/server/community/community.service";
 import { rarityMeta } from "@/lib/rarity";
@@ -27,9 +27,10 @@ export default async function Home({
   setRequestLocale(locale);
   const tAuth = authError ? await getTranslations("auth") : null;
 
-  const [stats, summary, featured, listings, collectors, activity] = await Promise.all([
+  const [stats, summary, heroCards, featured, listings, collectors, activity] = await Promise.all([
     getCatalogStats(),
     getCatalogSummary(),
+    getHeroCards(),
     getFeaturedCards(8),
     getRecentListings(6),
     getTopCollectors(5),
@@ -48,7 +49,7 @@ export default async function Home({
           {tAuth("loginFailed", { code: authError })}
         </div>
       )}
-      <HeroSection stats={stats} heroCards={featured.slice(0, 3)} />
+      <HeroSection stats={stats} heroCards={heroCards} />
 
       <div className="mx-auto max-w-[1320px] px-7 pb-[60px]">
         <RarityCarousel rarities={rarities} />

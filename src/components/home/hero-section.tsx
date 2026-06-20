@@ -1,7 +1,6 @@
 import { getTranslations } from "next-intl/server";
-import { HoloCard } from "@/components/cards/holo-card";
-import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { Link } from "@/i18n/navigation";
+import { HeroCardFan } from "@/components/home/hero-card-fan";
 import type { CardDisplay } from "@/server/catalog/catalog.service";
 
 interface HeroStats {
@@ -10,12 +9,6 @@ interface HeroStats {
   versionCount: number;
   uniqueCount: number;
 }
-
-const POSITIONS = [
-  "top-[60px] left-[4%] z-1 w-[215px] [--rot:-9deg]",
-  "top-2 left-[31%] z-3 w-[240px] [--rot:1deg] [animation-delay:0.6s]",
-  "top-[80px] left-[62%] z-2 w-[215px] [--rot:10deg] [animation-delay:1.2s]",
-];
 
 export async function HeroSection({ stats, heroCards }: { stats: HeroStats; heroCards: CardDisplay[] }) {
   const t = await getTranslations("home");
@@ -28,7 +21,7 @@ export async function HeroSection({ stats, heroCards }: { stats: HeroStats; hero
   ];
 
   return (
-    <section className="relative mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-10 px-7 pt-[70px] pb-[50px] lg:grid-cols-[1.05fr_1fr]">
+    <section className="relative mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-10 px-7 pt-[70px] pb-[50px] lg:grid-cols-[1.05fr_1fr] lg:gap-8">
       <div className="font-jp pointer-events-none absolute top-2.5 right-0 hidden text-[210px] leading-none font-black text-blanc-casse/3 select-none lg:block">
         駐車場
       </div>
@@ -71,26 +64,8 @@ export async function HeroSection({ stats, heroCards }: { stats: HeroStats; hero
         </div>
       </div>
 
-      {/* Cartes hero (3 plus cotées) — statiques, bordure néon au survol */}
-      <div className="relative hidden h-[480px] lg:block">
-        {heroCards.slice(0, 3).map((card, i) => (
-          <div key={card.slug} className={`absolute ${POSITIONS[i]}`}>
-            <CatalogCardFrame rarityColor={card.color}>
-              <HoloCard
-                src={card.image}
-                alt={card.name}
-                variant="none"
-                priority={i < 2}
-                className="rounded-none shadow-none"
-              />
-            </CatalogCardFrame>
-            {card.isUnique && (
-              <span className="font-display absolute top-[-12px] right-[-14px] rotate-[4deg] rounded-md bg-carmin px-3 py-1.5 text-[11px] tracking-[1.5px] text-white shadow-[2px_2px_0_rgba(0,0,0,0.5)]">
-                CARTE UNIQUE ✪
-              </span>
-            )}
-          </div>
-        ))}
+      <div className="animate-fade-up [animation-delay:0.15s] lg:min-h-[500px]">
+        <HeroCardFan cards={heroCards} />
       </div>
     </section>
   );
