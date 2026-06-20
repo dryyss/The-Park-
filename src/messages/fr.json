@@ -956,7 +956,7 @@
       "uploadErrorStorage": "Stockage images non configuré sur le serveur (Vercel Blob). Contacte l'administrateur.",
       "uploadErrorNetwork": "Connexion interrompue — réessaie.",
       "uploadErrorDetail": "Échec de l'envoi ({code}).",
-      "uploadError": "Échec de l'envoi.",
+      "uploadError": "Échec de l'envoi."
     },
     "filters": {
       "search": "Recherche",
