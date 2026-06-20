@@ -114,3 +114,19 @@ export function isAuth0Configured(): boolean {
 export function isStripeConfigured(): boolean {
   return Boolean(process.env.STRIPE_SECRET_KEY && process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 }
+
+/** E-mails bootstrap Owner (STAFF_OWNER_EMAILS, séparés par des virgules). */
+export function getStaffOwnerEmails(): string[] {
+  const raw = process.env.STAFF_OWNER_EMAILS ?? "";
+  return raw
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+export function isStaffOwnerEmail(email: string | null | undefined): boolean {
+  if (!email) return false;
+  const owners = getStaffOwnerEmails();
+  if (owners.length === 0) return false;
+  return owners.includes(email.trim().toLowerCase());
+}

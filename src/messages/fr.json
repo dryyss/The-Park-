@@ -833,6 +833,14 @@
     "title": "Console admin",
     "noUser": "Connexion requise.",
     "forbidden": "Accès réservé au staff.",
+    "accessDenied": {
+      "kicker": "Console admin",
+      "title": "Accès refusé",
+      "body": "Ton compte est connecté, mais il n'a pas de rôle staff sur The Park (Owner, modérateur, catalogue, boutique…).",
+      "hint": "Demande à un Owner de t'assigner le rôle « park_owner » dans Auth0, ou ajoute ton e-mail dans STAFF_OWNER_EMAILS sur Vercel puis reconnecte-toi.",
+      "backHome": "Retour à l'accueil",
+      "loginOther": "Autre compte"
+    },
     "manageShop": "Gérer la boutique",
     "manageOrders": "Commandes boutique",
     "manageModeration": "Modération",

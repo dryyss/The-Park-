@@ -833,6 +833,14 @@
     "title": "管理コンソール",
     "noUser": "ログインが必要。",
     "forbidden": "スタッフ専用。",
+    "accessDenied": {
+      "kicker": "管理コンソール",
+      "title": "アクセス拒否",
+      "body": "ログイン済みですが、このアカウントには The Park のスタッフロール（Owner、モデレーター、カタログ、ショップ…）がありません。",
+      "hint": "Owner に Auth0 で「park_owner」ロールを付与してもらうか、Vercel の STAFF_OWNER_EMAILS にメールを追加してから再ログインしてください。",
+      "backHome": "ホームに戻る",
+      "loginOther": "別のアカウント"
+    },
     "manageShop": "ストア管理",
     "manageOrders": "ショップ注文",
     "manageModeration": "モデレーション",

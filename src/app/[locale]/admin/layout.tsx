@@ -1,6 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
-import { notFound, redirect } from "next/navigation";
-import { requireAuthenticatedStaff } from "@/server/auth/admin-guard";
+import { requireAuthenticatedStaff, handleAdminAccessFailure } from "@/server/auth/admin-guard";
 import { resolveStaffRole } from "@/server/auth/permissions.service";
 import { getDashboardsForStaffRole } from "@/server/auth/roles.definition";
 import { AdminShell } from "@/components/admin/admin-shell";
@@ -17,14 +16,11 @@ export default async function AdminLayout({
 
   const access = await requireAuthenticatedStaff();
   if (!access.ok) {
-    if (access.reason === "UNAUTHORIZED") {
-      redirect(`/auth/login?returnTo=${encodeURIComponent(`/${locale}/admin`)}`);
-    }
-    notFound();
+    handleAdminAccessFailure(locale, access.reason);
   }
 
   const staffRole = resolveStaffRole(access.user);
-  if (!staffRole) notFound();
+  if (!staffRole) handleAdminAccessFailure(locale, "FORBIDDEN");
 
   const dashboards = getDashboardsForStaffRole(staffRole);
 

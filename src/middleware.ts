@@ -1,4 +1,5 @@
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { DomainResolutionError } from "@auth0/nextjs-auth0/server";
 import { routing } from "@/i18n/routing";
@@ -7,6 +8,13 @@ import { auth0, isAuth0Configured } from "@/lib/auth0";
 const intlMiddleware = createMiddleware(routing);
 
 export default async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Les routes API ne doivent pas recevoir de préfixe /fr|en|ja (sinon 404 sur /fr/api/…).
+  if (pathname.startsWith("/api")) {
+    return NextResponse.next();
+  }
+
   // Auth0 désactivé si variables manquantes (ex. premier déploiement Vercel sans env).
   if (!isAuth0Configured()) {
     if (process.env.NODE_ENV === "production") {
@@ -48,6 +56,6 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\..*).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\..*).*)",
   ],
 };

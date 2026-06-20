@@ -833,6 +833,14 @@
     "title": "Admin console",
     "noUser": "Login required.",
     "forbidden": "Staff access only.",
+    "accessDenied": {
+      "kicker": "Admin console",
+      "title": "Access denied",
+      "body": "You are signed in, but this account has no staff role on The Park (Owner, moderator, catalog, shop…).",
+      "hint": "Ask an Owner to assign the “park_owner” role in Auth0, or add your email to STAFF_OWNER_EMAILS on Vercel and sign in again.",
+      "backHome": "Back to home",
+      "loginOther": "Different account"
+    },
     "manageShop": "Manage shop",
     "manageOrders": "Shop orders",
     "manageModeration": "Moderation",

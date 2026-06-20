@@ -1,4 +1,5 @@
 import "server-only";
+import { redirect } from "next/navigation";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
 import {
   hasModuleAccess,
@@ -8,6 +9,24 @@ import {
 import type { AdminModule } from "@/server/auth/roles.definition";
 
 export type StaffViewer = NonNullable<Awaited<ReturnType<typeof getAuthenticatedViewer>>>;
+
+export function redirectToAdminLogin(locale: string, returnPath = "/admin"): never {
+  const path = returnPath.startsWith("/") ? returnPath : `/${returnPath}`;
+  redirect(`/auth/login?returnTo=${encodeURIComponent(`/${locale}${path}`)}`);
+}
+
+export function redirectToAdminAccessDenied(locale: string): never {
+  redirect(`/${locale}/acces-admin-refuse`);
+}
+
+export function handleAdminAccessFailure(
+  locale: string,
+  reason: "UNAUTHORIZED" | "FORBIDDEN",
+  returnPath = "/admin",
+): never {
+  if (reason === "UNAUTHORIZED") redirectToAdminLogin(locale, returnPath);
+  redirectToAdminAccessDenied(locale);
+}
 
 export async function requireAuthenticatedStaff(): Promise<
   { ok: true; user: StaffViewer } | { ok: false; reason: "UNAUTHORIZED" | "FORBIDDEN" }

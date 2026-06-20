@@ -1,6 +1,7 @@
 import "server-only";
 import type { AdminRole } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { isStaffOwnerEmail } from "@/lib/env";
 import { auth0Management, isAuth0ManagementConfigured } from "@/lib/auth0-management";
 import {
   AUTH0_ROLE_DEFINITIONS,
@@ -9,6 +10,66 @@ import {
   staffRoleToAuth0Name,
 } from "@/server/auth/roles.definition";
 import { isOwner, resolveStaffRole } from "@/server/auth/permissions.service";
+
+const PARK_AUTH0_ROLE_NAMES = new Set<string>(AUTH0_ROLE_DEFINITIONS.map((d) => d.name));
+const STAFF_CLAIM_NAMESPACE = "https://thepark.app";
+const MGMT_SYNC_COOLDOWN_MS = 15 * 60 * 1000;
+const MGMT_SYNC_COOLDOWN_ON_429_MS = 60 * 60 * 1000;
+
+/** Cooldown par instance serverless — limite les appels Management API (quota Auth0). */
+const mgmtSyncAfter = new Map<string, number>();
+
+function filterParkAuth0RoleNames(roleNames: string[]): string[] {
+  return roleNames.filter((n) => PARK_AUTH0_ROLE_NAMES.has(n));
+}
+
+function parseStaffClaim(sessionUser?: Record<string, unknown>): AdminRole | null {
+  const claim = sessionUser?.[`${STAFF_CLAIM_NAMESPACE}/staff_role`];
+  if (typeof claim !== "string") return null;
+  return AUTH0_ROLE_DEFINITIONS.some((d) => d.staffRole === claim) ? (claim as AdminRole) : null;
+}
+
+function canCallManagementApi(auth0Id: string): boolean {
+  const until = mgmtSyncAfter.get(auth0Id) ?? 0;
+  return Date.now() >= until;
+}
+
+function deferManagementApi(auth0Id: string, ms: number): void {
+  mgmtSyncAfter.set(auth0Id, Date.now() + ms);
+}
+
+async function applyStaffRole(auth0Id: string, staffRole: AdminRole): Promise<void> {
+  const def = AUTH0_ROLE_DEFINITIONS.find((d) => d.staffRole === staffRole);
+  if (!def) return;
+
+  const existing = await prisma.user.findUnique({
+    where: { auth0Id },
+    select: { staffRole: true, role: true },
+  });
+  if (!existing) return;
+  if (existing.staffRole === staffRole && existing.role === def.userRole) return;
+
+  await prisma.user.update({
+    where: { auth0Id },
+    data: { role: def.userRole, staffRole },
+  });
+}
+
+async function ensureBootstrapOwner(auth0Id: string): Promise<boolean> {
+  const existing = await prisma.user.findUnique({
+    where: { auth0Id },
+    select: { email: true, staffRole: true, role: true },
+  });
+  if (!existing?.email || !isStaffOwnerEmail(existing.email)) return false;
+
+  if (existing.staffRole === "OWNER" && existing.role === "ADMIN") return true;
+
+  await prisma.user.update({
+    where: { auth0Id },
+    data: { role: "ADMIN", staffRole: "OWNER" },
+  });
+  return true;
+}
 
 export interface StaffMemberRow {
   id: string;
@@ -26,37 +87,67 @@ export async function syncRolesFromAuth0(
   auth0Id: string,
   sessionUser?: Record<string, unknown>,
 ): Promise<void> {
-  const NAMESPACE = "https://thepark.app";
+  if (await ensureBootstrapOwner(auth0Id)) return;
+
+  const claimRole = parseStaffClaim(sessionUser);
+  if (claimRole) {
+    await applyStaffRole(auth0Id, claimRole);
+    return;
+  }
+
+  const existing = await prisma.user.findUnique({
+    where: { auth0Id },
+    select: { staffRole: true, role: true, email: true },
+  });
+  if (!existing) return;
+
+  if (isStaffOwnerEmail(existing.email)) {
+    if (existing.staffRole !== "OWNER" || existing.role !== "ADMIN") {
+      await prisma.user.update({
+        where: { auth0Id },
+        data: { role: "ADMIN", staffRole: "OWNER" },
+      });
+    }
+    return;
+  }
+
+  // Staff déjà en base : pas d'appel Management API à chaque requête (topbar, navigation…).
+  if (existing.staffRole) return;
+
+  if (!isAuth0ManagementConfigured() || !canCallManagementApi(auth0Id)) {
+    return;
+  }
+
   let roleNames: string[] = [];
   let metadataRole: AdminRole | null = null;
-  let claimRole: AdminRole | null = null;
   let mgmtOk = false;
 
-  const claim = sessionUser?.[`${NAMESPACE}/staff_role`];
-  if (typeof claim === "string") {
-    claimRole = claim as AdminRole;
-  }
-
-  if (isAuth0ManagementConfigured()) {
-    try {
-      const [roles, user] = await Promise.all([
-        auth0Management.getUserRoles(auth0Id),
-        auth0Management.getUser(auth0Id),
-      ]);
-      roleNames = roles.map((r) => r.name);
-      mgmtOk = true;
-      const meta = user.app_metadata?.staff_role;
-      if (typeof meta === "string") {
-        metadataRole = meta as AdminRole;
-      }
-    } catch (err) {
-      console.error("[roles] sync Auth0 Management API", err);
+  try {
+    const [roles, user] = await Promise.all([
+      auth0Management.getUserRoles(auth0Id),
+      auth0Management.getUser(auth0Id),
+    ]);
+    roleNames = roles.map((r) => r.name);
+    mgmtOk = true;
+    deferManagementApi(auth0Id, MGMT_SYNC_COOLDOWN_MS);
+    const meta = user.app_metadata?.staff_role;
+    if (typeof meta === "string") {
+      metadataRole = meta as AdminRole;
     }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "";
+    if (msg.includes("429") || msg.includes("too_many_requests")) {
+      deferManagementApi(auth0Id, MGMT_SYNC_COOLDOWN_ON_429_MS);
+      return;
+    }
+    console.error("[roles] sync Auth0 Management API", err);
+    return;
   }
 
-  const mapped = mapAuth0RoleNames(roleNames);
+  const parkRoleNames = filterParkAuth0RoleNames(roleNames);
+  const mapped = mapAuth0RoleNames(parkRoleNames);
 
-  const fallbackRole = claimRole ?? metadataRole;
+  const fallbackRole = metadataRole;
   if (!mapped.staffRole && fallbackRole) {
     const def = AUTH0_ROLE_DEFINITIONS.find((d) => d.staffRole === fallbackRole);
     if (def) {
@@ -65,19 +156,13 @@ export async function syncRolesFromAuth0(
     }
   }
 
-  // Sans source Auth0 fiable, ne pas écraser un staff déjà présent en DB (seed / admin).
-  const hasAuth0Roles = roleNames.length > 0 || fallbackRole != null;
-  if (!mgmtOk && !hasAuth0Roles) {
+  const hasParkAuth0Roles = parkRoleNames.length > 0 || fallbackRole != null;
+
+  if (!mgmtOk && !hasParkAuth0Roles) {
     return;
   }
 
-  const existing = await prisma.user.findUnique({
-    where: { auth0Id },
-    select: { staffRole: true, role: true },
-  });
-  if (!existing) return;
-
-  if (!hasAuth0Roles && existing.staffRole) {
+  if (!hasParkAuth0Roles) {
     return;
   }
 
@@ -85,7 +170,7 @@ export async function syncRolesFromAuth0(
     where: { auth0Id },
     data: {
       role: mapped.staffRole ? mapped.userRole : existing.role,
-      staffRole: mapped.staffRole ?? (hasAuth0Roles ? null : existing.staffRole),
+      staffRole: mapped.staffRole ?? null,
     },
   });
 }
