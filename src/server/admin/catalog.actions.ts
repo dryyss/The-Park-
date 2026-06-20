@@ -21,7 +21,7 @@ const nullableInt = z.number().int().min(0).max(100000).nullish();
 
 const createCardSchema = z.object({
   seasonId: z.string().min(1),
-  number: z.number().int().min(1).max(9999),
+  number: z.number().int().min(0).max(9999),
   name: z.string().trim().min(1).max(120),
   rarityId: z.string().min(1),
   quoteValue: z.number().min(0).max(1000000),
@@ -35,7 +35,7 @@ const createCardSchema = z.object({
 
 const updateCardSchema = z.object({
   cardId: z.string().min(1),
-  number: z.number().int().min(1).max(9999).optional(),
+  number: z.number().int().min(0).max(9999).optional(),
   name: z.string().trim().min(1).max(120).optional(),
   rarityId: z.string().min(1).optional(),
   quoteValue: z.number().min(0).max(1000000).optional(),
@@ -76,6 +76,14 @@ function revalidateCatalog() {
 export async function createCardAction(input: unknown): Promise<CatalogActionResult> {
   const access = await requireModule("catalog");
   if (!access.ok) return { ok: false, error: access.reason };
+
+  if (
+    typeof input !== "object" ||
+    input === null ||
+    (input as { number?: unknown }).number === undefined
+  ) {
+    return { ok: false, error: "NUMBER_REQUIRED" };
+  }
 
   const parsed = createCardSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "VALIDATION" };

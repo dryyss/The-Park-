@@ -99,6 +99,8 @@ function useAction() {
 
 function errLabel(t: ReturnType<typeof useTranslations>, code?: string): string {
   switch (code) {
+    case "NUMBER_REQUIRED":
+      return t("errNumberRequired");
     case "NUMBER_TAKEN":
       return t("errNumberTaken");
     case "CARD_IN_USE":
@@ -190,7 +192,7 @@ function NewCardForm({ seasonId, rarities }: { seasonId: string; rarities: Admin
       () =>
         createCardAction({
           seasonId,
-          number: num(fd, "number") ?? 0,
+          number: num(fd, "number"),
           name: str(fd, "name"),
           rarityId: str(fd, "rarityId"),
           quoteValue: num(fd, "quoteValue") ?? 0,
@@ -218,7 +220,9 @@ function NewCardForm({ seasonId, rarities }: { seasonId: string; rarities: Admin
     <form action={(fd) => submit(fd)} className="rounded-[14px] border border-or/30 bg-charbon-900/40 p-4">
       <h4 className="font-display text-[13px] tracking-wide text-or uppercase">{t("newCard")}</h4>
       <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <Field label={t("number")}><input name="number" type="number" required className={inputCls} /></Field>
+        <Field label={t("number")} hint={t("numberHint")}>
+          <input name="number" type="number" min={0} required placeholder="0" className={inputCls} />
+        </Field>
         <Field label={t("name")}><input name="name" required className={inputCls} /></Field>
         <Field label={t("rarity")}>
           <select name="rarityId" required className={inputCls}>
@@ -282,7 +286,9 @@ function CardEditor({
   return (
     <div className="rounded-[14px] border border-charbon-500 bg-charbon-700/40 p-4">
       <form action={(fd) => save(fd)} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Field label={t("number")}><input name="number" type="number" defaultValue={card.number} className={inputCls} /></Field>
+        <Field label={t("number")} hint={t("numberHint")}>
+          <input name="number" type="number" min={0} defaultValue={card.number} className={inputCls} />
+        </Field>
         <Field label={t("name")}><input name="name" defaultValue={card.name} className={inputCls} /></Field>
         <Field label={t("rarity")}>
           <select name="rarityId" defaultValue={card.rarityId} className={inputCls}>
@@ -459,10 +465,21 @@ function ImageUrlField({ defaultValue = "", className }: { defaultValue?: string
   );
 }
 
-function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
+function Field({
+  label,
+  hint,
+  children,
+  className,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div className={className}>
       <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{label}</label>
+      {hint && <p className="mt-0.5 text-[10px] font-bold text-texte-faible">{hint}</p>}
       <div className="mt-1">{children}</div>
     </div>
   );
