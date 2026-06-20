@@ -7,11 +7,7 @@ import { formatPrice } from "@/lib/format";
 import { isActiveVersionCode } from "@/lib/card-versions";
 import { isFirstEditionLabel, resolveEditionLabel } from "@/lib/card-edition";
 import { CONDITION_ORDER } from "@/lib/condition";
-import {
-  listCommunityPhotosForCard,
-  type CommunityPhotoView,
-  type CollectionItemPhotoView,
-} from "@/server/collection/collection-photos.service";
+import type { CommunityPhotoView, CollectionItemPhotoView } from "@/server/collection/collection-photos.types";
 
 // Ordre d'affichage des états (du meilleur au plus abîmé).
 const CONDITION_SORT: readonly string[] = CONDITION_ORDER;
@@ -281,6 +277,8 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     },
   });
   if (!card) return null;
+
+  const { listCommunityPhotosForCard } = await import("@/server/collection/collection-photos.service");
 
   const [neighbors, listings, ownedVariants, viewerListings, communityPhotos] = await Promise.all([
     prisma.card.findMany({

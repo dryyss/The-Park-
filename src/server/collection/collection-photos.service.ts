@@ -4,22 +4,10 @@ import { deleteCollectionPhotoFile, saveCollectionPhotoFile } from "@/lib/collec
 import type { CardCondition } from "@/generated/prisma/client";
 
 import { MAX_PHOTOS_PER_ITEM } from "@/lib/collection-photos.constants";
+import type { CollectionItemPhotoView, CommunityPhotoView } from "@/server/collection/collection-photos.types";
 
 export { MAX_PHOTOS_PER_ITEM };
-
-export interface CollectionItemPhotoView {
-  id: string;
-  url: string;
-  sortOrder: number;
-  createdAt: Date;
-}
-
-export interface CommunityPhotoView extends CollectionItemPhotoView {
-  collectorName: string;
-  collectorSlug: string;
-  variantLabel: string;
-  condition: string;
-}
+export type { CollectionItemPhotoView, CommunityPhotoView };
 
 async function getOwnedItem(userId: string, variantId: string, condition: CardCondition) {
   return prisma.collectionItem.findUnique({

@@ -2,7 +2,6 @@ import "server-only";
 import { mkdir, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import sharp from "sharp";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const MAX_EDGE = 1600;
@@ -30,6 +29,7 @@ export async function saveCollectionPhotoFile(collectionItemId: string, file: Fi
   const fileName = `${randomUUID()}.jpg`;
   const outPath = path.join(dir, fileName);
 
+  const sharp = (await import("sharp")).default;
   await sharp(buffer)
     .rotate()
     .resize(MAX_EDGE, MAX_EDGE, { fit: "inside", withoutEnlargement: true })

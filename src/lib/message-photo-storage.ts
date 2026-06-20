@@ -2,7 +2,6 @@ import "server-only";
 import { mkdir, unlink } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import sharp from "sharp";
 import { MAX_MESSAGE_PHOTOS } from "@/lib/message-photos.constants";
 
 export { MAX_MESSAGE_PHOTOS };
@@ -35,6 +34,7 @@ export async function saveMessagePhotoFile(conversationId: string, file: File): 
   const fileName = `${randomUUID()}.jpg`;
   const outPath = path.join(dir, fileName);
 
+  const sharp = (await import("sharp")).default;
   await sharp(buffer)
     .rotate()
     .resize(MAX_EDGE, MAX_EDGE, { fit: "inside", withoutEnlargement: true })
