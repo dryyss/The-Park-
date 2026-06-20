@@ -11,6 +11,9 @@ const MODULE_BY_SCOPE: Record<z.infer<typeof scopeSchema>, AdminModule> = {
   shop: "shop",
 };
 
+export const runtime = "nodejs";
+export const maxDuration = 30;
+
 export async function POST(request: Request) {
   let form: FormData;
   try {
@@ -38,8 +41,10 @@ export async function POST(request: Request) {
     const fileName = await saveAdminImageFile(file);
     return NextResponse.json({ ok: true, fileName });
   } catch (err) {
+    console.error("[admin-upload] route error", err);
     const code = err instanceof Error ? err.message : "UNKNOWN";
-    const status = code === "FILE_TOO_LARGE" || code === "INVALID_TYPE" ? 400 : 500;
+    const status =
+      code === "FILE_TOO_LARGE" || code === "INVALID_TYPE" || code === "IMAGE_PROCESS_FAILED" ? 400 : 500;
     return NextResponse.json({ ok: false, error: code }, { status });
   }
 }

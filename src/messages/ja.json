@@ -946,13 +946,15 @@
     "modules": {},
     "upload": {
       "dropzoneLabel": "画像をここにドロップ",
-      "dropzoneHint": "JPEG / PNG / WebP · 最大 5 MB",
+      "dropzoneHint": "JPEG / PNG / WebP · 最大 4 MB",
       "dropzoneBrowse": "またはクリックして選択",
       "uploadPending": "アップロード中…",
-      "uploadErrorSize": "ファイルが大きすぎます（最大 5 MB）。",
+      "uploadErrorSize": "ファイルが大きすぎます（最大 4 MB）。",
       "uploadErrorType": "非対応形式（JPEG, PNG, WebP）。",
       "uploadErrorForbidden": "アクセスが拒否されました。",
       "uploadErrorStorage": "サーバーに画像ストレージが設定されていません（Vercel Blob）。管理者に連絡してください。",
+      "uploadErrorNetwork": "接続エラー — もう一度お試しください。",
+      "uploadErrorDetail": "アップロード失敗 ({code})。",
       "uploadError": "アップロードに失敗しました。"
     },
     "filters": {
@@ -1112,7 +1114,7 @@
       "horsSerieBadge": "外伝",
       "numberHintHorsSerie": "HS 内の自由番号（1, 2, 3…）。各番号は1枚のみ。",
       "errNumberRequired": "番号を入力してください（0 = セット外プロモ）。",
-      "errNumberTaken": "この番号はシーズン内で既に使用されています。",
+      "errNumberTaken": "この番号はシーズン内で既に使用されています — 既存カードを編集するか別の番号を選んでください。",
       "errCardInUse": "使用中のカード（コレクション/出品）— 削除できません。",
       "errVariantExists": "このバリアント（バージョン＋言語）は既に存在します。",
       "errVariantInUse": "進行中の交換または紛争に紐づくバリアント — 削除できません。",

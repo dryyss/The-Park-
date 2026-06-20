@@ -946,14 +946,16 @@
     "modules": {},
     "upload": {
       "dropzoneLabel": "Glisse une image ici",
-      "dropzoneHint": "JPEG, PNG ou WebP · max 5 Mo",
+      "dropzoneHint": "JPEG, PNG ou WebP · max 4 Mo",
       "dropzoneBrowse": "ou clique pour parcourir",
       "uploadPending": "Envoi en cours…",
-      "uploadErrorSize": "Fichier trop lourd (max 5 Mo).",
+      "uploadErrorSize": "Fichier trop lourd (max 4 Mo).",
       "uploadErrorType": "Format non supporté (JPEG, PNG, WebP).",
       "uploadErrorForbidden": "Accès refusé.",
       "uploadErrorStorage": "Stockage images non configuré sur le serveur (Vercel Blob). Contacte l'administrateur.",
-      "uploadError": "Échec de l'envoi."
+      "uploadErrorNetwork": "Connexion interrompue — réessaie.",
+      "uploadErrorDetail": "Échec de l'envoi ({code}).",
+      "uploadError": "Échec de l'envoi.",
     },
     "filters": {
       "search": "Recherche",
@@ -1112,7 +1114,7 @@
       "horsSerieBadge": "Hors série",
       "numberHintHorsSerie": "Numéro libre dans la série HS (1, 2, 3…). Chaque numéro une seule fois.",
       "errNumberRequired": "Indique un numéro (0 = promo hors set).",
-      "errNumberTaken": "Ce numéro est déjà pris dans la saison.",
+      "errNumberTaken": "Ce numéro est déjà pris dans la saison — modifie la carte existante ou choisis un autre numéro.",
       "errCardInUse": "Carte utilisée (collections/annonces) — suppression impossible.",
       "errVariantExists": "Cette variante (version + langue) existe déjà.",
       "errVariantInUse": "Variante liée à un échange ou litige actif — suppression impossible.",

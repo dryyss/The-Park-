@@ -10,7 +10,10 @@ function mapUploadError(t: ReturnType<typeof useTranslations>, code: string): st
   if (code === "INVALID_TYPE") return t("uploadErrorType");
   if (code === "UNAUTHORIZED" || code === "FORBIDDEN") return t("uploadErrorForbidden");
   if (code === "STORAGE_NOT_CONFIGURED" || code === "WRITE_FAILED") return t("uploadErrorStorage");
-  return t("uploadError");
+  if (code === "IMAGE_PROCESS_FAILED" || code === "UPLOAD_FAILED") return t("uploadError");
+  if (code.startsWith("HTTP_")) return t("uploadErrorDetail", { code: code.replace("HTTP_", "") });
+  if (code === "UNKNOWN") return t("uploadError");
+  return t("uploadErrorDetail", { code });
 }
 
 export function AdminImageDropzone({
@@ -39,13 +42,21 @@ export function AdminImageDropzone({
     fd.set("file", file);
 
     startTransition(async () => {
-      const res = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
-      const data = (await res.json()) as { ok: boolean; error?: string; fileName?: string };
-      if (!res.ok || !data.ok || !data.fileName) {
-        setError(mapUploadError(t, data.error ?? "UNKNOWN"));
-        return;
+      try {
+        const res = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
+        const data = (await res.json().catch(() => null)) as {
+          ok: boolean;
+          error?: string;
+          fileName?: string;
+        } | null;
+        if (!res.ok || !data?.ok || !data.fileName) {
+          setError(mapUploadError(t, data?.error ?? (res.ok ? "UNKNOWN" : `HTTP_${res.status}`)));
+          return;
+        }
+        onUploaded(data.fileName);
+      } catch {
+        setError(t("uploadErrorNetwork"));
       }
-      onUploaded(data.fileName);
     });
   }
 

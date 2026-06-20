@@ -4,7 +4,7 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { put } from "@vercel/blob";
 
-const MAX_BYTES = 5 * 1024 * 1024;
+const MAX_BYTES = 4 * 1024 * 1024;
 const MAX_EDGE = 2000;
 const UPLOAD_ROOT = path.join(process.cwd(), "public/uploads");
 
@@ -37,11 +37,16 @@ async function processImageToJpeg(file: File): Promise<Buffer> {
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const sharp = (await import("sharp")).default;
-  return sharp(buffer)
-    .rotate()
-    .resize(MAX_EDGE, MAX_EDGE, { fit: "inside", withoutEnlargement: true })
-    .jpeg({ quality: 88, mozjpeg: true })
-    .toBuffer();
+  try {
+    return await sharp(buffer)
+      .rotate()
+      .resize(MAX_EDGE, MAX_EDGE, { fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: 88 })
+      .toBuffer();
+  } catch (err) {
+    console.error("[admin-upload] sharp failed", err);
+    throw new Error("IMAGE_PROCESS_FAILED");
+  }
 }
 
 /**
@@ -54,12 +59,21 @@ export async function saveAdminImageFile(file: File): Promise<string> {
   const fileName = `${safeBaseName(file.name)}-${randomUUID().slice(0, 8)}.jpg`;
 
   if (useBlobStorage()) {
-    const blob = await put(`admin/${fileName}`, jpeg, {
-      access: "public",
-      contentType: "image/jpeg",
-      addRandomSuffix: false,
-    });
-    return blob.url;
+    try {
+      const blob = await put(`admin/${fileName}`, jpeg, {
+        access: "public",
+        contentType: "image/jpeg",
+        addRandomSuffix: false,
+      });
+      return blob.url;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message.toLowerCase() : "";
+      console.error("[admin-upload] blob put failed", err);
+      if (msg.includes("token") || msg.includes("unauthorized") || msg.includes("forbidden")) {
+        throw new Error("STORAGE_NOT_CONFIGURED");
+      }
+      throw new Error("UPLOAD_FAILED");
+    }
   }
 
   if (process.env.VERCEL) {

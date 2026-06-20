@@ -946,13 +946,15 @@
     "modules": {},
     "upload": {
       "dropzoneLabel": "Drop an image here",
-      "dropzoneHint": "JPEG, PNG or WebP · max 5 MB",
+      "dropzoneHint": "JPEG, PNG or WebP · max 4 MB",
       "dropzoneBrowse": "or click to browse",
       "uploadPending": "Uploading…",
-      "uploadErrorSize": "File too large (max 5 MB).",
+      "uploadErrorSize": "File too large (max 4 MB).",
       "uploadErrorType": "Unsupported format (JPEG, PNG, WebP).",
       "uploadErrorForbidden": "Access denied.",
       "uploadErrorStorage": "Image storage is not configured on the server (Vercel Blob). Contact the administrator.",
+      "uploadErrorNetwork": "Connection failed — try again.",
+      "uploadErrorDetail": "Upload failed ({code}).",
       "uploadError": "Upload failed."
     },
     "filters": {
@@ -1112,7 +1114,7 @@
       "horsSerieBadge": "Out of series",
       "numberHintHorsSerie": "Free number within HS (1, 2, 3…). Each number once only.",
       "errNumberRequired": "Enter a card number (0 = out-of-set promo).",
-      "errNumberTaken": "This number is already used in the season.",
+      "errNumberTaken": "This number is already used in the season — edit the existing card or pick another number.",
       "errCardInUse": "Card in use (collections/listings) — cannot delete.",
       "errVariantExists": "This variant (version + language) already exists.",
       "errVariantInUse": "Variant tied to an active exchange or dispute — cannot delete.",
