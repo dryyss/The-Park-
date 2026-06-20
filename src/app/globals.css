@@ -124,6 +124,18 @@ h3,
 .animate-floaty {
   animation: floaty 5s ease-in-out infinite;
 }
+@keyframes raritySwipe {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+.animate-rarity-swipe {
+  animation: raritySwipe 1.6s ease-in-out infinite;
+}
 
 ::-webkit-scrollbar {
   width: 10px;

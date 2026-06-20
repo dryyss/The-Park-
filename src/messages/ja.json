@@ -21,7 +21,8 @@
     "loginGateAuction": "入札するにはログインまたはアカウント作成が必要です。",
     "loginGateContact": "このメンバーに連絡するにはログインまたはアカウント作成が必要です。",
     "loginGateBuy": "このカードを購入するにはログインまたはアカウント作成が必要です。",
-    "loginGateWallet": "ウォレットを利用するにはログインが必要です。"
+    "loginGateWallet": "ウォレットを利用するにはログインが必要です。",
+    "loginGateLike": "いいねするにはログインが必要です。"
   },
   "nav": {
     "home": "ホーム",
@@ -108,7 +109,9 @@
     "rarityCount": "{count}枚",
     "rarityOwnedCount": "{count}枚所持",
     "rarityPrev": "前のレアリティ",
-    "rarityNext": "次のレアリティ"
+    "rarityNext": "次のレアリティ",
+    "rarityScroll": "レアリティをスクロール",
+    "raritySwipeHint": "スワイプして移動"
   },
   "pages": {
     "soon": "このセクションはすでにナビゲーションに接続されています。動的コンテンツは近日公開予定です。",
@@ -182,6 +185,9 @@
     "statPower": "パワー",
     "statWeight": "重量",
     "statOwned": "所持",
+    "likeLabel": "このカードにいいね",
+    "unlikeLabel": "いいねを取り消す",
+    "likeCount": "{count}いいね",
     "yes": "はい",
     "no": "いいえ",
     "versionsTitle": "バージョン · 個別追跡",
@@ -585,6 +591,8 @@
       "listingInCartBody": "{buyer} があなたのカード「{card}」をカートに追加しました。",
       "listingExpiring": "出品期限間近",
       "listingExpiringBody": "24時間以内に期限切れ。",
+      "wishlistListing": "ウィッシュリストのカード出品",
+      "wishlistListingBody": "{cardName}がマーケットに出品されました。",
       "orderUpdate": "ショップ注文",
       "orderUpdateBody": "注文{orderNumber}：{status}",
       "messageReceived": "新着メッセージ",

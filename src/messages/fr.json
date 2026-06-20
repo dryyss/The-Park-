@@ -21,7 +21,8 @@
     "loginGateAuction": "Connecte-toi ou inscris-toi pour enchérir.",
     "loginGateContact": "Connecte-toi ou inscris-toi pour contacter ce membre.",
     "loginGateBuy": "Connecte-toi ou inscris-toi pour acheter cette carte.",
-    "loginGateWallet": "Connecte-toi ou inscris-toi pour gérer ton portefeuille."
+    "loginGateWallet": "Connecte-toi ou inscris-toi pour gérer ton portefeuille.",
+    "loginGateLike": "Connecte-toi ou inscris-toi pour liker une carte."
   },
   "nav": {
     "home": "Accueil",
@@ -108,7 +109,9 @@
     "rarityCount": "{count} cartes",
     "rarityOwnedCount": "{count} cartes possédées",
     "rarityPrev": "Rareté précédente",
-    "rarityNext": "Rareté suivante"
+    "rarityNext": "Rareté suivante",
+    "rarityScroll": "Parcourir les raretés",
+    "raritySwipeHint": "Glisse pour parcourir"
   },
   "pages": {
     "soon": "Cette section est déjà branchée à la navigation. Son contenu dynamique arrive très bientôt.",
@@ -182,6 +185,9 @@
     "statPower": "Puissance",
     "statWeight": "Poids",
     "statOwned": "Possédée",
+    "likeLabel": "J'aime cette carte",
+    "unlikeLabel": "Retirer mon like",
+    "likeCount": "{count, plural, one {# like} other {# likes}}",
     "yes": "Oui",
     "no": "Non",
     "versionsTitle": "Versions · suivies séparément",
@@ -585,6 +591,8 @@
       "listingInCartBody": "{buyer} a mis ta carte « {card} » au panier.",
       "listingExpiring": "Annonce expire bientôt",
       "listingExpiringBody": "Une de tes annonces expire dans 24 h.",
+      "wishlistListing": "Carte wishlist listée",
+      "wishlistListingBody": "{cardName} est disponible sur le marketplace.",
       "orderUpdate": "Commande boutique",
       "orderUpdateBody": "Commande {orderNumber} : {status}.",
       "messageReceived": "Nouveau message",

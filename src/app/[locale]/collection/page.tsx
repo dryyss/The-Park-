@@ -3,6 +3,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getViewerUser } from "@/server/user/user.service";
 import { getUserCollection } from "@/server/collection/collection.service";
 import { getViewerWishlistCardIds } from "@/server/wishlist/wishlist.service";
+import { getCardsLikeMeta } from "@/server/card-like/card-like.service";
 import { PageHeader } from "@/components/common/page-header";
 import { CompletionPanel, CollectionFiltersBar } from "@/components/collection/collection-filters";
 import { CollectionCardTile } from "@/components/collection/collection-card-tile";
@@ -43,6 +44,8 @@ export default async function CollectionPage({
     viewer ? getViewerWishlistCardIds(viewer.id) : Promise.resolve([]),
   ]);
   const wishlistCardIdSet = new Set(wishlistCardIds);
+  const allCardIds = data.sections.flatMap((sec) => sec.cards.map((c) => c.cardId));
+  const likeMeta = Object.fromEntries(await getCardsLikeMeta(allCardIds, viewer?.id));
   const gridClass = collectionGridClassName(collParams.cols);
 
   return (
@@ -94,6 +97,8 @@ export default async function CollectionPage({
                 showControls
                 isAuthenticated={isAuthenticated}
                 inWishlist={wishlistCardIdSet.has(card.cardId)}
+                likeCount={likeMeta[card.cardId]?.count ?? 0}
+                liked={likeMeta[card.cardId]?.liked ?? false}
               />
             ))}
           </div>

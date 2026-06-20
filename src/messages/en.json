@@ -21,7 +21,8 @@
     "loginGateAuction": "Sign in or create an account to place a bid.",
     "loginGateContact": "Sign in or create an account to contact this member.",
     "loginGateBuy": "Sign in or create an account to buy this card.",
-    "loginGateWallet": "Sign in or create an account to manage your wallet."
+    "loginGateWallet": "Sign in or create an account to manage your wallet.",
+    "loginGateLike": "Sign in or create an account to like a card."
   },
   "nav": {
     "home": "Home",
@@ -108,7 +109,9 @@
     "rarityCount": "{count} cards",
     "rarityOwnedCount": "{count} cards owned",
     "rarityPrev": "Previous rarity",
-    "rarityNext": "Next rarity"
+    "rarityNext": "Next rarity",
+    "rarityScroll": "Browse rarities",
+    "raritySwipeHint": "Swipe to browse"
   },
   "pages": {
     "soon": "This section is already wired into the navigation. Its dynamic content is coming very soon.",
@@ -182,6 +185,9 @@
     "statPower": "Power",
     "statWeight": "Weight",
     "statOwned": "Owned",
+    "likeLabel": "Like this card",
+    "unlikeLabel": "Remove like",
+    "likeCount": "{count, plural, one {# like} other {# likes}}",
     "yes": "Yes",
     "no": "No",
     "versionsTitle": "Versions · tracked separately",
@@ -585,6 +591,8 @@
       "listingInCartBody": "{buyer} added your card « {card} » to their cart.",
       "listingExpiring": "Listing expiring soon",
       "listingExpiringBody": "One of your listings expires in 24 h.",
+      "wishlistListing": "Wishlist card listed",
+      "wishlistListingBody": "{cardName} is now on the marketplace.",
       "orderUpdate": "Shop order",
       "orderUpdateBody": "Order {orderNumber}: {status}.",
       "messageReceived": "New message",

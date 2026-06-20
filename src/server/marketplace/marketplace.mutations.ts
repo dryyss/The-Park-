@@ -2,6 +2,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { CardCondition, ListingType } from "@/generated/prisma/client";
 import { getPlatformConfig } from "@/server/platform/platform.service";
+import { notifyWishlistForNewListing } from "@/server/marketplace/wishlist-listing-notify";
 
 /** Publie une annonce marketplace — uniquement sur une variante (et un état) possédé. */
 export async function publishListing(
@@ -52,6 +53,10 @@ export async function publishListing(
         expiresAt,
       },
     });
+  });
+
+  await notifyWishlistForNewListing(listing.id, sellerId, input.variantId).catch((err) => {
+    console.error("[marketplace] wishlist notify failed", err);
   });
 
   return listing.id;

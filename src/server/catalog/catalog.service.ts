@@ -14,6 +14,7 @@ const CONDITION_SORT: readonly string[] = CONDITION_ORDER;
 
 /** Représentation d'une carte prête à afficher (vignette holo). */
 export interface CardDisplay {
+  id: string;
   number: number;
   name: string;
   slug: string;
@@ -27,6 +28,7 @@ export interface CardDisplay {
 }
 
 function toCardDisplay(card: {
+  id: string;
   number: number;
   name: string;
   slug: string;
@@ -36,6 +38,7 @@ function toCardDisplay(card: {
 }): CardDisplay {
   const meta = rarityMeta(card.rarity.code);
   return {
+    id: card.id,
     number: card.number,
     name: card.name,
     slug: card.slug,
@@ -73,10 +76,10 @@ export async function getHeroCards(): Promise<CardDisplay[]> {
   })();
 }
 
-/** Cartes vedettes : les plus cotées de la saison courante. */
+/** Cartes vedettes : les plus likées ; repli sur la cote si aucun like. */
 async function fetchFeaturedCards(limit: number) {
   const cards = await prisma.card.findMany({
-    orderBy: [{ quoteValue: "desc" }, { number: "asc" }],
+    orderBy: [{ likes: { _count: "desc" } }, { quoteValue: "desc" }, { number: "asc" }],
     take: limit,
     include: { rarity: true },
   });
@@ -86,7 +89,7 @@ async function fetchFeaturedCards(limit: number) {
 export async function getFeaturedCards(limit = 5): Promise<CardDisplay[]> {
   return unstable_cache(() => fetchFeaturedCards(limit), ["featured-cards", String(limit)], {
     revalidate: 120,
-    tags: ["catalog"],
+    tags: ["catalog", "featured-cards", "card-likes"],
   })();
 }
 

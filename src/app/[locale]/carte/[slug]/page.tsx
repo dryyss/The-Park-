@@ -8,6 +8,8 @@ import { ContactSellerButton } from "@/components/marketplace/contact-seller-but
 import { getViewerUser, getAuthenticatedViewer } from "@/server/user/user.service";
 import { CardMemberActions } from "@/components/cards/card-member-actions";
 import { CardWantButton } from "@/components/cards/card-want-button";
+import { CardLikeButton } from "@/components/cards/card-like-button";
+import { getCardLikeMeta } from "@/server/card-like/card-like.service";
 import { avatarGradient } from "@/lib/avatars";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +24,8 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
   const authenticated = await getAuthenticatedViewer();
   const card = await getCardDetail(slug, viewer?.id);
   if (!card) notFound();
+
+  const likeMeta = await getCardLikeMeta(card.id, viewer?.id);
 
   const totalQty = card.versions.reduce((s, v) => s + v.quantity, 0);
   const ownedAny = totalQty > 0;
@@ -90,6 +94,15 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
           <h1 className="font-display mt-4 text-[clamp(34px,4.4vw,56px)] leading-[0.96] -skew-x-3 uppercase text-blanc-casse [text-shadow:4px_4px_0_rgba(216,27,96,0.9)]">
             {card.name}
           </h1>
+
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <CardLikeButton
+              cardId={card.id}
+              initialCount={likeMeta.count}
+              initialLiked={likeMeta.liked}
+              isAuthenticated={!!authenticated}
+            />
+          </div>
 
           <div className="mt-5 flex flex-wrap gap-3">
             {[

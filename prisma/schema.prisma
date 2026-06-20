@@ -300,6 +300,7 @@ enum NotificationType {
   LISTING_SOLD
   LISTING_IN_CART
   LISTING_EXPIRING
+  WISHLIST_LISTING
   ORDER_UPDATE
   MESSAGE_RECEIVED
 }
@@ -372,6 +373,7 @@ model User {
   // Relations
   collectionItems CollectionItem[]
   wishlistItems   WishlistItem[]
+  cardLikes       CardLike[]
   listings        Listing[]
   cartItems       CartItem[]
   marketplaceCartItems MarketplaceCartItem[]
@@ -513,6 +515,7 @@ model Card {
 
   variants  CardVariant[]
   wishlists WishlistItem[]
+  likes     CardLike[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -654,6 +657,19 @@ model WishlistItem {
 
   @@unique([userId, variantId, condition, editionPreset])
   @@index([userId])
+}
+
+/// Appréciation publique d'une carte (distinct de la wishlist).
+model CardLike {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  card      Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  cardId    String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, cardId])
+  @@index([cardId])
 }
 
 // ============================================================================

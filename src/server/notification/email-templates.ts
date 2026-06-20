@@ -74,6 +74,13 @@ export function buildNotificationEmail(
         subject: "Nouveau trophée débloqué",
         html: wrap(`<p>Tu as débloqué le badge « ${payload.label ?? payload.code ?? "Trophée"} ».</p>`),
       };
+    case "WISHLIST_LISTING": {
+      const cardName = typeof payload.cardName === "string" ? payload.cardName : "une carte";
+      return {
+        subject: "Carte wishlist disponible",
+        html: wrap(`<p><strong>${cardName}</strong> vient d'être listée sur le marketplace.</p>`),
+      };
+    }
     default:
       return null;
   }

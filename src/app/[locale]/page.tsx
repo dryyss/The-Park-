@@ -1,6 +1,7 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getCatalogSummary, getCatalogStats, getFeaturedCards, getHeroCards } from "@/server/catalog/catalog.service";
 import { getUserOwnedCountByRarity } from "@/server/collection/collection.service";
+import { getCardsLikeMeta } from "@/server/card-like/card-like.service";
 import { getRecentListings } from "@/server/marketplace/marketplace.service";
 import { getTopCollectors, getRecentActivity } from "@/server/community/community.service";
 import { getViewerUser } from "@/server/user/user.service";
@@ -41,6 +42,13 @@ export default async function Home({
   ]);
 
   const ownedByRarity = viewer ? await getUserOwnedCountByRarity(viewer.id) : null;
+  const featuredSlice = featured.slice(3, 8);
+  const likeMeta = Object.fromEntries(
+    await getCardsLikeMeta(
+      featuredSlice.map((c) => c.id),
+      viewer?.id,
+    ),
+  );
 
   const rarities: RarityStripItem[] = summary.byRarity.map((r) => {
     const meta = rarityMeta(r.code);
@@ -63,7 +71,7 @@ export default async function Home({
 
       <div className="mx-auto max-w-[1320px] px-7 pb-[60px]">
         <RarityCarousel rarities={rarities} showOwned={!!viewer} />
-        <FeaturedCards cards={featured.slice(3, 8)} />
+        <FeaturedCards cards={featuredSlice} likeMeta={likeMeta} isAuthenticated={!!viewer} />
         <SeasonBanner />
         <LatestListings listings={listings} />
 
