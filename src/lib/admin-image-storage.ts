@@ -21,7 +21,7 @@ function safeBaseName(originalName: string): string {
   );
 }
 
-function useBlobStorage(): boolean {
+function isBlobStorageReady(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
 
@@ -58,7 +58,7 @@ export async function saveAdminImageFile(file: File): Promise<string> {
   const jpeg = await processImageToJpeg(file);
   const fileName = `${safeBaseName(file.name)}-${randomUUID().slice(0, 8)}.jpg`;
 
-  if (useBlobStorage()) {
+  if (isBlobStorageReady()) {
     try {
       const blob = await put(`admin/${fileName}`, jpeg, {
         access: "public",
