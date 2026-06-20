@@ -34,10 +34,7 @@ export function HeroCardFan({ cards }: { cards: CardDisplay[] }) {
           <Link
             key={card.slug}
             href={`/carte/${card.slug}`}
-            className={[
-              "animate-floaty absolute block origin-center transition-[transform,z-index] duration-300 hover:z-[4] hover:scale-[1.04]",
-              slot.position,
-            ].join(" ")}
+            className={["animate-floaty absolute block origin-center", slot.position].join(" ")}
             style={{ ["--rot" as string]: slot.rotation, animationDelay: slot.delay }}
           >
             <HoloCard

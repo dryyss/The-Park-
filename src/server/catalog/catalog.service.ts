@@ -49,8 +49,8 @@ function toCardDisplay(card: {
   };
 }
 
-/** Cartes du hero accueil (éventail maquette client : 68 · 76 · 74). */
-const HERO_CARD_NUMBERS = [68, 76, 74] as const;
+/** Cartes du hero accueil — Trueno or (76) · Trueno unique (78) · DeLorean (74). */
+const HERO_CARD_NUMBERS = [76, 78, 74] as const;
 
 async function fetchHeroCards(): Promise<CardDisplay[]> {
   const cards = await prisma.card.findMany({
