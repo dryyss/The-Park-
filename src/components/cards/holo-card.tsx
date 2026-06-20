@@ -58,6 +58,8 @@ export function HoloCard({
   const overlayBg = variant === "gold" ? GOLD : variant === "rainbow" ? `${GLARE}, ${RAINBOW}` : undefined;
   const blend = variant === "gold" ? "screen" : "overlay";
   const showOverlay = interactive && variant !== "none";
+  // Assets catalogue déjà compressés dans /public/uploads — évite l'optimiseur Next (souvent capricieux sur Windows / mozjpeg).
+  const unoptimized = src.startsWith("/uploads/");
 
   return (
     <div
@@ -70,7 +72,15 @@ export function HoloCard({
         className ?? "",
       ].join(" ")}
     >
-      <Image src={src} alt={alt} fill sizes="(max-width: 768px) 40vw, 220px" priority={priority} className="object-cover" />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(max-width: 768px) 40vw, 220px"
+        priority={priority}
+        unoptimized={unoptimized}
+        className="object-cover"
+      />
       {showOverlay && (
         <div
           aria-hidden

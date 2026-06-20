@@ -22,7 +22,7 @@ for (const file of files) {
   const out = path.join(UPLOADS, jpgName);
   await sharp(full)
     .resize(1200, null, { withoutEnlargement: true })
-    .jpeg({ quality: 85, mozjpeg: true })
+    .jpeg({ quality: 85, progressive: false, mozjpeg: false })
     .toFile(out);
   console.log(`✓ ${file} (${(size / 1024 / 1024).toFixed(1)} Mo) → ${jpgName}`);
   converted += 1;
