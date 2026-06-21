@@ -7,7 +7,7 @@ import { roundEur } from "@/lib/wallet";
 import { formatPrice } from "@/lib/format";
 import { createSaleFromListing } from "@/server/sale/sale.mutations";
 import { markSaleFailed, markSalePaid } from "@/server/sale/sale-lifecycle.service";
-import { creditWalletForSalePayout } from "@/server/wallet/wallet.service";
+import { creditWalletForSalePayout, debitWalletForSale, getWalletSpendableBalanceEur } from "@/server/wallet/wallet.service";
 import {
   getViewerMarketplaceCart,
   removeMarketplaceCartItemByListing,
@@ -271,6 +271,67 @@ export async function fulfillMarketplaceCheckout(checkoutId: string, stripeSessi
     where: { id: checkoutId },
     data: { status: "PAID", paidAt: new Date() },
   });
+}
+
+/**
+ * Paiement direct depuis le portefeuille (sans Stripe).
+ * Débite le wallet de l'acheteur puis finalise le checkout.
+ */
+export async function startAndFulfillMarketplaceCheckoutWithWallet(input: {
+  buyerId: string;
+  cartItemIds?: string[];
+}): Promise<{ checkoutId: string }> {
+  const recap = await getMarketplaceRecap(input.buyerId, input.cartItemIds);
+  if (recap.lines.length === 0) throw new Error("EMPTY_CART");
+
+  const walletBalance = await getWalletSpendableBalanceEur(input.buyerId);
+  if (walletBalance < recap.subtotalRaw) throw new Error("INSUFFICIENT_WALLET");
+
+  const checkoutNumber = await generateCheckoutNumber();
+  const checkout = await prisma.marketplaceCheckout.create({
+    data: {
+      checkoutNumber,
+      buyerId: input.buyerId,
+      subtotal: recap.subtotalRaw,
+      total: recap.subtotalRaw,
+    },
+  });
+
+  try {
+    for (const line of recap.lines) {
+      const { saleId } = await createSaleFromListing(input.buyerId, line.listingId);
+      const payment = await prisma.payment.findFirst({
+        where: { saleId, kind: "PURCHASE" },
+        select: { id: true },
+      });
+      if (!payment) throw new Error("PAYMENT_NOT_FOUND");
+
+      await prisma.marketplaceCheckoutLine.create({
+        data: {
+          checkoutId: checkout.id,
+          saleId,
+          cartItemId: line.id,
+          listingId: line.listingId,
+          sellerId: line.sellerId,
+          cardName: line.name,
+          unitPrice: line.priceRaw,
+        },
+      });
+
+      // Débiter le wallet pour cette ligne avant de finaliser
+      await debitWalletForSale({
+        userId: input.buyerId,
+        saleId,
+        amountEur: line.priceRaw,
+      });
+    }
+  } catch (err) {
+    await cancelPendingCheckout(checkout.id);
+    throw err;
+  }
+
+  await fulfillMarketplaceCheckout(checkout.id, null);
+  return { checkoutId: checkout.id };
 }
 
 export async function fulfillMarketplaceCheckoutFromStripeSession(sessionId: string): Promise<void> {

@@ -53,6 +53,7 @@ export async function addToMarketplaceCartAction(input: unknown): Promise<Market
     await addListingToMarketplaceCart(viewer.id, parsed.data.listingId);
     revalidatePath("/marketplace");
     revalidatePath("/marketplace/panier");
+    revalidatePath("/panier");
     revalidateTag("listings");
     return { ok: true, itemCount: await getMarketplaceCartItemCount(viewer.id) };
   } catch (err) {
@@ -72,6 +73,7 @@ export async function removeFromMarketplaceCartAction(input: unknown): Promise<M
     await removeMarketplaceCartItem(viewer.id, parsed.data.itemId);
     revalidatePath("/marketplace");
     revalidatePath("/marketplace/panier");
+    revalidatePath("/panier");
     revalidateTag("listings");
     return { ok: true, itemCount: await getMarketplaceCartItemCount(viewer.id) };
   } catch (err) {

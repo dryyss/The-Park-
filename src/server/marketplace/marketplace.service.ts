@@ -280,6 +280,8 @@ export interface CardSeller {
   versionLabel: string;
   purchasable: boolean;
   sellerId: string;
+  quantity: number;
+  allListingIds: string[];
   seller: { name: string; slug: string; initial: string; rating: string; reviews: number };
 }
 
@@ -324,7 +326,7 @@ async function fetchCardSellListings(slug: string): Promise<CardWithSellers | nu
 
   const meta = rarityMeta(card.rarity.code);
 
-  const sellers: CardSeller[] = listings.map((l) => {
+  const rawSellers: CardSeller[] = listings.map((l) => {
     const name = l.seller.displayName;
     return {
       listingId: l.id,
@@ -335,6 +337,8 @@ async function fetchCardSellListings(slug: string): Promise<CardWithSellers | nu
       versionLabel: l.variant.versionType.label,
       purchasable: l.type === "SELL" || l.type === "SELL_OR_TRADE",
       sellerId: l.seller.id,
+      quantity: 1,
+      allListingIds: [l.id],
       seller: {
         name,
         slug: l.seller.slug,
@@ -344,6 +348,23 @@ async function fetchCardSellListings(slug: string): Promise<CardWithSellers | nu
       },
     };
   });
+
+  // Grouper par vendeur + état + version (même vendeur, même état, même version = quantité)
+  const groupMap = new Map<string, CardSeller>();
+  for (const s of rawSellers) {
+    const key = `${s.sellerId}:${s.conditionCode}:${s.versionLabel}`;
+    const existing = groupMap.get(key);
+    if (existing) {
+      existing.quantity += 1;
+      existing.allListingIds.push(s.listingId);
+    } else {
+      groupMap.set(key, { ...s });
+    }
+  }
+  const sellers: CardSeller[] = Array.from(groupMap.values());
+
+  // Meilleur prix = premier vendeur ayant un prix > 0
+  const lowestPriceSeller = sellers.find((s) => s.price > 0);
 
   return {
     cardId: card.id,
@@ -359,7 +380,7 @@ async function fetchCardSellListings(slug: string): Promise<CardWithSellers | nu
     rarityLabel: card.rarity.label,
     seasonLabel: card.season.name,
     sellers,
-    lowestPriceLabel: sellers.length > 0 ? sellers[0].priceLabel : null,
+    lowestPriceLabel: lowestPriceSeller ? lowestPriceSeller.priceLabel : null,
   };
 }
 

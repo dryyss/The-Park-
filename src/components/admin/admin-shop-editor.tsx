@@ -117,7 +117,7 @@ function ShopProductPanel({ product, uploadMode }: { product: AdminShopProduct; 
   const thumb = product.images[0] ? cardImage(product.images[0]) : null;
 
   return (
-    <article className={`border-b border-charbon-600/50 ${dirty ? "bg-or/5" : ""}`}>
+    <article id={`product-${product.id}`} className={`scroll-mt-24 border-b border-charbon-600/50 ${dirty ? "bg-or/5" : ""}`}>
       <form onSubmit={save}>
         <div className="flex flex-wrap items-center gap-3 px-4 py-3">
           <button

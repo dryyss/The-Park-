@@ -21,7 +21,7 @@ export type ConditionRow = {
   isSigned: boolean;
   signatureAuthor: string | null;
   photos: CollectionItemPhotoView[];
-  listing: { id: string; type: string; price: string | null } | null;
+  listings: { id: string; type: string; price: string | null }[];
 };
 
 export function VariantConditionManager({
@@ -119,40 +119,43 @@ export function VariantConditionManager({
 
           <CollectionPhotoManager variantId={variantId} condition={c.condition} photos={c.photos} />
 
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            {c.listing ? (
-              <>
+          <div className="mt-2 flex flex-col gap-1.5">
+            {c.listings.map((l) => (
+              <div key={l.id} className="flex flex-wrap items-center gap-2">
                 <span className="rounded-md bg-or/12 px-2 py-1 text-[10.5px] font-extrabold text-or">
-                  {c.listing.type === "TRADE"
+                  {l.type === "TRADE"
                     ? t("listingTrade")
-                    : c.listing.type === "SELL_OR_TRADE"
-                      ? t("listingBoth", { price: c.listing.price ?? "—" })
-                      : t("listingSell", { price: c.listing.price ?? "—" })}
+                    : l.type === "SELL_OR_TRADE"
+                      ? t("listingBoth", { price: l.price ?? "—" })
+                      : t("listingSell", { price: l.price ?? "—" })}
                 </span>
                 <button
                   type="button"
                   disabled={pending}
-                  onClick={() => run(() => cancelListingAction({ listingId: c.listing!.id }))}
+                  onClick={() => run(() => cancelListingAction({ listingId: l.id }))}
                   className="text-[10.5px] font-bold text-neon-rouge transition hover:underline disabled:opacity-50"
                 >
                   {t("removeListing")}
                 </button>
-              </>
-            ) : c.available > 0 ? (
-              <button
-                type="button"
-                disabled={pending}
-                onClick={() => setSellFor(sellFor === c.condition ? null : c.condition)}
-                className="rounded-md border border-carmin/50 px-2.5 py-1 text-[10.5px] font-extrabold text-carmin transition hover:bg-carmin/10 disabled:opacity-50"
-              >
-                {t("sellOrTrade")}
-              </button>
-            ) : (
-              <span className="text-[10.5px] font-bold text-texte-faible">{t("allReserved")}</span>
-            )}
+              </div>
+            ))}
+            <div className="flex flex-wrap items-center gap-2">
+              {c.available > 0 ? (
+                <button
+                  type="button"
+                  disabled={pending}
+                  onClick={() => setSellFor(sellFor === c.condition ? null : c.condition)}
+                  className="rounded-md border border-carmin/50 px-2.5 py-1 text-[10.5px] font-extrabold text-carmin transition hover:bg-carmin/10 disabled:opacity-50"
+                >
+                  {t("sellOrTrade")}
+                </button>
+              ) : (
+                <span className="text-[10.5px] font-bold text-texte-faible">{t("allReserved")}</span>
+              )}
+            </div>
           </div>
 
-          {sellFor === c.condition && !c.listing && (
+          {sellFor === c.condition && (
             <ListItemForm
               pending={pending}
               onSubmit={(type, price) =>

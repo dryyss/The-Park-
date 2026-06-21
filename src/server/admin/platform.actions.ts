@@ -27,6 +27,7 @@ export async function updatePlatformConfigAction(input: unknown): Promise<AdminA
     await updatePlatformConfig(parsed.data);
     revalidatePath("/admin/reglages");
     revalidatePath("/boutique/panier");
+    revalidatePath("/panier");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

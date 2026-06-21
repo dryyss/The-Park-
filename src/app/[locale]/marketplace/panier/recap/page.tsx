@@ -2,8 +2,8 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/common/page-header";
 import { MarketplaceRecapClient } from "@/components/marketplace/marketplace-recap-client";
 import { requireAuthViewer } from "@/server/user/user.service";
-import { getMarketplaceRecap } from "@/server/marketplace-cart/marketplace-cart-checkout.service";
-import { cancelMarketplaceCheckoutById } from "@/server/marketplace-cart/marketplace-cart-checkout.service";
+import { getMarketplaceRecap, cancelMarketplaceCheckoutById } from "@/server/marketplace-cart/marketplace-cart-checkout.service";
+import { getWalletSpendableBalanceEur } from "@/server/wallet/wallet.service";
 
 export const dynamic = "force-dynamic";
 
@@ -31,7 +31,10 @@ export default async function MarketplaceRecapPage({
   }
 
   const cartItemIds = parseCartItemIds(sp.items);
-  const recap = await getMarketplaceRecap(viewer.id, cartItemIds);
+  const [recap, walletBalance] = await Promise.all([
+    getMarketplaceRecap(viewer.id, cartItemIds),
+    getWalletSpendableBalanceEur(viewer.id),
+  ]);
 
   return (
     <main className="mx-auto max-w-[900px] px-7 pt-9 pb-[60px]">
@@ -43,7 +46,7 @@ export default async function MarketplaceRecapPage({
         </p>
       )}
 
-      <MarketplaceRecapClient recap={recap} locale={locale} cartItemIds={cartItemIds} />
+      <MarketplaceRecapClient recap={recap} locale={locale} cartItemIds={cartItemIds} walletBalance={walletBalance} />
     </main>
   );
 }

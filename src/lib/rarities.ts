@@ -24,7 +24,7 @@ export const RARITY_DEFINITIONS = [
   { code: "g", label: "Gold", title: "Gold", jp: "金", symbol: "✸", color: "#E8B23A", tilt: 8, holo: 0.85, variant: "gold", sortOrder: 4 },
   { code: "unique", label: "Unique", title: "Uniques", jp: "唯一", symbol: "✪", color: "#6FE3D0", tilt: 9, holo: 0.9, variant: "rainbow", sortOrder: 5 },
   { code: "promotional", label: "Promotionnelle", title: "Promotionnelles", jp: "プロモ", symbol: "★", color: "#FF6B9D", tilt: 9, holo: 0.88, variant: "rainbow", sortOrder: 6 },
-  { code: "special", label: "Carte spéciale", title: "Cartes spéciales", jp: "特別", symbol: "◇", color: "#A78BFA", tilt: 9, holo: 0.88, variant: "rainbow", sortOrder: 7 },
+  { code: "special", label: "Spécial", title: "Spéciales", jp: "特別", symbol: "◇", color: "#A78BFA", tilt: 9, holo: 0.88, variant: "rainbow", sortOrder: 7 },
   { code: "collaboration", label: "Collaboration", title: "Collaborations", jp: "コラボ", symbol: "✧", color: "#34D399", tilt: 9, holo: 0.9, variant: "rainbow", sortOrder: 8 },
   { code: "signed", label: "Signature", title: "Signatures", jp: "サイン", symbol: "✒", color: "#F59E0B", tilt: 9, holo: 0.92, variant: "gold", sortOrder: 9 },
 ] as const satisfies readonly RarityDefinition[];

@@ -37,7 +37,7 @@ export function CheckoutForm({ cart, locale, isAuthenticated, defaultName }: Che
     return (
       <p className="py-16 text-center text-[14px] font-bold text-texte-dim">
         {t("empty")}{" "}
-        <Link href="/boutique/panier" className="text-carmin hover:underline">
+        <Link href="/panier" className="text-carmin hover:underline">
           {t("backCart")}
         </Link>
       </p>

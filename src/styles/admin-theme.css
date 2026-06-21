@@ -1,54 +1,55 @@
 /*
-  Thème admin — lisibilité prioritaire pour tableaux de bord denses.
-  Appliqué via .admin-theme sur AdminShell ; n’affecte pas le site public.
+  Thème admin — fidèle aux maquettes The Park - Admin.dc.html
+  Appliqué via .admin-theme sur AdminShell.
 */
 .admin-theme {
-  --admin-shell-bg: #1c2224;
-  --admin-panel-bg: #252c2e;
-  --admin-stat-bg: #2e3638;
-  --admin-stat-bg-alert: #3a3230;
-  --admin-border: #455052;
-  --admin-border-subtle: #3a4244;
-  --admin-text: #f5f2ea;
-  --admin-text-secondary: #c4ccc9;
-  --admin-text-label: #a8b4b1;
-  --admin-text-value: #ffffff;
-  --admin-chart-grid: #455052;
-  --admin-chart-axis: #a8b4b1;
+  --admin-shell-bg: #0e0e11;
+  --admin-panel-bg: #141418;
+  --admin-stat-bg: #1a1a1e;
+  --admin-stat-bg-alert: #1c1a1f;
+  --admin-border: #232328;
+  --admin-border-subtle: #2b2b31;
+  --admin-text: #f2efe9;
+  --admin-text-secondary: #c9c6be;
+  --admin-text-label: #8e8e98;
+  --admin-text-value: #f2efe9;
+  --admin-chart-grid: #2b2b31;
+  --admin-chart-axis: #6e6e78;
 }
 
 .admin-theme .admin-section-title {
   color: var(--admin-text);
   font-family: var(--font-display), var(--font-sans), sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  transform: skewX(-3deg);
 }
 
 .admin-theme .admin-panel {
-  border-radius: 14px;
+  border-radius: 15px;
   border: 1px solid var(--admin-border);
   background: var(--admin-panel-bg);
   padding: 1.25rem;
 }
 
 .admin-theme .admin-stat-tile {
-  border-radius: 10px;
-  border: 1px solid var(--admin-border-subtle);
+  border-radius: 15px;
+  border: 1px solid var(--admin-border);
   background: var(--admin-stat-bg);
-  padding: 0.875rem 1rem;
+  padding: 1rem 1.125rem;
 }
 
 .admin-theme .admin-stat-tile--alert {
-  border-color: color-mix(in srgb, var(--color-statut-alerte) 55%, transparent);
+  border-color: color-mix(in srgb, var(--color-statut-alerte) 45%, transparent);
   background: var(--admin-stat-bg-alert);
 }
 
 .admin-theme .admin-stat-label {
   color: var(--admin-text-label);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   line-height: 1.3;
   text-transform: uppercase;
 }
@@ -68,28 +69,29 @@
 
 .admin-theme .admin-meta {
   color: var(--admin-text-secondary);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12.5px;
+  font-weight: 700;
 }
 
 .admin-theme .admin-action-row {
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid var(--admin-border-subtle);
   background: var(--admin-panel-bg);
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, background 0.12s ease;
 }
 
 .admin-theme .admin-action-row:hover {
   border-color: var(--color-carmin);
+  background: #18181c;
 }
 
 .admin-theme .admin-action-row--priority {
-  border-color: color-mix(in srgb, var(--color-statut-alerte) 50%, transparent);
+  border-color: color-mix(in srgb, var(--color-statut-danger) 45%, transparent);
   background: var(--admin-stat-bg-alert);
 }
 
 .admin-theme .admin-chart-panel {
-  border-radius: 14px;
+  border-radius: 16px;
   border: 1px solid var(--admin-border);
   background: var(--admin-panel-bg);
   padding: 1rem 1rem 0.5rem;

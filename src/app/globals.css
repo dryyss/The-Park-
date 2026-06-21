@@ -44,13 +44,13 @@
   --color-neon-orange: #ff9f43;
   --color-neon-vert: #5ed99a;
 
-  /* Surfaces admin — lisibilité données / chiffres */
-  --color-admin-shell: #1c2224;
-  --color-admin-panel: #252c2e;
-  --color-admin-stat: #2e3638;
-  --color-admin-border: #455052;
-  --color-admin-label: #a8b4b1;
-  --color-admin-value: #ffffff;
+  /* Surfaces admin — alignées maquettes .dc.html */
+  --color-admin-shell: #0e0e11;
+  --color-admin-panel: #141418;
+  --color-admin-stat: #1a1a1e;
+  --color-admin-border: #232328;
+  --color-admin-label: #8e8e98;
+  --color-admin-value: #f2efe9;
 
   /* Couleurs de rareté */
   --color-rarete-commune: #9ba3b2;
@@ -123,6 +123,62 @@ h3,
 }
 .animate-floaty {
   animation: floaty 5s ease-in-out infinite;
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-pop {
+  animation: pop 0.3s ease both;
+}
+@keyframes sheen {
+  0% {
+    transform: translateX(-130%) skewX(-18deg);
+  }
+  60%,
+  100% {
+    transform: translateX(240%) skewX(-18deg);
+  }
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  25% {
+    transform: rotate(2deg);
+  }
+  75% {
+    transform: rotate(-3deg);
+  }
+}
+.animate-shake {
+  animation: shake 2.6s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes revealCard {
+  from {
+    opacity: 0;
+    transform: translateY(30px) rotateY(40deg) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 @keyframes raritySwipe {
   0%,

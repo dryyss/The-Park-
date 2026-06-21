@@ -11,6 +11,7 @@ import { CardWantButton } from "@/components/cards/card-want-button";
 import { CardLikeButton } from "@/components/cards/card-like-button";
 import { getCardLikeMeta } from "@/server/card-like/card-like.service";
 import { avatarGradient } from "@/lib/avatars";
+import { conditionColor } from "@/lib/condition";
 
 export const dynamic = "force-dynamic";
 
@@ -192,41 +193,102 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
             <span className="rounded-full border border-charbon-500 bg-charbon-800 px-2.5 py-1 text-[12px] font-extrabold text-carmin">
               {card.listings.length}
             </span>
+            <Link
+              href={`/marketplace/carte/${card.slug}`}
+              className="ml-auto text-[11.5px] font-bold tracking-[1px] text-texte-dim uppercase transition hover:text-carmin"
+            >
+              {t("listingsViewAll")} →
+            </Link>
           </div>
+
+          {/* En-tête colonnes */}
+          <div className="mb-2 hidden grid-cols-[1fr_90px_100px_80px_110px_120px] gap-3 px-4 text-[9.5px] font-extrabold tracking-[1.5px] text-texte-faible uppercase sm:grid">
+            <span>{t("listingsColSeller")}</span>
+            <span>{t("listingsColLang")}</span>
+            <span>{t("listingsColCondition")}</span>
+            <span>{t("listingsColProvenance")}</span>
+            <span>{t("listingsColVersion")}</span>
+            <span className="text-right">{t("listingsColPrice")}</span>
+          </div>
+
           <div className="flex flex-col gap-2">
-            {card.listings.map((l) => {
+            {card.listings.map((l, idx) => {
               const isOwn = viewer?.id === l.sellerId;
-              const rowClass =
-                "flex items-center gap-3.5 rounded-[13px] border border-charbon-500 bg-charbon-800 px-4 py-3 transition hover:border-carmin";
+              const rowBase =
+                "grid grid-cols-1 gap-2 rounded-[13px] border border-charbon-500 bg-charbon-800 px-4 py-3.5 transition hover:border-carmin sm:grid-cols-[1fr_90px_100px_80px_110px_120px] sm:items-center sm:gap-3";
               const inner = (
                 <>
-                  <span
-                    className="font-display flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] text-white"
-                    style={{ background: avatarGradient(l.sellerInitial) }}
-                  >
-                    {l.sellerInitial}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[13px] font-extrabold text-blanc-casse">
-                      {isOwn ? t("ownListingYou") : l.sellerName}{" "}
-                      {!isOwn && <span className="text-[11px] text-or">★ {l.rating}</span>}
-                    </div>
-                    <div className="text-[11px] font-bold text-texte-dim">
-                      {l.versionLabel} · {tc(l.conditionCode)}
+                  {/* Vendeur */}
+                  <div className="flex items-center gap-2.5">
+                    <span
+                      className="font-display flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] text-white"
+                      style={{ background: avatarGradient(l.sellerInitial) }}
+                    >
+                      {l.sellerInitial}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="truncate text-[13px] font-extrabold text-blanc-casse">
+                          {isOwn ? t("ownListingYou") : l.sellerName}
+                        </span>
+                        {!isOwn && <span className="text-[11px] font-bold text-or">★ {l.rating}</span>}
+                        {idx === 0 && (
+                          <span className="rounded-md bg-statut-succes/15 px-1.5 py-0.5 text-[8.5px] font-extrabold tracking-[1px] text-statut-succes uppercase">
+                            {t("listingsBestPrice")}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <div className="font-display text-[19px] text-blanc-casse">{l.price}</div>
-                  <span
-                    className={`font-display -skew-x-3 rounded-lg px-3.5 py-2 text-[11px] tracking-[1px] uppercase ${
-                      isOwn ? "border border-or bg-or/10 text-or" : "bg-carmin text-white"
-                    }`}
-                  >
-                    {isOwn ? t("actionManage") : t("contact")}
-                  </span>
+
+                  {/* Langue */}
+                  <div className="flex items-center gap-1 sm:justify-start">
+                    <span className="text-[9px] font-bold text-texte-faible uppercase sm:hidden">{t("listingsColLang")} : </span>
+                    <span className="rounded border border-charbon-500 px-2 py-0.5 font-mono text-[10px] font-extrabold text-texte-doux">
+                      {l.language}
+                    </span>
+                  </div>
+
+                  {/* État */}
+                  <div className="flex items-center gap-1">
+                    <span className="text-[9px] font-bold text-texte-faible uppercase sm:hidden">{t("listingsColCondition")} : </span>
+                    <span className="rounded-md px-2 py-0.5 text-[10.5px] font-extrabold tracking-[0.5px] uppercase"
+                      style={{ color: conditionColor(l.conditionCode), background: `${conditionColor(l.conditionCode)}18` }}>
+                      {tc(l.conditionCode)}
+                    </span>
+                  </div>
+
+                  {/* Provenance */}
+                  <div className="flex items-center gap-1">
+                    <span className="text-[9px] font-bold text-texte-faible uppercase sm:hidden">{t("listingsColProvenance")} : </span>
+                    <span className="font-mono text-[11px] font-extrabold text-texte-dim">
+                      {l.sellerCountry}
+                    </span>
+                  </div>
+
+                  {/* Version */}
+                  <div className="flex items-center gap-1">
+                    <span className="text-[9px] font-bold text-texte-faible uppercase sm:hidden">{t("listingsColVersion")} : </span>
+                    <span className="rounded bg-charbon-600 px-2 py-0.5 text-[10px] font-bold text-texte-doux">
+                      {l.versionLabel}
+                    </span>
+                  </div>
+
+                  {/* Prix + CTA */}
+                  <div className="flex items-center justify-between gap-2 sm:justify-end">
+                    <span className="font-display text-[19px] leading-none text-blanc-casse">{l.price}</span>
+                    <span
+                      className={`font-display -skew-x-3 rounded-lg px-3 py-2 text-[10.5px] tracking-[1px] uppercase ${
+                        isOwn ? "border border-or bg-or/10 text-or" : "bg-carmin text-white"
+                      }`}
+                    >
+                      {isOwn ? t("actionManage") : t("contact")}
+                    </span>
+                  </div>
                 </>
               );
               return isOwn ? (
-                <Link key={l.id} href="/dashboard" className={rowClass}>
+                <Link key={l.id} href="/dashboard" className={rowBase}>
                   {inner}
                 </Link>
               ) : (
@@ -234,7 +296,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
                   key={l.id}
                   sellerSlug={l.sellerSlug}
                   locale={locale}
-                  className={`${rowClass} w-full text-left`}
+                  className={`${rowBase} w-full text-left`}
                 >
                   {inner}
                 </ContactSellerButton>

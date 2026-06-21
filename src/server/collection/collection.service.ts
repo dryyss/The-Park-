@@ -184,7 +184,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     const r = cards.find((x) => x.rarity.code === code)?.rarity;
     return {
       code,
-      label: r?.label ?? meta.label,
+      label: meta.label ?? r?.label,
       glyph: r?.symbol ?? meta.glyph,
       color: r?.color ?? meta.color,
       owned: ownedInRarity,

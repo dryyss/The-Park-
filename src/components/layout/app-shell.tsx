@@ -9,8 +9,9 @@ import { MobileTabs } from "@/components/layout/mobile-tabs";
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isStaffConsole = pathname.startsWith("/admin");
+  const isImmersive = pathname.startsWith("/onboarding") || pathname.startsWith("/securite/option-envoi");
 
-  if (isStaffConsole) {
+  if (isStaffConsole || isImmersive) {
     return <>{children}</>;
   }
 

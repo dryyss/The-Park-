@@ -9,6 +9,7 @@ import {
   fulfillMarketplaceCheckoutFromStripeSession,
   getMarketplaceRecap,
   startMarketplaceCartStripeCheckout,
+  startAndFulfillMarketplaceCheckoutWithWallet,
 } from "@/server/marketplace-cart/marketplace-cart-checkout.service";
 
 export type MarketplaceCheckoutActionError =
@@ -19,6 +20,7 @@ export type MarketplaceCheckoutActionError =
   | "STRIPE_MIN_AMOUNT"
   | "LISTING_UNAVAILABLE"
   | "ALREADY_SOLD"
+  | "INSUFFICIENT_WALLET"
   | "UNKNOWN";
 
 const startSchema = z.object({
@@ -51,6 +53,7 @@ export async function startMarketplaceStripeCheckoutAction(
 
     revalidatePath("/marketplace");
     revalidatePath("/marketplace/panier");
+    revalidatePath("/panier");
     revalidateTag("listings");
 
     return { ok: true, url };
@@ -73,6 +76,7 @@ export async function confirmMarketplaceCheckoutAction(
     await fulfillMarketplaceCheckoutFromStripeSession(sessionId);
     revalidatePath("/marketplace");
     revalidatePath("/marketplace/panier");
+    revalidatePath("/panier");
     revalidatePath("/portefeuille");
     revalidateTag("listings");
     return { ok: true };
@@ -96,6 +100,42 @@ export async function cancelMarketplaceCheckoutAction(input: unknown): Promise<{
   } catch (err) {
     console.error("[marketplace-checkout:cancel]", err);
     return { ok: false };
+  }
+}
+
+export async function payMarketplaceWithWalletAction(
+  input: unknown,
+): Promise<{ ok: true; checkoutId: string; locale: string } | { ok: false; error: MarketplaceCheckoutActionError }> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  const parsed = startSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+
+  try {
+    const recap = await getMarketplaceRecap(viewer.id, parsed.data.cartItemIds);
+    if (recap.lines.length === 0) return { ok: false, error: "EMPTY_CART" };
+
+    const { checkoutId } = await startAndFulfillMarketplaceCheckoutWithWallet({
+      buyerId: viewer.id,
+      cartItemIds: parsed.data.cartItemIds,
+    });
+
+    revalidatePath("/marketplace");
+    revalidatePath("/marketplace/panier");
+    revalidatePath("/panier");
+    revalidatePath("/portefeuille");
+    revalidateTag("listings");
+
+    return { ok: true, checkoutId, locale: parsed.data.locale };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "UNKNOWN";
+    if (message === "EMPTY_CART") return { ok: false, error: "EMPTY_CART" };
+    if (message === "LISTING_UNAVAILABLE") return { ok: false, error: "LISTING_UNAVAILABLE" };
+    if (message === "ALREADY_SOLD") return { ok: false, error: "ALREADY_SOLD" };
+    if (message === "INSUFFICIENT_WALLET") return { ok: false, error: "INSUFFICIENT_WALLET" };
+    console.error("[marketplace-checkout:wallet]", err);
+    return { ok: false, error: "UNKNOWN" };
   }
 }
 

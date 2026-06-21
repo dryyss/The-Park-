@@ -486,7 +486,7 @@ model Rarity {
   cards     Card[]
 }
 
-/// Type de version (paramétrable par l'admin) : Standard, Unique, Promotionnelle, Carte spéciale, Collaboration, Signé…
+/// Type de version (paramétrable par l'admin) : Standard, Unique, Promotionnelle, Spécial, Collaboration, Signé…
 model VersionType {
   id        String        @id @default(cuid())
   code      String        @unique

@@ -100,7 +100,7 @@ export function AddToCartButton({ productId, inStock, stock }: AddToCartButtonPr
       {added && !error && (
         <p className="flex items-center gap-2 text-[12.5px] font-extrabold text-neon-vert">
           ✓ {t("added")}
-          <Link href="/boutique/panier" className="text-or underline underline-offset-2 hover:text-or-clair">
+          <Link href="/panier" className="text-or underline underline-offset-2 hover:text-or-clair">
             {t("viewCart")}
           </Link>
         </p>

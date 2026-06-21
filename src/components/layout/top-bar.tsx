@@ -53,6 +53,7 @@ export function TopBar() {
   // État live de la top-bar (panier / notifs / messages), rafraîchi à chaque navigation.
   const [live, setLive] = useState({
     cart: 0,
+    marketplaceCart: 0,
     notifications: 0,
     messages: 0,
     staffDashboardHref: null as string | null,
@@ -66,6 +67,7 @@ export function TopBar() {
         if (active && data) {
           setLive({
             cart: Number(data.cart) || 0,
+            marketplaceCart: Number(data.marketplaceCart) || 0,
             notifications: Number(data.notifications) || 0,
             messages: Number(data.messages) || 0,
             staffDashboardHref: typeof data.staffDashboardHref === "string" ? data.staffDashboardHref : null,
@@ -79,7 +81,8 @@ export function TopBar() {
     };
   }, [pathname]);
 
-  const cartBadge = live.cart > 0 ? (live.cart > 99 ? "99+" : String(live.cart)) : undefined;
+  const totalCartCount = live.cart + live.marketplaceCart;
+  const cartBadge = totalCartCount > 0 ? (totalCartCount > 99 ? "99+" : String(totalCartCount)) : undefined;
 
   return (
     <header className="sticky top-0 z-40 flex h-[66px] items-center gap-7 border-b border-charbon-500 bg-charbon/[0.86] px-5 backdrop-blur-md md:px-7">
@@ -161,7 +164,7 @@ export function TopBar() {
             </svg>
           </IconButton>
         </span>
-        <IconButton href="/boutique/panier" title={t("cart")} badge={cartBadge}>
+        <IconButton href="/panier" title={t("cart")} badge={cartBadge}>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="9" cy="21" r="1" />
             <circle cx="20" cy="21" r="1" />

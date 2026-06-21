@@ -266,13 +266,13 @@ export interface CardDetail {
     userEditionLabel: string | null;
     editionLabel: string | null;
     isFirstEdition: boolean;
-    // Détail par état possédé + annonce active du viewer pour cet état (le cas échéant).
+    // Détail par état possédé + annonces actives du viewer pour cet état.
     conditions: {
       condition: string;
       quantity: number;
       reservedQuantity: number;
       available: number;
-      listing: { id: string; type: string; price: string | null } | null;
+      listings: { id: string; type: string; price: string | null }[];
       isGraded: boolean;
       isSigned: boolean;
       signatureAuthor: string | null;
@@ -287,9 +287,11 @@ export interface CardDetail {
     sellerName: string;
     sellerSlug: string;
     sellerInitial: string;
+    sellerCountry: string;
     rating: string;
     versionLabel: string;
     conditionCode: string;
+    language: string;
   }[];
 }
 
@@ -314,11 +316,11 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
       select: { number: true, slug: true },
     }),
     prisma.listing.findMany({
-      where: { status: "ACTIVE", variant: { cardId: card.id } },
-      orderBy: { createdAt: "desc" },
-      take: 6,
+      where: { status: "ACTIVE", variant: { cardId: card.id }, type: { not: "WANT" } },
+      orderBy: { price: "asc" },
+      take: 10,
       include: {
-        seller: { select: { displayName: true, slug: true, ratingAvg: true } },
+        seller: { select: { displayName: true, slug: true, ratingAvg: true, country: true } },
         variant: { include: { versionType: true } },
       },
     }),
@@ -366,13 +368,13 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     ownedVariants.filter((o) => o.quantity > 0).map((o) => [`${o.variantId}:${o.condition}`, o.id]),
   );
 
-  // Annonce active du viewer par (variante, état) — pour signaler ce qui est déjà listé.
-  const viewerListingByKey = new Map<string, { id: string; type: string; price: string | null }>();
+  // Annonces actives du viewer par (variante, état) — plusieurs annonces possibles pour un même état.
+  const viewerListingsByKey = new Map<string, { id: string; type: string; price: string | null }[]>();
   for (const l of viewerListings) {
     const key = `${l.variantId}:${l.condition}`;
-    if (!viewerListingByKey.has(key)) {
-      viewerListingByKey.set(key, { id: l.id, type: l.type, price: l.price != null ? formatPrice(l.price) : null });
-    }
+    const list = viewerListingsByKey.get(key) ?? [];
+    list.push({ id: l.id, type: l.type, price: l.price != null ? formatPrice(l.price) : null });
+    viewerListingsByKey.set(key, list);
   }
 
   // Détail des états possédés par variante.
@@ -458,7 +460,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
             quantity: c.quantity,
             reservedQuantity: c.reservedQuantity,
             available: c.quantity - c.reservedQuantity,
-            listing: viewerListingByKey.get(`${v.id}:${c.condition}`) ?? null,
+            listings: viewerListingsByKey.get(`${v.id}:${c.condition}`) ?? [],
             isGraded: c.isGraded,
             isSigned: c.isSigned,
             signatureAuthor: c.signatureAuthor,
@@ -489,9 +491,11 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
       sellerName: l.seller.displayName,
       sellerSlug: l.seller.slug,
       sellerInitial: l.seller.displayName.charAt(0).toUpperCase(),
+      sellerCountry: l.seller.country ?? "FR",
       rating: l.seller.ratingAvg.toFixed(1).replace(".", ","),
       versionLabel: l.variant.versionType.label,
       conditionCode: l.condition,
+      language: l.variant.language,
     })),
   };
 }

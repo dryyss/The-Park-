@@ -54,7 +54,7 @@ export function AddToMarketplaceCartButton({
     <div className="flex flex-col items-stretch gap-1.5">
       {showLoginGate && <LoginGatePrompt compact messageKey="loginGateBuy" />}
       {isInCart ? (
-        <Link href="/marketplace/panier" className={`text-center ${addedClassName}`}>
+        <Link href="/panier" className={`text-center ${addedClassName}`}>
           {t("actionAddedToCart")}
         </Link>
       ) : (

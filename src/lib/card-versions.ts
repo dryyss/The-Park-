@@ -3,7 +3,7 @@ export const VERSION_TYPE_DEFINITIONS = [
   { code: "standard", label: "Standard", isFoil: false, sortOrder: 0 },
   { code: "unique", label: "Unique", isFoil: false, sortOrder: 1 },
   { code: "promotional", label: "Promotionnelle", isFoil: false, sortOrder: 2 },
-  { code: "special", label: "Carte spéciale", isFoil: false, sortOrder: 3 },
+  { code: "special", label: "Spécial", isFoil: false, sortOrder: 3 },
   { code: "collaboration", label: "Collaboration", isFoil: false, sortOrder: 4 },
   { code: "signed", label: "Signé", isFoil: false, sortOrder: 5 },
 ] as const;

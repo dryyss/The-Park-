@@ -11,7 +11,7 @@ export const META = {
   g: { glyph: "✸", color: "#E8B23A", label: "Gold", tilt: 8, holo: "0.85" },
   unique: { glyph: "✪", color: "#6FE3D0", label: "Unique", tilt: 9, holo: "0.9" },
   promotional: { glyph: "★", color: "#FF6B9D", label: "Promotionnelle", tilt: 9, holo: "0.88" },
-  special: { glyph: "◇", color: "#A78BFA", label: "Carte spéciale", tilt: 9, holo: "0.88" },
+  special: { glyph: "◇", color: "#A78BFA", label: "Spécial", tilt: 9, holo: "0.88" },
   collaboration: { glyph: "✧", color: "#34D399", label: "Collaboration", tilt: 9, holo: "0.9" },
   signed: { glyph: "✒", color: "#F59E0B", label: "Signé", tilt: 9, holo: "0.92" },
 };
@@ -916,7 +916,7 @@ export const CARDS = RAW.map((r) => ({
 
 /**
  * Versions optionnelles par numéro de carte (en plus de Standard).
- * unique · promotionnelle · carte spéciale · collaboration · signé
+ * unique · promotionnelle · spécial · collaboration · signé
  */
 export const CARD_EXTRA_VERSIONS = {
   0: ["promotional", "special", "signed"],

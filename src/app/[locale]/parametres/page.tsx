@@ -22,7 +22,7 @@ export default async function ParametresPage({ params }: { params: Promise<{ loc
   if (!account) return null;
 
   return (
-    <main className="mx-auto max-w-[760px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[1080px] px-7 pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="設定" />
       <div className="mt-8">
         <SettingsForm

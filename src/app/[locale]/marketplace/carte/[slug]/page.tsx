@@ -5,6 +5,7 @@ import { HoloCard } from "@/components/cards/holo-card";
 import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { AddToMarketplaceCartButton } from "@/components/marketplace/add-to-marketplace-cart-button";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
+import { OwnListingRowActions } from "@/components/marketplace/own-listing-row-actions";
 import { getCardSellListings } from "@/server/marketplace/marketplace.service";
 import { getViewerUser } from "@/server/user/user.service";
 import { getMarketplaceCartListingIds } from "@/server/marketplace-cart/marketplace-cart.service";
@@ -108,7 +109,7 @@ export default async function CardSellersPage({
       ) : (
         <div className="mt-8 flex flex-col gap-3">
           {/* Header colonnes (desktop) */}
-          <div className="hidden grid-cols-[1fr_120px_120px_120px_160px] gap-4 rounded-xl border border-charbon-600 bg-charbon-800/60 px-5 py-3 text-[10px] font-extrabold tracking-[1.5px] text-texte-faible uppercase sm:grid">
+          <div className="hidden grid-cols-[1fr_120px_120px_120px_200px] gap-4 rounded-xl border border-charbon-600 bg-charbon-800/60 px-5 py-3 text-[10px] font-extrabold tracking-[1.5px] text-texte-faible uppercase sm:grid">
             <span>{t("sellersColSeller")}</span>
             <span>{t("sellersColCondition")}</span>
             <span>{t("sellersColVersion")}</span>
@@ -119,7 +120,7 @@ export default async function CardSellersPage({
           {card.sellers.map((s, idx) => (
             <div
               key={s.listingId}
-              className="grid grid-cols-1 gap-3 rounded-2xl border border-charbon-500 bg-charbon-800 px-5 py-4 transition hover:border-charbon-400 sm:grid-cols-[1fr_120px_120px_120px_160px] sm:items-center sm:gap-4"
+              className="grid grid-cols-1 gap-3 rounded-2xl border border-charbon-500 bg-charbon-800 px-5 py-4 transition hover:border-charbon-400 sm:grid-cols-[1fr_120px_120px_120px_200px] sm:items-center sm:gap-4"
             >
               {/* Vendeur */}
               <Link
@@ -133,13 +134,20 @@ export default async function CardSellersPage({
                   {s.seller.initial}
                 </span>
                 <div>
-                  <div className="text-[13px] font-extrabold text-blanc-casse">{s.seller.name}</div>
+                  <div className="flex items-center gap-1.5 text-[13px] font-extrabold text-blanc-casse">
+                    {s.seller.name}
+                    {s.quantity > 1 && (
+                      <span className="rounded bg-charbon-600 px-1.5 py-0.5 text-[10px] font-extrabold text-texte-dim">
+                        ×{s.quantity}
+                      </span>
+                    )}
+                  </div>
                   <div className="text-[11px] font-bold text-texte-dim">
                     ★ {s.seller.rating}
                     <span className="ml-1 text-texte-faible">({s.seller.reviews})</span>
                   </div>
                 </div>
-                {idx === 0 && (
+                {idx === 0 && s.price > 0 && (
                   <span className="ml-auto rounded-md bg-statut-succes/15 px-2 py-0.5 text-[9px] font-extrabold tracking-[1px] text-statut-succes uppercase sm:hidden">
                     {t("sellersLowestBadge")}
                   </span>
@@ -168,33 +176,48 @@ export default async function CardSellersPage({
               {/* Prix */}
               <div className="flex items-center gap-1.5 sm:justify-end">
                 <span className="text-[10px] font-bold text-texte-faible uppercase sm:hidden">{t("sellersColPrice")} : </span>
-                <span className="font-display text-[22px] leading-none text-blanc-casse">
-                  {s.priceLabel}
-                  {idx === 0 && (
-                    <span className="ml-2 hidden rounded-md bg-statut-succes/15 px-2 py-0.5 text-[9px] font-extrabold tracking-[1px] text-statut-succes uppercase sm:inline">
-                      {t("sellersLowestBadge")}
-                    </span>
-                  )}
-                </span>
+                {s.price === 0 ? (
+                  <span className="text-[14px] font-bold text-texte-dim">{t("sellersTradeLabel")}</span>
+                ) : (
+                  <span className="font-display text-[22px] leading-none text-blanc-casse">
+                    {s.priceLabel}
+                    {idx === 0 && (
+                      <span className="ml-2 hidden rounded-md bg-statut-succes/15 px-2 py-0.5 text-[9px] font-extrabold tracking-[1px] text-statut-succes uppercase sm:inline">
+                        {t("sellersLowestBadge")}
+                      </span>
+                    )}
+                  </span>
+                )}
               </div>
 
               {/* Action */}
-              <div className="sm:flex sm:justify-end">
-                {s.purchasable ? (
-                  <AddToMarketplaceCartButton
-                    listingId={s.listingId}
-                    inCart={cartSet.has(s.listingId)}
-                  />
-                ) : (
-                  <ContactSellerButton
-                    sellerSlug={s.seller.slug}
-                    locale={locale}
-                    className="font-display -skew-x-3 rounded-lg border-[1.5px] border-carmin bg-carmin px-4 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap text-white uppercase transition hover:bg-carmin-alt"
-                  >
-                    {t("actionContact")}
-                  </ContactSellerButton>
-                )}
-              </div>
+              {(() => {
+                const isOwn = viewer?.id === s.sellerId;
+                if (isOwn) {
+                  return (
+                    <div className="sm:flex sm:justify-end">
+                      <OwnListingRowActions listingId={s.listingId} />
+                    </div>
+                  );
+                }
+                return (
+                  <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                    {s.purchasable && (
+                      <AddToMarketplaceCartButton
+                        listingId={s.listingId}
+                        inCart={cartSet.has(s.listingId)}
+                      />
+                    )}
+                    <ContactSellerButton
+                      sellerSlug={s.seller.slug}
+                      locale={locale}
+                      className="font-display -skew-x-3 rounded-lg border-[1.5px] border-carmin bg-carmin px-4 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap text-white uppercase transition hover:bg-carmin-alt"
+                    >
+                      {t("actionContact")}
+                    </ContactSellerButton>
+                  </div>
+                );
+              })()}
             </div>
           ))}
         </div>

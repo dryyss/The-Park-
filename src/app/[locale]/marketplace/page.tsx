@@ -98,7 +98,7 @@ export default async function MarketplacePage({
           </div>
           {marketParams.intent === "sell" && viewer && (
             <Link
-              href="/marketplace/panier"
+              href="/panier"
               className="font-display relative -skew-x-3 rounded-lg border-[1.5px] border-charbon-400 bg-charbon-800 px-5 py-2.5 text-[12.5px] tracking-[1.5px] whitespace-nowrap text-blanc-casse uppercase transition hover:border-carmin"
             >
               {t("viewCart")}

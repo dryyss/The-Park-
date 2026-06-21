@@ -3,26 +3,48 @@
 import { useState, useTransition } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { conditionColor } from "@/lib/condition";
-import { startMarketplaceStripeCheckoutAction } from "@/server/marketplace-cart/marketplace-cart-checkout.actions";
+import {
+  startMarketplaceStripeCheckoutAction,
+  payMarketplaceWithWalletAction,
+} from "@/server/marketplace-cart/marketplace-cart-checkout.actions";
 import type { MarketplaceRecapSummary } from "@/server/marketplace-cart/marketplace-cart-checkout.service";
+import { formatPrice } from "@/lib/format";
 
 export function MarketplaceRecapClient({
   recap,
   locale,
   cartItemIds,
+  walletBalance,
 }: {
   recap: MarketplaceRecapSummary;
   locale: string;
   cartItemIds?: string[];
+  walletBalance: number;
 }) {
   const t = useTranslations("marketplaceCart");
   const tCond = useTranslations("conditions");
+  const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  function handlePay() {
+  const canPayWithWallet = walletBalance >= recap.subtotalRaw;
+
+  function handlePayWithWallet() {
+    setError(null);
+    startTransition(async () => {
+      const result = await payMarketplaceWithWalletAction({ locale, cartItemIds });
+      if (result.ok) {
+        router.push(`/marketplace/panier/confirmation/${result.checkoutId}?success=1`);
+      } else {
+        setError(result.error);
+      }
+    });
+  }
+
+  function handlePayWithStripe() {
     setError(null);
     startTransition(async () => {
       const result = await startMarketplaceStripeCheckoutAction({ locale, cartItemIds });
@@ -71,25 +93,56 @@ export function MarketplaceRecapClient({
 
       <div className="h-fit rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
         <h3 className="font-display text-[16px] tracking-wide text-blanc-casse uppercase">{t("recapTitle")}</h3>
-        <p className="mt-2 text-[11px] font-bold text-texte-faible">{t("stripeHint")}</p>
+        <p className="mt-2 text-[11px] font-bold text-texte-faible">
+          {canPayWithWallet ? t("walletHint") : t("stripeHint")}
+        </p>
         <div className="mt-4 flex flex-col gap-2 text-[13px] font-bold">
           <div className="flex justify-between text-texte-dim">
             <span>{t("subtotal")}</span>
             <span>{recap.subtotal}</span>
           </div>
+          {canPayWithWallet && (
+            <div className="flex justify-between text-texte-dim">
+              <span>{t("walletBalance")}</span>
+              <span className="text-neon-vert">{formatPrice(walletBalance)}</span>
+            </div>
+          )}
           <div className="mt-2 flex justify-between border-t border-charbon-500 pt-3 text-blanc-casse">
             <span className="font-extrabold">{t("total")}</span>
             <span className="font-display text-[20px] text-carmin">{recap.subtotal}</span>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={handlePay}
-          disabled={pending}
-          className="font-display mt-5 flex w-full items-center justify-center rounded-[12px] bg-carmin py-3.5 text-[14px] tracking-[1.5px] text-white uppercase shadow-[3px_3px_0_rgba(0,0,0,0.4)] transition hover:bg-carmin-alt disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {pending ? t("redirectingStripe") : t("payWithStripe")}
-        </button>
+
+        {canPayWithWallet ? (
+          <>
+            <button
+              type="button"
+              onClick={handlePayWithWallet}
+              disabled={pending}
+              className="font-display mt-5 flex w-full items-center justify-center rounded-[12px] bg-statut-succes py-3.5 text-[14px] tracking-[1.5px] text-charbon uppercase shadow-[3px_3px_0_rgba(0,0,0,0.4)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {pending ? t("processingWallet") : t("payWithWallet", { amount: formatPrice(recap.subtotalRaw) })}
+            </button>
+            <button
+              type="button"
+              onClick={handlePayWithStripe}
+              disabled={pending}
+              className="font-display mt-3 flex w-full items-center justify-center rounded-[12px] border border-charbon-500 py-3 text-[12px] tracking-[1px] text-texte-dim uppercase transition hover:text-blanc-casse disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {t("payWithStripe")}
+            </button>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={handlePayWithStripe}
+            disabled={pending}
+            className="font-display mt-5 flex w-full items-center justify-center rounded-[12px] bg-carmin py-3.5 text-[14px] tracking-[1.5px] text-white uppercase shadow-[3px_3px_0_rgba(0,0,0,0.4)] transition hover:bg-carmin-alt disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {pending ? t("redirectingStripe") : t("payWithStripe")}
+          </button>
+        )}
+
         {error && (
           <p className="mt-3 text-center text-[11px] font-bold text-neon-rouge">
             {t(`checkoutError.${error}`)}
