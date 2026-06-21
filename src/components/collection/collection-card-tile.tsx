@@ -72,16 +72,16 @@ export function CollectionCardTile({
           isAuthenticated={isAuthenticated}
           overlay
         />
-        {showControls && card.standardVariantId && (
-          <div className={`absolute bottom-0 inset-x-0 z-10 rounded-b-xl bg-charbon-900/90 px-3 py-2.5 backdrop-blur-sm ${missing ? "opacity-70" : ""}`}>
-            <CollectionQuantityControls
-              cardNumber={card.number}
-              quantity={card.quantity}
-              isAuthenticated={isAuthenticated}
-            />
-          </div>
-        )}
       </div>
+      {showControls && card.standardVariantId && (
+        <div className={`mt-2 ${missing ? "opacity-70" : ""}`}>
+          <CollectionQuantityControls
+            cardNumber={card.number}
+            quantity={card.quantity}
+            isAuthenticated={isAuthenticated}
+          />
+        </div>
+      )}
       <div className={`mt-2 flex items-center justify-between px-0.5 ${missing ? "opacity-55" : ""}`}>
         <div className="flex items-center gap-1.5 text-[11px] font-extrabold text-texte-dim">
           <span style={{ color: card.color }}>{card.glyph}</span>
