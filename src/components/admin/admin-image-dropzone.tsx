@@ -2,7 +2,6 @@
 
 import { useRef, useState, useTransition, type DragEvent } from "react";
 import { useTranslations } from "next-intl";
-import { upload as uploadToBlob } from "@vercel/blob/client";
 import type { AdminImageUploadMode } from "@/lib/admin-image-upload.types";
 
 type UploadScope = "catalog" | "shop";
@@ -25,20 +24,6 @@ function validateFile(file: File): string | null {
   if (file.size > MAX_BYTES) return "FILE_TOO_LARGE";
   if (!ALLOWED_TYPES.includes(file.type.toLowerCase())) return "INVALID_TYPE";
   return null;
-}
-
-function blobPathname(file: File): string {
-  const base =
-    file.name
-      .replace(/\.[^.]+$/, "")
-      .normalize("NFD")
-      .replace(/\p{M}/gu, "")
-      .replace(/[^a-zA-Z0-9_-]+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "")
-      .slice(0, 60) || "image";
-  const ext = file.name.includes(".") ? (file.name.split(".").pop()?.toLowerCase() ?? "jpg") : "jpg";
-  return `admin/${base}-${Date.now()}.${ext}`;
 }
 
 export function AdminImageDropzone({
@@ -86,26 +71,6 @@ export function AdminImageDropzone({
     });
   }
 
-  function uploadBlob(file: File) {
-    startTransition(async () => {
-      try {
-        const result = await uploadToBlob(blobPathname(file), file, {
-          access: "public",
-          handleUploadUrl: "/api/admin/upload-image",
-          clientPayload: JSON.stringify({ scope }),
-        });
-        onUploaded(result.url);
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "UNKNOWN";
-        if (msg.toLowerCase().includes("token") || msg.includes("STORAGE")) {
-          setError(t("uploadErrorStorage"));
-        } else {
-          setError(mapUploadError(t, msg.includes(" ") ? "UNKNOWN" : msg));
-        }
-      }
-    });
-  }
-
   function upload(file: File) {
     if (isDisabled) return;
     setError(null);
@@ -116,11 +81,7 @@ export function AdminImageDropzone({
       return;
     }
 
-    if (uploadMode === "blob") {
-      uploadBlob(file);
-      return;
-    }
-    if (uploadMode === "local") {
+    if (uploadMode === "blob" || uploadMode === "local") {
       uploadLocal(file);
     }
   }
