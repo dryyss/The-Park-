@@ -311,12 +311,25 @@ function NewCardForm({
   const horsSerie = isHorsSerieSeasonCode(seasonCode);
 
   function submit(fd: FormData) {
+    const cardNumber = num(fd, "number");
+    const cardName = str(fd, "name");
+
+    if (cardNumber === undefined) {
+      // setError via run won't work before run starts, so show directly via a fake failed run
+      run(() => Promise.resolve({ ok: false as const, error: "NUMBER_REQUIRED" }));
+      return;
+    }
+    if (!cardName) {
+      run(() => Promise.resolve({ ok: false as const, error: "VALIDATION" }));
+      return;
+    }
+
     run(
       () =>
         createCardAction({
           seasonId,
-          number: num(fd, "number"),
-          name: str(fd, "name"),
+          number: cardNumber,
+          name: cardName,
           rarityId: str(fd, "rarityId"),
           quoteValue: num(fd, "quoteValue") ?? 0,
           imageUrl: optStr(fd, "imageUrl"),
@@ -346,11 +359,11 @@ function NewCardForm({
       <h4 className="font-display text-[13px] tracking-wide text-or uppercase">{t("newCard")}</h4>
       <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <Field label={t("number")} hint={horsSerie ? t("numberHintHorsSerie") : t("numberHint")}>
-          <input name="number" type="number" min={0} required placeholder={horsSerie ? "1" : "0"} className={inputCls} />
+          <input name="number" type="number" min={0} defaultValue="" placeholder={horsSerie ? "ex: 1" : "ex: 80"} className={inputCls} />
         </Field>
-        <Field label={t("name")}><input name="name" required className={inputCls} /></Field>
+        <Field label={t("name")}><input name="name" placeholder={t("namePlaceholder")} className={inputCls} /></Field>
         <Field label={t("rarity")}>
-          <select name="rarityId" required className={inputCls}>
+          <select name="rarityId" className={inputCls}>
             {rarities.map((r) => (
               <option key={r.id} value={r.id} className="bg-charbon-800">{r.label}</option>
             ))}

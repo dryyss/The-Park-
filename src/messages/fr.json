@@ -1089,6 +1089,7 @@
       "title": "Gestion catalogue",
       "code": "Code",
       "name": "Nom",
+      "namePlaceholder": "ex : Toyota AE86 Trueno",
       "cards": "Cartes",
       "release": "Sortie",
       "save": "Enregistrer",

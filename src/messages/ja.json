@@ -1089,6 +1089,7 @@
       "title": "カタログ管理",
       "code": "コード",
       "name": "名称",
+      "namePlaceholder": "例: Toyota AE86 Trueno",
       "cards": "カード",
       "release": "発売",
       "save": "保存",
