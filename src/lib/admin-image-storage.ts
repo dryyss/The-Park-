@@ -2,7 +2,7 @@ import "server-only";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { put } from "@vercel/blob";
+import { put, BlobStoreNotFoundError, BlobStoreSuspendedError, BlobAccessError } from "@vercel/blob";
 import type { AdminImageUploadMode } from "@/lib/admin-image-upload.types";
 
 export type { AdminImageUploadMode };
@@ -94,10 +94,16 @@ export async function saveAdminImageFile(file: File): Promise<string> {
       const msg = err instanceof Error ? err.message : String(err);
       const status = (err as { status?: number })?.status ?? 0;
       console.error(`[blob-err] status=${status} ${msg.slice(0, 120)}`);
-      if (msg.toLowerCase().includes("token") || msg.toLowerCase().includes("unauthorized") || msg.toLowerCase().includes("forbidden") || status === 401 || status === 403) {
-        throw new Error("STORAGE_NOT_CONFIGURED");
-      }
-      throw new Error("UPLOAD_FAILED");
+      const isConfigError =
+        err instanceof BlobStoreNotFoundError ||
+        err instanceof BlobStoreSuspendedError ||
+        err instanceof BlobAccessError ||
+        msg.toLowerCase().includes("token") ||
+        msg.toLowerCase().includes("unauthorized") ||
+        msg.toLowerCase().includes("forbidden") ||
+        status === 401 ||
+        status === 403;
+      throw new Error(isConfigError ? "STORAGE_NOT_CONFIGURED" : "UPLOAD_FAILED");
     }
   }
 
