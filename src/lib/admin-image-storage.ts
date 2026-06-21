@@ -87,12 +87,14 @@ export async function saveAdminImageFile(file: File): Promise<string> {
         access: "public",
         contentType,
         addRandomSuffix: false,
+        token: process.env.BLOB_READ_WRITE_TOKEN,
       });
       return blob.url;
     } catch (err) {
-      const msg = err instanceof Error ? err.message.toLowerCase() : "";
-      console.error("[admin-upload] blob put failed", err);
-      if (msg.includes("token") || msg.includes("unauthorized") || msg.includes("forbidden")) {
+      const msg = err instanceof Error ? err.message : String(err);
+      const status = (err as { status?: number })?.status ?? 0;
+      console.error(`[blob-err] status=${status} ${msg.slice(0, 120)}`);
+      if (msg.toLowerCase().includes("token") || msg.toLowerCase().includes("unauthorized") || msg.toLowerCase().includes("forbidden") || status === 401 || status === 403) {
         throw new Error("STORAGE_NOT_CONFIGURED");
       }
       throw new Error("UPLOAD_FAILED");
