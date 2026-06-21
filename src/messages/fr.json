@@ -964,7 +964,14 @@
       "uploadErrorStorage": "Stockage images non configuré sur le serveur (Vercel Blob). Contacte l'administrateur.",
       "uploadErrorNetwork": "Connexion interrompue — réessaie.",
       "uploadErrorDetail": "Échec de l'envoi ({code}).",
-      "uploadError": "Échec de l'envoi."
+      "uploadError": "Échec de l'envoi.",
+      "dropzoneDisabled": "Upload indisponible — configure Vercel Blob",
+      "storageBannerTitle": "Stockage images non configuré",
+      "storageBannerBody": "Sur Vercel, les uploads admin passent par Vercel Blob. Sans ce stockage, seul le champ URL manuel fonctionne.",
+      "storageBannerStep1": "Ouvre le dashboard Vercel → projet The Park → onglet Storage.",
+      "storageBannerStep2": "Crée un store Blob (ou Connect) et lie-le à ce projet.",
+      "storageBannerStep3": "Redéploie — la variable BLOB_READ_WRITE_TOKEN sera injectée automatiquement.",
+      "storageBannerFallback": "En attendant, tu peux coller une URL d'image dans le champ texte sous la zone de glisser-déposer."
     },
     "filters": {
       "search": "Recherche",

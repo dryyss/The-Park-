@@ -20,6 +20,7 @@ import {
   deleteCardVariantAction,
 } from "@/server/admin/catalog.actions";
 import { AdminImageDropzone } from "@/components/admin/admin-image-dropzone";
+import type { AdminImageUploadMode } from "@/lib/admin-image-upload.types";
 import { AdminFilterBar, AdminFilterSelect, matchAdminSearch } from "@/components/admin/admin-filter-bar";
 import { isHorsSerieSeasonCode } from "@/lib/seasons";
 
@@ -38,10 +39,12 @@ export function AdminCatalogManager({
   seasons,
   rarities,
   versionTypes,
+  uploadMode,
 }: {
   seasons: AdminCatalogSeason[];
   rarities: AdminRarityOption[];
   versionTypes: AdminVersionTypeOption[];
+  uploadMode: AdminImageUploadMode;
 }) {
   const t = useTranslations("admin.catalog");
   const tFilters = useTranslations("admin.filters");
@@ -140,12 +143,12 @@ export function AdminCatalogManager({
           <SeasonHeader season={s} open={visibleOpenSeasons.has(s.id)} onToggle={() => toggleSeason(s.id)} />
           {visibleOpenSeasons.has(s.id) && (
             <div className="mt-5 flex flex-col gap-4">
-              <NewCardForm seasonId={s.id} seasonCode={s.code} rarities={rarities} />
+              <NewCardForm seasonId={s.id} seasonCode={s.code} rarities={rarities} uploadMode={uploadMode} />
               {s.cards.length === 0 ? (
                 <p className="text-[12px] font-bold text-texte-faible">{t("noCards")}</p>
               ) : (
                 s.cards.map((c) => (
-                  <CardEditor key={c.id} card={c} seasonCode={s.code} rarities={rarities} versionTypes={versionTypes} />
+                  <CardEditor key={c.id} card={c} seasonCode={s.code} rarities={rarities} versionTypes={versionTypes} uploadMode={uploadMode} />
                 ))
               )}
             </div>
@@ -284,10 +287,12 @@ function NewCardForm({
   seasonId,
   seasonCode,
   rarities,
+  uploadMode,
 }: {
   seasonId: string;
   seasonCode: string;
   rarities: AdminRarityOption[];
+  uploadMode: AdminImageUploadMode;
 }) {
   const t = useTranslations("admin.catalog");
   const [open, setOpen] = useState(false);
@@ -341,7 +346,7 @@ function NewCardForm({
         </Field>
         <Field label={t("quote")}><input name="quoteValue" type="number" step="0.01" defaultValue={0} className={inputCls} /></Field>
         <Field label={t("country")}><input name="country" maxLength={8} className={inputCls} /></Field>
-        <ImageUrlField className="sm:col-span-2 lg:col-span-3" />
+        <ImageUrlField uploadMode={uploadMode} className="sm:col-span-2 lg:col-span-3" />
         <Field label={t("description")} className="sm:col-span-2 lg:col-span-3">
           <textarea name="description" rows={3} className={`${inputCls} resize-none`} />
         </Field>
@@ -363,11 +368,13 @@ function CardEditor({
   seasonCode,
   rarities,
   versionTypes,
+  uploadMode,
 }: {
   card: AdminCardFull;
   seasonCode: string;
   rarities: AdminRarityOption[];
   versionTypes: AdminVersionTypeOption[];
+  uploadMode: AdminImageUploadMode;
 }) {
   const t = useTranslations("admin.catalog");
   const { pending, error, run } = useAction();
@@ -415,7 +422,7 @@ function CardEditor({
         <Field label={t("power")}><input name="powerCh" type="number" defaultValue={card.powerCh ?? ""} className={inputCls} /></Field>
         <Field label={t("weight")}><input name="weightKg" type="number" defaultValue={card.weightKg ?? ""} className={inputCls} /></Field>
         <Field label={t("country")}><input name="country" maxLength={8} defaultValue={card.country ?? ""} className={inputCls} /></Field>
-        <ImageUrlField key={`${card.id}-${card.imageUrl ?? ""}`} defaultValue={card.imageUrl ?? ""} className="sm:col-span-2 lg:col-span-4" />
+        <ImageUrlField uploadMode={uploadMode} key={`${card.id}-${card.imageUrl ?? ""}`} defaultValue={card.imageUrl ?? ""} className="sm:col-span-2 lg:col-span-4" />
         <Field label={t("description")} className="sm:col-span-2 lg:col-span-4">
           <textarea name="description" defaultValue={card.description ?? ""} rows={2} className={`${inputCls} resize-none`} />
         </Field>
@@ -537,7 +544,15 @@ function CardVariants({ card, versionTypes }: { card: AdminCardFull; versionType
 
 const inputCls = "w-full rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-[13px] text-blanc-casse outline-none focus:border-carmin";
 
-function ImageUrlField({ defaultValue = "", className }: { defaultValue?: string; className?: string }) {
+function ImageUrlField({
+  defaultValue = "",
+  className,
+  uploadMode,
+}: {
+  defaultValue?: string;
+  className?: string;
+  uploadMode: AdminImageUploadMode;
+}) {
   const t = useTranslations("admin.catalog");
   const [value, setValue] = useState(defaultValue);
   const [failed, setFailed] = useState(false);
@@ -549,6 +564,7 @@ function ImageUrlField({ defaultValue = "", className }: { defaultValue?: string
     <Field label={t("image")} hint={t("imageDropHint")} className={className}>
       <AdminImageDropzone
         scope="catalog"
+        uploadMode={uploadMode}
         compact
         onUploaded={(fileName) => {
           setValue(fileName);

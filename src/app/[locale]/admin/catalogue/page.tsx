@@ -5,6 +5,8 @@ import { requireModule } from "@/server/auth/admin-guard";
 import { getAdminCatalog, getAdminRarities, getAdminVersionTypes } from "@/server/admin/admin.mutations";
 import { PageHeader } from "@/components/common/page-header";
 import { AdminCatalogManager } from "@/components/admin/admin-catalog-manager";
+import { AdminStorageBanner } from "@/components/admin/admin-storage-banner";
+import { getAdminImageUploadMode } from "@/lib/admin-image-storage";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +26,7 @@ export default async function AdminCataloguePage({ params }: { params: Promise<{
     getAdminRarities(),
     getAdminVersionTypes(),
   ]);
+  const uploadMode = getAdminImageUploadMode();
 
   return (
     <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
@@ -33,8 +36,9 @@ export default async function AdminCataloguePage({ params }: { params: Promise<{
       <div className="mt-4">
         <PageHeader kicker={t("catalog.kicker")} title={t("catalog.title")} jp="カタログ" />
       </div>
+      <AdminStorageBanner uploadMode={uploadMode} />
       <div className="mt-8">
-        <AdminCatalogManager seasons={seasons} rarities={rarities} versionTypes={versionTypes} />
+        <AdminCatalogManager seasons={seasons} rarities={rarities} versionTypes={versionTypes} uploadMode={uploadMode} />
       </div>
     </main>
   );

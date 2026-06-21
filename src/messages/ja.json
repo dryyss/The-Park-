@@ -964,7 +964,14 @@
       "uploadErrorStorage": "サーバーに画像ストレージが設定されていません（Vercel Blob）。管理者に連絡してください。",
       "uploadErrorNetwork": "接続エラー — もう一度お試しください。",
       "uploadErrorDetail": "アップロード失敗 ({code})。",
-      "uploadError": "アップロードに失敗しました。"
+      "uploadError": "アップロードに失敗しました。",
+      "dropzoneDisabled": "アップロード不可 — Vercel Blob を設定してください",
+      "storageBannerTitle": "画像ストレージ未設定",
+      "storageBannerBody": "Vercel では管理画面のアップロードに Vercel Blob が必要です。未設定の場合は URL 手入力のみ可能です。",
+      "storageBannerStep1": "Vercel ダッシュボード → The Park プロジェクト → Storage タブを開く。",
+      "storageBannerStep2": "Blob ストアを作成（または Connect）し、このプロジェクトに接続。",
+      "storageBannerStep3": "再デプロイ — BLOB_READ_WRITE_TOKEN が自動注入されます。",
+      "storageBannerFallback": "それまでの間、ドロップゾーン下の URL 欄に画像リンクを貼り付けできます。"
     },
     "filters": {
       "search": "検索",

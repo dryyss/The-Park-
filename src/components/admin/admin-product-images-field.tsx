@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { cardImage } from "@/lib/rarity";
 import { AdminImageDropzone } from "@/components/admin/admin-image-dropzone";
+import type { AdminImageUploadMode } from "@/lib/admin-image-upload.types";
 
 const inputCls =
   "min-w-0 flex-1 rounded-md border border-charbon-500 bg-charbon-700/80 px-2 py-1.5 text-[12px] text-blanc-casse outline-none focus:border-or/60";
@@ -47,10 +48,12 @@ function ImagePreview({ url }: { url: string }) {
 export function AdminProductImagesField({
   images,
   onChange,
+  uploadMode,
   max = 12,
 }: {
   images: string[];
   onChange: (images: string[]) => void;
+  uploadMode: AdminImageUploadMode;
   max?: number;
 }) {
   const t = useTranslations("admin.shop");
@@ -97,6 +100,7 @@ export function AdminProductImagesField({
 
       <AdminImageDropzone
         scope="shop"
+        uploadMode={uploadMode}
         compact
         disabled={images.length >= max}
         onUploaded={(fileName) => {

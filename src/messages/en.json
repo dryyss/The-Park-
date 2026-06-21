@@ -964,7 +964,14 @@
       "uploadErrorStorage": "Image storage is not configured on the server (Vercel Blob). Contact the administrator.",
       "uploadErrorNetwork": "Connection failed — try again.",
       "uploadErrorDetail": "Upload failed ({code}).",
-      "uploadError": "Upload failed."
+      "uploadError": "Upload failed.",
+      "dropzoneDisabled": "Upload unavailable — configure Vercel Blob",
+      "storageBannerTitle": "Image storage not configured",
+      "storageBannerBody": "On Vercel, admin uploads use Vercel Blob. Without it, only the manual URL field works.",
+      "storageBannerStep1": "Open Vercel dashboard → The Park project → Storage tab.",
+      "storageBannerStep2": "Create a Blob store (or Connect) and link it to this project.",
+      "storageBannerStep3": "Redeploy — BLOB_READ_WRITE_TOKEN will be injected automatically.",
+      "storageBannerFallback": "Meanwhile, paste an image URL in the text field below the drop zone."
     },
     "filters": {
       "search": "Search",

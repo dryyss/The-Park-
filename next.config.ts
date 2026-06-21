@@ -6,7 +6,7 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const nextConfig: NextConfig = {
   // pg + l'adapter Prisma sont des modules Node (driver Postgres) : on les sort du bundle
   // pour que Turbopack ne tente pas de résoudre des built-ins Node (ex. `util/types`).
-  serverExternalPackages: ["pg", "@prisma/adapter-pg", "@prisma/client", "sharp"],
+  serverExternalPackages: ["pg", "@prisma/adapter-pg", "@prisma/client", "sharp", "@vercel/blob"],
 };
 
 export default withNextIntl(nextConfig);

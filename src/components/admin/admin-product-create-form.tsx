@@ -10,6 +10,8 @@ import {
   normalizeProductImages,
 } from "@/components/admin/admin-product-images-field";
 
+import type { AdminImageUploadMode } from "@/lib/admin-image-upload.types";
+
 const PRODUCT_TYPES = [
   "BOOSTER",
   "DISPLAY",
@@ -25,7 +27,7 @@ const inputCls =
 const textareaCls =
   "w-full resize-y rounded-lg border border-charbon-500 bg-charbon-700/80 px-3 py-2 text-[13px] leading-relaxed text-blanc-casse outline-none focus:border-or/60";
 
-export function AdminProductCreateForm() {
+export function AdminProductCreateForm({ uploadMode }: { uploadMode: AdminImageUploadMode }) {
   const t = useTranslations("admin.shop");
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -150,7 +152,7 @@ export function AdminProductCreateForm() {
         />
       </label>
 
-      <AdminProductImagesField images={images} onChange={setImages} />
+      <AdminProductImagesField images={images} onChange={setImages} uploadMode={uploadMode} />
 
       {error && <p className="text-[12px] font-bold text-neon-rouge">{error}</p>}
 

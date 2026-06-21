@@ -3,6 +3,9 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { put } from "@vercel/blob";
+import type { AdminImageUploadMode } from "@/lib/admin-image-upload.types";
+
+export type { AdminImageUploadMode };
 
 const MAX_BYTES = 4 * 1024 * 1024;
 const MAX_EDGE = 2000;
@@ -22,7 +25,21 @@ function safeBaseName(originalName: string): string {
 }
 
 function isBlobStorageReady(): boolean {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
+}
+
+export function isAdminImageStorageReady(): boolean {
+  return isBlobStorageReady();
+}
+
+export function getAdminImageUploadMode(): AdminImageUploadMode {
+  if (isBlobStorageReady()) return "blob";
+  if (!process.env.VERCEL) return "local";
+  return "disabled";
+}
+
+export function safeAdminImageBaseName(originalName: string): string {
+  return safeBaseName(originalName);
 }
 
 /**

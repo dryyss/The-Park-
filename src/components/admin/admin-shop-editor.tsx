@@ -16,6 +16,7 @@ import {
 } from "@/components/admin/admin-product-images-field";
 import { AdminFilterBar, AdminFilterSelect, matchAdminSearch } from "@/components/admin/admin-filter-bar";
 import type { ProductType } from "@/generated/prisma/client";
+import type { AdminImageUploadMode } from "@/lib/admin-image-upload.types";
 
 const inputCls =
   "w-full rounded-md border border-charbon-500 bg-charbon-700/80 px-2 py-1.5 text-[12px] text-blanc-casse outline-none transition focus:border-or/60";
@@ -28,7 +29,7 @@ function parsePrice(v: string): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-function ShopProductPanel({ product }: { product: AdminShopProduct }) {
+function ShopProductPanel({ product, uploadMode }: { product: AdminShopProduct; uploadMode: AdminImageUploadMode }) {
   const t = useTranslations("admin.shop");
   const router = useRouter();
   const [expanded, setExpanded] = useState(false);
@@ -238,7 +239,7 @@ function ShopProductPanel({ product }: { product: AdminShopProduct }) {
               <span className="text-[11px] text-texte-faible">{t("releaseDateHint")}</span>
             </label>
 
-            <AdminProductImagesField images={images} onChange={setImages} />
+            <AdminProductImagesField images={images} onChange={setImages} uploadMode={uploadMode} />
           </div>
         )}
       </form>
@@ -246,7 +247,7 @@ function ShopProductPanel({ product }: { product: AdminShopProduct }) {
   );
 }
 
-export function AdminShopEditor({ products }: { products: AdminShopProduct[] }) {
+export function AdminShopEditor({ products, uploadMode }: { products: AdminShopProduct[]; uploadMode: AdminImageUploadMode }) {
   const t = useTranslations("admin.shop");
   const tFilters = useTranslations("admin.filters");
   const [q, setQ] = useState("");
@@ -338,7 +339,7 @@ export function AdminShopEditor({ products }: { products: AdminShopProduct[] }) 
       ) : filteredProducts.length === 0 ? (
         <p className="px-4 py-10 text-center text-[13px] font-bold text-texte-dim">{tFilters("noResults")}</p>
       ) : (
-        <div>{filteredProducts.map((p) => <ShopProductPanel key={p.id} product={p} />)}</div>
+        <div>{filteredProducts.map((p) => <ShopProductPanel key={p.id} product={p} uploadMode={uploadMode} />)}</div>
       )}
     </section>
   );

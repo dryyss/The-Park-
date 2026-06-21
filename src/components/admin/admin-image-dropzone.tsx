@@ -2,8 +2,13 @@
 
 import { useRef, useState, useTransition, type DragEvent } from "react";
 import { useTranslations } from "next-intl";
+import { upload as uploadToBlob } from "@vercel/blob/client";
+import type { AdminImageUploadMode } from "@/lib/admin-image-upload.types";
 
 type UploadScope = "catalog" | "shop";
+
+const MAX_BYTES = 4 * 1024 * 1024;
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 function mapUploadError(t: ReturnType<typeof useTranslations>, code: string): string {
   if (code === "FILE_TOO_LARGE") return t("uploadErrorSize");
@@ -16,13 +21,35 @@ function mapUploadError(t: ReturnType<typeof useTranslations>, code: string): st
   return t("uploadErrorDetail", { code });
 }
 
+function validateFile(file: File): string | null {
+  if (file.size > MAX_BYTES) return "FILE_TOO_LARGE";
+  if (!ALLOWED_TYPES.includes(file.type.toLowerCase())) return "INVALID_TYPE";
+  return null;
+}
+
+function blobPathname(file: File): string {
+  const base =
+    file.name
+      .replace(/\.[^.]+$/, "")
+      .normalize("NFD")
+      .replace(/\p{M}/gu, "")
+      .replace(/[^a-zA-Z0-9_-]+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
+      .slice(0, 60) || "image";
+  const ext = file.name.includes(".") ? (file.name.split(".").pop()?.toLowerCase() ?? "jpg") : "jpg";
+  return `admin/${base}-${Date.now()}.${ext}`;
+}
+
 export function AdminImageDropzone({
   scope,
+  uploadMode,
   onUploaded,
   disabled,
   compact,
 }: {
   scope: UploadScope;
+  uploadMode: AdminImageUploadMode;
   onUploaded: (fileName: string) => void;
   disabled?: boolean;
   compact?: boolean;
@@ -33,10 +60,9 @@ export function AdminImageDropzone({
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  function upload(file: File) {
-    if (disabled || pending) return;
-    setError(null);
+  const isDisabled = disabled || pending || uploadMode === "disabled";
 
+  function uploadLocal(file: File) {
     const fd = new FormData();
     fd.set("scope", scope);
     fd.set("file", file);
@@ -60,6 +86,45 @@ export function AdminImageDropzone({
     });
   }
 
+  function uploadBlob(file: File) {
+    startTransition(async () => {
+      try {
+        const result = await uploadToBlob(blobPathname(file), file, {
+          access: "public",
+          handleUploadUrl: "/api/admin/upload-image",
+          clientPayload: JSON.stringify({ scope }),
+        });
+        onUploaded(result.url);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "UNKNOWN";
+        if (msg.toLowerCase().includes("token") || msg.includes("STORAGE")) {
+          setError(t("uploadErrorStorage"));
+        } else {
+          setError(mapUploadError(t, msg.includes(" ") ? "UNKNOWN" : msg));
+        }
+      }
+    });
+  }
+
+  function upload(file: File) {
+    if (isDisabled) return;
+    setError(null);
+
+    const validationError = validateFile(file);
+    if (validationError) {
+      setError(mapUploadError(t, validationError));
+      return;
+    }
+
+    if (uploadMode === "blob") {
+      uploadBlob(file);
+      return;
+    }
+    if (uploadMode === "local") {
+      uploadLocal(file);
+    }
+  }
+
   function onDrop(e: DragEvent) {
     e.preventDefault();
     setDragOver(false);
@@ -71,12 +136,12 @@ export function AdminImageDropzone({
     <div className={compact ? "space-y-1" : "space-y-1.5"}>
       <div
         role="button"
-        tabIndex={disabled || pending ? -1 : 0}
-        aria-disabled={disabled || pending}
+        tabIndex={isDisabled ? -1 : 0}
+        aria-disabled={isDisabled}
         aria-label={t("dropzoneLabel")}
         onDragOver={(e) => {
           e.preventDefault();
-          if (!disabled && !pending) setDragOver(true);
+          if (!isDisabled) setDragOver(true);
         }}
         onDragLeave={() => setDragOver(false)}
         onDrop={onDrop}
@@ -87,7 +152,7 @@ export function AdminImageDropzone({
           }
         }}
         onClick={() => {
-          if (!disabled && !pending) inputRef.current?.click();
+          if (!isDisabled) inputRef.current?.click();
         }}
         className={`rounded-lg border border-dashed px-3 text-center transition ${
           compact ? "py-2.5" : "py-4"
@@ -95,14 +160,14 @@ export function AdminImageDropzone({
           dragOver
             ? "border-carmin bg-carmin/10"
             : "border-charbon-400 bg-charbon-900/40 hover:border-or/50 hover:bg-or/5"
-        } ${disabled || pending ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+        } ${isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
       >
         <input
           ref={inputRef}
           type="file"
           accept="image/jpeg,image/png,image/webp"
           className="hidden"
-          disabled={disabled || pending}
+          disabled={isDisabled}
           onChange={(e) => {
             const file = e.target.files?.[0];
             if (file) upload(file);
@@ -110,9 +175,9 @@ export function AdminImageDropzone({
           }}
         />
         <p className={`font-extrabold text-blanc-casse ${compact ? "text-[11px]" : "text-[12px]"}`}>
-          {pending ? t("uploadPending") : t("dropzoneLabel")}
+          {pending ? t("uploadPending") : uploadMode === "disabled" ? t("dropzoneDisabled") : t("dropzoneLabel")}
         </p>
-        {!pending && (
+        {!pending && uploadMode !== "disabled" && (
           <p className={`mt-0.5 text-texte-faible ${compact ? "text-[10px]" : "text-[11px]"}`}>
             {t("dropzoneHint")} · {t("dropzoneBrowse")}
           </p>

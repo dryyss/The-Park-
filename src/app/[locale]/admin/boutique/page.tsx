@@ -6,6 +6,8 @@ import { getAdminShopProducts } from "@/server/admin/admin.service";
 import { PageHeader } from "@/components/common/page-header";
 import { AdminShopEditor } from "@/components/admin/admin-shop-editor";
 import { AdminProductCreateForm } from "@/components/admin/admin-product-create-form";
+import { AdminStorageBanner } from "@/components/admin/admin-storage-banner";
+import { getAdminImageUploadMode } from "@/lib/admin-image-storage";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +23,7 @@ export default async function AdminBoutiquePage({ params }: { params: Promise<{ 
   }
 
   const products = await getAdminShopProducts();
+  const uploadMode = getAdminImageUploadMode();
 
   return (
     <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
@@ -30,9 +33,10 @@ export default async function AdminBoutiquePage({ params }: { params: Promise<{ 
       <div className="mt-4">
         <PageHeader kicker={t("shop.kicker")} title={t("shop.title")} jp="公式" />
       </div>
+      <AdminStorageBanner uploadMode={uploadMode} />
       <div className="mt-8 space-y-4">
-        <AdminProductCreateForm />
-        <AdminShopEditor products={products} />
+        <AdminProductCreateForm uploadMode={uploadMode} />
+        <AdminShopEditor products={products} uploadMode={uploadMode} />
       </div>
     </main>
   );
