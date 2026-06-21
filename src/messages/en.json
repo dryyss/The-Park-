@@ -1138,7 +1138,8 @@
       "errNotFound": "Variant not found.",
       "errValidation": "Invalid data.",
       "errForbidden": "Access denied.",
-      "errUnknown": "Something went wrong."
+      "errUnknown": "Something went wrong.",
+      "createSuccess": "Card created successfully!"
     },
     "support": {
       "kicker": "Help · members",

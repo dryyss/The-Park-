@@ -165,16 +165,27 @@ function useAction() {
   const t = useTranslations("admin.catalog");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-  function run(fn: () => Promise<{ ok: boolean; error?: string }>, onDone?: () => void) {
+  function run(fn: () => Promise<{ ok: boolean; error?: string }>, onDone?: () => void, successMsg?: string) {
     setError(null);
+    setSuccess(null);
     startTransition(() => {
       void (async () => {
         try {
           const res = await fn();
           if (res.ok) {
-            onDone?.();
-            router.refresh();
+            if (successMsg) {
+              setSuccess(successMsg);
+              setTimeout(() => {
+                setSuccess(null);
+                onDone?.();
+                router.refresh();
+              }, 1200);
+            } else {
+              onDone?.();
+              router.refresh();
+            }
           } else {
             setError(errLabel(t, res.error));
           }
@@ -185,7 +196,7 @@ function useAction() {
     });
   }
 
-  return { pending, error, run };
+  return { pending, error, success, run };
 }
 
 function errLabel(t: ReturnType<typeof useTranslations>, code?: string): string {
@@ -296,7 +307,7 @@ function NewCardForm({
 }) {
   const t = useTranslations("admin.catalog");
   const [open, setOpen] = useState(false);
-  const { pending, error, run } = useAction();
+  const { pending, error, success, run } = useAction();
   const horsSerie = isHorsSerieSeasonCode(seasonCode);
 
   function submit(fd: FormData) {
@@ -314,6 +325,7 @@ function NewCardForm({
           isUnique: fd.get("isUnique") === "on",
         }),
       () => setOpen(false),
+      t("createSuccess"),
     );
   }
 
@@ -355,8 +367,9 @@ function NewCardForm({
         <input type="checkbox" name="isUnique" className="accent-carmin" /> {t("isUnique")}
       </label>
       {error && <p className="mt-2 text-[12px] font-bold text-neon-rouge">{error}</p>}
+      {success && <p className="mt-2 text-[12px] font-bold text-neon-vert">{success}</p>}
       <div className="mt-3 flex gap-2">
-        <button type="submit" disabled={pending} className="rounded-lg bg-or px-4 py-2 text-[11px] font-extrabold text-charbon uppercase disabled:opacity-50">{t("create")}</button>
+        <button type="submit" disabled={pending || !!success} className="rounded-lg bg-or px-4 py-2 text-[11px] font-extrabold text-charbon uppercase disabled:opacity-50">{t("create")}</button>
         <button type="button" onClick={() => setOpen(false)} className="rounded-lg border border-charbon-500 px-4 py-2 text-[11px] font-extrabold text-texte-dim uppercase">{t("cancel")}</button>
       </div>
     </form>

@@ -1138,7 +1138,8 @@
       "errNotFound": "Variante introuvable.",
       "errValidation": "Données invalides.",
       "errForbidden": "Accès refusé.",
-      "errUnknown": "Une erreur est survenue."
+      "errUnknown": "Une erreur est survenue.",
+      "createSuccess": "Carte créée avec succès !"
     },
     "support": {
       "kicker": "Aide · membres",

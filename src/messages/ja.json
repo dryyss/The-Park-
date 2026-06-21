@@ -1138,7 +1138,8 @@
       "errNotFound": "バリアントが見つかりません。",
       "errValidation": "データが無効です。",
       "errForbidden": "アクセスが拒否されました。",
-      "errUnknown": "エラーが発生しました。"
+      "errUnknown": "エラーが発生しました。",
+      "createSuccess": "カードを作成しました！"
     },
     "support": {
       "kicker": "ヘルプ · メンバー",

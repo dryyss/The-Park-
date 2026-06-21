@@ -262,8 +262,8 @@ export async function getAdminCatalog(): Promise<AdminCatalogSeason[]> {
   }));
 }
 
-async function uniqueCardSlug(name: string): Promise<string> {
-  const base = slugify(name) || "carte";
+async function uniqueCardSlug(seasonCode: string, number: number, name: string): Promise<string> {
+  const base = `${slugify(seasonCode)}-${number}-${slugify(name) || "carte"}`;
   let slug = base;
   let suffix = 0;
   while (await prisma.card.findUnique({ where: { slug }, select: { id: true } })) {
@@ -294,7 +294,9 @@ export async function createCard(input: CreateCardInput): Promise<string> {
   });
   if (clash) throw new Error("NUMBER_TAKEN");
 
-  const slug = await uniqueCardSlug(input.name);
+  const season = await prisma.season.findUnique({ where: { id: input.seasonId }, select: { code: true } });
+  const seasonCode = season?.code ?? "s";
+  const slug = await uniqueCardSlug(seasonCode, input.number, input.name);
   try {
     const card = await prisma.card.create({
       data: {
