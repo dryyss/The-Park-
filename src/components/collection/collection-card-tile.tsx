@@ -28,6 +28,15 @@ export function CollectionCardTile({
 
   return (
     <div className={`relative transition-[opacity,filter] ${missing ? "opacity-[0.88]" : ""}`}>
+      {showControls && card.standardVariantId && (
+        <div className={`mb-2 ${missing ? "opacity-70" : ""}`}>
+          <CollectionQuantityControls
+            cardNumber={card.number}
+            quantity={card.quantity}
+            isAuthenticated={isAuthenticated}
+          />
+        </div>
+      )}
       <Link href={`/carte/${card.slug}`} className="block">
         <CatalogCardFrame rarityColor={card.color}>
           <div
@@ -96,15 +105,6 @@ export function CollectionCardTile({
             seasonId={card.seasonId}
             isAuthenticated={isAuthenticated}
             inWishlist={inWishlist}
-          />
-        </div>
-      )}
-      {showControls && card.standardVariantId && (
-        <div className={missing ? "opacity-70" : undefined}>
-          <CollectionQuantityControls
-            cardNumber={card.number}
-            quantity={card.quantity}
-            isAuthenticated={isAuthenticated}
           />
         </div>
       )}
