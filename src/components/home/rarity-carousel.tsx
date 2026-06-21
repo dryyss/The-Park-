@@ -80,7 +80,7 @@ function RarityScrollBar({
   if (count <= 1) return null;
 
   return (
-    <div className="mx-auto mt-4 max-w-[min(100%,420px)] px-4 md:mt-6">
+    <div className="mx-auto mt-6 w-[88%] max-w-[540px] px-2 sm:w-[78%] sm:max-w-[480px] md:mt-10 md:w-[60%] md:max-w-[560px]">
       {showMobileHint && (
         <>
           <div className="mb-3 flex items-center justify-center gap-2 md:hidden">

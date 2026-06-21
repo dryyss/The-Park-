@@ -268,3 +268,104 @@ async function fetchMarketplaceFacets(): Promise<MarketplaceFacets> {
     })).filter((r) => r.count > 0),
   };
 }
+
+// ─── Vue vendeurs par carte ───────────────────────────────────────────────────
+
+export interface CardSeller {
+  listingId: string;
+  price: number;
+  priceLabel: string;
+  conditionCode: string;
+  conditionColor: string;
+  versionLabel: string;
+  purchasable: boolean;
+  sellerId: string;
+  seller: { name: string; slug: string; initial: string; rating: string; reviews: number };
+}
+
+export interface CardWithSellers {
+  cardId: string;
+  name: string;
+  slug: string;
+  image: string;
+  glyph: string;
+  color: string;
+  tilt: number;
+  holo: number;
+  variant: HoloVariant;
+  numberLabel: string;
+  rarityLabel: string;
+  seasonLabel: string;
+  sellers: CardSeller[];
+  lowestPriceLabel: string | null;
+}
+
+async function fetchCardSellListings(slug: string): Promise<CardWithSellers | null> {
+  const card = await prisma.card.findUnique({
+    where: { slug },
+    include: { rarity: true, season: true },
+  });
+  if (!card) return null;
+
+  const listings = await prisma.listing.findMany({
+    where: {
+      variant: { cardId: card.id },
+      status: "ACTIVE",
+      type: { in: [...SELL_TYPES] },
+      NOT: { sales: { some: { status: { in: [...ACTIVE_SALE_STATUSES] } } } },
+      marketplaceCartItems: LISTING_NOT_IN_CART.marketplaceCartItems,
+    },
+    orderBy: { price: "asc" },
+    include: {
+      seller: { select: { id: true, displayName: true, slug: true, ratingAvg: true, reviewCount: true } },
+      variant: { include: { versionType: true } },
+    },
+  });
+
+  const meta = rarityMeta(card.rarity.code);
+
+  const sellers: CardSeller[] = listings.map((l) => {
+    const name = l.seller.displayName;
+    return {
+      listingId: l.id,
+      price: Number(l.price ?? 0),
+      priceLabel: formatPrice(l.price),
+      conditionCode: l.condition,
+      conditionColor: conditionColor(l.condition),
+      versionLabel: l.variant.versionType.label,
+      purchasable: l.type === "SELL" || l.type === "SELL_OR_TRADE",
+      sellerId: l.seller.id,
+      seller: {
+        name,
+        slug: l.seller.slug,
+        initial: name.charAt(0).toUpperCase(),
+        rating: l.seller.ratingAvg.toFixed(1).replace(".", ","),
+        reviews: l.seller.reviewCount,
+      },
+    };
+  });
+
+  return {
+    cardId: card.id,
+    name: card.name,
+    slug: card.slug,
+    image: cardImage(card.imageUrl),
+    glyph: card.rarity.symbol ?? meta.glyph,
+    color: card.rarity.color ?? meta.color,
+    tilt: meta.tilt,
+    holo: meta.holo,
+    variant: meta.variant,
+    numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code),
+    rarityLabel: card.rarity.label,
+    seasonLabel: card.season.name,
+    sellers,
+    lowestPriceLabel: sellers.length > 0 ? sellers[0].priceLabel : null,
+  };
+}
+
+export async function getCardSellListings(slug: string): Promise<CardWithSellers | null> {
+  return unstable_cache(() => fetchCardSellListings(slug), ["card-sell-listings", slug], {
+    revalidate: 30,
+    tags: ["listings"],
+  })();
+}

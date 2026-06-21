@@ -38,10 +38,15 @@ export async function ListingCard({
 
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-charbon-500 bg-charbon-800 transition hover:border-charbon-400">
-      <div className="relative px-3.5 pt-3.5">
+      <Link href={`/marketplace/carte/${l.slug}`} className="group relative block px-3.5 pt-3.5">
         <CatalogCardFrame rarityColor={l.color}>
           <HoloCard src={l.image} alt={l.name} variant="none" className="rounded-none shadow-none" />
         </CatalogCardFrame>
+        <div className="pointer-events-none absolute inset-x-3.5 inset-y-0 flex items-center justify-center rounded-2xl bg-charbon-900/0 opacity-0 transition-all duration-200 group-hover:bg-charbon-900/55 group-hover:opacity-100">
+          <span className="font-display -skew-x-3 rounded-lg bg-carmin px-3 py-1.5 text-[11px] tracking-[1.5px] text-white uppercase shadow-lg">
+            Voir vendeurs
+          </span>
+        </div>
         <span
           className="absolute top-[26px] right-[26px] rounded-md bg-black/70 px-2.5 py-1 text-[10.5px] font-extrabold tracking-[1px] uppercase backdrop-blur-sm"
           style={{ color: l.conditionColor }}
@@ -58,7 +63,7 @@ export async function ListingCard({
             {t("ownListingBadge")}
           </span>
         )}
-      </div>
+      </Link>
 
       <div className="flex flex-1 flex-col gap-2.5 px-4 pt-3 pb-4">
         <div>
