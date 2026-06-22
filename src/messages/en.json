@@ -130,7 +130,7 @@
   "collection": {
     "kicker": "Pocket Drifterz · 2026 Edition",
     "title": "My Collection",
-    "seasonActive": "Season 1 · Forged Engine",
+    "seasonActive": "Season 1 · Forged Engine · 1st Edition",
     "seasonSoon": "Season 2 · 🔒 Coming soon",
     "ownedCount": "{count} cards owned",
     "overallHint": "Overall completion · all rarities",
@@ -555,6 +555,9 @@
     "historyKicker": "Marketplace · purchases",
     "historyTitle": "Marketplace history",
     "historyEmpty": "No marketplace purchases yet.",
+    "shippingStandard": "Standard shipping",
+    "shippingSecured": "Secured shipping",
+    "shippingAddressHint": "Your shipping address will be requested by the seller via the messaging system after confirmation (wallet payment), or entered at the next step (Stripe payment).",
     "checkoutError": {
       "UNAUTHORIZED": "Sign in required.",
       "EMPTY_CART": "Cart is empty.",

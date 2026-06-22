@@ -130,7 +130,7 @@
   "collection": {
     "kicker": "Pocket Drifterz · Édition 2026",
     "title": "Ma Collection",
-    "seasonActive": "Saison 1 · Moteur Forgé",
+    "seasonActive": "Saison 1 · Moteur Forgé · 1ère Édition",
     "seasonSoon": "Saison 2 · 🔒 À venir",
     "ownedCount": "{count} cartes possédées",
     "overallHint": "Complétion globale · toutes raretés",
@@ -555,6 +555,9 @@
     "historyKicker": "Marketplace · achats",
     "historyTitle": "Historique marketplace",
     "historyEmpty": "Aucun achat marketplace pour le moment.",
+    "shippingStandard": "Envoi standard",
+    "shippingSecured": "Envoi sécurisé",
+    "shippingAddressHint": "Ton adresse de livraison sera demandée par le vendeur via la messagerie après confirmation (paiement portefeuille), ou saisie à l'étape suivante (paiement Stripe).",
     "checkoutError": {
       "UNAUTHORIZED": "Connexion requise.",
       "EMPTY_CART": "Panier vide.",

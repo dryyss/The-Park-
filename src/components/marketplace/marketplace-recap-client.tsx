@@ -86,6 +86,13 @@ export function MarketplaceRecapClient({
                 <span style={{ color: conditionColor(line.conditionCode) }}>{tCond(line.conditionCode)}</span>
               </p>
               <p className="text-[11px] font-bold text-texte-faible">{line.sellerName}</p>
+              <p className="mt-1 text-[10.5px] font-bold text-texte-faible">
+                {line.shippingMode === "SECURED" ? (
+                  <span className="text-neon-vert">✓ {t("shippingSecured")}</span>
+                ) : (
+                  <span>{t("shippingStandard")}</span>
+                )}
+              </p>
             </div>
             <p className="font-display shrink-0 text-[18px] text-blanc-casse">{line.priceLabel}</p>
           </div>
@@ -120,13 +127,17 @@ export function MarketplaceRecapClient({
           </div>
         </div>
 
+        <p className="mt-4 rounded-lg border border-charbon-600 bg-charbon-700/50 px-3 py-2.5 text-[11px] font-semibold text-texte-dim">
+          {t("shippingAddressHint")}
+        </p>
+
         {canPayWithWallet ? (
           <>
             <button
               type="button"
               onClick={handlePayWithWallet}
               disabled={pending}
-              className="font-display mt-5 flex w-full items-center justify-center rounded-[12px] bg-statut-succes py-3.5 text-[14px] tracking-[1.5px] text-charbon uppercase shadow-[3px_3px_0_rgba(0,0,0,0.4)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+              className="font-display mt-4 flex w-full items-center justify-center rounded-[12px] bg-statut-succes py-3.5 text-[14px] tracking-[1.5px] text-charbon uppercase shadow-[3px_3px_0_rgba(0,0,0,0.4)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {pending ? t("processingWallet") : t("payWithWallet", { amount: formatPrice(recap.subtotalRaw) })}
             </button>

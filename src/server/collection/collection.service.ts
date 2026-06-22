@@ -193,12 +193,11 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     };
   });
 
-  const ownedVariants = items.reduce((s, i) => s + i.quantity, 0);
-  const overallPct = totalVariants > 0 ? Math.round((ownedVariants / totalVariants) * 100) : 0;
+  const overallPct = enriched.length > 0 ? Math.round((ownedCards / enriched.length) * 100) : 0;
 
   return {
     overallPct,
-    overallOwned: ownedVariants,
+    overallOwned: ownedCards,
     totalVariants,
     rarityBars,
     sections,

@@ -130,7 +130,7 @@
   "collection": {
     "kicker": "Pocket Drifterz · 2026 Edition",
     "title": "マイコレクション",
-    "seasonActive": "シーズン1 · 鍛造エンジン",
+    "seasonActive": "シーズン1 · 鍛造エンジン · 1stエディション",
     "seasonSoon": "シーズン2 · 🔒 近日公開",
     "ownedCount": "{count}枚所持",
     "overallHint": "全体コンプリート · 全レアリティ",
@@ -555,6 +555,9 @@
     "historyKicker": "マーケット · 購入",
     "historyTitle": "マーケット購入履歴",
     "historyEmpty": "まだマーケット購入がありません。",
+    "shippingStandard": "通常配送",
+    "shippingSecured": "セキュア配送",
+    "shippingAddressHint": "配送先住所は、確認後にメッセージで出品者から確認されます（ウォレット払い）、またはStripe決済の場合は次のステップで入力します。",
     "checkoutError": {
       "UNAUTHORIZED": "ログインが必要です。",
       "EMPTY_CART": "カートが空です。",

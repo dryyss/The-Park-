@@ -16,6 +16,7 @@ export interface MarketplaceCartLine {
   sellerName: string;
   priceLabel: string;
   priceRaw: number;
+  shippingMode: "STANDARD" | "SECURED";
 }
 
 export interface MarketplaceCartSummary {
@@ -33,6 +34,7 @@ const listingCartInclude = {
     },
   },
 } as const;
+
 
 export async function getMarketplaceCartItemCount(userId: string): Promise<number> {
   return prisma.marketplaceCartItem.count({ where: { userId } });
@@ -72,6 +74,7 @@ export async function getViewerMarketplaceCart(userId: string): Promise<Marketpl
       sellerName: listing.seller.displayName,
       priceLabel: formatPrice(listing.price),
       priceRaw,
+      shippingMode: listing.shippingMode,
     });
   }
 

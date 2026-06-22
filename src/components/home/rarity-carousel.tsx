@@ -330,17 +330,6 @@ export function RarityCarousel({ rarities, showOwned = false }: RarityCarouselPr
         ›
       </button>
 
-      <RarityScrollBar
-        items={items}
-        active={active}
-        onChange={(i) => {
-          setHintHidden(true);
-          setActive(i);
-        }}
-        ariaLabel={t("rarityScroll")}
-        swipeHint={t("raritySwipeHint")}
-        showMobileHint={!hintHidden}
-      />
     </div>
   );
 }

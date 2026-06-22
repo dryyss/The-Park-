@@ -196,7 +196,7 @@ async function ExchangeDetailPanel({
         </div>
       </div>
 
-      {detail.message && (
+      {detail.message && !/^\w+\.\w+$/.test(detail.message) && (
         <div className="border-t border-charbon-600 px-6 py-4 text-[13px] font-semibold text-texte-doux">
           « {detail.message} »
         </div>

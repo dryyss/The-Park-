@@ -170,6 +170,9 @@ export async function startMarketplaceCartStripeCheckout(input: {
         quantity: 1,
       };
     }),
+    shipping_address_collection: {
+      allowed_countries: ["FR", "BE", "CH", "LU", "MC", "AD", "GP", "MQ", "GF", "RE", "YT"],
+    },
     metadata: {
       kind: "MARKETPLACE_CART",
       checkoutId: checkout.id,
