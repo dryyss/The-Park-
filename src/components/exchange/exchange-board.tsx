@@ -69,7 +69,7 @@ function ExchangeListRow({
       className={`flex items-center gap-3 rounded-[15px] border-[1.5px] p-3.5 transition hover:border-carmin ${active ? "border-carmin bg-charbon-700" : "border-charbon-500 bg-charbon-800"}`}
     >
       <span
-        className="font-display flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-full text-[14px] text-white"
+        className="font-display flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-full text-[14px] text-white shadow-[0_2px_8px_rgba(0,0,0,0.35)]"
         style={{ background: avatarGradient(item.partnerInitial) }}
       >
         {item.partnerInitial}
@@ -118,7 +118,10 @@ function ExchangeListSection({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="px-1 text-[10px] font-extrabold tracking-[2px] text-texte-faible uppercase">{title}</div>
+      <div className="flex items-center gap-2 px-1">
+        <span className="whitespace-nowrap text-[10px] font-extrabold tracking-[2px] text-texte-faible uppercase">{title}</span>
+        <div className="h-px flex-1 bg-charbon-600" />
+      </div>
       {items.map((item) => (
         <ExchangeListRow
           key={item.id}
@@ -255,28 +258,43 @@ async function OpportunitiesPanelAsync({
   if (opportunities.length === 0) return null;
 
   return (
-    <div className="rounded-[15px] border border-charbon-500 bg-charbon-800 p-4">
-      <div className="text-[10px] font-extrabold tracking-[2px] text-texte-faible uppercase">{t("openToTrade")}</div>
-      <p className="mt-1 text-[11.5px] font-bold text-texte-dim">{t("openToTradeHint")}</p>
-      <div className="mt-3 flex flex-col gap-2">
+    <div className="overflow-hidden rounded-[15px] border border-charbon-500 bg-charbon-800">
+      <div className="border-b border-charbon-600 px-4 py-3.5">
+        <div className="text-[10px] font-extrabold tracking-[2px] text-texte-faible uppercase">{t("openToTrade")}</div>
+        <p className="mt-0.5 text-[11px] font-semibold text-texte-dim">{t("openToTradeHint")}</p>
+      </div>
+      <div className="flex flex-col divide-y divide-charbon-600">
         {opportunities.map((o) => {
           const href = `/echanges/proposer?recipient=${encodeURIComponent(o.sellerSlug)}`;
           const row = (
             <>
-              <div className="relative h-12 w-9 shrink-0 overflow-hidden rounded-[6px] bg-charbon-600">
+              <div className="relative h-[52px] w-9 shrink-0 overflow-hidden rounded-[8px] bg-charbon-600 shadow-[0_4px_14px_rgba(0,0,0,0.5)]">
                 {o.cardImage && <Image src={o.cardImage} alt={o.cardName} fill className="object-cover" sizes="36px" />}
               </div>
               <div className="min-w-0 flex-1">
-                <div className="truncate text-[12px] font-extrabold text-blanc-casse">{o.cardName}</div>
-                <div className="text-[10.5px] font-bold text-texte-dim">
-                  {o.sellerName} · {o.type === "WANT" ? t("listingWant") : t("listingTrade")} · {o.priceLabel}
+                <div className="truncate text-[12px] font-extrabold leading-tight text-blanc-casse">{o.cardName}</div>
+                <div className="mt-0.5 text-[10.5px] font-bold text-texte-dim">{o.sellerName}</div>
+                <div className="mt-1.5 flex items-center gap-1.5">
+                  <span
+                    className={`rounded px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide ${
+                      o.type === "WANT"
+                        ? "bg-[rgba(94,217,154,0.12)] text-neon-vert"
+                        : "bg-[rgba(216,27,96,0.12)] text-carmin"
+                    }`}
+                  >
+                    {o.type === "WANT" ? t("listingWant") : t("listingTrade")}
+                  </span>
+                  {o.priceLabel && (
+                    <span className="text-[10px] font-bold text-texte-faible">{o.priceLabel}</span>
+                  )}
                 </div>
               </div>
-              <span className="shrink-0 text-[10px] font-extrabold tracking-wide text-carmin uppercase">{t("proposeCta")}</span>
+              <span className="shrink-0 self-center rounded-[10px] border border-carmin/40 bg-carmin/10 px-3 py-1.5 text-[10px] font-extrabold tracking-wide text-carmin uppercase transition group-hover:bg-carmin/20">
+                {t("proposeCta")}
+              </span>
             </>
           );
-          const rowClass =
-            "flex items-center gap-3 rounded-[12px] border border-charbon-500 bg-charbon-700 p-3 transition hover:border-carmin";
+          const rowClass = "group flex items-center gap-3 px-4 py-3.5 transition hover:bg-charbon-700";
 
           return isAuthenticated ? (
             <Link key={o.listingId} href={href} className={rowClass}>
@@ -333,8 +351,11 @@ export async function ExchangeBoard({
       <div className="mt-6 grid grid-cols-1 items-start gap-5 lg:grid-cols-[380px_1fr]">
         <div className="flex flex-col gap-4">
           {list.length === 0 ? (
-            <div className="rounded-[15px] border border-dashed border-charbon-500 p-8 text-center text-[13px] font-bold text-texte-dim">
-              {!isAuthenticated && tab === "current" ? t("guestEmpty") : tab === "done" ? t("emptyDone") : t("emptyCurrent")}
+            <div className="rounded-[15px] border border-dashed border-charbon-500 px-8 py-10 text-center">
+              <div className="mb-3 text-2xl opacity-20">⇄</div>
+              <p className="text-[13px] font-bold text-texte-dim">
+                {!isAuthenticated && tab === "current" ? t("guestEmpty") : tab === "done" ? t("emptyDone") : t("emptyCurrent")}
+              </p>
             </div>
           ) : sections ? (
             <>
@@ -396,10 +417,11 @@ export async function ExchangeBoard({
         {selected ? (
           <ExchangeDetailPanel detail={selected} ownedCards={ownedCards} />
         ) : (
-          <div className="flex min-h-[320px] flex-col items-center justify-center gap-3 rounded-[20px] border border-charbon-500 bg-charbon-800 p-8 text-center text-[13px] font-bold text-texte-dim">
-            <p>{t("selectExchange")}</p>
+          <div className="flex min-h-[320px] flex-col items-center justify-center gap-2 rounded-[20px] border border-charbon-500 bg-charbon-800 p-8 text-center">
+            <div className="mb-2 text-4xl opacity-10">⇄</div>
+            <p className="text-[13px] font-bold text-texte-dim">{t("selectExchange")}</p>
             {tab === "current" && opportunities.length > 0 && (
-              <p className="max-w-sm text-[12px] font-semibold text-texte-faible">{t("selectOrPropose")}</p>
+              <p className="mt-1 max-w-sm text-[12px] font-semibold text-texte-faible">{t("selectOrPropose")}</p>
             )}
           </div>
         )}

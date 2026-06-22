@@ -287,6 +287,16 @@ export async function startAndFulfillMarketplaceCheckoutWithWallet(input: {
   const walletBalance = await getWalletSpendableBalanceEur(input.buyerId);
   if (walletBalance < recap.subtotalRaw) throw new Error("INSUFFICIENT_WALLET");
 
+  // Annule les checkouts Stripe en attente (ex : utilisateur ayant fermé l'onglet Stripe
+  // sans passer par l'URL d'annulation) pour éviter le conflit de clé unique sur saleId.
+  const stalePending = await prisma.marketplaceCheckout.findMany({
+    where: { buyerId: input.buyerId, status: "PENDING" },
+    select: { id: true },
+  });
+  for (const pc of stalePending) {
+    await cancelPendingCheckout(pc.id);
+  }
+
   const checkoutNumber = await generateCheckoutNumber();
   const checkout = await prisma.marketplaceCheckout.create({
     data: {

@@ -74,24 +74,27 @@ export function ExchangeProposeForm({
       <section className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
         <h2 className="font-display text-[16px] tracking-wide text-blanc-casse uppercase">{t("youGive")}</h2>
         <div className="mt-4 grid max-h-[400px] grid-cols-2 gap-3 overflow-y-auto sm:grid-cols-3">
-          {ownedCards.map((c) => (
-            <label
-              key={c.variantId}
-              className={`cursor-pointer rounded-[12px] border p-2 transition hover:border-carmin ${selected.has(c.variantId) ? "border-carmin bg-carmin/10" : "border-charbon-500 bg-charbon-700"}`}
-            >
-              <input type="checkbox" checked={selected.has(c.variantId)} onChange={() => toggle(c.variantId)} className="sr-only" />
-              <div className="relative aspect-[2.5/3.5] overflow-hidden rounded-[8px] bg-charbon-600">
-                {c.image && <Image src={c.image} alt={c.name} fill className="object-cover" sizes="100px" />}
-              </div>
-              <p className="mt-1.5 truncate text-[11px] font-extrabold text-blanc-casse">{c.name}</p>
-              <p className="text-[10px] font-bold text-texte-faible">
-                #{String(c.number).padStart(2, "0")} · {c.versionLabel}
-              </p>
-              <p className="text-[10px] font-extrabold tabular-nums text-carmin">
-                {t("qtyAvailable", { count: c.availableQuantity })}
-              </p>
-            </label>
-          ))}
+          {ownedCards.map((c) => {
+            const isUnavailable = c.availableQuantity <= 0;
+            return (
+              <label
+                key={c.variantId}
+                className={`rounded-[12px] border p-2 transition ${isUnavailable ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:border-carmin"} ${selected.has(c.variantId) ? "border-carmin bg-carmin/10" : "border-charbon-500 bg-charbon-700"}`}
+              >
+                <input type="checkbox" checked={selected.has(c.variantId)} disabled={isUnavailable} onChange={() => !isUnavailable && toggle(c.variantId)} className="sr-only" />
+                <div className="relative aspect-2.5/3.5 overflow-hidden rounded-[8px] bg-charbon-600">
+                  {c.image && <Image src={c.image} alt={c.name} fill className="object-cover" sizes="100px" />}
+                </div>
+                <p className="mt-1.5 truncate text-[11px] font-extrabold text-blanc-casse">{c.name}</p>
+                <p className="text-[10px] font-bold text-texte-faible">
+                  #{String(c.number).padStart(2, "0")} · {c.versionLabel}
+                </p>
+                <p className={`text-[10px] font-extrabold tabular-nums ${isUnavailable ? "text-texte-faible" : "text-carmin"}`}>
+                  {isUnavailable ? t("reserved") : t("qtyAvailable", { count: c.availableQuantity })}
+                </p>
+              </label>
+            );
+          })}
         </div>
       </section>
 
@@ -129,7 +132,11 @@ export function ExchangeProposeForm({
             </span>
           </label>
         </div>
-        {error && <p className="text-[12px] font-bold text-neon-rouge">{t("error")}</p>}
+        {error && (
+          <p className="text-[12px] font-bold text-neon-rouge">
+            {error === "CARD_RESERVED" ? t("errorReserved") : error === "NOT_OWNED" ? t("errorNotOwned") : t("error")}
+          </p>
+        )}
         {showLoginGate && <LoginGatePrompt compact messageKey="loginGateExchanges" />}
         <button
           type="button"

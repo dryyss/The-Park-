@@ -31,6 +31,7 @@ export function MarketplaceRecapClient({
   const [error, setError] = useState<string | null>(null);
 
   const canPayWithWallet = walletBalance >= recap.subtotalRaw;
+  const hasPartialWallet = walletBalance > 0 && walletBalance < recap.subtotalRaw;
 
   function handlePayWithWallet() {
     setError(null);
@@ -101,10 +102,16 @@ export function MarketplaceRecapClient({
             <span>{t("subtotal")}</span>
             <span>{recap.subtotal}</span>
           </div>
-          {canPayWithWallet && (
+          {(canPayWithWallet || hasPartialWallet) && (
             <div className="flex justify-between text-texte-dim">
               <span>{t("walletBalance")}</span>
-              <span className="text-neon-vert">{formatPrice(walletBalance)}</span>
+              <span className={canPayWithWallet ? "text-neon-vert" : "text-neon-orange"}>{formatPrice(walletBalance)}</span>
+            </div>
+          )}
+          {hasPartialWallet && (
+            <div className="flex justify-between text-texte-faible text-[11px]">
+              <span>{t("walletShortfall")}</span>
+              <span>{formatPrice(recap.subtotalRaw - walletBalance)}</span>
             </div>
           )}
           <div className="mt-2 flex justify-between border-t border-charbon-500 pt-3 text-blanc-casse">
