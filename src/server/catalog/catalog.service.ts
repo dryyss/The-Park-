@@ -491,7 +491,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
       sellerName: l.seller.displayName,
       sellerSlug: l.seller.slug,
       sellerInitial: l.seller.displayName.charAt(0).toUpperCase(),
-      sellerCountry: l.seller.country ?? "FR",
+      sellerCountry: "FR",
       rating: l.seller.ratingAvg.toFixed(1).replace(".", ","),
       versionLabel: l.variant.versionType.label,
       conditionCode: l.condition,
