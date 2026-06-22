@@ -2,6 +2,13 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { ExchangeStatus, ShipmentStatus } from "@/generated/prisma/client";
 
+export interface SecurityProofView {
+  id: string;
+  kind: string;
+  mediaUrl: string;
+  serverRecordedAt: Date;
+}
+
 export interface SecurityShipmentView {
   id: string;
   status: ShipmentStatus;
@@ -11,6 +18,7 @@ export interface SecurityShipmentView {
   guaranteeEndsAt: Date | null;
   isShipper: boolean;
   proofCount: number;
+  proofs: SecurityProofView[];
   cautionStatus: string | null;
   cautionAmount: string | null;
 }
@@ -45,6 +53,7 @@ export async function getSecurityContext(userId: string): Promise<SecurityExchan
       shipments: {
         include: {
           _count: { select: { proofs: true } },
+          proofs: { select: { id: true, kind: true, mediaUrl: true, serverRecordedAt: true }, orderBy: { serverRecordedAt: "asc" } },
           payments: { where: { kind: "CAUTION" }, orderBy: { createdAt: "desc" }, take: 1 },
         },
       },
@@ -66,6 +75,7 @@ export async function getSecurityContext(userId: string): Promise<SecurityExchan
       guaranteeEndsAt: s.guaranteeEndsAt,
       isShipper: s.shipperId === userId,
       proofCount: s._count.proofs,
+      proofs: s.proofs,
       cautionStatus: caution?.status ?? null,
       cautionAmount: caution ? `${Number(caution.amount).toFixed(2).replace(".", ",")} €` : null,
     };

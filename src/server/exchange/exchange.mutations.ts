@@ -167,12 +167,6 @@ export async function acceptExchangeWithItems(
 
 /** Accepte une proposition d'échange (destinataire). */
 export async function acceptExchange(recipientId: string, exchangeId: string): Promise<void> {
-  const recipientItems = await prisma.exchangeItem.count({
-    where: { exchangeId, fromInitiator: false },
-  });
-  if (recipientItems === 0) {
-    throw new Error("RECIPIENT_CARDS_REQUIRED");
-  }
   const ex = await prisma.exchange.findFirst({
     where: { id: exchangeId, recipientId, status: "PROPOSED" },
     select: { id: true, initiatorId: true },
@@ -180,6 +174,13 @@ export async function acceptExchange(recipientId: string, exchangeId: string): P
   if (!ex) throw new Error("NOT_FOUND");
 
   await prisma.$transaction(async (tx) => {
+    // Vérifie les items à l'intérieur de la transaction pour éviter la race condition
+    // avec un cancelExchange concurrent.
+    const recipientItems = await tx.exchangeItem.count({
+      where: { exchangeId, fromInitiator: false },
+    });
+    if (recipientItems === 0) throw new Error("RECIPIENT_CARDS_REQUIRED");
+
     await tx.exchange.update({
       where: { id: exchangeId },
       data: { status: "ACCEPTED", acceptedAt: new Date() },

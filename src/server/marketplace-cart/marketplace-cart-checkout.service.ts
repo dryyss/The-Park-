@@ -7,7 +7,7 @@ import { roundEur } from "@/lib/wallet";
 import { formatPrice } from "@/lib/format";
 import { createSaleFromListing } from "@/server/sale/sale.mutations";
 import { markSaleFailed, markSalePaid } from "@/server/sale/sale-lifecycle.service";
-import { creditWalletForSalePayout, debitWalletForSale, getWalletSpendableBalanceEur } from "@/server/wallet/wallet.service";
+import { creditWalletForSalePayout, debitWalletForSale, getWalletSpendableBalanceEur, isWalletFundedSale } from "@/server/wallet/wallet.service";
 import {
   getViewerMarketplaceCart,
   removeMarketplaceCartItemByListing,
@@ -240,7 +240,8 @@ export async function fulfillMarketplaceCheckout(checkoutId: string, stripeSessi
     }
 
     const net = roundEur(Number(line.sale.price) - Number(line.sale.serviceFee));
-    if (net > 0) {
+    // Crédite le vendeur uniquement si le paiement était en wallet (pas double-credit Stripe).
+    if (net > 0 && (await isWalletFundedSale(line.saleId))) {
       await creditWalletForSalePayout({
         userId: line.sellerId,
         saleId: line.saleId,

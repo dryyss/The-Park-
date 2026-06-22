@@ -20,6 +20,8 @@ export async function markSalePaid(saleId: string): Promise<void> {
       data: { status: "AUTHORIZED" },
     });
     await tx.listing.update({ where: { id: sale.listingId }, data: { status: "SOLD" } });
+    // Purge les paniers qui pointaient vers cette annonce maintenant vendue.
+    await tx.marketplaceCartItem.deleteMany({ where: { listingId: sale.listingId } });
     await tx.transactionEvent.create({
       data: {
         entityType: "SALE",
