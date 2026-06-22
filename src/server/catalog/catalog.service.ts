@@ -320,7 +320,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
       orderBy: { price: "asc" },
       take: 10,
       include: {
-        seller: { select: { displayName: true, slug: true, ratingAvg: true, country: true } },
+        seller: { select: { displayName: true, slug: true, ratingAvg: true } },
         variant: { include: { versionType: true } },
       },
     }),
