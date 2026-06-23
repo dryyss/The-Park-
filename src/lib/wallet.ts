@@ -1,5 +1,7 @@
 /** Règles portefeuille crédits marketplace. */
 export const WALLET_MIN_TOP_UP_EUR = 5;
+/** Plafond technique anti-abus (pas de limite basse type 500 €). */
+export const WALLET_MAX_TOP_UP_EUR = 10_000;
 export const WALLET_TOP_UP_FEE_PCT = 0.05;
 /** Montant minimum de retrait bancaire (gains vendeur). */
 export const WALLET_MIN_WITHDRAW_EUR = 5;

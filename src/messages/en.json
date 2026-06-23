@@ -726,6 +726,7 @@
     "feeLine": "Platform fee (5%)",
     "totalLine": "Total charged (Stripe)",
     "topUpCta": "Pay with Stripe",
+    "acceptTermsLabel": "I accept the <link>terms of sale</link>.",
     "topUpPending": "Redirecting…",
     "topUpSuccess": "Credits added to your wallet.",
     "topUpCancelled": "Top-up cancelled.",
@@ -754,6 +755,7 @@
       "UNAUTHORIZED": "Sign in required.",
       "VALIDATION": "Invalid amount.",
       "TOP_UP_TOO_LOW": "Minimum €5 credit.",
+      "TERMS_NOT_ACCEPTED": "You must accept the terms of sale.",
       "STRIPE_NOT_CONFIGURED": "Payment unavailable.",
       "UNKNOWN": "Could not start top-up."
     }

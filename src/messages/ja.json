@@ -715,6 +715,7 @@
     "feeLine": "手数料 (5%)",
     "totalLine": "Stripe請求合計",
     "topUpCta": "Stripeで支払う",
+    "acceptTermsLabel": "<link>販売条件</link>に同意します。",
     "topUpPending": "リダイレクト中…",
     "topUpSuccess": "クレジットが追加されました。",
     "topUpCancelled": "チャージがキャンセルされました。",
@@ -743,6 +744,7 @@
       "UNAUTHORIZED": "ログインが必要です。",
       "VALIDATION": "無効な金額です。",
       "TOP_UP_TOO_LOW": "最低5 €のクレジット。",
+      "TERMS_NOT_ACCEPTED": "販売条件への同意が必要です。",
       "STRIPE_NOT_CONFIGURED": "決済を利用できません。",
       "UNKNOWN": "チャージを開始できませんでした。"
     }

@@ -10,12 +10,13 @@ import {
   syncConnectAccountForUser,
 } from "@/server/wallet/wallet-connect.service";
 import { withdrawEarnedToBank } from "@/server/wallet/wallet-withdraw.service";
-import { WALLET_MIN_TOP_UP_EUR, WALLET_MIN_WITHDRAW_EUR } from "@/lib/wallet";
+import { WALLET_MAX_TOP_UP_EUR, WALLET_MIN_TOP_UP_EUR, WALLET_MIN_WITHDRAW_EUR } from "@/lib/wallet";
 
 export type WalletActionError =
   | "UNAUTHORIZED"
   | "VALIDATION"
   | "TOP_UP_TOO_LOW"
+  | "TERMS_NOT_ACCEPTED"
   | "STRIPE_NOT_CONFIGURED"
   | "UNKNOWN";
 
@@ -31,7 +32,8 @@ export type WalletWithdrawError =
   | "UNKNOWN";
 
 const topUpSchema = z.object({
-  creditEur: z.number().min(WALLET_MIN_TOP_UP_EUR).max(500),
+  creditEur: z.number().min(WALLET_MIN_TOP_UP_EUR).max(WALLET_MAX_TOP_UP_EUR),
+  acceptTerms: z.literal(true),
   locale: z.string().min(2),
 });
 
@@ -49,7 +51,10 @@ export async function startWalletTopUpAction(
   if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
 
   const parsed = topUpSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+  if (!parsed.success) {
+    const termsIssue = parsed.error.issues.some((i) => i.path.includes("acceptTerms"));
+    return { ok: false, error: termsIssue ? "TERMS_NOT_ACCEPTED" : "VALIDATION" };
+  }
 
   try {
     const url = await createWalletTopUpCheckoutSession(viewer.id, parsed.data.locale, parsed.data.creditEur);

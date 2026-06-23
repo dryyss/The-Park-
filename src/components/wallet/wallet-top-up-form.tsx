@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { startWalletTopUpAction } from "@/server/wallet/wallet.actions";
 import { WALLET_MIN_TOP_UP_EUR, quoteWalletTopUp, formatWalletEur } from "@/lib/wallet";
 
@@ -14,16 +15,22 @@ export function WalletTopUpForm({
 }) {
   const t = useTranslations("wallet");
   const [creditEur, setCreditEur] = useState(WALLET_MIN_TOP_UP_EUR);
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   const quote = quoteWalletTopUp(creditEur);
+  const canSubmit = acceptTerms && creditEur >= WALLET_MIN_TOP_UP_EUR;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (!acceptTerms) {
+      setError(t("topUpError.TERMS_NOT_ACCEPTED"));
+      return;
+    }
     startTransition(async () => {
-      const res = await startWalletTopUpAction({ creditEur, locale });
+      const res = await startWalletTopUpAction({ creditEur, acceptTerms: true, locale });
       if (res.ok) window.location.href = res.redirectUrl;
       else setError(t(`topUpError.${res.error}`));
     });
@@ -69,9 +76,27 @@ export function WalletTopUpForm({
         </div>
       </div>
 
+      <label className="mt-4 flex cursor-pointer items-start gap-3">
+        <input
+          type="checkbox"
+          checked={acceptTerms}
+          onChange={(e) => setAcceptTerms(e.target.checked)}
+          className="mt-0.5 h-4 w-4 shrink-0 accent-carmin"
+        />
+        <span className="text-[12px] font-semibold leading-relaxed text-texte-dim">
+          {t.rich("acceptTermsLabel", {
+            link: (chunks) => (
+              <Link href="/aide" className="text-carmin underline underline-offset-2 hover:text-carmin-alt">
+                {chunks}
+              </Link>
+            ),
+          })}
+        </span>
+      </label>
+
       <button
         type="submit"
-        disabled={pending || creditEur < WALLET_MIN_TOP_UP_EUR}
+        disabled={pending || !canSubmit}
         className="font-display mt-4 w-full rounded-lg bg-carmin py-3 text-[13px] tracking-[1px] text-white uppercase transition hover:bg-carmin-alt disabled:opacity-50"
       >
         {pending ? t("topUpPending") : t("topUpCta")}

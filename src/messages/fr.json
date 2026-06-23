@@ -726,6 +726,7 @@
     "feeLine": "Frais plateforme (5 %)",
     "totalLine": "Total débité (Stripe)",
     "topUpCta": "Payer via Stripe",
+    "acceptTermsLabel": "J'accepte les <link>conditions générales de vente</link>.",
     "topUpPending": "Redirection…",
     "topUpSuccess": "Crédits ajoutés à ton portefeuille.",
     "topUpCancelled": "Recharge annulée.",
@@ -754,6 +755,7 @@
       "UNAUTHORIZED": "Connexion requise.",
       "VALIDATION": "Montant invalide.",
       "TOP_UP_TOO_LOW": "Minimum 5 € de crédit.",
+      "TERMS_NOT_ACCEPTED": "Tu dois accepter les conditions générales de vente.",
       "STRIPE_NOT_CONFIGURED": "Paiement indisponible.",
       "UNKNOWN": "Impossible de lancer la recharge."
     }
