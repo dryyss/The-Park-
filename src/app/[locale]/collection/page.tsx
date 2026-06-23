@@ -51,10 +51,26 @@ export default async function CollectionPage({
   return (
     <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="駐車場">
-        <div className="flex gap-2 pb-1.5">
-          <span className="font-display -rotate-1 rounded-lg bg-blanc-casse px-4.5 py-2.5 text-[13px] tracking-[1.5px] text-charbon shadow-[3px_3px_0_var(--color-carmin)]">
-            {t("seasonActive")}
-          </span>
+        <div className="flex items-start gap-3 pb-1.5">
+          <div className="flex flex-col items-start">
+            <span className="font-display -rotate-1 rounded-lg bg-blanc-casse px-4.5 py-2.5 text-[13px] tracking-[1.5px] text-charbon shadow-[3px_3px_0_var(--color-carmin)]">
+              {t("seasonActive")}
+            </span>
+            <div className="ml-2 mt-0.5 flex gap-1">
+              <span
+                className="bg-carmin px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] text-white"
+                style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))" }}
+              >
+                {t("editionBadge1st")}
+              </span>
+              <span
+                className="bg-charbon-600 px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] text-texte-faible"
+                style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))" }}
+              >
+                {t("editionBadgeReprint")}
+              </span>
+            </div>
+          </div>
           <span className="font-display cursor-not-allowed rounded-lg border border-dashed border-charbon-400 px-4.5 py-2.5 text-[13px] tracking-[1.5px] text-texte-faible">
             {t("seasonSoon")}
           </span>
@@ -84,8 +100,11 @@ export default async function CollectionPage({
               {sec.owned}/{sec.total}
             </span>
             <div className="flex-1" />
-            <div className="h-[5px] w-[130px] overflow-hidden rounded bg-charbon-600">
-              <div className="h-full rounded transition-all" style={{ width: `${sec.pct}%`, background: sec.color }} />
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-bold tabular-nums text-texte-faible">{sec.pct}%</span>
+              <div className="h-[5px] w-[130px] overflow-hidden rounded bg-charbon-600">
+                <div className="h-full rounded transition-all" style={{ width: `${sec.pct}%`, background: sec.color }} />
+              </div>
             </div>
           </div>
           <div className={gridClass}>

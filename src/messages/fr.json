@@ -130,8 +130,10 @@
   "collection": {
     "kicker": "Pocket Drifterz · Édition 2026",
     "title": "Ma Collection",
-    "seasonActive": "Saison 1 · Moteur Forgé · 1ère Édition",
+    "seasonActive": "Saison 1 · Moteur Forgé",
     "seasonSoon": "Saison 2 · 🔒 À venir",
+    "editionBadge1st": "1ÈRE ÉDITION",
+    "editionBadgeReprint": "RÉÉDITION",
     "ownedCount": "{count} cartes possédées",
     "overallHint": "Complétion globale · toutes raretés",
     "segAll": "Toutes",

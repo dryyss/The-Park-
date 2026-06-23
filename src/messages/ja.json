@@ -130,8 +130,10 @@
   "collection": {
     "kicker": "Pocket Drifterz · 2026 Edition",
     "title": "マイコレクション",
-    "seasonActive": "シーズン1 · 鍛造エンジン · 1stエディション",
+    "seasonActive": "シーズン1 · 鍛造エンジン",
     "seasonSoon": "シーズン2 · 🔒 近日公開",
+    "editionBadge1st": "1stエディション",
+    "editionBadgeReprint": "再版",
     "ownedCount": "{count}枚所持",
     "overallHint": "全体コンプリート · 全レアリティ",
     "segAll": "すべて",

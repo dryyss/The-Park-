@@ -130,8 +130,10 @@
   "collection": {
     "kicker": "Pocket Drifterz · 2026 Edition",
     "title": "My Collection",
-    "seasonActive": "Season 1 · Forged Engine · 1st Edition",
+    "seasonActive": "Season 1 · Forged Engine",
     "seasonSoon": "Season 2 · 🔒 Coming soon",
+    "editionBadge1st": "1ST EDITION",
+    "editionBadgeReprint": "REPRINT",
     "ownedCount": "{count} cards owned",
     "overallHint": "Overall completion · all rarities",
     "segAll": "All",

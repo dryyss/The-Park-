@@ -82,8 +82,13 @@ export function CollectionCardTile({
           />
         </div>
       )}
-      <div className={`mt-2 flex items-center justify-between px-0.5 ${missing ? "opacity-55" : ""}`}>
-        <div className="flex items-center gap-1.5 text-[11px] font-extrabold text-texte-dim">
+      <Link href={`/carte/${card.slug}`} className="mt-1.5 block px-0.5">
+        <p className={`truncate text-[11.5px] font-extrabold leading-tight ${missing ? "text-texte-faible" : "text-blanc-casse"}`}>
+          {card.name}
+        </p>
+      </Link>
+      <div className={`mt-1 flex items-center justify-between px-0.5 ${missing ? "opacity-55" : ""}`}>
+        <div className="flex items-center gap-1.5 text-[11px] font-bold text-texte-dim">
           <span style={{ color: card.color }}>{card.glyph}</span>
           {card.numberLabel}
         </div>
