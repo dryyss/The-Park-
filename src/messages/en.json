@@ -520,6 +520,7 @@
     },
     "actionPropose": "Offer mine",
     "actionManage": "Manage",
+    "viewSellers": "View sellers",
     "actionCancelListing": "Remove",
     "ownListingBadge": "My listing",
     "ownListingYou": "My listing",

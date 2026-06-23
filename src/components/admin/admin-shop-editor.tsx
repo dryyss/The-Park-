@@ -119,7 +119,7 @@ function ShopProductPanel({ product, uploadMode }: { product: AdminShopProduct; 
   return (
     <article id={`product-${product.id}`} className={`scroll-mt-24 border-b border-charbon-600/50 ${dirty ? "bg-or/5" : ""}`}>
       <form onSubmit={save}>
-        <div className="flex flex-wrap items-center gap-3 px-4 py-3">
+        <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center">
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
@@ -134,7 +134,7 @@ function ShopProductPanel({ product, uploadMode }: { product: AdminShopProduct; 
             )}
           </button>
 
-          <div className="min-w-[120px] flex-1">
+          <div className="min-w-0 flex-1">
             <p className="font-mono text-[10px] text-texte-dim">{product.sku}</p>
             <input
               value={name}
@@ -147,7 +147,8 @@ function ShopProductPanel({ product, uploadMode }: { product: AdminShopProduct; 
             </p>
           </div>
 
-          <label className="grid w-[88px] gap-1">
+          <div className="grid w-full grid-cols-2 gap-3 sm:flex sm:w-auto sm:items-center sm:gap-3">
+          <label className="grid w-full gap-1 sm:w-[88px]">
             <span className="text-[9px] font-extrabold tracking-wide text-texte-dim uppercase">{t("price")}</span>
             <input
               value={price}
@@ -157,7 +158,7 @@ function ShopProductPanel({ product, uploadMode }: { product: AdminShopProduct; 
             />
           </label>
 
-          <label className="grid w-[72px] gap-1">
+          <label className="grid w-full gap-1 sm:w-[72px]">
             <span className="text-[9px] font-extrabold tracking-wide text-texte-dim uppercase">{t("stock")}</span>
             <input
               value={stock}
@@ -168,7 +169,7 @@ function ShopProductPanel({ product, uploadMode }: { product: AdminShopProduct; 
             />
           </label>
 
-          <label className="flex cursor-pointer items-center gap-2">
+          <label className="flex cursor-pointer items-center gap-2 sm:col-span-2">
             <input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} className="accent-or" />
             <span
               className={`rounded-md px-2 py-0.5 text-[10px] font-extrabold uppercase ${
@@ -179,7 +180,7 @@ function ShopProductPanel({ product, uploadMode }: { product: AdminShopProduct; 
             </span>
           </label>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-1.5 sm:col-span-2 sm:ml-auto">
             <button
               type="button"
               onClick={() => setExpanded((v) => !v)}
@@ -210,6 +211,7 @@ function ShopProductPanel({ product, uploadMode }: { product: AdminShopProduct; 
             ) : feedback === "error" ? (
               <span className="text-[11px] font-bold text-neon-rouge">{t("saveError")}</span>
             ) : null}
+          </div>
           </div>
         </div>
 

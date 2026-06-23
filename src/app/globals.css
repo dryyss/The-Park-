@@ -212,18 +212,46 @@ h3,
 /* Conteneurs responsive — mobile-first */
 @layer components {
   .page-container {
-    @apply mx-auto max-w-[1320px] px-4 sm:px-6 lg:px-7;
+    margin-inline: auto;
+    max-width: 1320px;
+    padding-inline: 1rem;
   }
 
   .page-section {
-    @apply page-container pt-9 pb-[60px];
+    margin-inline: auto;
+    max-width: 1320px;
+    padding-inline: 1rem;
+    padding-top: 2.25rem;
+    padding-bottom: 60px;
   }
 
   .page-pad {
-    @apply px-4 sm:px-6 lg:px-7;
+    padding-inline: 1rem;
   }
 
   .scroll-touch {
     -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (min-width: 640px) {
+  .page-container,
+  .page-section {
+    padding-inline: 1.5rem;
+  }
+
+  .page-pad {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container,
+  .page-section {
+    padding-inline: 1.75rem;
+  }
+
+  .page-pad {
+    padding-inline: 1.75rem;
   }
 }

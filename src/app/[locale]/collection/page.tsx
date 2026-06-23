@@ -6,10 +6,10 @@ import { getViewerWishlistCardIds } from "@/server/wishlist/wishlist.service";
 import { getCardsLikeMeta } from "@/server/card-like/card-like.service";
 import { PageHeader } from "@/components/common/page-header";
 import { CompletionPanel, CollectionFiltersBar } from "@/components/collection/collection-filters";
-import { CollectionCardTile } from "@/components/collection/collection-card-tile";
+import { CollectionCardGrid } from "@/components/collection/collection-card-grid";
 import { CollectionDisplayControls } from "@/components/collection/collection-display-controls";
 import { CollectionGuestBanner } from "@/components/collection/collection-guest-banner";
-import { collectionGridClassName, parseCollectionGridCols, parseCollectionSort } from "@/lib/collection-grid";
+import { parseCollectionGridCols, parseCollectionSort } from "@/lib/collection-grid";
 import { ScrollToTopButton } from "@/components/common/scroll-to-top-button";
 import { localePageMetadata } from "@/lib/seo-messages";
 
@@ -52,7 +52,6 @@ export default async function CollectionPage({
   const wishlistCardIdSet = new Set(wishlistCardIds);
   const allCardIds = data.sections.flatMap((sec) => sec.cards.map((c) => c.cardId));
   const likeMeta = Object.fromEntries(await getCardsLikeMeta(allCardIds, viewer?.id));
-  const gridClass = collectionGridClassName(collParams.cols);
 
   return (
     <main className="page-section">
@@ -95,7 +94,7 @@ export default async function CollectionPage({
 
       {data.sections.map((sec) => (
         <section key={sec.code} className="mt-9">
-          <div className="mb-4 flex items-center gap-3.5">
+          <div className="mb-4 flex flex-wrap items-center gap-2 sm:gap-3.5">
             <span className="text-[20px]" style={{ color: sec.color }}>{sec.glyph}</span>
             <h2 className="font-display text-[24px] tracking-[2px] -skew-x-3 uppercase text-blanc-casse">{sec.title}</h2>
             <span className="font-jp text-[12px] font-bold tracking-[2px] text-texte-faible">{sec.jp}</span>
@@ -106,27 +105,21 @@ export default async function CollectionPage({
               {sec.owned}/{sec.total}
             </span>
             <div className="flex-1" />
-            <div className="flex items-center gap-2">
+            <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
               <span className="text-[11px] font-bold tabular-nums text-texte-faible">{sec.pct}%</span>
-              <div className="h-[5px] w-[130px] overflow-hidden rounded bg-charbon-600">
+              <div className="h-[5px] min-w-0 flex-1 overflow-hidden rounded bg-charbon-600 sm:w-[130px] sm:flex-none">
                 <div className="h-full rounded transition-all" style={{ width: `${sec.pct}%`, background: sec.color }} />
               </div>
             </div>
           </div>
-          <div className={gridClass}>
-            {sec.cards.map((card) => (
-              <CollectionCardTile
-                key={card.slug}
-                card={card}
-                missingLabel={t("missing")}
-                showControls
-                isAuthenticated={isAuthenticated}
-                inWishlist={wishlistCardIdSet.has(card.cardId)}
-                likeCount={likeMeta[card.cardId]?.count ?? 0}
-                liked={likeMeta[card.cardId]?.liked ?? false}
-              />
-            ))}
-          </div>
+          <CollectionCardGrid
+            cards={sec.cards}
+            cols={collParams.cols}
+            missingLabel={t("missing")}
+            isAuthenticated={isAuthenticated}
+            wishlistCardIds={wishlistCardIdSet}
+            likeMeta={likeMeta}
+          />
         </section>
       ))}
       <ScrollToTopButton />

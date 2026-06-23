@@ -1,3 +1,5 @@
+"use client";
+
 import type { CollectionCard as Card } from "@/server/collection/collection.service";
 import { HoloCard } from "@/components/cards/holo-card";
 import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";

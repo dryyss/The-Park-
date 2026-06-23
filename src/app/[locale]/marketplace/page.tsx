@@ -13,7 +13,9 @@ import {
 } from "@/server/marketplace-cart/marketplace-cart.service";
 import { getViewerWishlistCardIds } from "@/server/wishlist/wishlist.service";
 import { MarketplaceFilters, type MarketParams } from "@/components/marketplace/marketplace-filters";
-import { ListingCard } from "@/components/marketplace/listing-card";
+import { MarketplaceListingGrid } from "@/components/marketplace/marketplace-listing-grid";
+import type { ListingCardLabels } from "@/components/marketplace/listing-card-view";
+import { CONDITION_ORDER } from "@/lib/condition";
 import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
@@ -43,6 +45,22 @@ export default async function MarketplacePage({
   setRequestLocale(locale);
   const sp = await searchParams;
   const t = await getTranslations("marketplace");
+  const tc = await getTranslations("conditions");
+
+  const listingLabels: ListingCardLabels = {
+    minCondition: t("minCondition"),
+    wantedBadge: t("wantedBadge"),
+    ownListingBadge: t("ownListingBadge"),
+    ownListingYou: t("ownListingYou"),
+    budgetCaption: t("budgetCaption"),
+    priceFixed: t("priceFixed"),
+    priceCaption: t("priceCaption"),
+    actionManage: t("actionManage"),
+    actionContact: t("actionContact"),
+    actionPropose: t("actionPropose"),
+    viewSellers: t("viewSellers"),
+  };
+  const conditionLabels = Object.fromEntries(CONDITION_ORDER.map((c) => [c, tc(c)]));
 
   const marketParams: MarketParams = {
     intent: sp.intent === "want" ? "want" : "sell",
@@ -161,18 +179,18 @@ export default async function MarketplacePage({
 
       {/* Annonces */}
       {listings.length > 0 ? (
-        <div className="mt-5 grid grid-cols-2 gap-4.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {listings.map((l) => (
-            <ListingCard
-              key={l.id}
-              listing={l}
-              isOwnListing={viewer?.id === l.sellerId}
-              inCart={cartListingIdSet.has(l.id)}
-              viewerOwnsCard={ownedCardNumberSet.has(l.number)}
-              inWishlist={wishlistCardIdSet.has(l.cardId)}
-              isAuthenticated={!!viewer}
-            />
-          ))}
+        <div className="mt-5">
+          <MarketplaceListingGrid
+            listings={listings}
+            labels={listingLabels}
+            conditionLabels={conditionLabels}
+            locale={locale}
+            cartListingIds={cartListingIdSet}
+            ownedCardNumbers={ownedCardNumberSet}
+            wishlistCardIds={wishlistCardIdSet}
+            viewerId={viewer?.id}
+            isAuthenticated={!!viewer}
+          />
         </div>
       ) : (
         <div className="py-[70px] text-center text-texte-faible">

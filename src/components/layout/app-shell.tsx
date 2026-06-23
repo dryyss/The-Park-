@@ -19,7 +19,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <>
       <div className="flex min-h-screen flex-col">
         <TopBar />
-        <div className="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</div>
+        <div className="flex-1 overflow-x-hidden pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</div>
         <Footer />
       </div>
       <MobileTabs />

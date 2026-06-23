@@ -10,9 +10,9 @@ import { cardImage } from "@/lib/rarity";
 type Step = 0 | 1 | 2 | 3;
 
 const FLOAT_CARDS = [
-  { src: "/uploads/54_NISSAN_S15_ICONIQUE.jpg", rot: "-8deg", delay: "0s", w: "w-[116px]" },
-  { src: "/uploads/76_TOYOTA_COROLLA_TRUENO.jpg", rot: "0deg", delay: "0.6s", w: "w-[128px]", lift: true },
-  { src: "/uploads/64_PORSCHE_911_RWB.jpg", rot: "8deg", delay: "1.2s", w: "w-[116px]" },
+  { src: "/uploads/54_NISSAN_S15_ICONIQUE.jpg", rot: "-8deg", delay: "0s", size: "w-[min(26vw,116px)] sm:w-[116px]" },
+  { src: "/uploads/76_TOYOTA_COROLLA_TRUENO.jpg", rot: "0deg", delay: "0.6s", size: "w-[min(30vw,128px)] sm:w-[128px]", lift: true },
+  { src: "/uploads/64_PORSCHE_911_RWB.jpg", rot: "8deg", delay: "1.2s", size: "w-[min(26vw,116px)] sm:w-[116px]" },
 ];
 
 const REGIONS = [
@@ -67,7 +67,7 @@ export function OnboardingWizard() {
         始
       </div>
 
-      <div className="relative z-[2] flex shrink-0 items-center justify-between px-8 py-5">
+      <div className="relative z-[2] flex shrink-0 items-center justify-between px-4 py-4 sm:px-8 sm:py-5">
         <div className="flex items-center gap-3">
           <span className="h-10 w-10 -rotate-[4deg] overflow-hidden rounded-[9px] bg-blanc-casse shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
             <Image src="/uploads/pasted-1781200672492-0.png" alt="The Park" width={40} height={40} className="h-full w-full scale-110 object-cover" />
@@ -83,21 +83,21 @@ export function OnboardingWizard() {
       </div>
 
       {step >= 1 && step <= 3 && (
-        <div className="relative z-[2] mx-auto flex w-full max-w-[420px] gap-2 px-8">
+        <div className="relative z-[2] mx-auto flex w-full max-w-[420px] gap-2 px-4 sm:px-8">
           {[1, 2, 3].map((i) => (
             <div key={i} className={`h-1 flex-1 rounded-sm transition ${step >= i ? "bg-carmin" : "bg-charbon-600"}`} />
           ))}
         </div>
       )}
 
-      <div className="relative z-[2] flex flex-1 items-center justify-center p-7">
+      <div className="relative z-[2] flex flex-1 items-center justify-center p-4 sm:p-7">
         {step === 0 && (
           <div className="animate-fade-up max-w-[640px] text-center">
-            <div className="mb-9 flex justify-center gap-4">
+            <div className="mb-7 flex justify-center gap-2 sm:mb-9 sm:gap-4">
               {FLOAT_CARDS.map((c) => (
                 <div
                   key={c.src}
-                  className={`animate-floaty ${c.w} ${c.lift ? "-mt-3.5" : ""}`}
+                  className={`animate-floaty ${c.size} ${c.lift ? "-mt-2 sm:-mt-3.5" : ""}`}
                   style={{ ["--rot" as string]: c.rot, animationDelay: c.delay }}
                 >
                   <div className="relative aspect-[5/7] overflow-hidden rounded-xl border border-white/10 shadow-[0_18px_36px_rgba(0,0,0,0.6)]">
@@ -256,7 +256,7 @@ export function OnboardingWizard() {
             <p className="mt-1 text-[14px] text-texte-muet">{t("boosterDesc")}</p>
             <button type="button" onClick={openBooster} className="relative mx-auto mt-6 inline-block cursor-pointer">
               <div className="pointer-events-none absolute inset-[-30px] animate-[glowPulse_2.2s_ease-in-out_infinite] bg-[radial-gradient(circle,rgba(216,27,96,0.35),transparent_68%)]" />
-              <div className="animate-shake relative mx-auto w-[210px]">
+              <div className="animate-shake relative mx-auto w-[min(52vw,210px)]">
                 <div className="relative aspect-[3/4.4] overflow-hidden rounded-2xl border-[1.5px] border-carmin/50 shadow-[0_26px_54px_rgba(0,0,0,0.7)]">
                   <Image src="/uploads/booster-1.png" alt="" fill className="object-cover" sizes="210px" />
                 </div>
@@ -276,11 +276,11 @@ export function OnboardingWizard() {
               {t("pulledTitle")}
             </h2>
             <p className="mt-1 mb-7 text-[14px] text-texte-muet">{t("pulledDesc")}</p>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
               {PULL.map((p, i) => (
                 <div
                   key={p.name}
-                  className="w-[150px]"
+                  className="w-[min(42vw,150px)] sm:w-[150px]"
                   style={{ animation: `revealCard 0.55s ${(i * 0.18 + 0.1).toFixed(2)}s cubic-bezier(0.2,0.8,0.3,1) both` }}
                 >
                   <div className="relative aspect-[5/7] overflow-hidden rounded-[13px] border-2 shadow-[0_18px_40px_rgba(0,0,0,0.6)]" style={{ borderColor: p.color }}>

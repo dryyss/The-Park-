@@ -268,8 +268,8 @@ function SeasonHeader({
           </span>
         )}
       </div>
-      <form action={(fd) => save(fd)} className="flex flex-1 flex-wrap items-end gap-4">
-        <div className="min-w-[160px] flex-1">
+      <form action={(fd) => save(fd)} className="flex w-full flex-1 flex-col flex-wrap items-stretch gap-4 sm:flex-row sm:items-end">
+        <div className="min-w-0 flex-1 sm:min-w-[160px]">
           <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("name")}</label>
           <input name="name" defaultValue={season.name} className="mt-1 w-full rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse" />
         </div>
@@ -277,13 +277,13 @@ function SeasonHeader({
           <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("cards")}</label>
           <p className="text-[14px] font-bold text-blanc-casse">{season.cards.length}</p>
         </div>
-        <div>
+        <div className="w-full sm:w-auto">
           <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("release")}</label>
           <input
             name="releaseDate"
             type="datetime-local"
             defaultValue={season.releaseDate ? new Date(season.releaseDate).toISOString().slice(0, 16) : ""}
-            className="mt-1 rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse"
+            className="mt-1 w-full rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse sm:w-auto"
           />
         </div>
         <button type="submit" disabled={pending} className="rounded-lg bg-carmin px-4 py-2 text-[12px] font-extrabold text-white uppercase disabled:opacity-50">
@@ -606,7 +606,7 @@ function ImageUrlField({
             setFailed(false);
           }}
           placeholder={t("imagePlaceholder")}
-          className={`${inputCls} min-w-[220px] flex-1`}
+          className={`${inputCls} w-full min-w-0 flex-1 sm:min-w-[220px]`}
         />
         <div className="flex shrink-0 flex-col items-center gap-1.5">
           <div
