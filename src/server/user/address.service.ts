@@ -83,7 +83,7 @@ export async function deleteUserAddress(userId: string, addressId: string): Prom
 
 export async function updateUserProfile(
   userId: string,
-  data: { displayName?: string; bio?: string; slug?: string },
+  data: { displayName?: string; bio?: string; slug?: string; city?: string },
 ): Promise<void> {
   if (data.slug) {
     const taken = await prisma.user.findFirst({
@@ -101,6 +101,7 @@ export async function updateUserProfile(
         : {}),
       ...(data.bio !== undefined ? { bio: data.bio.trim() || null } : {}),
       ...(data.slug !== undefined ? { slug: data.slug.trim() } : {}),
+      ...(data.city !== undefined ? { city: data.city.trim() || null } : {}),
     },
   });
 }

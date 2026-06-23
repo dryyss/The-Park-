@@ -24,6 +24,7 @@ const profileSchema = z.object({
   displayName: z.string().min(2).max(80).optional(),
   bio: z.string().max(500).optional(),
   slug: z.string().min(2).max(64).regex(/^[a-z0-9-]+$/).optional(),
+  city: z.string().max(100).optional(),
 });
 
 export async function saveAddressAction(input: unknown): Promise<ProfileActionResult> {

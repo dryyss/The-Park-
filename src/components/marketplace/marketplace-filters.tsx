@@ -10,12 +10,17 @@ export interface MarketParams {
   condition?: string;
   version?: string;
   q?: string;
+  city?: string;
+  wishlist?: boolean;
 }
 
 function hrefWith(p: MarketParams, patch: Partial<MarketParams>): string {
   const merged = { ...p, ...patch };
   const sp = new URLSearchParams();
-  for (const [k, v] of Object.entries(merged)) if (v) sp.set(k, String(v));
+  for (const [k, v] of Object.entries(merged)) {
+    if (v === true) sp.set(k, "1");
+    else if (v && v !== false) sp.set(k, String(v));
+  }
   const qs = sp.toString();
   return `/marketplace${qs ? `?${qs}` : ""}`;
 }
@@ -53,10 +58,12 @@ export async function MarketplaceFilters({
   params,
   facets,
   locale,
+  isAuthenticated = false,
 }: {
   params: MarketParams;
   facets: MarketplaceFacets;
   locale: string;
+  isAuthenticated?: boolean;
 }) {
   const t = await getTranslations("marketplace");
   const tc = await getTranslations("conditions");
@@ -99,7 +106,7 @@ export async function MarketplaceFilters({
       </div>
 
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2.5">
-        <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-[10.5px] font-extrabold tracking-[2px] text-texte-dim uppercase">{t("filterCondition")}</span>
           <Chip href={hrefWith(params, { condition: undefined })} active={!params.condition}>
             {t("allConditions")}
@@ -110,7 +117,7 @@ export async function MarketplaceFilters({
             </Chip>
           ))}
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-[10.5px] font-extrabold tracking-[2px] text-texte-dim uppercase">{t("filterVersion")}</span>
           <Chip href={hrefWith(params, { version: undefined })} active={!params.version}>
             {t("allVersions")}
@@ -121,6 +128,35 @@ export async function MarketplaceFilters({
             </Chip>
           ))}
         </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2.5">
+        {isAuthenticated && (
+          <Chip
+            href={hrefWith(params, { wishlist: params.wishlist ? undefined : true })}
+            active={!!params.wishlist}
+            glyph="♥"
+            glyphColor="#D6004F"
+          >
+            {t("filterWishlist")}
+          </Chip>
+        )}
+        <form action={`/${locale}/marketplace`} className="flex items-center gap-2">
+          <input type="hidden" name="intent" value={params.intent} />
+          {params.rarity && <input type="hidden" name="rarity" value={params.rarity} />}
+          {params.condition && <input type="hidden" name="condition" value={params.condition} />}
+          {params.version && <input type="hidden" name="version" value={params.version} />}
+          {params.wishlist && <input type="hidden" name="wishlist" value="1" />}
+          {params.q && <input type="hidden" name="q" value={params.q} />}
+          <span className="text-[10.5px] font-extrabold tracking-[2px] text-texte-dim uppercase">📍</span>
+          <input
+            name="city"
+            defaultValue={params.city ?? ""}
+            placeholder={t("filterCityPlaceholder")}
+            aria-label={t("filterCityPlaceholder")}
+            className="w-[160px] rounded-full border border-charbon-500 bg-charbon-800 px-3.5 py-1.5 text-[12px] text-blanc-casse outline-none focus:border-carmin"
+          />
+        </form>
       </div>
     </div>
   );

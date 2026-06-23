@@ -4,6 +4,7 @@ import { getViewerOwnedCardsForPropose } from "@/server/exchange/exchange.servic
 import { PageHeader } from "@/components/common/page-header";
 import { ExchangeProposeForm } from "@/components/exchange/exchange-propose-form";
 import { GuestAuthBanner } from "@/components/auth/login-gate-prompt";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -21,8 +22,14 @@ export default async function EchangesProposerPage({
 
   const viewer = await getViewerUser();
   const isAuthenticated = !!viewer;
-  const ownedCards = viewer ? await getViewerOwnedCardsForPropose(viewer.id) : [];
   const defaultRecipient = sp.recipient?.trim() ?? "";
+
+  const [ownedCards, recipientUser] = await Promise.all([
+    viewer ? getViewerOwnedCardsForPropose(viewer.id) : Promise.resolve([]),
+    defaultRecipient
+      ? prisma.user.findFirst({ where: { slug: defaultRecipient }, select: { displayName: true } })
+      : Promise.resolve(null),
+  ]);
 
   return (
     <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
@@ -33,6 +40,7 @@ export default async function EchangesProposerPage({
         <ExchangeProposeForm
           ownedCards={ownedCards}
           defaultRecipient={defaultRecipient}
+          defaultRecipientName={recipientUser?.displayName ?? ""}
           isAuthenticated={isAuthenticated}
         />
       </div>

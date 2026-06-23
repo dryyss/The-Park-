@@ -30,6 +30,7 @@ export default async function ParametresPage({ params }: { params: Promise<{ loc
           displayName={account.displayName}
           bio={account.bio}
           slug={account.slug}
+          city={account.city}
           addresses={account.addresses}
           securitySection={
             <AccountSecuritySection email={account.email} passwordResetUrl={account.passwordResetUrl} />

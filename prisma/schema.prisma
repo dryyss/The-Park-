@@ -331,6 +331,7 @@ model User {
   slug        String     @unique
   avatarUrl   String?
   bio         String?
+  city        String?
   role        UserRole   @default(MEMBER)
   /// Sous-rôle staff (null = membre simple). Vérifié côté serveur.
   staffRole   AdminRole?

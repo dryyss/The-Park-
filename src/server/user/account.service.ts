@@ -7,6 +7,7 @@ export interface AccountSettings {
   displayName: string;
   bio: string;
   slug: string;
+  city: string;
   addresses: UserAddress[];
   passwordResetUrl: string | null;
 }
@@ -14,7 +15,7 @@ export interface AccountSettings {
 export async function getAccountSettings(userId: string): Promise<AccountSettings | null> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { email: true, displayName: true, bio: true, slug: true },
+    select: { email: true, displayName: true, bio: true, slug: true, city: true },
   });
   if (!user) return null;
 
@@ -32,6 +33,7 @@ export async function getAccountSettings(userId: string): Promise<AccountSetting
     displayName: user.displayName,
     bio: user.bio ?? "",
     slug: user.slug,
+    city: user.city ?? "",
     addresses,
     passwordResetUrl,
   };

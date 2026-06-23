@@ -152,25 +152,36 @@ export async function startMarketplaceCartStripeCheckout(input: {
   const stripe = getStripe();
   const baseUrl = getAppBaseUrl();
   const itemsParam = input.cartItemIds?.length ? input.cartItemIds.join(",") : "all";
+  const platformFeeEur = roundEur(recap.subtotalRaw * 0.05);
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     locale: input.locale === "ja" ? "ja" : input.locale === "en" ? "en" : "fr",
-    line_items: recap.lines.map((line) => {
-      const image = stripePublicImageUrl(baseUrl, line.image ?? undefined);
-      return {
+    line_items: [
+      ...recap.lines.map((line) => {
+        const image = stripePublicImageUrl(baseUrl, line.image ?? undefined);
+        return {
+          price_data: {
+            currency: "eur",
+            unit_amount: Math.round(line.priceRaw * 100),
+            product_data: {
+              name: line.name,
+              description: `${line.versionLabel} · ${line.sellerName}`,
+              ...(image ? { images: [image] } : {}),
+            },
+          },
+          quantity: 1,
+        };
+      }),
+      {
         price_data: {
           currency: "eur",
-          unit_amount: Math.round(line.priceRaw * 100),
-          product_data: {
-            name: line.name,
-            description: `${line.versionLabel} · ${line.sellerName}`,
-            ...(image ? { images: [image] } : {}),
-          },
+          unit_amount: Math.round(platformFeeEur * 100),
+          product_data: { name: "Frais de traitement The Park (5%)" },
         },
         quantity: 1,
-      };
-    }),
+      },
+    ],
     shipping_address_collection: {
       allowed_countries: ["FR", "BE", "CH", "LU", "MC", "AD", "GP", "MQ", "GF", "RE", "YT"],
     },

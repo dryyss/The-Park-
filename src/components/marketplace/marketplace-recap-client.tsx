@@ -29,9 +29,13 @@ export function MarketplaceRecapClient({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [stripeFeesAccepted, setStripeFeesAccepted] = useState(false);
 
   const canPayWithWallet = walletBalance >= recap.subtotalRaw;
   const hasPartialWallet = walletBalance > 0 && walletBalance < recap.subtotalRaw;
+
+  const stripeFeeRaw = Math.round(recap.subtotalRaw * 0.05 * 100) / 100;
+  const stripeTotalRaw = recap.subtotalRaw + stripeFeeRaw;
 
   function handlePayWithWallet() {
     setError(null);
@@ -141,24 +145,70 @@ export function MarketplaceRecapClient({
             >
               {pending ? t("processingWallet") : t("payWithWallet", { amount: formatPrice(recap.subtotalRaw) })}
             </button>
+
+            {/* Stripe optionnel — frais 5% */}
+            <div className="mt-4 rounded-lg border border-charbon-600 bg-charbon-700/40 px-3 py-3">
+              <div className="flex items-center justify-between text-[11.5px] font-bold text-texte-dim">
+                <span>{t("stripeFeeLabel")}</span>
+                <span className="text-neon-orange">+{formatPrice(stripeFeeRaw)}</span>
+              </div>
+              <div className="mt-1 flex items-center justify-between text-[11.5px] font-extrabold text-blanc-casse">
+                <span>{t("stripeTotalLabel")}</span>
+                <span>{formatPrice(stripeTotalRaw)}</span>
+              </div>
+              <label className="mt-2.5 flex cursor-pointer items-start gap-2">
+                <input
+                  type="checkbox"
+                  checked={stripeFeesAccepted}
+                  onChange={(e) => setStripeFeesAccepted(e.target.checked)}
+                  className="mt-0.5 h-3.5 w-3.5 accent-carmin"
+                />
+                <span className="text-[10.5px] font-semibold leading-snug text-texte-dim">
+                  {t("stripeFeeConsent", { fee: formatPrice(stripeFeeRaw) })}
+                </span>
+              </label>
+            </div>
             <button
               type="button"
               onClick={handlePayWithStripe}
-              disabled={pending}
-              className="font-display mt-3 flex w-full items-center justify-center rounded-[12px] border border-charbon-500 py-3 text-[12px] tracking-[1px] text-texte-dim uppercase transition hover:text-blanc-casse disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={pending || !stripeFeesAccepted}
+              className="font-display mt-2 flex w-full items-center justify-center rounded-[12px] border border-charbon-500 py-3 text-[12px] tracking-[1px] text-texte-dim uppercase transition hover:text-blanc-casse disabled:cursor-not-allowed disabled:opacity-40"
             >
               {t("payWithStripe")}
             </button>
           </>
         ) : (
-          <button
-            type="button"
-            onClick={handlePayWithStripe}
-            disabled={pending}
-            className="font-display mt-5 flex w-full items-center justify-center rounded-[12px] bg-carmin py-3.5 text-[14px] tracking-[1.5px] text-white uppercase shadow-[3px_3px_0_rgba(0,0,0,0.4)] transition hover:bg-carmin-alt disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {pending ? t("redirectingStripe") : t("payWithStripe")}
-          </button>
+          <>
+            <div className="mt-4 rounded-lg border border-charbon-600 bg-charbon-700/40 px-3 py-3">
+              <div className="flex items-center justify-between text-[11.5px] font-bold text-texte-dim">
+                <span>{t("stripeFeeLabel")}</span>
+                <span className="text-neon-orange">+{formatPrice(stripeFeeRaw)}</span>
+              </div>
+              <div className="mt-1 flex items-center justify-between text-[11.5px] font-extrabold text-blanc-casse">
+                <span>{t("stripeTotalLabel")}</span>
+                <span>{formatPrice(stripeTotalRaw)}</span>
+              </div>
+              <label className="mt-2.5 flex cursor-pointer items-start gap-2">
+                <input
+                  type="checkbox"
+                  checked={stripeFeesAccepted}
+                  onChange={(e) => setStripeFeesAccepted(e.target.checked)}
+                  className="mt-0.5 h-3.5 w-3.5 accent-carmin"
+                />
+                <span className="text-[10.5px] font-semibold leading-snug text-texte-dim">
+                  {t("stripeFeeConsent", { fee: formatPrice(stripeFeeRaw) })}
+                </span>
+              </label>
+            </div>
+            <button
+              type="button"
+              onClick={handlePayWithStripe}
+              disabled={pending || !stripeFeesAccepted}
+              className="font-display mt-2 flex w-full items-center justify-center rounded-[12px] bg-carmin py-3.5 text-[14px] tracking-[1.5px] text-white uppercase shadow-[3px_3px_0_rgba(0,0,0,0.4)] transition hover:bg-carmin-alt disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {pending ? t("redirectingStripe") : t("payWithStripe")}
+            </button>
+          </>
         )}
 
         {error && (

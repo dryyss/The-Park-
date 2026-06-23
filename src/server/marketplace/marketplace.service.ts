@@ -21,6 +21,7 @@ export interface MarketplaceFilters {
   condition?: string; // CardCondition
   version?: string; // code versionType
   q?: string;
+  city?: string; // ville du vendeur
 }
 
 export interface MarketplaceCard {
@@ -46,6 +47,7 @@ export interface MarketplaceCard {
   priceLabel: string;
   purchasable: boolean;
   sellerId: string;
+  sellerCity: string | null;
   seller: { name: string; slug: string; initial: string; rating: string; reviews: number };
 }
 
@@ -148,11 +150,14 @@ function buildWhere(f: MarketplaceFilters): Prisma.ListingWhereInput {
       { seller: { displayName: { contains: q, mode: "insensitive" } } },
     ];
   }
+  if (f.city?.trim()) {
+    where.seller = { city: { contains: f.city.trim(), mode: "insensitive" } };
+  }
   return where;
 }
 
 const fullInclude = {
-  seller: { select: { id: true, displayName: true, slug: true, ratingAvg: true, reviewCount: true } },
+  seller: { select: { id: true, displayName: true, slug: true, ratingAvg: true, reviewCount: true, city: true } },
   variant: {
     include: { versionType: true, card: { include: { rarity: true, season: true } } },
   },
@@ -188,6 +193,7 @@ function toMarketplaceCard(l: FullRow): MarketplaceCard {
     priceLabel: isWant ? formatPrice(l.budgetMax) : formatPrice(l.price),
     purchasable: !isWant && (l.type === "SELL" || l.type === "SELL_OR_TRADE") && l.price != null,
     sellerId: l.seller.id,
+    sellerCity: l.seller.city ?? null,
     seller: {
       name,
       slug: l.seller.slug,
@@ -216,6 +222,7 @@ export async function getMarketplaceListings(f: MarketplaceFilters): Promise<Mar
     f.condition ?? "",
     f.version ?? "",
     f.q ?? "",
+    f.city ?? "",
   ];
   return unstable_cache(() => fetchMarketplaceListings(f), key, {
     revalidate: 60,

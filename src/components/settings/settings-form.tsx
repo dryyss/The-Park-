@@ -16,6 +16,7 @@ export function SettingsForm({
   displayName,
   bio,
   slug,
+  city,
   addresses,
   securitySection,
 }: {
@@ -23,6 +24,7 @@ export function SettingsForm({
   displayName: string;
   bio: string;
   slug: string;
+  city: string;
   addresses: UserAddress[];
   securitySection: ReactNode;
 }) {
@@ -77,7 +79,7 @@ export function SettingsForm({
           {active === "profile" && (
             <div className={panelCls}>
               <h2 className="font-display mb-4 text-[18px] -skew-x-3 tracking-wide uppercase">{t("identity")}</h2>
-              <ProfileIdentityForm initialDisplayName={displayName} initialBio={bio} initialSlug={slug} />
+              <ProfileIdentityForm initialDisplayName={displayName} initialBio={bio} initialSlug={slug} initialCity={city} />
             </div>
           )}
           {active === "shipping" && (

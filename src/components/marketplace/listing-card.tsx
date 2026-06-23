@@ -85,9 +85,14 @@ export async function ListingCard({
           >
             {l.seller.initial}
           </span>
-          <span className="flex-1 truncate text-[11.5px] font-bold text-texte-doux">
-            {isOwnListing ? t("ownListingYou") : l.seller.name}
-          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[11.5px] font-bold text-texte-doux">
+              {isOwnListing ? t("ownListingYou") : l.seller.name}
+            </p>
+            {l.sellerCity && !isOwnListing && (
+              <p className="truncate text-[10px] font-bold text-texte-faible">📍 {l.sellerCity}</p>
+            )}
+          </div>
           {!isOwnListing && (
             <>
               <span className="text-[11px] font-extrabold whitespace-nowrap text-or">★ {l.seller.rating}</span>

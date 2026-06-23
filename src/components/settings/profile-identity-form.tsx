@@ -10,16 +10,19 @@ export function ProfileIdentityForm({
   initialDisplayName,
   initialBio,
   initialSlug,
+  initialCity = "",
 }: {
   initialDisplayName: string;
   initialBio: string;
   initialSlug: string;
+  initialCity?: string;
 }) {
   const t = useTranslations("settings");
   const router = useRouter();
   const [displayName, setDisplayName] = useState(initialDisplayName);
   const [bio, setBio] = useState(initialBio);
   const [slug, setSlug] = useState(initialSlug);
+  const [city, setCity] = useState(initialCity);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -32,7 +35,7 @@ export function ProfileIdentityForm({
     setError(null);
     setSaved(false);
     startTransition(async () => {
-      const res = await updateProfileAction({ displayName, bio, slug });
+      const res = await updateProfileAction({ displayName, bio, slug, city });
       if (!res.ok) {
         if (res.error === "SLUG_TAKEN") setError(t("identitySlugTaken"));
         else if (res.error === "VALIDATION") setError(t("identityValidation"));
@@ -77,6 +80,20 @@ export function ProfileIdentityForm({
             className={`${inputClass} resize-y min-h-[80px]`}
           />
           <span className="text-[10px] font-bold text-texte-faible">{bio.length}/500</span>
+        </label>
+
+        <label className="flex flex-col gap-1.5">
+          <span className="text-[10.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("identityCity")}</span>
+          <input
+            type="text"
+            value={city}
+            maxLength={100}
+            disabled={pending}
+            onChange={(e) => setCity(e.target.value)}
+            placeholder={t("identityCityPlaceholder")}
+            className={inputClass}
+          />
+          <span className="text-[10px] font-bold text-texte-faible">{t("identityCityHint")}</span>
         </label>
 
         <label className="flex flex-col gap-1.5">

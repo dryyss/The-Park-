@@ -21,10 +21,12 @@ type OwnedCard = {
 export function ExchangeProposeForm({
   ownedCards,
   defaultRecipient = "",
+  defaultRecipientName = "",
   isAuthenticated = true,
 }: {
   ownedCards: OwnedCard[];
   defaultRecipient?: string;
+  defaultRecipientName?: string;
   isAuthenticated?: boolean;
 }) {
   const t = useTranslations("exchangePropose");
@@ -101,12 +103,28 @@ export function ExchangeProposeForm({
       <section className="flex flex-col gap-5">
         <div className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
           <h2 className="font-display text-[16px] tracking-wide text-blanc-casse uppercase">{t("recipient")}</h2>
-          <input
-            value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
-            placeholder={t("recipientPlaceholder")}
-            className="mt-3 w-full rounded-lg border border-charbon-500 bg-charbon-700 px-4 py-3 text-[13px] text-blanc-casse outline-none focus:border-carmin"
-          />
+          {defaultRecipientName && recipient === defaultRecipient ? (
+            <div className="mt-3 flex items-center gap-2.5 rounded-lg border border-carmin/30 bg-carmin/8 px-4 py-3">
+              <span className="font-display flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-carmin text-[13px] text-white">
+                {defaultRecipientName.charAt(0).toUpperCase()}
+              </span>
+              <span className="flex-1 text-[14px] font-extrabold text-blanc-casse">{defaultRecipientName}</span>
+              <button
+                type="button"
+                onClick={() => setRecipient("")}
+                className="text-[11px] font-bold text-texte-faible hover:text-carmin"
+              >
+                ✕
+              </button>
+            </div>
+          ) : (
+            <input
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              placeholder={t("recipientPlaceholder")}
+              className="mt-3 w-full rounded-lg border border-charbon-500 bg-charbon-700 px-4 py-3 text-[13px] text-blanc-casse outline-none focus:border-carmin"
+            />
+          )}
         </div>
         <div className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
           <h2 className="font-display text-[16px] tracking-wide text-blanc-casse uppercase">{t("message")}</h2>

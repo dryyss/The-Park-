@@ -17,7 +17,7 @@ import { ListingCard } from "@/components/marketplace/listing-card";
 
 export const dynamic = "force-dynamic";
 
-type SearchParams = { intent?: string; rarity?: string; condition?: string; version?: string; q?: string };
+type SearchParams = { intent?: string; rarity?: string; condition?: string; version?: string; q?: string; city?: string; wishlist?: string };
 
 function intentHref(p: MarketParams, intent: MarketIntent): string {
   // Changer d'onglet réinitialise les filtres spécifiques.
@@ -44,10 +44,12 @@ export default async function MarketplacePage({
     condition: sp.condition || undefined,
     version: sp.version || undefined,
     q: sp.q || undefined,
+    city: sp.city || undefined,
+    wishlist: sp.wishlist === "1",
   };
 
   const viewer = await getViewerUser();
-  const [listings, facets, marketplaceCartCount, cartListingIds, ownedCardNumbers, wishlistCardIds] =
+  const [allListings, facets, marketplaceCartCount, cartListingIds, ownedCardNumbers, wishlistCardIds] =
     await Promise.all([
       getMarketplaceListings(marketParams),
       getMarketplaceFacets(),
@@ -59,6 +61,11 @@ export default async function MarketplacePage({
   const cartListingIdSet = new Set(cartListingIds);
   const ownedCardNumberSet = new Set(ownedCardNumbers);
   const wishlistCardIdSet = new Set(wishlistCardIds);
+
+  // Filtre wishlist côté page (post-cache, données utilisateur non mises en cache)
+  const listings = marketParams.wishlist && wishlistCardIdSet.size > 0
+    ? allListings.filter((l) => wishlistCardIdSet.has(l.cardId))
+    : allListings;
 
   const tabs: { intent: MarketIntent; label: string; count: number }[] = [
     { intent: "sell", label: t("tabSell"), count: facets.sellCount },
@@ -142,7 +149,7 @@ export default async function MarketplacePage({
       </Link>
 
       {/* Filtres */}
-      <MarketplaceFilters params={marketParams} facets={facets} locale={locale} />
+      <MarketplaceFilters params={marketParams} facets={facets} locale={locale} isAuthenticated={!!viewer} />
 
       <p className="mt-3 text-[11.5px] font-bold text-texte-faible">{t("disclaimer")}</p>
 
