@@ -13,6 +13,7 @@ export interface ConversationListItem {
   lastMessageAt: Date | null;
   unread: boolean;
   exchangeId: string | null;
+  conversationCount: number;
 }
 
 export interface ThreadMessage {
@@ -83,7 +84,7 @@ export async function getViewerConversations(userId: string): Promise<Conversati
     },
   });
 
-  const items: ConversationListItem[] = [];
+  const raw: ConversationListItem[] = [];
   for (const p of participations) {
     const conv = p.conversation;
     const last = conv.messages[0];
@@ -98,7 +99,7 @@ export async function getViewerConversations(userId: string): Promise<Conversati
             ? "📷 Photo"
             : null;
 
-    items.push({
+    raw.push({
       id: conv.id,
       context: conv.context,
       contextLabel: CONTEXT_LABEL[conv.context],
@@ -109,10 +110,34 @@ export async function getViewerConversations(userId: string): Promise<Conversati
       lastMessageAt: last?.createdAt ?? null,
       unread,
       exchangeId: conv.exchangeId,
+      conversationCount: 1,
     });
   }
 
-  return items.sort((a, b) => {
+  // Groupe par interlocuteur — 1 entrée par partenaire, la plus récente en tête.
+  const grouped = new Map<string, ConversationListItem>();
+  for (const item of raw) {
+    const key = item.partnerSlug || item.partnerName;
+    const existing = grouped.get(key);
+    if (!existing) {
+      grouped.set(key, { ...item });
+    } else {
+      existing.conversationCount++;
+      existing.unread = existing.unread || item.unread;
+      const ta = item.lastMessageAt?.getTime() ?? 0;
+      const te = existing.lastMessageAt?.getTime() ?? 0;
+      if (ta > te) {
+        existing.id = item.id;
+        existing.context = item.context;
+        existing.contextLabel = item.contextLabel;
+        existing.lastMessage = item.lastMessage;
+        existing.lastMessageAt = item.lastMessageAt;
+        existing.exchangeId = item.exchangeId;
+      }
+    }
+  }
+
+  return Array.from(grouped.values()).sort((a, b) => {
     const ta = a.lastMessageAt?.getTime() ?? 0;
     const tb = b.lastMessageAt?.getTime() ?? 0;
     return tb - ta;

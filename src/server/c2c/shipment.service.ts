@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { ProofKind, ShipmentType } from "@/generated/prisma/client";
+import { dispatchNotification } from "@/server/notification/notification.mutations";
 
 export function todayDropToken(): string {
   const d = new Date();
@@ -102,11 +103,15 @@ export async function markShipmentShipped(
   shipperId: string,
   trackingNumber: string,
 ): Promise<void> {
+  let recipientId: string | null = null;
+
   await prisma.$transaction(async (tx) => {
     const shipment = await tx.shipment.update({
       where: { id: shipmentId, shipperId },
       data: { status: "SHIPPED", trackingNumber },
     });
+
+    recipientId = shipment.recipientId;
 
     if (shipment.exchangeId) {
       await tx.exchange.update({
@@ -126,4 +131,15 @@ export async function markShipmentShipped(
       });
     }
   });
+
+  if (recipientId) {
+    await dispatchNotification({
+      userId: recipientId,
+      type: "SHIPMENT_SHIPPED",
+      actorId: shipperId,
+      entityType: "SHIPMENT",
+      entityId: shipmentId,
+      payload: { trackingNumber },
+    });
+  }
 }

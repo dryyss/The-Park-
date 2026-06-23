@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { CardCondition } from "@/generated/prisma/client";
+import { dispatchNotification } from "@/server/notification/notification.mutations";
 
 /** Propose un échange — double validation requise ensuite. */
 export async function proposeExchange(
@@ -70,16 +71,6 @@ export async function proposeExchange(
       });
     }
 
-    await tx.notification.create({
-      data: {
-        userId: recipient.id,
-        type: "EXCHANGE_PROPOSED",
-        entityType: "EXCHANGE",
-        entityId: ex.id,
-        payload: { message: input.message ?? null },
-      },
-    });
-
     await tx.conversation.create({
       data: {
         context: "EXCHANGE",
@@ -91,6 +82,15 @@ export async function proposeExchange(
     });
 
     return ex;
+  });
+
+  await dispatchNotification({
+    userId: recipient.id,
+    type: "EXCHANGE_PROPOSED",
+    actorId: initiatorId,
+    entityType: "EXCHANGE",
+    entityId: exchange.id,
+    payload: { message: input.message ?? null },
   });
 
   return exchange.id;
@@ -154,14 +154,14 @@ export async function acceptExchangeWithItems(
         actorId: recipientId,
       },
     });
-    await tx.notification.create({
-      data: {
-        userId: ex.initiatorId,
-        type: "EXCHANGE_ACCEPTED",
-        entityType: "EXCHANGE",
-        entityId: exchangeId,
-      },
-    });
+  });
+
+  await dispatchNotification({
+    userId: ex.initiatorId,
+    type: "EXCHANGE_ACCEPTED",
+    actorId: recipientId,
+    entityType: "EXCHANGE",
+    entityId: exchangeId,
   });
 }
 
@@ -195,14 +195,14 @@ export async function acceptExchange(recipientId: string, exchangeId: string): P
         actorId: recipientId,
       },
     });
-    await tx.notification.create({
-      data: {
-        userId: ex.initiatorId,
-        type: "EXCHANGE_ACCEPTED",
-        entityType: "EXCHANGE",
-        entityId: exchangeId,
-      },
-    });
+  });
+
+  await dispatchNotification({
+    userId: ex.initiatorId,
+    type: "EXCHANGE_ACCEPTED",
+    actorId: recipientId,
+    entityType: "EXCHANGE",
+    entityId: exchangeId,
   });
 }
 

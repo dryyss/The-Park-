@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
+import { evaluateUserBadgesForUsers } from "@/server/badge/badge.service";
 import { releaseToSeller, refundPurchase } from "@/server/sale/sale-payment.service";
 import { todayDropToken } from "@/server/c2c/shipment.service";
 
@@ -41,6 +42,8 @@ export async function markSalePaid(saleId: string): Promise<void> {
     entityId: saleId,
     payload: { amount: Number(sale.price).toFixed(2) },
   });
+
+  await evaluateUserBadgesForUsers([sale.sellerId, sale.buyerId]);
 }
 
 /** Paiement échoué/abandonné → vente annulée, annonce réouverte. */
@@ -141,6 +144,10 @@ export async function confirmSaleReceipt(saleId: string, buyerId: string): Promi
     entityId: saleId,
     payload: { amount: Number(sale.price).toFixed(2) },
   });
+
+  await Promise.all([
+    evaluateUserBadgesForUsers([sale.sellerId, sale.buyerId]),
+  ]);
 }
 
 /** L'acheteur ou le vendeur ouvre un litige (gèle le déblocage des fonds). */
@@ -219,6 +226,7 @@ export async function processSaleTimeouts(): Promise<{ notShipped: number; compl
       });
     });
     completed += 1;
+    await evaluateUserBadgesForUsers([sale.sellerId, sale.buyerId]);
   }
 
   return { notShipped, completed };

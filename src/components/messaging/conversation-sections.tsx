@@ -34,9 +34,15 @@ export async function ConversationList({ items }: { items: ConversationListItem[
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <p className="text-[14px] font-extrabold text-blanc-casse">{c.partnerName}</p>
-              <span className="rounded-md bg-charbon-600 px-2 py-0.5 text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">
-                {t(`context.${c.contextLabel}`)}
-              </span>
+              {c.conversationCount > 1 ? (
+                <span className="rounded-full bg-carmin/20 px-2 py-0.5 text-[10px] font-extrabold tracking-wide text-carmin">
+                  {c.conversationCount} fils
+                </span>
+              ) : (
+                <span className="rounded-md bg-charbon-600 px-2 py-0.5 text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">
+                  {t(`context.${c.contextLabel}`)}
+                </span>
+              )}
             </div>
             <p className="mt-0.5 truncate text-[12px] font-bold text-texte-dim">{c.lastMessage ?? "—"}</p>
           </div>

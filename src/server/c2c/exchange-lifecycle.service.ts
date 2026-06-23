@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { evaluateUserBadgesForUsers } from "@/server/badge/badge.service";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
 
 const GUARANTEE_MS = 72 * 60 * 60 * 1000;
@@ -101,6 +102,8 @@ export async function confirmExchangeReceipt(exchangeId: string, userId: string)
     entityType: "EXCHANGE",
     entityId: exchangeId,
   });
+
+  await evaluateUserBadgesForUsers([ex.initiatorId, ex.recipientId]);
 }
 
 /** Timeouts J+3 non-expédition + fin fenêtre garantie — job cron. */
@@ -152,6 +155,7 @@ export async function processExchangeTimeouts(): Promise<{ notShipped: number; c
     if (!allPast) continue;
     await prisma.exchange.update({ where: { id: ex.id }, data: { status: "COMPLETED", completedAt: now } });
     completed += 1;
+    await evaluateUserBadgesForUsers([ex.initiatorId, ex.recipientId]);
   }
 
   return { notShipped, completed };

@@ -81,6 +81,36 @@ export function buildNotificationEmail(
         html: wrap(`<p><strong>${cardName}</strong> vient d'être listée sur le marketplace.</p>`),
       };
     }
+    case "SALE_CREATED": {
+      const amount = typeof payload.amount === "string" ? payload.amount : "";
+      return {
+        subject: "Nouvelle vente — paiement reçu",
+        html: wrap(`<p>Un acheteur vient de payer ta carte${amount ? ` pour <strong>${amount} €</strong>` : ""}. Prépare l'expédition dès que possible.</p>`),
+      };
+    }
+    case "SHIPMENT_SHIPPED": {
+      const tracking = typeof payload.trackingNumber === "string" ? payload.trackingNumber : null;
+      const carrier = typeof payload.carrier === "string" ? payload.carrier : null;
+      return {
+        subject: "Ton colis est en route",
+        html: wrap(
+          `<p>Le vendeur a expédié ta commande${carrier ? ` via <strong>${carrier}</strong>` : ""}.${tracking ? `<br/>Numéro de suivi : <strong>${tracking}</strong>` : ""}</p>`,
+        ),
+      };
+    }
+    case "DISPUTE_OPENED": {
+      return {
+        subject: "Litige ouvert sur une transaction",
+        html: wrap("<p>Un litige vient d'être ouvert sur l'une de tes transactions. Connecte-toi pour y répondre dans les meilleurs délais.</p>"),
+      };
+    }
+    case "LISTING_SOLD": {
+      const amount = typeof payload.amount === "string" ? payload.amount : "";
+      return {
+        subject: "Ta carte a été vendue",
+        html: wrap(`<p>Ta carte a été achetée${amount ? ` pour <strong>${amount} €</strong>` : ""}. Les fonds seront libérés après confirmation de réception par l'acheteur.</p>`),
+      };
+    }
     default:
       return null;
   }
