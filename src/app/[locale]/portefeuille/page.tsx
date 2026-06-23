@@ -37,7 +37,7 @@ export default async function PortefeuillePage({
   const summary = viewer ? await getWalletSummary(viewer.id) : null;
 
   return (
-    <main className="mx-auto max-w-[720px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[720px] page-pad pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="残高" />
       {!viewer && <GuestAuthBanner messageKey="loginGateWallet" />}
 

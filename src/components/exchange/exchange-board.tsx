@@ -30,10 +30,10 @@ function ExchangeTabs({
   tabDoneLabel: string;
 }) {
   return (
-    <div className="mb-1 flex rounded-[11px] border border-charbon-500 bg-charbon-800 p-1.5 gap-0.5">
+    <div className="mb-1 flex overflow-x-auto scroll-touch rounded-[11px] border border-charbon-500 bg-charbon-800 p-1.5 gap-0.5">
       <Link
         href="/echanges"
-        className={`font-display relative rounded-lg px-4.5 py-2.5 text-[13px] tracking-[1.5px] uppercase transition ${tab === "current" ? "bg-carmin text-white" : "text-texte-dim hover:text-blanc-casse"}`}
+        className={`font-display relative shrink-0 rounded-lg px-3 py-2 text-[11px] tracking-[1px] uppercase transition sm:px-4.5 sm:py-2.5 sm:text-[13px] sm:tracking-[1.5px] ${tab === "current" ? "bg-carmin text-white" : "text-texte-dim hover:text-blanc-casse"}`}
       >
         {tabCurrentLabel} · {currentCount}
         {incomingCount > 0 && tab !== "current" && (
@@ -44,7 +44,7 @@ function ExchangeTabs({
       </Link>
       <Link
         href="/echanges?tab=done"
-        className={`font-display rounded-lg px-4.5 py-2.5 text-[13px] tracking-[1.5px] uppercase transition ${tab === "done" ? "bg-carmin text-white" : "text-texte-dim hover:text-blanc-casse"}`}
+        className={`font-display shrink-0 rounded-lg px-3 py-2 text-[11px] tracking-[1px] uppercase transition sm:px-4.5 sm:py-2.5 sm:text-[13px] sm:tracking-[1.5px] ${tab === "done" ? "bg-carmin text-white" : "text-texte-dim hover:text-blanc-casse"}`}
       >
         {tabDoneLabel} · {doneCount}
       </Link>

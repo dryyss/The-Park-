@@ -22,7 +22,7 @@ export default async function MessageThreadPage({
   await markConversationRead(viewer.id, id);
 
   return (
-    <main className="mx-auto max-w-[900px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[900px] page-pad pt-9 pb-[60px]">
       <ConversationThreadView thread={thread} viewerId={viewer.id} />
     </main>
   );

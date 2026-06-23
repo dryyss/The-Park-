@@ -66,8 +66,8 @@ export function MobileNavDrawer({
   }, [open]);
 
   useEffect(() => {
-    onClose();
-  }, [pathname, onClose]);
+    if (open) onClose();
+  }, [pathname, open, onClose]);
 
   if (!open) return null;
 

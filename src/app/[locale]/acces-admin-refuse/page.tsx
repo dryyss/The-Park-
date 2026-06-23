@@ -7,7 +7,7 @@ export default async function AdminAccessDeniedPage({ params }: { params: Promis
   const t = await getTranslations("admin.accessDenied");
 
   return (
-    <main className="mx-auto flex min-h-[60vh] max-w-[640px] flex-col items-center justify-center px-7 py-16 text-center">
+    <main className="mx-auto flex min-h-[60vh] max-w-[640px] flex-col items-center justify-center page-pad py-16 text-center">
       <p className="text-[12px] font-bold tracking-[4px] text-carmin uppercase">{t("kicker")}</p>
       <h1 className="font-display mt-4 text-[clamp(36px,5vw,52px)] leading-[0.95] tracking-[1px] uppercase text-blanc-casse">
         {t("title")}

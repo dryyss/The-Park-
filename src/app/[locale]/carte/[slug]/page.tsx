@@ -64,7 +64,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
       isFirstEdition: v.isFirstEdition,
     }));
   return (
-    <main className="mx-auto max-w-[1240px] px-7 pt-5 pb-[60px]">
+    <main className="mx-auto max-w-[1240px] page-pad pt-5 pb-[60px]">
       <TradingCardJsonLd
         card={{ name: card.name, slug: card.slug, image: card.image, description: card.description, rarityLabel: card.rarityLabel, seasonName: card.seasonName }}
         locale={locale}

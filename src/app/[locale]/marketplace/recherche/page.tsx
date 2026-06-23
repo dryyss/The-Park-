@@ -28,7 +28,7 @@ export default async function MarketplaceRecherchePage({ params }: { params: Pro
     }));
 
   return (
-    <main className="mx-auto max-w-[1120px] px-7 pt-7 pb-[60px]">
+    <main className="mx-auto max-w-[1120px] page-pad pt-7 pb-[60px]">
       <nav className="flex items-center gap-3 text-[12.5px] font-bold text-texte-dim">
         <Link href="/marketplace?intent=want" className="hover:text-carmin">
           {t("breadcrumbMarket")}

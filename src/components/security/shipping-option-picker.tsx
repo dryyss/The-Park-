@@ -44,7 +44,7 @@ export function ShippingOptionPicker() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1080px] px-7 py-8 pb-16">
+      <div className="mx-auto max-w-[1080px] page-pad py-8 pb-16">
         <nav className="flex flex-wrap items-center gap-2.5 text-[12px] font-bold text-texte-muet">
           <Link href="/marketplace" className="text-texte-muet no-underline hover:text-carmin">
             Marketplace

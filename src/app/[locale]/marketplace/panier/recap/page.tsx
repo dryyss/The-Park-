@@ -37,7 +37,7 @@ export default async function MarketplaceRecapPage({
   ]);
 
   return (
-    <main className="mx-auto max-w-[900px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[900px] page-pad pt-9 pb-[60px]">
       <PageHeader kicker={t("recapKicker")} title={t("recapTitle")} jp="確認" />
 
       {sp.cancelled === "1" && (

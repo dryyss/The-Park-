@@ -39,7 +39,7 @@ export default async function AdminOrderDetailPage({
   const fmt = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeStyle: "short" });
 
   return (
-    <main className="mx-auto max-w-[1100px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[1100px] page-pad pt-9 pb-[60px]">
       <Link href="/admin/commandes" className="text-[12px] font-extrabold text-carmin hover:underline">
         ← {t("backToList")}
       </Link>

@@ -17,7 +17,7 @@ export async function renderSecurityPage(params: Promise<{ locale: string }>, pa
   const context = await getSecurityContext(viewer.id);
 
   return (
-    <main className="mx-auto max-w-[900px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[900px] page-pad pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="安全" />
       <div className="mt-8">
         <SecurityPageLayout pageKey={pageKey} context={context} />

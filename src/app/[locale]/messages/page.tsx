@@ -17,7 +17,7 @@ export default async function MessagesPage({ params }: { params: Promise<{ local
   const conversations = await getViewerConversations(viewer.id);
 
   return (
-    <main className="mx-auto max-w-[800px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[800px] page-pad pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="メッセージ" />
       <p className="mt-3 text-[13px] font-bold text-texte-dim">{t("subtitle")}</p>
       <div className="mt-8">

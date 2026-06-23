@@ -49,7 +49,7 @@ export default async function ClassementsPage({
   const hasNext = data.page < data.pageCount;
 
   return (
-    <main className="mx-auto max-w-[1100px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[1100px] page-pad pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="栄光">
         <div className="mb-1 flex gap-1 rounded-xl border border-charbon-500 bg-charbon-800 p-1.5">
           {tabs.map((tab) => (

@@ -23,7 +23,7 @@ export default async function BoutiqueCheckoutPage({
   const cart = await getViewerCart(authenticated.id);
 
   return (
-    <main className="mx-auto max-w-[1000px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[1000px] page-pad pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="決済" />
       {cancelled === "1" && (
         <p className="mt-4 rounded-[12px] border border-neon-orange/30 bg-neon-orange/10 px-4 py-3 text-center text-[13px] font-bold text-neon-orange">

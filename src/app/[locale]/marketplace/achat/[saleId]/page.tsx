@@ -38,7 +38,7 @@ export default async function MarketplaceAchatPage({
   }
 
   return (
-    <main className="mx-auto max-w-[640px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[640px] page-pad pt-9 pb-[60px]">
       <nav className="flex items-center gap-3 text-[12.5px] font-bold text-texte-dim">
         <Link href="/marketplace" className="hover:text-carmin">
           {t("breadcrumbMarket")}

@@ -17,7 +17,7 @@ export default async function NotificationsPage({ params }: { params: Promise<{ 
   const items = await getUserNotifications(viewer.id);
 
   return (
-    <main className="mx-auto max-w-[880px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[880px] page-pad pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="通知" />
       <div className="mt-8">
         <NotificationFeed items={items} />

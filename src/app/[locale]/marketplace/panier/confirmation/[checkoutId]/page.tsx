@@ -39,7 +39,7 @@ export default async function MarketplaceConfirmationPage({
   const isPaid = checkout.status === "PAID";
 
   return (
-    <main className="mx-auto max-w-[720px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[720px] page-pad pt-9 pb-[60px]">
       <PageHeader
         kicker={t("confirmationKicker")}
         title={isPaid ? t("confirmationTitle") : t("confirmationPending")}

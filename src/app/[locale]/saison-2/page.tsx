@@ -15,7 +15,7 @@ export default async function Saison2Page({ params }: { params: Promise<{ locale
   const t = await getTranslations("season2");
 
   return (
-    <main className="mx-auto max-w-[1000px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[1000px] page-pad pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="シーズン2" />
       <div className="mt-8">
         <SeasonLockedTeaser />

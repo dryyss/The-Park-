@@ -23,7 +23,7 @@ export function SettingsTabLayout({
 
   return (
     <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[220px_1fr] lg:gap-7">
-      <nav className="sticky top-[90px] flex flex-row gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
+      <nav className="sticky top-[calc(3.5rem+0.5rem)] flex flex-row gap-1 overflow-x-auto scroll-touch lg:top-[90px] lg:flex-col lg:overflow-visible">
         {tabs.map((tab) => {
           const isActive = tab.key === active;
           return (

@@ -33,7 +33,7 @@ export default async function BoutiqueCommandeDetailPage({
   if (!order) notFound();
 
   return (
-    <main className="mx-auto max-w-[1000px] px-7 pt-9 pb-[60px]">
+    <main className="mx-auto max-w-[1000px] page-pad pt-9 pb-[60px]">
       {success === "1" && (
         <p className="mb-4 rounded-[12px] border border-neon-vert/30 bg-neon-vert/10 px-4 py-3 text-center text-[13px] font-bold text-neon-vert">
           {t("successPaid")}
