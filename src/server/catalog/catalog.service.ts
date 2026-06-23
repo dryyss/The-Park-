@@ -274,6 +274,8 @@ export interface CardDetail {
       available: number;
       listings: { id: string; type: string; price: string | null }[];
       isGraded: boolean;
+      gradeCompany: string | null;
+      gradeScore: number | null;
       isSigned: boolean;
       signatureAuthor: string | null;
       photos: CollectionItemPhotoView[];
@@ -335,6 +337,8 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
             reservedQuantity: true,
             editionLabel: true,
             isGraded: true,
+            gradeCompany: true,
+            gradeScore: true,
             isSigned: true,
             signatureAuthor: true,
           },
@@ -355,13 +359,13 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
       ? await prisma.collectionItemPhoto.findMany({
           where: { collectionItemId: { in: ownedItemIds } },
           orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-          select: { id: true, url: true, sortOrder: true, createdAt: true, collectionItemId: true },
+          select: { id: true, url: true, kind: true, sortOrder: true, createdAt: true, collectionItemId: true },
         })
       : [];
   const photosByItemId = new Map<string, CollectionItemPhotoView[]>();
   for (const p of itemPhotoRows) {
     const list = photosByItemId.get(p.collectionItemId) ?? [];
-    list.push({ id: p.id, url: p.url, sortOrder: p.sortOrder, createdAt: p.createdAt });
+    list.push({ id: p.id, url: p.url, kind: p.kind, sortOrder: p.sortOrder, createdAt: p.createdAt });
     photosByItemId.set(p.collectionItemId, list);
   }
   const itemIdByVariantCondition = new Map(
@@ -380,7 +384,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
   // Détail des états possédés par variante.
   const conditionsByVariant = new Map<
     string,
-    { condition: string; quantity: number; reservedQuantity: number; isGraded: boolean; isSigned: boolean; signatureAuthor: string | null }[]
+    { condition: string; quantity: number; reservedQuantity: number; isGraded: boolean; gradeCompany: string | null; gradeScore: number | null; isSigned: boolean; signatureAuthor: string | null }[]
   >();
   for (const o of ownedVariants) {
     if (o.quantity <= 0) continue;
@@ -390,6 +394,8 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
       quantity: o.quantity,
       reservedQuantity: o.reservedQuantity,
       isGraded: o.isGraded,
+      gradeCompany: o.gradeCompany,
+      gradeScore: o.gradeScore != null ? Number(o.gradeScore) : null,
       isSigned: o.isSigned,
       signatureAuthor: o.signatureAuthor,
     });
@@ -462,6 +468,8 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
             available: c.quantity - c.reservedQuantity,
             listings: viewerListingsByKey.get(`${v.id}:${c.condition}`) ?? [],
             isGraded: c.isGraded,
+            gradeCompany: c.gradeCompany,
+            gradeScore: c.gradeScore,
             isSigned: c.isSigned,
             signatureAuthor: c.signatureAuthor,
             photos: itemId ? (photosByItemId.get(itemId) ?? []) : [],

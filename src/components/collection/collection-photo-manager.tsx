@@ -1,20 +1,28 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import type { CollectionItemPhotoView } from "@/server/collection/collection-photos.service";
-import { MAX_PHOTOS_PER_ITEM } from "@/lib/collection-photos.constants";
+import type { CollectionItemPhotoView, CollectionPhotoKind } from "@/server/collection/collection-photos.types";
+import { MAX_GRADED_PHOTOS_PER_KIND, MAX_PHOTOS_PER_ITEM } from "@/lib/collection-photos.constants";
 
 export function CollectionPhotoManager({
   variantId,
   condition,
   photos: initialPhotos,
+  kind = "CARD",
+  maxPhotos,
+  labelKey,
+  hintKey,
 }: {
   variantId: string;
   condition: string;
   photos: CollectionItemPhotoView[];
+  kind?: CollectionPhotoKind;
+  maxPhotos?: number;
+  labelKey?: "photosLabel" | "gradedCardPhotoLabel" | "gradedCertPhotoLabel";
+  hintKey?: "photosHint" | "gradedCardPhotoHint" | "gradedCertPhotoHint";
 }) {
   const t = useTranslations("card");
   const router = useRouter();
@@ -23,10 +31,17 @@ export function CollectionPhotoManager({
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
+  useEffect(() => {
+    setPhotos(initialPhotos);
+  }, [initialPhotos]);
+
+  const limit = maxPhotos ?? (kind === "CERTIFICATE" ? MAX_GRADED_PHOTOS_PER_KIND : MAX_PHOTOS_PER_ITEM);
+
   function mapError(code: string) {
-    if (code === "MAX_PHOTOS") return t("photoErrorMax", { max: MAX_PHOTOS_PER_ITEM });
+    if (code === "MAX_PHOTOS") return t("photoErrorMax", { max: limit });
     if (code === "FILE_TOO_LARGE") return t("photoErrorSize");
     if (code === "INVALID_TYPE") return t("photoErrorType");
+    if (code === "NOT_GRADED") return t("gradingError");
     return t("photoError");
   }
 
@@ -35,6 +50,7 @@ export function CollectionPhotoManager({
     const fd = new FormData();
     fd.set("variantId", variantId);
     fd.set("condition", condition);
+    fd.set("kind", kind);
     fd.set("file", file);
 
     startTransition(async () => {
@@ -67,15 +83,18 @@ export function CollectionPhotoManager({
     });
   }
 
+  const label = t(labelKey ?? "photosLabel");
+  const hint = hintKey ? t(hintKey) : t("photosHint");
+
   return (
     <div className="mt-2 rounded-lg border border-dashed border-charbon-500 bg-charbon/60 px-3 py-2.5">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("photosLabel")}</span>
+        <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{label}</span>
         <span className="text-[10px] font-bold text-texte-faible">
-          {t("photosCount", { count: photos.length, max: MAX_PHOTOS_PER_ITEM })}
+          {t("photosCount", { count: photos.length, max: limit })}
         </span>
       </div>
-      <p className="mt-1 text-[10px] font-bold text-texte-faible">{t("photosHint")}</p>
+      <p className="mt-1 text-[10px] font-bold text-texte-faible">{hint}</p>
 
       <div className="mt-2 flex flex-wrap gap-2">
         {photos.map((p) => (
@@ -92,7 +111,7 @@ export function CollectionPhotoManager({
             </button>
           </div>
         ))}
-        {photos.length < MAX_PHOTOS_PER_ITEM && (
+        {photos.length < limit && (
           <>
             <input
               ref={inputRef}

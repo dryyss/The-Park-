@@ -26,14 +26,15 @@ export async function POST(request: Request) {
 
   const variantId = String(form.get("variantId") ?? "");
   const conditionParsed = conditionEnum.safeParse(String(form.get("condition") ?? ""));
+  const kindParsed = z.enum(["CARD", "CERTIFICATE"]).safeParse(String(form.get("kind") ?? "CARD"));
   const file = form.get("file");
 
-  if (!variantId || !conditionParsed.success || !(file instanceof File) || file.size === 0) {
+  if (!variantId || !conditionParsed.success || !kindParsed.success || !(file instanceof File) || file.size === 0) {
     return NextResponse.json({ ok: false, error: "VALIDATION" }, { status: 400 });
   }
 
   try {
-    const photo = await uploadCollectionPhoto(viewer.id, variantId, conditionParsed.data, file);
+    const photo = await uploadCollectionPhoto(viewer.id, variantId, conditionParsed.data, file, kindParsed.data);
     revalidatePhotoPaths();
     return NextResponse.json({ ok: true, photo });
   } catch (err) {
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
     const status =
       code === "NOT_OWNED" || code === "FORBIDDEN"
         ? 403
-        : code === "MAX_PHOTOS" || code === "FILE_TOO_LARGE" || code === "INVALID_TYPE"
+        : code === "MAX_PHOTOS" || code === "FILE_TOO_LARGE" || code === "INVALID_TYPE" || code === "NOT_GRADED"
           ? 400
           : 500;
     return NextResponse.json({ ok: false, error: code }, { status });

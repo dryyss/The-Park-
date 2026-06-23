@@ -181,19 +181,35 @@ export async function updateCollectionGrading(
   userId: string,
   variantId: string,
   condition: CardCondition,
-  isGraded: boolean,
+  input: {
+    isGraded?: boolean;
+    gradeCompany?: string | null;
+    gradeScore?: number | null;
+  },
 ): Promise<void> {
   const item = await prisma.collectionItem.findUnique({
     where: { userId_variantId_condition: { userId, variantId, condition } },
-    select: { id: true },
+    select: { id: true, isGraded: true },
   });
   if (!item) throw new Error("NOT_FOUND");
 
+  if (input.isGraded === false) {
+    await prisma.collectionItem.update({
+      where: { id: item.id },
+      data: { isGraded: false, gradeCompany: null, gradeScore: null },
+    });
+    return;
+  }
+
+  const nextGraded = input.isGraded ?? item.isGraded;
   await prisma.collectionItem.update({
     where: { id: item.id },
-    data: isGraded
-      ? { isGraded: true }
-      : { isGraded: false, gradeCompany: null, gradeScore: null },
+    data: {
+      isGraded: nextGraded,
+      ...(input.gradeCompany !== undefined ? { gradeCompany: input.gradeCompany } : {}),
+      ...(input.gradeScore !== undefined ? { gradeScore: input.gradeScore } : {}),
+      ...(nextGraded === false ? { gradeCompany: null, gradeScore: null } : {}),
+    },
   });
 }
 

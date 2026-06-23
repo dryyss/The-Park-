@@ -1,6 +1,9 @@
+export type CollectionPhotoKind = "CARD" | "CERTIFICATE";
+
 export interface CollectionItemPhotoView {
   id: string;
   url: string;
+  kind: CollectionPhotoKind;
   sortOrder: number;
   createdAt: Date;
 }

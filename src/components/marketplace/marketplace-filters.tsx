@@ -19,7 +19,7 @@ function hrefWith(p: MarketParams, patch: Partial<MarketParams>): string {
   const sp = new URLSearchParams();
   for (const [k, v] of Object.entries(merged)) {
     if (v === true) sp.set(k, "1");
-    else if (v && v !== false) sp.set(k, String(v));
+    else if (typeof v === "string" && v.length > 0) sp.set(k, v);
   }
   const qs = sp.toString();
   return `/marketplace${qs ? `?${qs}` : ""}`;

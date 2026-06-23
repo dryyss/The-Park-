@@ -3,16 +3,16 @@ import { prisma } from "@/lib/prisma";
 import { deleteCollectionPhotoFile, saveCollectionPhotoFile } from "@/lib/collection-photo-storage";
 import type { CardCondition } from "@/generated/prisma/client";
 
-import { MAX_PHOTOS_PER_ITEM } from "@/lib/collection-photos.constants";
-import type { CollectionItemPhotoView, CommunityPhotoView } from "@/server/collection/collection-photos.types";
+import { MAX_GRADED_PHOTOS_PER_KIND, MAX_PHOTOS_PER_ITEM } from "@/lib/collection-photos.constants";
+import type { CollectionItemPhotoView, CommunityPhotoView, CollectionPhotoKind } from "@/server/collection/collection-photos.types";
 
-export { MAX_PHOTOS_PER_ITEM };
-export type { CollectionItemPhotoView, CommunityPhotoView };
+export { MAX_PHOTOS_PER_ITEM, MAX_GRADED_PHOTOS_PER_KIND };
+export type { CollectionItemPhotoView, CommunityPhotoView, CollectionPhotoKind };
 
 async function getOwnedItem(userId: string, variantId: string, condition: CardCondition) {
   return prisma.collectionItem.findUnique({
     where: { userId_variantId_condition: { userId, variantId, condition } },
-    select: { id: true, quantity: true },
+    select: { id: true, quantity: true, isGraded: true },
   });
 }
 
@@ -20,7 +20,7 @@ export async function listItemPhotos(collectionItemId: string): Promise<Collecti
   return prisma.collectionItemPhoto.findMany({
     where: { collectionItemId },
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-    select: { id: true, url: true, sortOrder: true, createdAt: true },
+    select: { id: true, url: true, kind: true, sortOrder: true, createdAt: true },
   });
 }
 
@@ -50,6 +50,7 @@ export async function listCommunityPhotosForCard(cardId: string, limit = 24): Pr
     select: {
       id: true,
       url: true,
+      kind: true,
       sortOrder: true,
       createdAt: true,
       collectionItem: {
@@ -65,6 +66,7 @@ export async function listCommunityPhotosForCard(cardId: string, limit = 24): Pr
   return rows.map((r) => ({
     id: r.id,
     url: r.url,
+    kind: r.kind,
     sortOrder: r.sortOrder,
     createdAt: r.createdAt,
     collectorName: r.collectionItem.user.displayName,
@@ -79,17 +81,23 @@ export async function uploadCollectionPhoto(
   variantId: string,
   condition: CardCondition,
   file: File,
+  kind: CollectionPhotoKind = "CARD",
 ): Promise<CollectionItemPhotoView> {
   const item = await getOwnedItem(userId, variantId, condition);
   if (!item || item.quantity <= 0) throw new Error("NOT_OWNED");
 
-  const count = await prisma.collectionItemPhoto.count({ where: { collectionItemId: item.id } });
-  if (count >= MAX_PHOTOS_PER_ITEM) throw new Error("MAX_PHOTOS");
+  if (kind === "CERTIFICATE" && !item.isGraded) throw new Error("NOT_GRADED");
+
+  const count = await prisma.collectionItemPhoto.count({
+    where: { collectionItemId: item.id, kind },
+  });
+  const maxForKind = item.isGraded ? MAX_GRADED_PHOTOS_PER_KIND : MAX_PHOTOS_PER_ITEM;
+  if (count >= maxForKind) throw new Error("MAX_PHOTOS");
 
   const url = await saveCollectionPhotoFile(item.id, file);
   const photo = await prisma.collectionItemPhoto.create({
-    data: { collectionItemId: item.id, url, sortOrder: count },
-    select: { id: true, url: true, sortOrder: true, createdAt: true },
+    data: { collectionItemId: item.id, url, kind, sortOrder: count },
+    select: { id: true, url: true, kind: true, sortOrder: true, createdAt: true },
   });
   return photo;
 }

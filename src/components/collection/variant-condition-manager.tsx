@@ -8,6 +8,7 @@ import { adjustCollectionVariantAction, updateCollectionGradingAction, updateCol
 import { listCollectionItemAction, cancelListingAction } from "@/server/marketplace/marketplace.actions";
 import { CollectionPhotoManager } from "@/components/collection/collection-photo-manager";
 import { QuantityStepper } from "@/components/collection/quantity-stepper";
+import { GRADE_COMPANIES, GRADE_SCORES, formatGradeScore, type GradeCompanyCode } from "@/lib/grading";
 import type { CollectionItemPhotoView } from "@/server/collection/collection-photos.service";
 
 type ListingType = "SELL" | "TRADE" | "SELL_OR_TRADE";
@@ -18,6 +19,8 @@ export type ConditionRow = {
   reservedQuantity: number;
   available: number;
   isGraded: boolean;
+  gradeCompany: string | null;
+  gradeScore: number | null;
   isSigned: boolean;
   signatureAuthor: string | null;
   photos: CollectionItemPhotoView[];
@@ -88,25 +91,17 @@ export function VariantConditionManager({
             />
           </div>
 
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("gradingLabel")}</span>
-            {([true, false] as const).map((graded) => (
-              <button
-                key={graded ? "yes" : "no"}
-                type="button"
-                disabled={pending}
-                onClick={() => run(() => updateCollectionGradingAction({ variantId, condition: c.condition, isGraded: graded }))}
-                className={[
-                  "rounded-md border px-2.5 py-1 text-[10.5px] font-extrabold transition disabled:opacity-50",
-                  c.isGraded === graded
-                    ? "border-carmin bg-carmin/15 text-blanc-casse"
-                    : "border-charbon-500 text-texte-dim hover:border-charbon-400",
-                ].join(" ")}
-              >
-                {graded ? t("gradingYes") : t("gradingNo")}
-              </button>
-            ))}
-          </div>
+          <GradingDetailField
+            variantId={variantId}
+            condition={c.condition}
+            isGraded={c.isGraded}
+            gradeCompany={c.gradeCompany}
+            gradeScore={c.gradeScore}
+            cardPhotos={c.photos.filter((p) => p.kind === "CARD")}
+            certPhotos={c.photos.filter((p) => p.kind === "CERTIFICATE")}
+            pending={pending}
+            onRun={run}
+          />
 
           <SignatureAuthorField
             variantId={variantId}
@@ -117,7 +112,9 @@ export function VariantConditionManager({
             onRun={run}
           />
 
-          <CollectionPhotoManager variantId={variantId} condition={c.condition} photos={c.photos} />
+          {!c.isGraded && (
+            <CollectionPhotoManager variantId={variantId} condition={c.condition} photos={c.photos.filter((p) => p.kind === "CARD")} />
+          )}
 
           <div className="mt-2 flex flex-col gap-1.5">
             {c.listings.map((l) => (
@@ -194,6 +191,165 @@ export function VariantConditionManager({
       </div>
 
       {error && <p className="text-[10.5px] font-bold text-neon-rouge">{t("listingError")}</p>}
+    </div>
+  );
+}
+
+function GradingDetailField({
+  variantId,
+  condition,
+  isGraded,
+  gradeCompany,
+  gradeScore,
+  cardPhotos,
+  certPhotos,
+  pending,
+  onRun,
+}: {
+  variantId: string;
+  condition: string;
+  isGraded: boolean;
+  gradeCompany: string | null;
+  gradeScore: number | null;
+  cardPhotos: CollectionItemPhotoView[];
+  certPhotos: CollectionItemPhotoView[];
+  pending: boolean;
+  onRun: (fn: () => Promise<{ ok: boolean; error?: string }>) => void;
+}) {
+  const t = useTranslations("card");
+  const [company, setCompany] = useState<GradeCompanyCode | "">(
+    gradeCompany && GRADE_COMPANIES.some((g) => g.code === gradeCompany) ? (gradeCompany as GradeCompanyCode) : "",
+  );
+  const [score, setScore] = useState<string>(gradeScore != null ? String(gradeScore) : "");
+
+  useEffect(() => {
+    setCompany(
+      gradeCompany && GRADE_COMPANIES.some((g) => g.code === gradeCompany) ? (gradeCompany as GradeCompanyCode) : "",
+    );
+    setScore(gradeScore != null ? String(gradeScore) : "");
+  }, [gradeCompany, gradeScore, condition]);
+
+  return (
+    <div className="mt-2 flex flex-col gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("gradingLabel")}</span>
+        {([true, false] as const).map((graded) => (
+          <button
+            key={graded ? "yes" : "no"}
+            type="button"
+            disabled={pending}
+            onClick={() =>
+              onRun(() =>
+                updateCollectionGradingAction({
+                  variantId,
+                  condition,
+                  isGraded: graded,
+                  ...(graded ? {} : { gradeCompany: null, gradeScore: null }),
+                }),
+              )
+            }
+            className={[
+              "rounded-md border px-2.5 py-1 text-[10.5px] font-extrabold transition disabled:opacity-50",
+              isGraded === graded
+                ? "border-carmin bg-carmin/15 text-blanc-casse"
+                : "border-charbon-500 text-texte-dim hover:border-charbon-400",
+            ].join(" ")}
+          >
+            {graded ? t("gradingYes") : t("gradingNo")}
+          </button>
+        ))}
+      </div>
+
+      {isGraded && (
+        <>
+          <div className="flex flex-wrap items-end gap-2">
+            <label className="flex flex-col gap-1">
+              <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("gradeCompanyLabel")}</span>
+              <select
+                value={company}
+                disabled={pending}
+                onChange={(e) => {
+                  const next = e.target.value as GradeCompanyCode | "";
+                  setCompany(next);
+                  if (next && score) {
+                    const parsedScore = Number(score);
+                    if (GRADE_SCORES.includes(parsedScore)) {
+                      onRun(() =>
+                        updateCollectionGradingAction({
+                          variantId,
+                          condition,
+                          isGraded: true,
+                          gradeCompany: next,
+                          gradeScore: parsedScore,
+                        }),
+                      );
+                    }
+                  }
+                }}
+                className="rounded-md border border-charbon-500 bg-charbon-700 px-2 py-1.5 text-[11px] font-extrabold text-blanc-casse outline-none focus:border-carmin"
+              >
+                <option value="">{t("gradeCompanyPlaceholder")}</option>
+                {GRADE_COMPANIES.map((g) => (
+                  <option key={g.code} value={g.code}>
+                    {g.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("gradeScoreLabel")}</span>
+              <select
+                value={score}
+                disabled={pending}
+                onChange={(e) => {
+                  setScore(e.target.value);
+                  const parsedScore = Number(e.target.value);
+                  if (company && e.target.value && GRADE_SCORES.includes(parsedScore)) {
+                    onRun(() =>
+                      updateCollectionGradingAction({
+                        variantId,
+                        condition,
+                        isGraded: true,
+                        gradeCompany: company,
+                        gradeScore: parsedScore,
+                      }),
+                    );
+                  }
+                }}
+                className="rounded-md border border-charbon-500 bg-charbon-700 px-2 py-1.5 text-[11px] font-extrabold text-blanc-casse outline-none focus:border-carmin"
+              >
+                <option value="">{t("gradeScorePlaceholder")}</option>
+                {GRADE_SCORES.map((s) => (
+                  <option key={s} value={s}>
+                    {formatGradeScore(s)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {(!company || !score) && (
+            <p className="text-[10px] font-bold text-texte-faible">{t("gradeDetailsHint")}</p>
+          )}
+
+          <CollectionPhotoManager
+            variantId={variantId}
+            condition={condition}
+            photos={cardPhotos}
+            kind="CARD"
+            labelKey="gradedCardPhotoLabel"
+            hintKey="gradedCardPhotoHint"
+          />
+          <CollectionPhotoManager
+            variantId={variantId}
+            condition={condition}
+            photos={certPhotos}
+            kind="CERTIFICATE"
+            labelKey="gradedCertPhotoLabel"
+            hintKey="gradedCertPhotoHint"
+          />
+        </>
+      )}
     </div>
   );
 }

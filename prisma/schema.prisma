@@ -582,11 +582,17 @@ model CollectionItem {
   @@index([userId])
 }
 
+enum CollectionPhotoKind {
+  CARD
+  CERTIFICATE
+}
+
 /// Photo réelle d'un exemplaire possédé (upload collectionneur, visible publiquement).
 model CollectionItemPhoto {
-  id               String         @id @default(cuid())
-  collectionItem   CollectionItem @relation(fields: [collectionItemId], references: [id], onDelete: Cascade)
+  id               String              @id @default(cuid())
+  collectionItem   CollectionItem      @relation(fields: [collectionItemId], references: [id], onDelete: Cascade)
   collectionItemId String
+  kind             CollectionPhotoKind @default(CARD)
   /// Chemin public (ex. /uploads/collection/…).
   url              String
   sortOrder        Int            @default(0)

@@ -54,10 +54,21 @@ const editionSchema = z.object({
   condition: z.enum(["MINT", "EXCELLENT", "VERY_GOOD", "GOOD", "FAIR", "DAMAGED"]).default("EXCELLENT"),
 });
 
+import { GRADE_COMPANIES, GRADE_SCORES, isValidGradeCompany } from "@/lib/grading";
+
 const gradingSchema = z.object({
   variantId: z.string().min(1),
   condition: conditionEnum,
-  isGraded: z.boolean(),
+  isGraded: z.boolean().optional(),
+  gradeCompany: z.string().trim().max(32).nullish(),
+  gradeScore: z.number().min(1).max(10).nullish(),
+}).superRefine((data, ctx) => {
+  if (data.gradeCompany && !isValidGradeCompany(data.gradeCompany)) {
+    ctx.addIssue({ code: "custom", message: "INVALID_COMPANY", path: ["gradeCompany"] });
+  }
+  if (data.gradeScore != null && !GRADE_SCORES.includes(data.gradeScore)) {
+    ctx.addIssue({ code: "custom", message: "INVALID_SCORE", path: ["gradeScore"] });
+  }
 });
 
 const signatureSchema = z.object({
@@ -173,7 +184,11 @@ export async function updateCollectionGradingAction(input: unknown): Promise<Col
   if (!parsed.success) return { ok: false, error: "VALIDATION" };
 
   try {
-    await updateCollectionGrading(viewer.id, parsed.data.variantId, parsed.data.condition, parsed.data.isGraded);
+    await updateCollectionGrading(viewer.id, parsed.data.variantId, parsed.data.condition, {
+      isGraded: parsed.data.isGraded,
+      gradeCompany: parsed.data.gradeCompany,
+      gradeScore: parsed.data.gradeScore,
+    });
     revalidateCollection();
     return { ok: true };
   } catch (err) {
