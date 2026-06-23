@@ -70,7 +70,7 @@ export async function MarketplaceFilters({
 
   return (
     <div className="mt-6 flex flex-col gap-2.5">
-      <div className="flex flex-wrap items-center gap-3.5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3.5">
         <div className="flex flex-wrap gap-1.5">
           <Chip href={hrefWith(params, { rarity: undefined })} active={!params.rarity} glyph="☰" glyphColor="#8E8E98">
             {t("allRarities")}
@@ -90,7 +90,7 @@ export async function MarketplaceFilters({
             );
           })}
         </div>
-        <form action={`/${locale}/marketplace`} className="ml-auto flex min-w-[200px] flex-1 justify-end">
+        <form action={`/${locale}/marketplace`} className="flex min-w-0 flex-1 sm:ml-auto sm:justify-end">
           <input type="hidden" name="intent" value={params.intent} />
           {params.rarity && <input type="hidden" name="rarity" value={params.rarity} />}
           {params.condition && <input type="hidden" name="condition" value={params.condition} />}
@@ -100,7 +100,7 @@ export async function MarketplaceFilters({
             defaultValue={params.q ?? ""}
             placeholder={t("searchPlaceholder")}
             aria-label={t("searchSubmit")}
-            className="w-full max-w-[300px] rounded-full border border-charbon-500 bg-charbon-800 px-4.5 py-2.5 text-[13px] text-blanc-casse outline-none focus:border-carmin"
+            className="w-full min-w-0 rounded-full border border-charbon-500 bg-charbon-800 px-4 py-2.5 text-[13px] text-blanc-casse outline-none focus:border-carmin sm:max-w-[300px]"
           />
         </form>
       </div>
@@ -154,7 +154,7 @@ export async function MarketplaceFilters({
             defaultValue={params.city ?? ""}
             placeholder={t("filterCityPlaceholder")}
             aria-label={t("filterCityPlaceholder")}
-            className="w-[160px] rounded-full border border-charbon-500 bg-charbon-800 px-3.5 py-1.5 text-[12px] text-blanc-casse outline-none focus:border-carmin"
+            className="w-full min-w-0 rounded-full border border-charbon-500 bg-charbon-800 px-3.5 py-1.5 text-[12px] text-blanc-casse outline-none focus:border-carmin sm:w-[160px]"
           />
         </form>
       </div>

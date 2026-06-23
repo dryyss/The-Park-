@@ -6,7 +6,9 @@ import { getSellerReadiness } from "@/server/marketplace/seller-readiness.servic
 import { SellForm } from "@/components/sell/sell-form";
 import { SellerReadiness } from "@/components/sell/seller-readiness";
 import { GuestAuthBanner } from "@/components/auth/login-gate-prompt";
+import { PRIVATE_METADATA } from "@/lib/seo-messages";
 
+export const metadata = PRIVATE_METADATA;
 export const dynamic = "force-dynamic";
 
 export default async function VendrePage({ params }: { params: Promise<{ locale: string }> }) {

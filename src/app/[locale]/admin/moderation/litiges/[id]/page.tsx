@@ -27,7 +27,7 @@ export default async function AdminDisputeDetailPage({
   if (!dispute) notFound();
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <Link href="/admin/moderation" className="text-[12px] font-extrabold text-carmin hover:underline">← {t("moderation.title")}</Link>
       <div className="mt-4">
         <PageHeader kicker={t("disputes.kicker")} title={t("disputes.detailTitle")} jp="紛争" />

@@ -3,7 +3,9 @@ import { requireAuthViewer } from "@/server/user/user.service";
 import { getViewerConversations } from "@/server/messaging/conversation.service";
 import { PageHeader } from "@/components/common/page-header";
 import { ConversationList } from "@/components/messaging/conversation-sections";
+import { PRIVATE_METADATA } from "@/lib/seo-messages";
 
+export const metadata = PRIVATE_METADATA;
 export const dynamic = "force-dynamic";
 
 export default async function MessagesPage({ params }: { params: Promise<{ locale: string }> }) {

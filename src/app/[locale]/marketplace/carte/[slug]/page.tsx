@@ -9,6 +9,7 @@ import { OwnListingRowActions } from "@/components/marketplace/own-listing-row-a
 import { getCardSellListings } from "@/server/marketplace/marketplace.service";
 import { getViewerUser } from "@/server/user/user.service";
 import { getMarketplaceCartListingIds } from "@/server/marketplace-cart/marketplace-cart.service";
+import { exchangeProposeHref } from "@/lib/exchange-links";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,7 @@ export default async function CardSellersPage({
   setRequestLocale(locale);
   const t = await getTranslations("marketplace");
   const tc = await getTranslations("conditions");
+  const tCard = await getTranslations("card");
 
   const [card, viewer] = await Promise.all([
     getCardSellListings(slug),
@@ -44,12 +46,20 @@ export default async function CardSellersPage({
   return (
     <main className="mx-auto max-w-[1100px] px-5 pt-8 pb-[60px]">
       {/* Retour */}
-      <Link
-        href="/marketplace"
-        className="mb-6 inline-flex items-center gap-2 text-[12px] font-bold tracking-[1px] text-texte-dim uppercase transition hover:text-blanc-casse"
-      >
-        ← {t("sellersBack")}
-      </Link>
+      <div className="mb-6 flex flex-wrap items-center gap-4">
+        <Link
+          href={`/carte/${card.slug}`}
+          className="inline-flex items-center gap-2 text-[12px] font-bold tracking-[1px] text-texte-dim uppercase transition hover:text-blanc-casse"
+        >
+          ← {card.name}
+        </Link>
+        <Link
+          href="/marketplace"
+          className="inline-flex items-center gap-2 text-[12px] font-bold tracking-[1px] text-texte-faible uppercase transition hover:text-texte-dim"
+        >
+          {t("sellersBack")}
+        </Link>
+      </div>
 
       {/* En-tête carte */}
       <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-10">
@@ -208,6 +218,12 @@ export default async function CardSellersPage({
                         inCart={cartSet.has(s.listingId)}
                       />
                     )}
+                    <Link
+                      href={exchangeProposeHref({ card: card.slug, recipient: s.seller.slug })}
+                      className="font-display -skew-x-3 rounded-lg border-[1.5px] border-charbon-400 px-4 py-2.5 text-center text-[11px] tracking-[1px] whitespace-nowrap text-texte-doux uppercase transition hover:border-carmin"
+                    >
+                      {tCard("listingProposeExchange")}
+                    </Link>
                     <ContactSellerButton
                       sellerSlug={s.seller.slug}
                       locale={locale}

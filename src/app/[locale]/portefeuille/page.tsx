@@ -8,6 +8,9 @@ import { GuestAuthBanner } from "@/components/auth/login-gate-prompt";
 import { WalletTopUpForm } from "@/components/wallet/wallet-top-up-form";
 import { WalletEarnedPanel } from "@/components/wallet/wallet-earned-panel";
 import { formatWalletEur } from "@/lib/wallet";
+import { PRIVATE_METADATA } from "@/lib/seo-messages";
+
+export const metadata = PRIVATE_METADATA;
 
 export const dynamic = "force-dynamic";
 

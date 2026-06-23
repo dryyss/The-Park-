@@ -41,7 +41,7 @@ export default async function AdminCommandesPage({
   ]);
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <Link href="/admin" className="text-[12px] font-extrabold text-carmin hover:underline">
         ← {t("back")}
       </Link>

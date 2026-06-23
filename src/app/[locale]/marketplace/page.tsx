@@ -14,8 +14,14 @@ import {
 import { getViewerWishlistCardIds } from "@/server/wishlist/wishlist.service";
 import { MarketplaceFilters, type MarketParams } from "@/components/marketplace/marketplace-filters";
 import { ListingCard } from "@/components/marketplace/listing-card";
+import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return localePageMetadata("marketplace", locale, "/marketplace");
+}
 
 type SearchParams = { intent?: string; rarity?: string; condition?: string; version?: string; q?: string; city?: string; wishlist?: string };
 
@@ -73,7 +79,7 @@ export default async function MarketplacePage({
   ];
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       {/* En-tête */}
       <div className="relative flex flex-wrap items-end justify-between gap-5">
         <div className="font-jp pointer-events-none absolute -top-7 right-0 hidden text-[130px] leading-none font-black text-blanc-casse/3 select-none lg:block">

@@ -1,12 +1,27 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { getShopProductBySlug } from "@/server/shop/shop.service";
 import { ShopOfficialBanner } from "@/components/shop/shop-sections";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
+import { productPageMetadata } from "@/lib/seo";
+import { getProductSeoData } from "@/server/seo/seo.service";
+import { BreadcrumbJsonLd, ProductJsonLd } from "@/components/seo/JsonLd";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const product = await getProductSeoData(slug);
+  if (!product) return {};
+  return productPageMetadata(product, locale);
+}
 
 export default async function BoutiqueProduitPage({
   params,
@@ -21,7 +36,14 @@ export default async function BoutiqueProduitPage({
   if (!product) notFound();
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-8 pb-[60px]">
+    <main className="page-section pt-8">
+      <ProductJsonLd product={product} locale={locale} />
+      <BreadcrumbJsonLd
+        items={[
+          { name: t("breadcrumbShop"), url: `/${locale}/boutique` },
+          { name: product.name, url: `/${locale}/boutique/${product.slug}` },
+        ]}
+      />
       <ShopOfficialBanner />
       <div className="mb-4 flex items-center gap-2 text-[12.5px] font-bold text-texte-dim">
         <Link href="/boutique" className="hover:text-carmin">

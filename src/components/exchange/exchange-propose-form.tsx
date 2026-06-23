@@ -18,24 +18,32 @@ type OwnedCard = {
   availableQuantity: number;
 };
 
+type WantCard = {
+  name: string;
+  image: string;
+  number: number;
+};
+
 export function ExchangeProposeForm({
   ownedCards,
   defaultRecipient = "",
   defaultRecipientName = "",
+  wantCard = null,
   isAuthenticated = true,
 }: {
   ownedCards: OwnedCard[];
   defaultRecipient?: string;
   defaultRecipientName?: string;
+  wantCard?: WantCard | null;
   isAuthenticated?: boolean;
 }) {
   const t = useTranslations("exchangePropose");
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [recipient, setRecipient] = useState(defaultRecipient);
-  // Pré-rempli avec un message d'amorce réel (et non un simple placeholder),
-  // pour qu'une proposition parte toujours avec un mot d'accroche éditable.
-  const [message, setMessage] = useState(() => t("messageDefault"));
+  const [message, setMessage] = useState(() =>
+    wantCard ? t("messageDefaultForCard", { card: wantCard.name }) : t("messageDefault"),
+  );
   const [secured, setSecured] = useState(false);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -101,6 +109,22 @@ export function ExchangeProposeForm({
       </section>
 
       <section className="flex flex-col gap-5">
+        {wantCard && (
+          <div className="rounded-[16px] border border-carmin/30 bg-carmin/8 p-5">
+            <h2 className="font-display text-[16px] tracking-wide text-blanc-casse uppercase">{t("youReceive")}</h2>
+            <div className="mt-3 flex items-center gap-3">
+              <div className="relative h-[72px] w-[52px] shrink-0 overflow-hidden rounded-[8px] bg-charbon-600">
+                {wantCard.image && (
+                  <Image src={wantCard.image} alt={wantCard.name} fill className="object-cover" sizes="52px" />
+                )}
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-[14px] font-extrabold text-blanc-casse">{wantCard.name}</p>
+                <p className="text-[11px] font-bold text-texte-faible">#{String(wantCard.number).padStart(2, "0")}</p>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
           <h2 className="font-display text-[16px] tracking-wide text-blanc-casse uppercase">{t("recipient")}</h2>
           {defaultRecipientName && recipient === defaultRecipient ? (

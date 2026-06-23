@@ -4,7 +4,9 @@ import { getSellerDashboard, type DashboardStats } from "@/server/dashboard/dash
 import { PageHeader } from "@/components/common/page-header";
 import { DashboardPanel } from "@/components/dashboard/dashboard-panel";
 import { GuestAuthBanner } from "@/components/auth/login-gate-prompt";
+import { PRIVATE_METADATA } from "@/lib/seo-messages";
 
+export const metadata = PRIVATE_METADATA;
 export const dynamic = "force-dynamic";
 
 const EMPTY_DASHBOARD: DashboardStats = {
@@ -27,7 +29,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const stats = viewer ? await getSellerDashboard(viewer.id) : EMPTY_DASHBOARD;
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="ダッシュボード" />
       {!isAuthenticated && (
         <>

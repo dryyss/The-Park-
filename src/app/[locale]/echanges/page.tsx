@@ -4,8 +4,14 @@ import { getViewerExchanges, getViewerOwnedCardsForPropose, getTradeOpportunitie
 import { PageHeader } from "@/components/common/page-header";
 import { ExchangeBoard } from "@/components/exchange/exchange-board";
 import { GuestAuthBanner } from "@/components/auth/login-gate-prompt";
+import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return localePageMetadata("echanges", locale, "/echanges");
+}
 
 type SP = { tab?: string; id?: string };
 
@@ -29,11 +35,10 @@ export default async function EchangesPage({
   if (!viewer) {
     const opportunities = await getTradeOpportunities(null);
     return (
-      <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+      <main className="page-section">
         <PageHeader kicker={t("kicker")} title={t("title")} jp="交換" />
         <GuestAuthBanner messageKey="loginGateExchanges" />
-        <div className="mt-6">
-          <ExchangeBoard
+        <ExchangeBoard
             tab={tab}
             current={[]}
             done={[]}
@@ -42,7 +47,6 @@ export default async function EchangesPage({
             opportunities={opportunities}
             isAuthenticated={false}
           />
-        </div>
       </main>
     );
   }
@@ -53,10 +57,9 @@ export default async function EchangesPage({
     : [];
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="交換" />
-      <div className="mt-6">
-        <ExchangeBoard
+      <ExchangeBoard
           tab={tab}
           current={data.current}
           done={data.done}
@@ -66,7 +69,6 @@ export default async function EchangesPage({
           ownedCards={ownedCards}
           isAuthenticated
         />
-      </div>
     </main>
   );
 }

@@ -208,3 +208,22 @@ h3,
   background: var(--color-carmin);
   color: #fff;
 }
+
+/* Conteneurs responsive — mobile-first */
+@layer components {
+  .page-container {
+    @apply mx-auto max-w-[1320px] px-4 sm:px-6 lg:px-7;
+  }
+
+  .page-section {
+    @apply page-container pt-9 pb-[60px];
+  }
+
+  .page-pad {
+    @apply px-4 sm:px-6 lg:px-7;
+  }
+
+  .scroll-touch {
+    -webkit-overflow-scrolling: touch;
+  }
+}

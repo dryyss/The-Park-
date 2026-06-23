@@ -14,9 +14,15 @@ import { SeasonBanner } from "@/components/home/season-banner";
 import { LatestListings } from "@/components/home/latest-listings";
 import { ActivityFeed } from "@/components/home/activity-feed";
 import { TopCollectors } from "@/components/home/top-collectors";
+import { localePageMetadata } from "@/lib/seo-messages";
 
 // Catalogue en cache (unstable_cache 120 s) ; comptes membre lus live depuis Neon.
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return localePageMetadata("home", locale, "");
+}
 
 export default async function Home({
   params,
@@ -63,13 +69,13 @@ export default async function Home({
   return (
     <main className="overflow-x-hidden">
       {authError && tAuth && (
-        <div className="border-b border-statut-danger/30 bg-statut-danger/10 px-7 py-3 text-center text-[13px] font-semibold text-statut-danger">
+        <div className="border-b border-statut-danger/30 bg-statut-danger/10 px-4 py-3 text-center text-[13px] font-semibold text-statut-danger sm:px-6 lg:px-7">
           {tAuth("loginFailed", { code: authError })}
         </div>
       )}
       <HeroSection stats={stats} heroCards={heroCards} />
 
-      <div className="mx-auto max-w-[1320px] px-7 pb-[60px]">
+      <div className="page-container pb-[60px]">
         <RarityCarousel rarities={rarities} showOwned={!!viewer} />
         <FeaturedCards cards={featuredSlice} likeMeta={likeMeta} isAuthenticated={!!viewer} />
         <SeasonBanner />

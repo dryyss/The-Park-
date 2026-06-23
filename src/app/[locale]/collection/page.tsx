@@ -11,8 +11,14 @@ import { CollectionDisplayControls } from "@/components/collection/collection-di
 import { CollectionGuestBanner } from "@/components/collection/collection-guest-banner";
 import { collectionGridClassName, parseCollectionGridCols, parseCollectionSort } from "@/lib/collection-grid";
 import { ScrollToTopButton } from "@/components/common/scroll-to-top-button";
+import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return localePageMetadata("collection", locale, "/collection");
+}
 
 type SP = { segment?: string; rarity?: string; q?: string; cols?: string; sort?: string };
 
@@ -49,9 +55,9 @@ export default async function CollectionPage({
   const gridClass = collectionGridClassName(collParams.cols);
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="駐車場">
-        <div className="flex items-start gap-3 pb-1.5">
+        <div className="flex w-full flex-wrap items-start justify-end gap-3 pb-1.5 sm:w-auto">
           <div className="flex flex-col items-start">
             <span className="font-display -rotate-1 rounded-lg bg-blanc-casse px-4.5 py-2.5 text-[13px] tracking-[1.5px] text-charbon shadow-[3px_3px_0_var(--color-carmin)]">
               {t("seasonActive")}

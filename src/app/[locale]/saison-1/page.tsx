@@ -7,8 +7,14 @@ import { PageHeader } from "@/components/common/page-header";
 import { type RarityStripItem } from "@/components/home/rarity-strip";
 import { RarityCarousel } from "@/components/home/rarity-carousel";
 import { SeasonCardTile } from "@/components/season/season-card-tile";
+import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return localePageMetadata("saison1", locale, "/saison-1");
+}
 
 export default async function Saison1Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -28,7 +34,7 @@ export default async function Saison1Page({ params }: { params: Promise<{ locale
   });
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <PageHeader kicker={t("kicker")} title={summary.season?.name ?? t("title")} jp="シーズン1">
         <Link href="/collection" className="font-display -skew-x-3 rounded-[10px] bg-carmin px-5 py-3 text-[13px] tracking-[1.5px] text-white uppercase">
           {t("trackCompletion")}

@@ -1,4 +1,5 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { searchCards, getCatalogFacets, type SearchSort } from "@/server/catalog/catalog.service";
 import { rarityMeta } from "@/lib/rarity";
@@ -8,11 +9,25 @@ import { HoloCard } from "@/components/cards/holo-card";
 import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { FilterChipGroup } from "@/components/filters/filter-chip";
 import { SortSelect } from "@/components/filters/sort-select";
+import { searchPageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
 
 const SORTS: SearchSort[] = ["number", "name", "rarity"];
 const PATHNAME = "/recherche";
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ q?: string; rarity?: string; version?: string; sort?: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const sp = await searchParams;
+  const hasQuery = !!(sp.q?.trim() || sp.rarity || sp.version);
+  return searchPageMetadata(locale, hasQuery);
+}
 
 export default async function RecherchePage({
   params,
@@ -48,7 +63,7 @@ export default async function RecherchePage({
   const versionOptions = facets.versions.map((v) => ({ value: v.code, label: v.label }));
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="検索" />
 
       <form action={`/${locale}/recherche`} className="mt-6">

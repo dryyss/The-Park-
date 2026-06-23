@@ -1,4 +1,5 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { getCatalogSummary, getSeasonCards } from "@/server/catalog/catalog.service";
 import { getViewerUser } from "@/server/user/user.service";
@@ -8,8 +9,14 @@ import { PageHeader } from "@/components/common/page-header";
 import { type RarityStripItem } from "@/components/home/rarity-strip";
 import { RarityCarousel } from "@/components/home/rarity-carousel";
 import { SeasonCardTile } from "@/components/season/season-card-tile";
+import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return localePageMetadata("horsSerie", locale, "/hors-serie");
+}
 
 export default async function HorsSeriePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -29,7 +36,7 @@ export default async function HorsSeriePage({ params }: { params: Promise<{ loca
   });
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <PageHeader kicker={t("horsSerieKicker")} title={summary.season?.name ?? t("horsSerieTitle")} jp="外伝">
         <Link href="/collection" className="font-display -skew-x-3 rounded-[10px] bg-or px-5 py-3 text-[13px] tracking-[1.5px] text-charbon uppercase">
           {t("trackCompletion")}

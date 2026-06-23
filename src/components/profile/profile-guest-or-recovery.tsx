@@ -31,7 +31,7 @@ export function ProfileGuestOrRecovery({
 
   if (isLoading) {
     return (
-      <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+      <main className="page-section">
         <p className="text-[14px] font-bold text-texte-dim">{t("sessionLoading")}</p>
       </main>
     );
@@ -39,7 +39,7 @@ export function ProfileGuestOrRecovery({
 
   if (user) {
     return (
-      <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+      <main className="page-section">
         <div className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-6">
           <p className="text-[14px] font-bold text-blanc-casse">{t("sessionPending")}</p>
           <p className="mt-2 text-[13px] font-semibold text-texte-dim">{t("sessionHint")}</p>
@@ -59,7 +59,7 @@ export function ProfileGuestOrRecovery({
   }
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <div className="font-display text-[clamp(32px,4vw,48px)] leading-tight -skew-x-3 uppercase text-blanc-casse [text-shadow:3px_3px_0_var(--color-carmin)]">
         {t("guestTitle")}
       </div>

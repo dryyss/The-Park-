@@ -4,7 +4,9 @@ import { getViewerWishlist } from "@/server/wishlist/wishlist.service";
 import { PageHeader } from "@/components/common/page-header";
 import { WishlistGridClient } from "@/components/wishlist/wishlist-grid-client";
 import { GuestAuthBanner } from "@/components/auth/login-gate-prompt";
+import { PRIVATE_METADATA } from "@/lib/seo-messages";
 
+export const metadata = PRIVATE_METADATA;
 export const dynamic = "force-dynamic";
 
 export default async function WishlistPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -17,7 +19,7 @@ export default async function WishlistPage({ params }: { params: Promise<{ local
   const items = viewer ? await getViewerWishlist(viewer.id) : [];
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="ウィッシュ" />
       {!isAuthenticated && <GuestAuthBanner messageKey="loginGateWishlist" />}
       <div className="mt-8">

@@ -10,9 +10,9 @@ export function PageHeader({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="relative flex flex-wrap items-end justify-between gap-5">
+    <div className="relative flex flex-wrap items-end justify-between gap-4 sm:gap-5">
       {jp && (
-        <div className="font-jp pointer-events-none absolute -top-7 right-0 hidden text-[130px] leading-none font-black text-blanc-casse/3 select-none lg:block">
+        <div className="font-jp pointer-events-none absolute -top-4 right-0 hidden text-[80px] leading-none font-black text-blanc-casse/3 select-none sm:-top-7 sm:text-[110px] lg:block lg:text-[130px]">
           {jp}
         </div>
       )}

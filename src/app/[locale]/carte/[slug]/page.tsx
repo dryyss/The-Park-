@@ -1,5 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { OwnedVariantStack } from "@/components/cards/owned-variant-stack";
 import { CardCommunityPhotos } from "@/components/collection/card-community-photos";
@@ -12,8 +13,23 @@ import { CardLikeButton } from "@/components/cards/card-like-button";
 import { getCardLikeMeta } from "@/server/card-like/card-like.service";
 import { avatarGradient } from "@/lib/avatars";
 import { conditionColor } from "@/lib/condition";
+import { cardPageMetadata } from "@/lib/seo";
+import { exchangeProposeHref } from "@/lib/exchange-links";
+import { getCardSeoData } from "@/server/seo/seo.service";
+import { BreadcrumbJsonLd, TradingCardJsonLd } from "@/components/seo/JsonLd";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const card = await getCardSeoData(slug);
+  if (!card) return {};
+  return cardPageMetadata(card, locale);
+}
 
 export default async function CartePage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
@@ -30,6 +46,13 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
 
   const totalQty = card.versions.reduce((s, v) => s + v.quantity, 0);
   const ownedAny = totalQty > 0;
+  const otherListings = card.listings.filter((l) => viewer?.id !== l.sellerId);
+  const primarySeller = otherListings[0];
+  const listingsHref = `/marketplace/carte/${card.slug}`;
+  const exchangeHref = exchangeProposeHref({
+    card: card.slug,
+    recipient: primarySeller?.sellerSlug,
+  });
   // Exemplaires possédés (variante + édition) empilés sur le hero, 1ère édition devant.
   const ownedVariantCards = card.versions
     .filter((v) => v.owned)
@@ -42,6 +65,16 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
     }));
   return (
     <main className="mx-auto max-w-[1240px] px-7 pt-5 pb-[60px]">
+      <TradingCardJsonLd
+        card={{ name: card.name, slug: card.slug, image: card.image, description: card.description, rarityLabel: card.rarityLabel, seasonName: card.seasonName }}
+        locale={locale}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: t("breadcrumbCollection"), url: `/${locale}/collection` },
+          { name: card.name, url: `/${locale}/carte/${card.slug}` },
+        ]}
+      />
       <nav className="flex items-center gap-3 text-[12.5px] font-bold text-texte-dim">
         <Link href="/collection" className="transition hover:text-carmin">{t("breadcrumbCollection")}</Link>
         <span className="text-charbon-400">/</span>
@@ -168,10 +201,16 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
           />
 
           <div className="mt-6 flex flex-wrap gap-2.5">
-            <Link href="/marketplace" className="font-display -skew-x-3 rounded-[10px] bg-carmin px-5.5 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase shadow-[3px_3px_0_rgba(0,0,0,0.45)] transition hover:bg-carmin-alt">
-              {t("ctaListings")}
+            <Link
+              href={listingsHref}
+              className="font-display -skew-x-3 rounded-[10px] bg-carmin px-5.5 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase shadow-[3px_3px_0_rgba(0,0,0,0.45)] transition hover:bg-carmin-alt"
+            >
+              {card.listings.length > 0 ? t("ctaListingsCount", { count: card.listings.length }) : t("ctaListings")}
             </Link>
-            <Link href="/echanges" className="font-display -skew-x-3 rounded-[10px] border-[1.5px] border-charbon-400 px-5.5 py-3.5 text-[14px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin">
+            <Link
+              href={exchangeHref}
+              className="font-display -skew-x-3 rounded-[10px] border-[1.5px] border-charbon-400 px-5.5 py-3.5 text-[14px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin"
+            >
               {t("ctaExchange")}
             </Link>
           </div>
@@ -202,7 +241,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
           </div>
 
           {/* En-tête colonnes */}
-          <div className="mb-2 hidden grid-cols-[1fr_90px_100px_80px_110px_120px] gap-3 px-4 text-[9.5px] font-extrabold tracking-[1.5px] text-texte-faible uppercase sm:grid">
+          <div className="mb-2 hidden grid-cols-[1fr_90px_100px_80px_110px_180px] gap-3 px-4 text-[9.5px] font-extrabold tracking-[1.5px] text-texte-faible uppercase sm:grid">
             <span>{t("listingsColSeller")}</span>
             <span>{t("listingsColLang")}</span>
             <span>{t("listingsColCondition")}</span>
@@ -215,7 +254,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
             {card.listings.map((l, idx) => {
               const isOwn = viewer?.id === l.sellerId;
               const rowBase =
-                "grid grid-cols-1 gap-2 rounded-[13px] border border-charbon-500 bg-charbon-800 px-4 py-3.5 transition hover:border-carmin sm:grid-cols-[1fr_90px_100px_80px_110px_120px] sm:items-center sm:gap-3";
+                "grid grid-cols-1 gap-2 rounded-[13px] border border-charbon-500 bg-charbon-800 px-4 py-3.5 transition hover:border-carmin sm:grid-cols-[1fr_90px_100px_80px_110px_180px] sm:items-center sm:gap-3";
               const inner = (
                 <>
                   {/* Vendeur */}
@@ -274,32 +313,40 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
                     </span>
                   </div>
 
-                  {/* Prix + CTA */}
-                  <div className="flex items-center justify-between gap-2 sm:justify-end">
+                  {/* Prix + actions */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 sm:justify-end">
                     <span className="font-display text-[19px] leading-none text-blanc-casse">{l.price}</span>
-                    <span
-                      className={`font-display -skew-x-3 rounded-lg px-3 py-2 text-[10.5px] tracking-[1px] uppercase ${
-                        isOwn ? "border border-or bg-or/10 text-or" : "bg-carmin text-white"
-                      }`}
-                    >
-                      {isOwn ? t("actionManage") : t("contact")}
-                    </span>
+                    {isOwn ? (
+                      <Link
+                        href="/dashboard"
+                        className="font-display -skew-x-3 rounded-lg border border-or bg-or/10 px-3 py-2 text-[10.5px] tracking-[1px] text-or uppercase"
+                      >
+                        {t("actionManage")}
+                      </Link>
+                    ) : (
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <Link
+                          href={exchangeProposeHref({ card: card.slug, recipient: l.sellerSlug })}
+                          className="font-display -skew-x-3 rounded-lg border-[1.5px] border-charbon-400 px-3 py-2 text-[10.5px] tracking-[1px] text-texte-doux uppercase transition hover:border-carmin"
+                        >
+                          {t("listingProposeExchange")}
+                        </Link>
+                        <ContactSellerButton
+                          sellerSlug={l.sellerSlug}
+                          locale={locale}
+                          className="font-display -skew-x-3 rounded-lg bg-carmin px-3 py-2 text-[10.5px] tracking-[1px] text-white uppercase"
+                        >
+                          {t("contact")}
+                        </ContactSellerButton>
+                      </div>
+                    )}
                   </div>
                 </>
               );
-              return isOwn ? (
-                <Link key={l.id} href="/dashboard" className={rowBase}>
+              return (
+                <div key={l.id} className={rowBase}>
                   {inner}
-                </Link>
-              ) : (
-                <ContactSellerButton
-                  key={l.id}
-                  sellerSlug={l.sellerSlug}
-                  locale={locale}
-                  className={`${rowBase} w-full text-left`}
-                >
-                  {inner}
-                </ContactSellerButton>
+                </div>
               );
             })}
           </div>

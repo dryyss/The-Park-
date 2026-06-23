@@ -19,11 +19,15 @@ function ExchangeTabs({
   currentCount,
   doneCount,
   incomingCount,
+  tabCurrentLabel,
+  tabDoneLabel,
 }: {
   tab: ExchangeTab;
   currentCount: number;
   doneCount: number;
   incomingCount: number;
+  tabCurrentLabel: string;
+  tabDoneLabel: string;
 }) {
   return (
     <div className="mb-1 flex rounded-[11px] border border-charbon-500 bg-charbon-800 p-1.5 gap-0.5">
@@ -31,7 +35,7 @@ function ExchangeTabs({
         href="/echanges"
         className={`font-display relative rounded-lg px-4.5 py-2.5 text-[13px] tracking-[1.5px] uppercase transition ${tab === "current" ? "bg-carmin text-white" : "text-texte-dim hover:text-blanc-casse"}`}
       >
-        EN COURS · {currentCount}
+        {tabCurrentLabel} · {currentCount}
         {incomingCount > 0 && tab !== "current" && (
           <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-or px-1 text-[9px] font-extrabold text-charbon">
             {incomingCount}
@@ -42,7 +46,7 @@ function ExchangeTabs({
         href="/echanges?tab=done"
         className={`font-display rounded-lg px-4.5 py-2.5 text-[13px] tracking-[1.5px] uppercase transition ${tab === "done" ? "bg-carmin text-white" : "text-texte-dim hover:text-blanc-casse"}`}
       >
-        TERMINÉS · {doneCount}
+        {tabDoneLabel} · {doneCount}
       </Link>
     </div>
   );
@@ -149,18 +153,18 @@ async function ExchangeDetailPanel({
 
   return (
     <div className="overflow-hidden rounded-[20px] border border-charbon-500 bg-charbon-800">
-      <div className="flex items-center gap-3 border-b border-charbon-600 bg-[radial-gradient(circle_at_6%_0%,rgba(216,27,96,0.14),transparent_60%)] px-6 py-4.5">
+      <div className="flex flex-wrap items-center gap-3 border-b border-charbon-600 bg-[radial-gradient(circle_at_6%_0%,rgba(216,27,96,0.14),transparent_60%)] px-4 py-4 sm:px-6 sm:py-4.5">
         <span
-          className="font-display flex h-11 w-11 shrink-0 -rotate-3 items-center justify-center rounded-xl text-[17px] text-white"
+          className="font-display flex h-10 w-10 shrink-0 -rotate-3 items-center justify-center rounded-xl text-[15px] text-white sm:h-11 sm:w-11 sm:text-[17px]"
           style={{ background: avatarGradient(detail.partnerInitial) }}
         >
           {detail.partnerInitial}
         </span>
-        <div className="flex-1">
-          <div className="font-display text-[19px] tracking-wide text-blanc-casse">
+        <div className="min-w-0 flex-1 basis-[200px]">
+          <div className="font-display text-[15px] tracking-wide text-blanc-casse sm:text-[19px]">
             {t("exchangeWith", { id: detail.shortId, name: detail.partnerName.toUpperCase() })}
           </div>
-          <div className="mt-0.5 text-[11.5px] font-bold text-texte-dim">
+          <div className="mt-0.5 text-[10.5px] font-bold text-texte-dim sm:text-[11.5px]">
             <span className="text-or">★ {detail.partnerRating}</span> ·{" "}
             {t("openedOn", { date: new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium" }).format(detail.createdAt) })}{" "}
             ·{" "}
@@ -169,7 +173,7 @@ async function ExchangeDetailPanel({
             </Link>
           </div>
         </div>
-        <div className="flex shrink-0 flex-col items-end gap-2">
+        <div className="flex w-full shrink-0 flex-row flex-wrap items-center justify-end gap-2 sm:w-auto sm:flex-col sm:items-end">
           {detail.conversationId && (
             <Link
               href={`/messages/${detail.conversationId}`}
@@ -236,17 +240,56 @@ function TradeSide({ title, cards }: { title: string; cards: { name: string; ima
   );
 }
 
-function OpportunitiesPanel({
-  opportunities,
+async function OpportunityCard({
+  opportunity: o,
   isAuthenticated,
 }: {
-  opportunities: TradeOpportunity[];
+  opportunity: TradeOpportunity;
   isAuthenticated: boolean;
 }) {
-  return <OpportunitiesPanelAsync opportunities={opportunities} isAuthenticated={isAuthenticated} />;
+  const t = await getTranslations("exchanges");
+  const href = `/echanges/proposer?recipient=${encodeURIComponent(o.sellerSlug)}`;
+  const card = (
+    <div className="group flex h-full flex-col overflow-hidden rounded-[16px] border border-charbon-500 bg-charbon-800 transition hover:border-carmin/60 hover:bg-charbon-700">
+      <div className="relative aspect-[5/7] w-full overflow-hidden bg-charbon-600">
+        {o.cardImage ? (
+          <Image src={o.cardImage} alt={o.cardName} fill className="object-cover transition group-hover:scale-[1.02]" sizes="(max-width:640px) 100vw, 280px" />
+        ) : (
+          <div className="flex h-full items-center justify-center text-2xl opacity-20">⇄</div>
+        )}
+        <span
+          className={`absolute top-2.5 left-2.5 rounded-md px-2 py-1 text-[9px] font-extrabold tracking-wide uppercase ${
+            o.type === "WANT" ? "bg-[rgba(94,217,154,0.92)] text-charbon" : "bg-[rgba(216,27,96,0.92)] text-white"
+          }`}
+        >
+          {o.type === "WANT" ? t("listingWant") : t("listingTrade")}
+        </span>
+      </div>
+      <div className="flex flex-1 flex-col gap-2 p-4">
+        <div className="min-w-0 flex-1">
+          <div className="line-clamp-2 text-[13px] font-extrabold leading-snug text-blanc-casse">{o.cardName}</div>
+          <div className="mt-1 text-[11px] font-bold text-texte-dim">{o.sellerName}</div>
+          {o.priceLabel && <div className="mt-1.5 text-[11px] font-bold text-texte-faible">{o.priceLabel}</div>}
+        </div>
+        <span className="font-display w-full rounded-[10px] border border-carmin/40 bg-carmin/10 py-2.5 text-center text-[11px] tracking-[1px] text-carmin uppercase transition group-hover:bg-carmin group-hover:text-white">
+          {t("proposeCta")}
+        </span>
+      </div>
+    </div>
+  );
+
+  return isAuthenticated ? (
+    <Link href={href} className="block h-full">
+      {card}
+    </Link>
+  ) : (
+    <AuthGatedLink href={href} messageKey="loginGateExchanges" className="block h-full">
+      {card}
+    </AuthGatedLink>
+  );
 }
 
-async function OpportunitiesPanelAsync({
+async function OpportunitiesPanel({
   opportunities,
   isAuthenticated,
 }: {
@@ -258,56 +301,119 @@ async function OpportunitiesPanelAsync({
   if (opportunities.length === 0) return null;
 
   return (
-    <div className="overflow-hidden rounded-[15px] border border-charbon-500 bg-charbon-800">
-      <div className="border-b border-charbon-600 px-4 py-3.5">
-        <div className="text-[10px] font-extrabold tracking-[2px] text-texte-faible uppercase">{t("openToTrade")}</div>
-        <p className="mt-0.5 text-[11px] font-semibold text-texte-dim">{t("openToTradeHint")}</p>
+    <section className="overflow-hidden rounded-[20px] border border-charbon-500 bg-charbon-800">
+      <div className="border-b border-charbon-600 bg-[radial-gradient(circle_at_0%_0%,rgba(216,27,96,0.12),transparent_55%)] px-6 py-5">
+        <div className="font-display text-[11px] tracking-[2px] text-texte-faible uppercase">{t("openToTrade")}</div>
+        <p className="mt-1 max-w-2xl text-[13px] font-semibold text-texte-dim">{t("openToTradeHint")}</p>
       </div>
-      <div className="flex flex-col divide-y divide-charbon-600">
-        {opportunities.map((o) => {
-          const href = `/echanges/proposer?recipient=${encodeURIComponent(o.sellerSlug)}`;
-          const row = (
-            <>
-              <div className="relative h-[52px] w-9 shrink-0 overflow-hidden rounded-[8px] bg-charbon-600 shadow-[0_4px_14px_rgba(0,0,0,0.5)]">
-                {o.cardImage && <Image src={o.cardImage} alt={o.cardName} fill className="object-cover" sizes="36px" />}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="truncate text-[12px] font-extrabold leading-tight text-blanc-casse">{o.cardName}</div>
-                <div className="mt-0.5 text-[10.5px] font-bold text-texte-dim">{o.sellerName}</div>
-                <div className="mt-1.5 flex items-center gap-1.5">
-                  <span
-                    className={`rounded px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide ${
-                      o.type === "WANT"
-                        ? "bg-[rgba(94,217,154,0.12)] text-neon-vert"
-                        : "bg-[rgba(216,27,96,0.12)] text-carmin"
-                    }`}
-                  >
-                    {o.type === "WANT" ? t("listingWant") : t("listingTrade")}
-                  </span>
-                  {o.priceLabel && (
-                    <span className="text-[10px] font-bold text-texte-faible">{o.priceLabel}</span>
-                  )}
-                </div>
-              </div>
-              <span className="shrink-0 self-center rounded-[10px] border border-carmin/40 bg-carmin/10 px-3 py-1.5 text-[10px] font-extrabold tracking-wide text-carmin uppercase transition group-hover:bg-carmin/20">
-                {t("proposeCta")}
-              </span>
-            </>
-          );
-          const rowClass = "group flex items-center gap-3 px-4 py-3.5 transition hover:bg-charbon-700";
+      <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {opportunities.map((o) => (
+          <OpportunityCard key={o.listingId} opportunity={o} isAuthenticated={isAuthenticated} />
+        ))}
+      </div>
+    </section>
+  );
+}
 
-          return isAuthenticated ? (
-            <Link key={o.listingId} href={href} className={rowClass}>
-              {row}
-            </Link>
-          ) : (
-            <AuthGatedLink key={o.listingId} href={href} messageKey="loginGateExchanges" className={rowClass}>
-              {row}
-            </AuthGatedLink>
-          );
-        })}
-      </div>
+function ProposeNewButton({ isAuthenticated, label }: { isAuthenticated: boolean; label: string }) {
+  const className =
+    "font-display rounded-xl border-[1.5px] border-dashed border-charbon-400 p-3 text-center text-[12px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin hover:bg-carmin/10 hover:text-white";
+
+  return isAuthenticated ? (
+    <Link href="/echanges/proposer" className={className}>
+      + {label}
+    </Link>
+  ) : (
+    <AuthGatedLink href="/echanges/proposer" messageKey="loginGateExchanges" className={`block ${className}`}>
+      + {label}
+    </AuthGatedLink>
+  );
+}
+
+function EmptyStateCard({ message }: { message: string }) {
+  return (
+    <div className="rounded-[15px] border border-dashed border-charbon-500 px-5 py-8 text-center">
+      <div className="mb-2 text-3xl opacity-20">⇄</div>
+      <p className="text-[13px] font-bold leading-relaxed text-texte-dim">{message}</p>
     </div>
+  );
+}
+
+function SelectExchangePlaceholder({ message }: { message: string }) {
+  return (
+    <div className="flex min-h-[320px] flex-col items-center justify-center gap-2 rounded-[20px] border border-charbon-500 bg-charbon-800 p-8 text-center">
+      <div className="mb-2 text-4xl opacity-10">⇄</div>
+      <p className="max-w-sm text-[13px] font-bold leading-relaxed text-texte-dim">{message}</p>
+    </div>
+  );
+}
+
+function ExchangeListAside({
+  list,
+  tab,
+  sections,
+  selectedId,
+  statusLabels,
+  actionReplyLabel,
+  sectionIncomingLabel,
+  sectionOutgoingLabel,
+  sectionActiveLabel,
+  proposeNewLabel,
+  isAuthenticated,
+}: {
+  list: ExchangeListItem[];
+  tab: ExchangeTab;
+  sections: { role: ExchangeInboxRole; items: ExchangeListItem[] }[] | null;
+  selectedId?: string;
+  statusLabels: Record<string, string>;
+  actionReplyLabel: string;
+  sectionIncomingLabel: string;
+  sectionOutgoingLabel: string;
+  sectionActiveLabel: string;
+  proposeNewLabel: string;
+  isAuthenticated: boolean;
+}) {
+  return (
+    <aside className="flex flex-col gap-3">
+      {sections ? (
+        <>
+          <ExchangeListSection
+            title={sectionIncomingLabel}
+            items={sections.find((s) => s.role === "incoming")?.items ?? []}
+            selectedId={selectedId}
+            tab={tab}
+            statusLabels={statusLabels}
+            actionLabel={actionReplyLabel}
+          />
+          <ExchangeListSection
+            title={sectionOutgoingLabel}
+            items={sections.find((s) => s.role === "outgoing")?.items ?? []}
+            selectedId={selectedId}
+            tab={tab}
+            statusLabels={statusLabels}
+          />
+          <ExchangeListSection
+            title={sectionActiveLabel}
+            items={sections.find((s) => s.role === "active")?.items ?? []}
+            selectedId={selectedId}
+            tab={tab}
+            statusLabels={statusLabels}
+          />
+        </>
+      ) : (
+        list.map((item) => (
+          <ExchangeListRow
+            key={item.id}
+            item={item}
+            active={selectedId === item.id}
+            tab={tab}
+            statusLabel={statusLabels[EXCHANGE_STATUS_I18N[item.status]] ?? item.status}
+          />
+        ))
+      )}
+
+      {tab === "current" && <ProposeNewButton isAuthenticated={isAuthenticated} label={proposeNewLabel} />}
+    </aside>
   );
 }
 
@@ -344,88 +450,63 @@ export async function ExchangeBoard({
     Object.values(EXCHANGE_STATUS_I18N).map((key) => [key, t(`status.${key}`)]),
   );
   const sections = tab === "current" ? groupCurrent(current) : null;
+  const hasExchanges = list.length > 0;
+  const showMasterDetail = isAuthenticated && hasExchanges;
+  const showOpportunities = tab === "current" && opportunities.length > 0 && !selected;
+
+  const emptyMessage =
+    tab === "done"
+      ? t("emptyDone")
+      : isAuthenticated
+        ? t("emptyCurrentBrowse")
+        : t("guestEmpty");
 
   return (
-    <>
-      <ExchangeTabs tab={tab} currentCount={current.length} doneCount={done.length} incomingCount={counts.incoming} />
-      <div className="mt-6 grid grid-cols-1 items-start gap-5 lg:grid-cols-[380px_1fr]">
-        <div className="flex flex-col gap-4">
-          {list.length === 0 ? (
-            <div className="rounded-[15px] border border-dashed border-charbon-500 px-8 py-10 text-center">
-              <div className="mb-3 text-2xl opacity-20">⇄</div>
-              <p className="text-[13px] font-bold text-texte-dim">
-                {!isAuthenticated && tab === "current" ? t("guestEmpty") : tab === "done" ? t("emptyDone") : t("emptyCurrent")}
-              </p>
-            </div>
-          ) : sections ? (
-            <>
-              <ExchangeListSection
-                title={t("sectionIncoming", { count: counts.incoming })}
-                items={sections.find((s) => s.role === "incoming")?.items ?? []}
-                selectedId={selected?.id}
-                tab={tab}
-                statusLabels={statusLabels}
-                actionLabel={t("actionReply")}
-              />
-              <ExchangeListSection
-                title={t("sectionOutgoing", { count: counts.outgoing })}
-                items={sections.find((s) => s.role === "outgoing")?.items ?? []}
-                selectedId={selected?.id}
-                tab={tab}
-                statusLabels={statusLabels}
-              />
-              <ExchangeListSection
-                title={t("sectionActive", { count: counts.active })}
-                items={sections.find((s) => s.role === "active")?.items ?? []}
-                selectedId={selected?.id}
-                tab={tab}
-                statusLabels={statusLabels}
-              />
-            </>
-          ) : (
-            list.map((item) => (
-              <ExchangeListRow
-                key={item.id}
-                item={item}
-                active={selected?.id === item.id}
-                tab={tab}
-                statusLabel={statusLabels[EXCHANGE_STATUS_I18N[item.status]] ?? item.status}
-              />
-            ))
-          )}
+    <div className="mt-6 flex flex-col gap-6">
+      <ExchangeTabs
+        tab={tab}
+        currentCount={current.length}
+        doneCount={done.length}
+        incomingCount={counts.incoming}
+        tabCurrentLabel={t("tabCurrent")}
+        tabDoneLabel={t("tabDone")}
+      />
 
-          {tab === "current" && <OpportunitiesPanel opportunities={opportunities} isAuthenticated={isAuthenticated} />}
-
-          {isAuthenticated ? (
-            <Link
-              href="/echanges/proposer"
-              className="font-display rounded-xl border-[1.5px] border-dashed border-charbon-400 p-3.5 text-center text-[12.5px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin hover:bg-carmin/10 hover:text-white"
-            >
-              + {t("proposeNew")}
-            </Link>
+      {showMasterDetail ? (
+        <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(280px,340px)_1fr]">
+          <ExchangeListAside
+            list={list}
+            tab={tab}
+            sections={sections}
+            selectedId={selected?.id}
+            statusLabels={statusLabels}
+            actionReplyLabel={t("actionReply")}
+            sectionIncomingLabel={t("sectionIncoming", { count: counts.incoming })}
+            sectionOutgoingLabel={t("sectionOutgoing", { count: counts.outgoing })}
+            sectionActiveLabel={t("sectionActive", { count: counts.active })}
+            proposeNewLabel={t("proposeNew")}
+            isAuthenticated={isAuthenticated}
+          />
+          {selected ? (
+            <ExchangeDetailPanel detail={selected} ownedCards={ownedCards} />
           ) : (
-            <AuthGatedLink
-              href="/echanges/proposer"
-              messageKey="loginGateExchanges"
-              className="font-display block rounded-xl border-[1.5px] border-dashed border-charbon-400 p-3.5 text-center text-[12.5px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin hover:bg-carmin/10 hover:text-white"
-            >
-              + {t("proposeNew")}
-            </AuthGatedLink>
+            <SelectExchangePlaceholder message={t("selectExchange")} />
           )}
         </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {(isAuthenticated || tab === "done" || !showOpportunities) && (
+            <EmptyStateCard message={emptyMessage} />
+          )}
+          {isAuthenticated && tab === "current" && (
+            <ProposeNewButton isAuthenticated={isAuthenticated} label={t("proposeNew")} />
+          )}
+        </div>
+      )}
 
-        {selected ? (
-          <ExchangeDetailPanel detail={selected} ownedCards={ownedCards} />
-        ) : (
-          <div className="flex min-h-[320px] flex-col items-center justify-center gap-2 rounded-[20px] border border-charbon-500 bg-charbon-800 p-8 text-center">
-            <div className="mb-2 text-4xl opacity-10">⇄</div>
-            <p className="text-[13px] font-bold text-texte-dim">{t("selectExchange")}</p>
-            {tab === "current" && opportunities.length > 0 && (
-              <p className="mt-1 max-w-sm text-[12px] font-semibold text-texte-faible">{t("selectOrPropose")}</p>
-            )}
-          </div>
-        )}
-      </div>
-    </>
+      {showOpportunities && (
+        <OpportunitiesPanel opportunities={opportunities} isAuthenticated={isAuthenticated} />
+      )}
+    </div>
   );
 }

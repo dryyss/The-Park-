@@ -1,6 +1,12 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/common/page-header";
 import { HelpFaq } from "@/components/help/help-faq";
+import { localePageMetadata } from "@/lib/seo-messages";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return localePageMetadata("aide", locale, "/aide");
+}
 
 export default async function AidePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

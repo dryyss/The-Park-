@@ -10,7 +10,9 @@ import {
   ProfileSidebar,
 } from "@/components/profile/profile-sections";
 import { ProfileGuestOrRecovery } from "@/components/profile/profile-guest-or-recovery";
+import { PRIVATE_METADATA } from "@/lib/seo-messages";
 
+export const metadata = PRIVATE_METADATA;
 export const dynamic = "force-dynamic";
 
 export default async function ProfilPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -36,11 +38,11 @@ export default async function ProfilPage({ params }: { params: Promise<{ locale:
   await evaluateUserBadgesSafe(viewer.id);
   const profile = await getViewerProfile(viewer.id);
   if (!profile) {
-    return <main className="mx-auto max-w-[1320px] px-7 py-24 text-center text-texte-dim">{t("noUser")}</main>;
+    return <main className="page-container py-24 text-center text-texte-dim">{t("noUser")}</main>;
   }
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-8 pb-[60px]">
+    <main className="page-section pt-8">
       <ProfileHeader profile={profile} />
       <div className="mt-5 grid grid-cols-1 items-start gap-5 lg:grid-cols-[330px_1fr]">
         <ProfileSidebar profile={profile} />

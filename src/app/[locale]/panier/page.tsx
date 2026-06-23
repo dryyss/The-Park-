@@ -10,7 +10,7 @@ export default async function PanierPage({ params }: { params: Promise<{ locale:
   const t = await getTranslations("unifiedCart");
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="カート" />
       <div className="mt-8">
         <UnifiedCartView locale={locale} />

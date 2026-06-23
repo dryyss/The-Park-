@@ -16,13 +16,13 @@ export default async function AdminRolesPage({ params }: { params: Promise<{ loc
   const access = await requireModule("staff");
   if (!access.ok) {
     const msg = access.reason === "UNAUTHORIZED" ? t("noUser") : t("forbidden");
-    return <main className="mx-auto max-w-[1320px] px-7 py-24 text-center text-texte-dim">{msg}</main>;
+    return <main className="page-container py-24 text-center text-texte-dim">{msg}</main>;
   }
 
   const members = await listStaffMembers();
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <Link href="/admin" className="text-[12px] font-extrabold text-carmin hover:underline">
         ← {t("back")}
       </Link>

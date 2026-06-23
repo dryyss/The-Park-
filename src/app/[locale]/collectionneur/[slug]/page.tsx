@@ -1,13 +1,27 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import { getCollectorProfile } from "@/server/community/community.service";
 import { getUserCollection } from "@/server/collection/collection.service";
 import { avatarGradient } from "@/lib/avatars";
 import { formatPercent } from "@/lib/format";
 import { CollectionCardTile } from "@/components/collection/collection-card-tile";
+import { collectorPageMetadata } from "@/lib/seo";
+import { getCollectorSeoData } from "@/server/seo/seo.service";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const collector = await getCollectorSeoData(slug);
+  if (!collector) return {};
+  return collectorPageMetadata(collector, locale);
+}
 
 export default async function CollectionneurPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
@@ -22,7 +36,7 @@ export default async function CollectionneurPage({ params }: { params: Promise<{
   const previewCards = collection?.sections.flatMap((s) => s.cards).slice(0, 12) ?? [];
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <div className="flex flex-wrap items-end gap-6 rounded-[20px] border border-charbon-500 bg-charbon-800 p-8">
         <div
           className="font-display flex h-20 w-20 -rotate-3 items-center justify-center rounded-[22px] text-[32px] text-white shadow-[4px_4px_0_rgba(0,0,0,0.45)]"

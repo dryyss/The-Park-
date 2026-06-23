@@ -54,7 +54,7 @@ export function LoginGatePrompt({
 
 export function GuestAuthBanner({ messageKey = "loginGateDefault" }: { messageKey?: string }) {
   return (
-    <div className="mt-6">
+    <div className="mt-5 mb-1">
       <LoginGatePrompt messageKey={messageKey} />
     </div>
   );

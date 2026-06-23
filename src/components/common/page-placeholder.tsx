@@ -9,7 +9,7 @@ export async function PagePlaceholder({ title, jp }: { title: string; jp: string
   const t = await getTranslations("pages");
 
   return (
-    <main className="mx-auto flex min-h-[60vh] max-w-[1320px] flex-col items-center justify-center px-7 py-24 text-center">
+    <main className="page-container flex min-h-[60vh] flex-col items-center justify-center py-16 text-center sm:py-24">
       <div className="font-jp text-[64px] leading-none font-black text-blanc-casse/5 select-none">{jp}</div>
       <h1 className="font-display mt-2 text-[clamp(40px,6vw,68px)] leading-[0.95] -skew-x-6 uppercase text-blanc-casse [text-shadow:4px_4px_0_var(--color-carmin)]">
         {title}

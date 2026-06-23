@@ -21,7 +21,7 @@ export async function HeroSection({ stats, heroCards }: { stats: HeroStats; hero
   ];
 
   return (
-    <section className="relative mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-10 px-7 pt-[70px] pb-[50px] lg:grid-cols-[1.05fr_1fr] lg:gap-8">
+    <section className="page-container relative grid grid-cols-1 items-center gap-8 pt-12 pb-10 sm:gap-10 sm:pt-[70px] sm:pb-[50px] lg:grid-cols-[1.05fr_1fr] lg:gap-8">
       <div className="font-jp pointer-events-none absolute top-2.5 right-0 hidden text-[210px] leading-none font-black text-blanc-casse/3 select-none lg:block">
         駐車場
       </div>

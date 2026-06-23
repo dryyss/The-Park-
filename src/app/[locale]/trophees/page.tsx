@@ -1,12 +1,19 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
 import { getViewerUser } from "@/server/user/user.service";
 import { evaluateUserBadgesSafe } from "@/server/badge/badge.service";
 import { getViewerTrophies, getTrophyStats, getCatalogTrophies, getCatalogTrophyStats } from "@/server/trophy/trophy.service";
 import { PageHeader } from "@/components/common/page-header";
 import { TrophyGrid } from "@/components/trophies/trophy-grid";
 import { GuestAuthBanner } from "@/components/auth/login-gate-prompt";
+import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return localePageMetadata("trophees", locale, "/trophees");
+}
 
 export default async function TropheesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -24,7 +31,7 @@ export default async function TropheesPage({ params }: { params: Promise<{ local
     : await Promise.all([getCatalogTrophies(), getCatalogTrophyStats()]);
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="トロフィー" />
       {!isAuthenticated && <GuestAuthBanner messageKey="loginGateTrophies" />}
       <div className="mt-8">

@@ -3,7 +3,9 @@ import { requireAuthViewer } from "@/server/user/user.service";
 import { getUserNotifications } from "@/server/notification/notification.service";
 import { PageHeader } from "@/components/common/page-header";
 import { NotificationFeed } from "@/components/notifications/notification-feed";
+import { PRIVATE_METADATA } from "@/lib/seo-messages";
 
+export const metadata = PRIVATE_METADATA;
 export const dynamic = "force-dynamic";
 
 export default async function NotificationsPage({ params }: { params: Promise<{ locale: string }> }) {

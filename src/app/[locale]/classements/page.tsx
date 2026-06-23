@@ -4,8 +4,14 @@ import { getViewerUser } from "@/server/user/user.service";
 import { getRankings, type RankingCategory } from "@/server/community/community.service";
 import { PageHeader } from "@/components/common/page-header";
 import { RankingsPodium, RankingsTable } from "@/components/rankings/rankings-podium";
+import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return localePageMetadata("classements", locale, "/classements");
+}
 
 function rankingsHref(cat: RankingCategory, page?: number): string {
   const params = new URLSearchParams({ cat });

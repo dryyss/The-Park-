@@ -31,9 +31,9 @@ export function Footer() {
   const t = useTranslations("footer");
 
   return (
-    <footer className="mt-16 hidden border-t border-charbon-600 md:block">
-      <div className="mx-auto max-w-[1320px] px-7">
-        <div className="grid grid-cols-1 gap-9 py-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
+    <footer className="mt-10 border-t border-charbon-600 sm:mt-16">
+      <div className="page-container">
+        <div className="hidden grid-cols-1 gap-9 py-10 md:grid md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           {/* Marque + newsletter */}
           <div>
             <div className="flex items-center gap-3">
@@ -112,7 +112,7 @@ export function Footer() {
         </div>
 
         {/* Barre légale */}
-        <div className="grid grid-cols-1 items-center gap-5 border-t border-charbon-600 py-[18px] pb-[30px] md:grid-cols-[1fr_auto_1fr] md:gap-4">
+        <div className="grid grid-cols-1 items-center gap-4 border-t border-charbon-600 py-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:py-[18px] sm:pb-[30px] md:grid-cols-[1fr_auto_1fr] md:gap-4 md:pb-[30px]">
           <div className="flex flex-wrap items-center justify-center gap-[18px] md:justify-start">
             <span className="text-[12px] font-bold text-texte-faible">{t("rights")}</span>
             <Link href="/aide" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("terms")}</Link>

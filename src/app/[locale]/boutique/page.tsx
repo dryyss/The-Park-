@@ -1,5 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getShopCatalog, getFeaturedShopProduct, type ShopCategory } from "@/server/shop/shop.service";
+import { localePageMetadata } from "@/lib/seo-messages";
 import {
   ProductTile,
   ShopCategoryFilters,
@@ -8,6 +9,11 @@ import {
 } from "@/components/shop/shop-sections";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return localePageMetadata("boutique", locale, "/boutique");
+}
 
 type SP = { cat?: string };
 
@@ -32,7 +38,7 @@ export default async function BoutiquePage({
   ]);
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-8 pb-[60px]">
+    <main className="page-section pt-8">
       <ShopOfficialBanner />
       {featured && category === "all" && <ShopHero product={featured} />}
 

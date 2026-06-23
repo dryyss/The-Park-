@@ -27,7 +27,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
   ]);
 
   return (
-    <main className="mx-auto max-w-[1320px] px-7 pt-9 pb-[60px]">
+    <main className="page-section">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="管理" />
       <div className="mt-8 space-y-10">
         <AdminOverviewCharts data={chartSeries} />

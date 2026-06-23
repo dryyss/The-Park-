@@ -5,7 +5,9 @@ import { getAccountSettings } from "@/server/user/account.service";
 import { PageHeader } from "@/components/common/page-header";
 import { SettingsForm } from "@/components/settings/settings-form";
 import { AccountSecuritySection } from "@/components/settings/account-security-section";
+import { PRIVATE_METADATA } from "@/lib/seo-messages";
 
+export const metadata = PRIVATE_METADATA;
 export const dynamic = "force-dynamic";
 
 export default async function ParametresPage({ params }: { params: Promise<{ locale: string }> }) {
