@@ -228,6 +228,21 @@ async function main() {
       label: "Première holo",
       description: "Posséder sa première carte holographique",
     },
+    {
+      code: "collector_25",
+      label: "Collectionneur",
+      description: "Posséder 25 cartes différentes dans le classeur",
+    },
+    {
+      code: "legendary_owner",
+      label: "Légendaire",
+      description: "Posséder une carte légendaire",
+    },
+    {
+      code: "ultra_rare_owner",
+      label: "Ultra rare",
+      description: "Posséder une carte ultra rare",
+    },
     { code: "set_gold", label: "Set Gold", description: "Compléter le palier Gold" },
     {
       code: "unique_owner",
@@ -237,9 +252,34 @@ async function main() {
     {
       code: "first_trade",
       label: "Premier échange",
-      description: "Réaliser son premier échange/vente",
+      description: "Réaliser son premier échange ou sa première vente",
     },
-    { code: "full_season", label: "Saison complète", description: "Compléter une saison à 100 %" },
+    {
+      code: "exchange_veteran",
+      label: "Vétéran des échanges",
+      description: "Réaliser 5 échanges complétés",
+    },
+    {
+      code: "first_listing",
+      label: "Première annonce",
+      description: "Publier sa première annonce sur la marketplace",
+    },
+    {
+      code: "first_sale",
+      label: "Première vente",
+      description: "Réaliser sa première vente marketplace",
+    },
+    {
+      code: "first_purchase",
+      label: "Premier achat",
+      description: "Effectuer son premier achat marketplace",
+    },
+    { code: "full_season", label: "Saison complète", description: "Compléter la Saison 1 à 100 %" },
+    {
+      code: "wallet_pioneer",
+      label: "Portefeuille activé",
+      description: "Effectuer sa première recharge de crédits",
+    },
   ];
   for (const b of badges) {
     await prisma.badge.upsert({ where: { code: b.code }, update: b, create: b });

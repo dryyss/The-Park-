@@ -43,16 +43,7 @@ export interface ViewerProfile {
   recentReviews: ProfileReview[];
 }
 
-const BADGE_ICONS: Record<string, string> = {
-  first_card: "01",
-  first_holo: "✦",
-  set_gold: "✸",
-  unique_owner: "✪",
-  first_trade: "⇄",
-  full_season: "100",
-};
-
-/** Profil privé du membre connecté (ou démo). */
+import { badgeIcon } from "@/lib/badges";
 export async function getViewerProfile(userId: string): Promise<ViewerProfile | null> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -99,7 +90,7 @@ export async function getViewerProfile(userId: string): Promise<ViewerProfile | 
     name: b.label,
     description: b.description ?? "",
     unlocked: unlockedIds.has(b.id),
-    icon: BADGE_ICONS[b.code] ?? "★",
+    icon: badgeIcon(b.code),
   }));
 
   const exchangeCount = user._count.exchangesInitiated + user._count.exchangesReceived;

@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 import { formatPrice } from "@/lib/format";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
-import { evaluateUserBadges } from "@/server/badge/badge.service";
+import { evaluateUserBadgesSafe } from "@/server/badge/badge.service";
 
 // Anti-snipe : une enchère placée dans les dernières minutes prolonge la vente.
 const ANTI_SNIPE_WINDOW_MS = 2 * 60 * 1000;
@@ -101,7 +101,7 @@ export async function placeBid(bidderId: string, auctionId: string, amount: numb
     });
   }
 
-  await evaluateUserBadges(bidderId);
+  await evaluateUserBadgesSafe(bidderId);
   return bid.id;
 }
 

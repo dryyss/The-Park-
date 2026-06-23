@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { roundEur } from "@/lib/wallet";
+import { evaluateUserBadgesSafe } from "@/server/badge/badge.service";
 
 export interface WalletSummary {
   depositBalanceEur: number;
@@ -107,6 +108,8 @@ export async function creditWalletFromTopUp(input: {
       },
     });
   });
+
+  await evaluateUserBadgesSafe(input.userId);
 }
 
 /**

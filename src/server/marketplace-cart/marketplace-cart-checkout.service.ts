@@ -7,6 +7,7 @@ import { roundEur } from "@/lib/wallet";
 import { formatPrice } from "@/lib/format";
 import { createSaleFromListing } from "@/server/sale/sale.mutations";
 import { markSaleFailed, markSalePaid } from "@/server/sale/sale-lifecycle.service";
+import { evaluateUserBadgesForUsers } from "@/server/badge/badge.service";
 import { debitWalletForSale, getWalletSpendableBalanceEur } from "@/server/wallet/wallet.service";
 import {
   getViewerMarketplaceCart,
@@ -265,6 +266,11 @@ export async function fulfillMarketplaceCheckout(checkoutId: string, stripeSessi
     where: { id: checkoutId },
     data: { status: "PAID", paidAt: new Date() },
   });
+
+  await evaluateUserBadgesForUsers([
+    checkout.buyerId,
+    ...checkout.lines.map((line) => line.sellerId),
+  ]);
 }
 
 /**

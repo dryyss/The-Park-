@@ -1,6 +1,8 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { CardCondition } from "@/generated/prisma/client";
+import { evaluateUserBadgesSafe } from "@/server/badge/badge.service";
+
 export async function addCollectionItem(
   userId: string,
   variantId: string,
@@ -15,6 +17,7 @@ export async function addCollectionItem(
     create: { userId, variantId, condition, quantity },
     update: { quantity: { increment: quantity } },
   });
+  await evaluateUserBadgesSafe(userId);
 }
 
 export async function removeCollectionItem(
@@ -30,6 +33,7 @@ export async function removeCollectionItem(
   if (item.reservedQuantity > 0) throw new Error("RESERVED");
 
   await prisma.collectionItem.delete({ where: { id: item.id } });
+  await evaluateUserBadgesSafe(userId);
 }
 
 export async function updateCollectionQuantity(
@@ -54,6 +58,7 @@ export async function updateCollectionQuantity(
     create: { userId, variantId, condition, quantity },
     update: { quantity },
   });
+  await evaluateUserBadgesSafe(userId);
 }
 
 const DEFAULT_CONDITION: CardCondition = "EXCELLENT";

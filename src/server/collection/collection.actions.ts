@@ -70,6 +70,8 @@ const signatureSchema = z.object({
 function revalidateCollection() {
   revalidatePath("/collection");
   revalidatePath("/carte", "layout");
+  revalidatePath("/profil");
+  revalidatePath("/trophees");
   revalidatePath("/vendre");
   revalidatePath("/saison-1");
   revalidatePath("/hors-serie");

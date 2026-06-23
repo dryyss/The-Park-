@@ -1,5 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
+import { evaluateUserBadgesSafe } from "@/server/badge/badge.service";
 import { getViewerProfile } from "@/server/profile/profile.service";
 import {
   ProfileBadges,
@@ -32,6 +33,7 @@ export default async function ProfilPage({ params }: { params: Promise<{ locale:
     );
   }
 
+  await evaluateUserBadgesSafe(viewer.id);
   const profile = await getViewerProfile(viewer.id);
   if (!profile) {
     return <main className="mx-auto max-w-[1320px] px-7 py-24 text-center text-texte-dim">{t("noUser")}</main>;

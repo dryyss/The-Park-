@@ -11,14 +11,7 @@ export interface TrophyBadge {
   unlockedAt: Date | null;
 }
 
-const BADGE_ICONS: Record<string, string> = {
-  first_card: "01",
-  first_holo: "✦",
-  set_gold: "✸",
-  unique_owner: "✪",
-  first_trade: "⇄",
-  full_season: "100",
-};
+import { badgeIcon } from "@/lib/badges";
 
 export async function getCatalogTrophies(): Promise<TrophyBadge[]> {
   const allBadges = await prisma.badge.findMany({ orderBy: { code: "asc" } });
@@ -26,7 +19,7 @@ export async function getCatalogTrophies(): Promise<TrophyBadge[]> {
     code: b.code,
     label: b.label,
     description: b.description ?? "",
-    icon: b.icon ?? BADGE_ICONS[b.code] ?? "★",
+    icon: b.icon ?? badgeIcon(b.code),
     unlocked: false,
     progress: 0,
     unlockedAt: null,
@@ -52,7 +45,7 @@ export async function getViewerTrophies(userId: string): Promise<TrophyBadge[]> 
       code: b.code,
       label: b.label,
       description: b.description ?? "",
-      icon: b.icon ?? BADGE_ICONS[b.code] ?? "★",
+      icon: b.icon ?? badgeIcon(b.code),
       unlocked: !!ub,
       progress: ub?.progress ?? 0,
       unlockedAt: ub?.unlockedAt ?? null,

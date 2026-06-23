@@ -145,9 +145,7 @@ export async function confirmSaleReceipt(saleId: string, buyerId: string): Promi
     payload: { amount: Number(sale.price).toFixed(2) },
   });
 
-  await Promise.all([
-    evaluateUserBadgesForUsers([sale.sellerId, sale.buyerId]),
-  ]);
+  await evaluateUserBadgesForUsers([sale.sellerId, sale.buyerId]);
 }
 
 /** L'acheteur ou le vendeur ouvre un litige (gèle le déblocage des fonds). */

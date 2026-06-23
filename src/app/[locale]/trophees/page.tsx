@@ -1,5 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getViewerUser } from "@/server/user/user.service";
+import { evaluateUserBadgesSafe } from "@/server/badge/badge.service";
 import { getViewerTrophies, getTrophyStats, getCatalogTrophies, getCatalogTrophyStats } from "@/server/trophy/trophy.service";
 import { PageHeader } from "@/components/common/page-header";
 import { TrophyGrid } from "@/components/trophies/trophy-grid";
@@ -16,7 +17,10 @@ export default async function TropheesPage({ params }: { params: Promise<{ local
   const isAuthenticated = !!viewer;
 
   const [badges, stats] = isAuthenticated
-    ? await Promise.all([getViewerTrophies(viewer.id), getTrophyStats(viewer.id)])
+    ? await (async () => {
+        await evaluateUserBadgesSafe(viewer.id);
+        return Promise.all([getViewerTrophies(viewer.id), getTrophyStats(viewer.id)]);
+      })()
     : await Promise.all([getCatalogTrophies(), getCatalogTrophyStats()]);
 
   return (

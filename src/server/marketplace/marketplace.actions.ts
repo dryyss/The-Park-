@@ -52,6 +52,7 @@ export async function listCollectionItemAction(input: unknown): Promise<Marketpl
     revalidatePath("/carte", "layout");
     revalidatePath("/dashboard");
     revalidatePath("/echanges");
+    revalidatePath("/profil");
     return { ok: true, listingId };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -83,6 +84,7 @@ export async function publishListingAction(input: unknown): Promise<MarketplaceA
     revalidatePath("/marketplace");
     revalidatePath("/vendre");
     revalidatePath("/dashboard");
+    revalidatePath("/profil");
     return { ok: true, listingId };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

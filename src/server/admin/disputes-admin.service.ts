@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import type { CaptureDecision, DisputeStatus, DisputeVerdict } from "@/generated/prisma/client";
 import { formatPrice } from "@/lib/format";
 import { capturePurchase, refundPurchase, releaseToSeller } from "@/server/sale/sale-payment.service";
+import { evaluateUserBadgesForUsers } from "@/server/badge/badge.service";
 
 export interface AdminDisputeDetail {
   id: string;
@@ -137,12 +138,20 @@ export async function getAdminDisputeDetail(disputeId: string): Promise<AdminDis
 async function applyFinancialResolution(
   dispute: { saleId: string | null; exchangeId: string | null; type: string },
   captureDecision: CaptureDecision,
-): Promise<void> {
+): Promise<string[]> {
+  const userIds: string[] = [];
+
   if (dispute.saleId) {
+    const sale = await prisma.sale.findUnique({
+      where: { id: dispute.saleId },
+      select: { sellerId: true, buyerId: true },
+    });
+    if (sale) userIds.push(sale.sellerId, sale.buyerId);
+
     const payment = await prisma.payment.findFirst({
       where: { saleId: dispute.saleId, kind: "PURCHASE" },
     });
-    if (!payment) return;
+    if (!payment) return userIds;
 
     switch (captureDecision) {
       case "REFUND":
@@ -166,10 +175,16 @@ async function applyFinancialResolution(
         await prisma.sale.update({ where: { id: dispute.saleId }, data: { status: "CANCELLED" } });
         break;
     }
-    return;
+    return userIds;
   }
 
   if (dispute.exchangeId) {
+    const exchange = await prisma.exchange.findUnique({
+      where: { id: dispute.exchangeId },
+      select: { initiatorId: true, recipientId: true },
+    });
+    if (exchange) userIds.push(exchange.initiatorId, exchange.recipientId);
+
     const cautions = await prisma.payment.findMany({
       where: { exchangeId: dispute.exchangeId, kind: "CAUTION" },
     });
@@ -186,6 +201,8 @@ async function applyFinancialResolution(
       data: { status: finalStatus, completedAt: finalStatus === "COMPLETED" ? new Date() : undefined },
     });
   }
+
+  return userIds;
 }
 
 export async function resolveDisputeWithArbitration(input: {
@@ -206,7 +223,9 @@ export async function resolveDisputeWithArbitration(input: {
     throw new Error("INVALID_STATUS");
   }
 
-  await applyFinancialResolution(dispute, input.captureDecision);
+  await applyFinancialResolution(dispute, input.captureDecision).then((userIds) =>
+    evaluateUserBadgesForUsers(userIds),
+  );
 
   await prisma.$transaction(async (tx) => {
     await tx.disputeResolution.create({

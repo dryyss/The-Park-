@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import type { CardCondition, ListingType } from "@/generated/prisma/client";
 import { getPlatformConfig } from "@/server/platform/platform.service";
 import { notifyWishlistForNewListing } from "@/server/marketplace/wishlist-listing-notify";
+import { evaluateUserBadgesSafe } from "@/server/badge/badge.service";
 
 /** Publie une annonce marketplace — uniquement sur une variante (et un état) possédé. */
 export async function publishListing(
@@ -59,6 +60,7 @@ export async function publishListing(
     console.error("[marketplace] wishlist notify failed", err);
   });
 
+  await evaluateUserBadgesSafe(sellerId);
   return listing.id;
 }
 
@@ -136,5 +138,6 @@ export async function publishWantListing(
       minCondition: input.minCondition ?? null,
     },
   });
+  await evaluateUserBadgesSafe(sellerId);
   return listing.id;
 }
