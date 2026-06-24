@@ -12,6 +12,8 @@ export interface CollectionFilters {
   rarity?: string;
   q?: string;
   sort?: CollectionSort;
+  /** Code de saison (ex: "S01", "HS"). Null = toutes saisons. */
+  season?: string;
 }
 
 export interface CollectionCard {
@@ -134,6 +136,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     if (filters.segment === "owned" && !c.owned) return false;
     if (filters.segment === "missing" && c.owned) return false;
     if (filters.rarity && card.rarity.code !== filters.rarity) return false;
+    if (filters.season && card.season.code !== filters.season) return false;
     if (q) {
       const nameMatch = c.name.toLowerCase().includes(q);
       const numPadded = String(c.number).padStart(2, "0");

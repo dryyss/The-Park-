@@ -84,6 +84,14 @@ export async function ConversationThreadView({
             {t("viewExchange")}
           </Link>
         )}
+        {thread.saleId && !thread.exchangeId && (
+          <Link
+            href={`/dashboard`}
+            className="text-[11px] font-extrabold text-carmin hover:underline"
+          >
+            {t("viewSale")}
+          </Link>
+        )}
       </div>
       <ConversationMessageList conversationId={thread.id} viewerId={viewerId} initialMessages={thread.messages} />
       <MessageComposeForm conversationId={thread.id} />

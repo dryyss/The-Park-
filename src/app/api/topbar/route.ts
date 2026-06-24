@@ -39,6 +39,7 @@ export async function GET() {
 
   return NextResponse.json({
     authenticated: true,
+    userId: viewer.id,
     cart,
     notifications,
     messages,

@@ -3,11 +3,13 @@
 import { useMemo, useState, useTransition } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { FilterPills } from "@/components/ui/filter-pills";
 import { SkewButton } from "@/components/ui/skew-button";
 import {
   notificationCategory,
   notificationVisual,
+  notificationHref,
   relativeTimeLabel,
   type NotificationCategory,
 } from "@/lib/notification-display";
@@ -98,14 +100,9 @@ export function NotificationFeed({ items }: { items: NotificationItem[] }) {
         ) : (
           filtered.map((n) => {
             const vis = notificationVisual(n.type);
-            return (
-              <div
-                key={n.id}
-                className={[
-                  "animate-pop flex items-center gap-3.5 rounded-[15px] border px-4 py-3.5 transition hover:translate-x-0.5 hover:border-carmin",
-                  n.read ? "border-charbon-600 bg-charbon-900/80" : "border-carmin/30 bg-[#1c1a1f]",
-                ].join(" ")}
-              >
+            const href = notificationHref(n.type, n.entityType, n.entityId);
+            const inner = (
+              <>
                 <span
                   className="flex h-11 w-11 shrink-0 -rotate-3 items-center justify-center rounded-xl text-[19px]"
                   style={{ background: vis.iconBg, color: vis.iconColor }}
@@ -131,13 +128,31 @@ export function NotificationFeed({ items }: { items: NotificationItem[] }) {
                     <button
                       type="button"
                       disabled={pending}
-                      onClick={() => markOne(n.id)}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); markOne(n.id); }}
                       className="text-[10px] font-extrabold text-carmin hover:underline disabled:opacity-50"
                     >
                       {t("markRead")}
                     </button>
                   )}
                 </div>
+              </>
+            );
+            const rowClass = [
+              "animate-pop flex items-center gap-3.5 rounded-[15px] border px-4 py-3.5 transition hover:translate-x-0.5 hover:border-carmin",
+              n.read ? "border-charbon-600 bg-charbon-900/80" : "border-carmin/30 bg-[#1c1a1f]",
+            ].join(" ");
+            return href ? (
+              <Link
+                key={n.id}
+                href={href}
+                onClick={() => { if (!n.read) markOne(n.id); }}
+                className={rowClass}
+              >
+                {inner}
+              </Link>
+            ) : (
+              <div key={n.id} className={rowClass}>
+                {inner}
               </div>
             );
           })

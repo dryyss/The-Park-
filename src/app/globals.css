@@ -193,6 +193,20 @@ h3,
   animation: raritySwipe 1.6s ease-in-out infinite;
 }
 
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(calc(100% + 1rem));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.animate-slide-in-right {
+  animation: slideInRight 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

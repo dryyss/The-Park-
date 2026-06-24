@@ -1,5 +1,49 @@
 import type { NotificationType } from "@/generated/prisma/client";
 
+/** URL de destination quand l'utilisateur clique sur une notification. */
+export function notificationHref(
+  type: NotificationType,
+  entityType: string | null,
+  entityId: string | null,
+): string | null {
+  switch (type) {
+    case "EXCHANGE_PROPOSED":
+    case "EXCHANGE_ACCEPTED":
+    case "EXCHANGE_COMPLETED":
+      return entityId ? `/echanges?tab=current&id=${entityId}` : "/echanges";
+    case "MESSAGE_RECEIVED":
+      return entityId ? `/messages/${entityId}` : "/messages";
+    case "BADGE_UNLOCKED":
+      return "/trophees";
+    case "PAYMENT_AUTHORIZED":
+      return "/portefeuille";
+    case "REVIEW_RECEIVED":
+      return "/profil";
+    case "WISHLIST_LISTING":
+      return "/wishlist";
+    case "AUCTION_OUTBID":
+    case "AUCTION_WON":
+    case "AUCTION_ENDED":
+      return entityId ? `/encheres?id=${entityId}` : "/encheres";
+    case "LISTING_SOLD":
+    case "LISTING_IN_CART":
+    case "LISTING_EXPIRING":
+    case "OFFER_RECEIVED":
+      return "/marketplace";
+    case "SALE_CREATED":
+    case "SHIPMENT_SHIPPED":
+    case "SHIPMENT_DELIVERED":
+    case "DISPUTE_OPENED":
+    case "DISPUTE_RESOLVED":
+    case "GUARANTEE_EXPIRING":
+    case "ORDER_UPDATE":
+      return "/dashboard";
+    default:
+      return null;
+  }
+  void entityType;
+}
+
 export type NotificationCategory = "all" | "trade" | "market" | "sale" | "wallet" | "badge";
 
 export interface NotificationVisual {

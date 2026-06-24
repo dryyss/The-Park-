@@ -37,6 +37,7 @@ export interface CollectionUrlParams {
   q?: string;
   cols?: CollectionGridCols;
   sort?: CollectionSort;
+  season?: string;
 }
 
 export function buildCollectionHref(params: CollectionUrlParams, patch: Partial<CollectionUrlParams> = {}): string {
@@ -47,6 +48,7 @@ export function buildCollectionHref(params: CollectionUrlParams, patch: Partial<
   if (merged.q) sp.set("q", merged.q);
   if (merged.cols && merged.cols !== DEFAULT_COLLECTION_GRID_COLS) sp.set("cols", String(merged.cols));
   if (merged.sort && merged.sort !== DEFAULT_COLLECTION_SORT) sp.set("sort", merged.sort);
+  if (merged.season) sp.set("season", merged.season);
   const qs = sp.toString();
   return `/collection${qs ? `?${qs}` : ""}`;
 }

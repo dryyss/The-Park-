@@ -4,12 +4,15 @@ import { getViewerUser } from "@/server/user/user.service";
 import { getUserCollection } from "@/server/collection/collection.service";
 import { getViewerWishlistCardIds } from "@/server/wishlist/wishlist.service";
 import { getCardsLikeMeta } from "@/server/card-like/card-like.service";
+import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/common/page-header";
 import { CompletionPanel, CollectionFiltersBar } from "@/components/collection/collection-filters";
 import { CollectionCardGrid } from "@/components/collection/collection-card-grid";
 import { CollectionDisplayControls } from "@/components/collection/collection-display-controls";
 import { CollectionGuestBanner } from "@/components/collection/collection-guest-banner";
 import { parseCollectionGridCols, parseCollectionSort } from "@/lib/collection-grid";
+import { Link } from "@/i18n/navigation";
+import { HORS_SERIE_SEASON_CODE } from "@/lib/seasons";
 import { ScrollToTopButton } from "@/components/common/scroll-to-top-button";
 import { localePageMetadata } from "@/lib/seo-messages";
 
@@ -20,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return localePageMetadata("collection", locale, "/collection");
 }
 
-type SP = { segment?: string; rarity?: string; q?: string; cols?: string; sort?: string };
+type SP = { segment?: string; rarity?: string; q?: string; cols?: string; sort?: string; season?: string };
 
 export default async function CollectionPage({
   params,
@@ -37,17 +40,21 @@ export default async function CollectionPage({
   const viewer = await getViewerUser();
   const isAuthenticated = !!viewer;
 
+  const activeSeason = sp.season ?? null;
+
   const collParams = {
     segment: (sp.segment === "owned" || sp.segment === "missing" ? sp.segment : "all") as "all" | "owned" | "missing",
     rarity: sp.rarity,
     q: sp.q,
     cols: parseCollectionGridCols(sp.cols),
     sort: parseCollectionSort(sp.sort),
+    season: activeSeason ?? undefined,
   };
 
-  const [data, wishlistCardIds] = await Promise.all([
+  const [data, wishlistCardIds, seasons] = await Promise.all([
     getUserCollection(viewer?.id ?? null, collParams),
     viewer ? getViewerWishlistCardIds(viewer.id) : Promise.resolve([]),
+    prisma.season.findMany({ orderBy: { sortOrder: "asc" }, select: { id: true, code: true, name: true } }),
   ]);
   const wishlistCardIdSet = new Set(wishlistCardIds);
   const allCardIds = data.sections.flatMap((sec) => sec.cards.map((c) => c.cardId));
@@ -56,29 +63,46 @@ export default async function CollectionPage({
   return (
     <main className="page-section">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="駐車場">
-        <div className="flex w-full flex-wrap items-start justify-end gap-3 pb-1.5 sm:w-auto">
-          <div className="flex flex-col items-start">
-            <span className="font-display -rotate-1 rounded-lg bg-blanc-casse px-4.5 py-2.5 text-[13px] tracking-[1.5px] text-charbon shadow-[3px_3px_0_var(--color-carmin)]">
-              {t("seasonActive")}
-            </span>
-            <div className="ml-2 mt-0.5 flex gap-1">
-              <span
-                className="bg-carmin px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] text-white"
-                style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))" }}
+        <div className="flex w-full flex-wrap items-center justify-end gap-2 pb-1.5 sm:w-auto">
+          {seasons.map((s) => {
+            const isHS = s.code === HORS_SERIE_SEASON_CODE;
+            const isActive = activeSeason === s.code;
+            const href = isActive ? "/collection" : `/collection?season=${s.code}`;
+            return (
+              <Link
+                key={s.id}
+                href={href}
+                className={[
+                  "font-display rounded-lg px-4.5 py-2.5 text-[13px] tracking-[1.5px] transition",
+                  isActive
+                    ? "bg-blanc-casse text-charbon shadow-[3px_3px_0_var(--color-carmin)]"
+                    : isHS
+                      ? "border border-dashed border-carmin/50 text-carmin hover:bg-carmin/10"
+                      : "border border-dashed border-charbon-400 text-texte-faible hover:border-charbon-300 hover:text-blanc-casse",
+                ].join(" ")}
               >
-                {t("editionBadge1st")}
-              </span>
-              <span
-                className="bg-charbon-600 px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] text-texte-faible"
-                style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))" }}
-              >
-                {t("editionBadgeReprint")}
-              </span>
+                {isHS ? t("seasonHS") : s.name}
+              </Link>
+            );
+          })}
+          {!activeSeason && (
+            <div className="flex flex-col items-start">
+              <div className="ml-2 mt-0.5 flex gap-1">
+                <span
+                  className="bg-carmin px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] text-white"
+                  style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))" }}
+                >
+                  {t("editionBadge1st")}
+                </span>
+                <span
+                  className="bg-charbon-600 px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] text-texte-faible"
+                  style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))" }}
+                >
+                  {t("editionBadgeReprint")}
+                </span>
+              </div>
             </div>
-          </div>
-          <span className="font-display cursor-not-allowed rounded-lg border border-dashed border-charbon-400 px-4.5 py-2.5 text-[13px] tracking-[1.5px] text-texte-faible">
-            {t("seasonSoon")}
-          </span>
+          )}
         </div>
       </PageHeader>
 

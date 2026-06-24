@@ -34,6 +34,7 @@ export interface ConversationThread {
   partnerName: string;
   partnerSlug: string;
   exchangeId: string | null;
+  saleId: string | null;
   messages: ThreadMessage[];
 }
 
@@ -187,6 +188,7 @@ export async function getConversationThread(
               recipient: { select: { displayName: true, slug: true } },
             },
           },
+          sale: { select: { id: true } },
         },
       },
     },
@@ -203,6 +205,7 @@ export async function getConversationThread(
     partnerName: partner.name,
     partnerSlug: partner.slug,
     exchangeId: conv.exchangeId,
+    saleId: conv.sale?.id ?? null,
     messages: conv.messages.map((m) => ({
       id: m.id,
       body: m.body.trim() ? m.body : "",

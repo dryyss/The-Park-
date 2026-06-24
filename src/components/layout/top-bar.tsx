@@ -9,6 +9,7 @@ import { useUser } from "@auth0/nextjs-auth0";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { UserMenu } from "@/components/layout/user-menu";
 import { MobileNavDrawer } from "@/components/layout/mobile-nav-drawer";
+import { LiveNotificationToast } from "@/components/notifications/notification-toast";
 import { formatWalletEur } from "@/lib/wallet";
 
 type NavItem = { href: string; key: "home" | "collection" | "marketplace" | "shop" | "exchanges" | "rankings" | "profile"; official?: boolean };
@@ -53,6 +54,7 @@ export function TopBar() {
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   const [live, setLive] = useState({
+    userId: null as string | null,
     cart: 0,
     marketplaceCart: 0,
     notifications: 0,
@@ -68,6 +70,7 @@ export function TopBar() {
       .then((data) => {
         if (active && data) {
           setLive({
+            userId: typeof data.userId === "string" ? data.userId : null,
             cart: Number(data.cart) || 0,
             marketplaceCart: Number(data.marketplaceCart) || 0,
             notifications: Number(data.notifications) || 0,
@@ -224,6 +227,7 @@ export function TopBar() {
           staffDashboardHref: live.staffDashboardHref,
         }}
       />
+      {live.userId && <LiveNotificationToast userId={live.userId} />}
     </>
   );
 }
