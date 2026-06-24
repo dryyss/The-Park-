@@ -68,6 +68,7 @@ export default async function EchangesPage({
           opportunities={data.opportunities}
           ownedCards={ownedCards}
           isAuthenticated
+          viewerId={viewer.id}
         />
     </main>
   );

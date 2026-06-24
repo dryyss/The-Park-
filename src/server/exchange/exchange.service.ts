@@ -54,6 +54,7 @@ export interface ViewerExchangesResult {
 }
 
 export interface ExchangeDetail extends ExchangeListItem {
+  partnerId: string;
   partnerRating: string;
   partnerReviews: number;
   message: string | null;
@@ -128,6 +129,7 @@ async function mapExchange(
     list: listItem,
     detail: {
       ...listItem,
+      partnerId: partner.id,
       partnerRating: partner.ratingAvg.toFixed(1).replace(".", ","),
       partnerReviews: partner.reviewCount,
       message: ex.message,

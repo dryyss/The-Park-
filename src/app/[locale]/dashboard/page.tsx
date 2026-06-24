@@ -4,6 +4,7 @@ import { getSellerDashboard, type DashboardStats } from "@/server/dashboard/dash
 import { PageHeader } from "@/components/common/page-header";
 import { DashboardPanel } from "@/components/dashboard/dashboard-panel";
 import { GuestAuthBanner } from "@/components/auth/login-gate-prompt";
+import { PendingReviewsSection } from "@/components/review/pending-reviews-section";
 import { PRIVATE_METADATA } from "@/lib/seo-messages";
 
 export const metadata = PRIVATE_METADATA;
@@ -37,6 +38,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           <p className="mt-3 text-[13px] font-bold text-texte-dim">{t("guestPreview")}</p>
         </>
       )}
+      {viewer && <PendingReviewsSection viewerId={viewer.id} />}
       <div className="mt-8">
         <DashboardPanel stats={stats} readOnly={!isAuthenticated} />
       </div>

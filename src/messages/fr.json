@@ -22,7 +22,8 @@
     "loginGateContact": "Connecte-toi ou inscris-toi pour contacter ce membre.",
     "loginGateBuy": "Connecte-toi ou inscris-toi pour acheter cette carte.",
     "loginGateWallet": "Connecte-toi ou inscris-toi pour gérer ton portefeuille.",
-    "loginGateLike": "Connecte-toi ou inscris-toi pour liker une carte."
+    "loginGateLike": "Connecte-toi ou inscris-toi pour liker une carte.",
+    "loginGateDismiss": "Fermer"
   },
   "nav": {
     "home": "Accueil",
@@ -2196,5 +2197,17 @@
     "sellerNotified": "Le vendeur a été notifié et doit préparer l'envoi.",
     "goMessages": "Contacter le vendeur",
     "backMarket": "Retour marketplace"
+  },
+  "reviews": {
+    "title": "Laisser un avis",
+    "starLabel": "Note {n} sur 5",
+    "commentPlaceholder": "Décris ton expérience (optionnel, max 500 car.)",
+    "submit": "Publier l'avis",
+    "submitted": "Avis publié ! Merci 🙏",
+    "alreadyReviewed": "Tu as déjà laissé un avis pour cette transaction.",
+    "errorGeneric": "Une erreur est survenue, réessaie.",
+    "pendingTitle": "Avis en attente",
+    "pendingHint": "Ces transactions sont terminées — laisse un avis à tes partenaires.",
+    "pendingCard": "Transaction : {card}"
   }
 }

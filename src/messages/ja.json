@@ -22,7 +22,8 @@
     "loginGateContact": "このメンバーに連絡するにはログインまたはアカウント作成が必要です。",
     "loginGateBuy": "このカードを購入するにはログインまたはアカウント作成が必要です。",
     "loginGateWallet": "ウォレットを利用するにはログインが必要です。",
-    "loginGateLike": "いいねするにはログインが必要です。"
+    "loginGateLike": "いいねするにはログインが必要です。",
+    "loginGateDismiss": "閉じる"
   },
   "nav": {
     "home": "ホーム",
@@ -2092,5 +2093,17 @@
     "sellerNotified": "出品者に通知されました。発送の準備が必要です。",
     "goMessages": "出品者に連絡",
     "backMarket": "マーケットに戻る"
+  },
+  "reviews": {
+    "title": "レビューを書く",
+    "starLabel": "{n} / 5 で評価",
+    "commentPlaceholder": "取引の感想を書こう（任意、最大500文字）",
+    "submit": "レビューを投稿",
+    "submitted": "レビューを投稿しました。ありがとう！",
+    "alreadyReviewed": "この取引にはすでにレビュー済みです。",
+    "errorGeneric": "エラーが発生しました。もう一度試してみて。",
+    "pendingTitle": "レビュー待ち",
+    "pendingHint": "これらの取引は完了しています — 相手にレビューを送ろう。",
+    "pendingCard": "取引：{card}"
   }
 }

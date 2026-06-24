@@ -39,6 +39,7 @@ export function HeroCardFan({ cards }: { cards: CardDisplay[] }) {
               alt={card.name}
               variant="none"
               objectFit="contain"
+              interactive
               priority={i === 1}
               className="rounded-[14px] bg-transparent shadow-[0_20px_44px_rgba(0,0,0,0.58)]"
             />

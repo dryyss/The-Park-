@@ -155,7 +155,7 @@ function RarityScrollBar({
 // les raretés ; la carte centrée est mise en avant.
 export function RarityCarousel({ rarities, showOwned = false }: RarityCarouselProps) {
   const t = useTranslations("home");
-  const items = rarities.slice(0, 6);
+  const items = rarities;
   const [active, setActive] = useState(Math.min(2, Math.max(0, items.length - 1)));
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);

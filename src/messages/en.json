@@ -22,7 +22,8 @@
     "loginGateContact": "Sign in or create an account to contact this member.",
     "loginGateBuy": "Sign in or create an account to buy this card.",
     "loginGateWallet": "Sign in or create an account to manage your wallet.",
-    "loginGateLike": "Sign in or create an account to like a card."
+    "loginGateLike": "Sign in or create an account to like a card.",
+    "loginGateDismiss": "Close"
   },
   "nav": {
     "home": "Home",
@@ -2196,5 +2197,17 @@
     "sellerNotified": "The seller has been notified and must prepare shipment.",
     "goMessages": "Contact seller",
     "backMarket": "Back to marketplace"
+  },
+  "reviews": {
+    "title": "Leave a review",
+    "starLabel": "Rate {n} out of 5",
+    "commentPlaceholder": "Describe your experience (optional, max 500 chars)",
+    "submit": "Publish review",
+    "submitted": "Review published! Thanks 🙏",
+    "alreadyReviewed": "You've already left a review for this transaction.",
+    "errorGeneric": "Something went wrong, please try again.",
+    "pendingTitle": "Pending reviews",
+    "pendingHint": "These transactions are done — leave a review for your trading partners.",
+    "pendingCard": "Transaction: {card}"
   }
 }

@@ -13,6 +13,8 @@ import type {
   TradeOpportunity,
 } from "@/server/exchange/exchange.service";
 import { ExchangeActionsPanel } from "@/components/exchange/exchange-actions-panel";
+import { hasViewerReviewedExchange } from "@/server/review/review.service";
+import { ReviewForm } from "@/components/review/review-form";
 
 function ExchangeTabs({
   tab,
@@ -143,13 +145,20 @@ function ExchangeListSection({
 async function ExchangeDetailPanel({
   detail,
   ownedCards = [],
+  viewerId,
 }: {
   detail: ExchangeDetail;
   ownedCards?: { variantId: string; name: string; image?: string | null; availableQuantity?: number }[];
+  viewerId?: string;
 }) {
   const t = await getTranslations("exchanges");
   const st = exchangeStatusStyle(detail.status);
   const statusKey = EXCHANGE_STATUS_I18N[detail.status];
+
+  const showReview =
+    detail.status === "COMPLETED" &&
+    viewerId &&
+    !(await hasViewerReviewedExchange(viewerId, detail.id));
 
   return (
     <div className="overflow-hidden rounded-[20px] border border-charbon-500 bg-charbon-800">
@@ -213,6 +222,17 @@ async function ExchangeDetailPanel({
       )}
 
       <ExchangeActionsPanel detail={detail} ownedCards={ownedCards} />
+
+      {showReview && (
+        <div className="border-t border-charbon-600 px-6 py-4">
+          <ReviewForm
+            targetId={detail.partnerId}
+            targetName={detail.partnerName}
+            source="EXCHANGE"
+            exchangeId={detail.id}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -434,6 +454,7 @@ export async function ExchangeBoard({
   opportunities,
   ownedCards = [],
   isAuthenticated = true,
+  viewerId,
 }: {
   tab: ExchangeTab;
   current: ExchangeListItem[];
@@ -443,6 +464,7 @@ export async function ExchangeBoard({
   opportunities: TradeOpportunity[];
   ownedCards?: { variantId: string; name: string; image?: string | null; availableQuantity?: number }[];
   isAuthenticated?: boolean;
+  viewerId?: string;
 }) {
   const t = await getTranslations("exchanges");
   const list = tab === "done" ? done : current;
@@ -488,7 +510,7 @@ export async function ExchangeBoard({
             isAuthenticated={isAuthenticated}
           />
           {selected ? (
-            <ExchangeDetailPanel detail={selected} ownedCards={ownedCards} />
+            <ExchangeDetailPanel detail={selected} ownedCards={ownedCards} viewerId={viewerId} />
           ) : (
             <SelectExchangePlaceholder message={t("selectExchange")} />
           )}
