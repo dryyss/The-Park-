@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import { acceptExchangeAction, cancelExchangeAction, confirmExchangeAction } from "@/server/exchange/exchange.actions";
+import { acceptExchangeAction, cancelExchangeAction, confirmExchangeAction, completeExchangeAction } from "@/server/exchange/exchange.actions";
 import type { ExchangeDetail } from "@/server/exchange/exchange.service";
 
 export function ExchangeActionsPanel({
@@ -21,8 +21,9 @@ export function ExchangeActionsPanel({
   const [selected, setSelected] = useState<string[]>([]);
 
   const canRespond = detail.status === "PROPOSED" && !detail.viewerIsInitiator;
-  const canCancel = detail.status === "PROPOSED";
+  const canCancel = detail.status === "PROPOSED" || detail.status === "ACCEPTED";
   const canConfirm = detail.status === "ACCEPTED";
+  const canComplete = detail.status === "DELIVERED" || detail.status === "DELIVERED_WINDOW";
 
   function toggle(id: string) {
     setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -46,6 +47,15 @@ export function ExchangeActionsPanel({
     });
   }
 
+  function complete() {
+    startTransition(async () => {
+      setError(null);
+      const res = await completeExchangeAction(detail.id);
+      if (!res.ok) setError(res.error);
+      else router.refresh();
+    });
+  }
+
   function cancel() {
     startTransition(async () => {
       setError(null);
@@ -55,7 +65,7 @@ export function ExchangeActionsPanel({
     });
   }
 
-  if (!canRespond && !canCancel && !canConfirm) return null;
+  if (!canRespond && !canCancel && !canConfirm && !canComplete) return null;
 
   return (
     <div className="border-t border-charbon-600 px-6 py-4">
@@ -101,6 +111,19 @@ export function ExchangeActionsPanel({
         <div className="mb-4 rounded-lg border border-[rgba(232,178,58,0.3)] bg-[rgba(232,178,58,0.08)] px-4 py-3">
           <p className="text-[12px] font-extrabold text-or">{t("confirmTitle")}</p>
           <p className="mt-0.5 text-[11px] font-semibold text-texte-dim">{t("confirmHint")}</p>
+          {detail.secured && (
+            <p className="mt-1 text-[11px] font-bold text-neon-vert">{t("cautionInfo")}</p>
+          )}
+        </div>
+      )}
+
+      {canComplete && (
+        <div className="mb-4 rounded-lg border border-[rgba(94,217,154,0.3)] bg-[rgba(94,217,154,0.08)] px-4 py-3">
+          <p className="text-[12px] font-extrabold text-neon-vert">{t("completeTitle")}</p>
+          <p className="mt-0.5 text-[11px] font-semibold text-texte-dim">{t("completeHint")}</p>
+          {detail.secured && (
+            <p className="mt-1 text-[11px] font-bold text-neon-vert">{t("cautionReleaseInfo")}</p>
+          )}
         </div>
       )}
 
@@ -125,6 +148,16 @@ export function ExchangeActionsPanel({
             className="rounded-[11px] bg-or px-5 py-2.5 font-display text-[12px] tracking-wide text-charbon uppercase disabled:opacity-50"
           >
             {t("confirmShipment")}
+          </button>
+        )}
+        {canComplete && (
+          <button
+            type="button"
+            disabled={pending}
+            onClick={complete}
+            className="rounded-[11px] bg-neon-vert px-5 py-2.5 font-display text-[12px] tracking-wide text-charbon uppercase disabled:opacity-50"
+          >
+            {t("confirmReceipt")}
           </button>
         )}
         {canCancel && (

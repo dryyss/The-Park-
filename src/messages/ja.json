@@ -385,6 +385,11 @@
     "proposeCta": "提案",
     "selectOrPropose": "または下のメンバーに交換を提案してください。",
     "guestEmpty": "進行中の交換を追跡するにはログインしてください。",
+    "cautionInfo": "保証金（5 €/人）は確認時に双方のウォレットで保留されます。",
+    "completeTitle": "カード受取済み — 受領を確認",
+    "completeHint": "確認すると、カードはそれぞれのコレクションに移されます。",
+    "cautionReleaseInfo": "保証金（5 €/人）は確認時に返還されます。",
+    "confirmReceipt": "受領を確認",
     "status": {
       "proposed": "提案中",
       "accepted": "承認済",
@@ -752,6 +757,9 @@
     "topUpCancelled": "チャージがキャンセルされました。",
     "historyTitle": "履歴",
     "historyEmpty": "取引はまだありません。",
+    "cautionLockNote": "安全交換の保証金が保留中",
+    "cautionReleaseNote": "交換完了後に保証金を返還",
+    "cautionRefundNote": "保証金返金（交換キャンセル）",
     "entryType": {
       "TOP_UP": "チャージ",
       "PURCHASE": "マーケット購入",

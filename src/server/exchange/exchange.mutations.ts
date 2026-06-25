@@ -2,6 +2,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { CardCondition } from "@/generated/prisma/client";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
+import { lockExchangeCautions, releaseExchangeCautions } from "@/server/exchange/exchange-escrow.service";
 
 /** Propose un échange — double validation requise ensuite. */
 export async function proposeExchange(
@@ -206,22 +207,24 @@ export async function acceptExchange(recipientId: string, exchangeId: string): P
   });
 }
 
-/** Refuse ou annule une proposition. */
+/** Refuse ou annule une proposition (rembourse les cautions si sécurisé). */
 export async function cancelExchange(userId: string, exchangeId: string): Promise<void> {
   const ex = await prisma.exchange.findFirst({
     where: {
       id: exchangeId,
       OR: [{ initiatorId: userId }, { recipientId: userId }],
-      status: "PROPOSED",
+      status: { in: ["PROPOSED", "ACCEPTED"] },
     },
-    include: { items: { where: { fromInitiator: true } } },
+    include: { items: true },
   });
   if (!ex) throw new Error("NOT_FOUND");
 
   await prisma.$transaction(async (tx) => {
+    // Libère les cartes réservées des deux côtés.
     for (const item of ex.items) {
+      const ownerId = item.fromInitiator ? ex.initiatorId : ex.recipientId;
       await tx.collectionItem.updateMany({
-        where: { userId: ex.initiatorId, variantId: item.variantId, condition: item.condition },
+        where: { userId: ownerId, variantId: item.variantId, condition: item.condition },
         data: { reservedQuantity: { decrement: 1 } },
       });
     }
@@ -230,9 +233,14 @@ export async function cancelExchange(userId: string, exchangeId: string): Promis
       data: { status: "CANCELLED" },
     });
   });
+
+  // Rembourse les cautions si elles avaient été bloquées.
+  if (ex.secured) {
+    await releaseExchangeCautions(exchangeId, "CANCELLED");
+  }
 }
 
-/** Passe un échange accepté en attente d'expédition. */
+/** Passe un échange accepté en attente d'expédition (+ blocage caution si sécurisé). */
 export async function markExchangeAwaitingShipment(exchangeId: string, actorId: string): Promise<void> {
   const ex = await prisma.exchange.findFirst({
     where: { id: exchangeId, status: "ACCEPTED" },
@@ -240,8 +248,74 @@ export async function markExchangeAwaitingShipment(exchangeId: string, actorId: 
   if (!ex) throw new Error("NOT_FOUND");
   if (ex.initiatorId !== actorId && ex.recipientId !== actorId) throw new Error("FORBIDDEN");
 
+  // Bloque les cautions en portefeuille avant de changer le statut.
+  if (ex.secured) {
+    await lockExchangeCautions(exchangeId);
+  }
+
   await prisma.exchange.update({
     where: { id: exchangeId },
     data: { status: "AWAITING_SHIPMENT" },
+  });
+}
+
+/** Clôture un échange (COMPLETED) avec restitution des cautions si sécurisé. */
+export async function completeExchange(exchangeId: string): Promise<void> {
+  const ex = await prisma.exchange.findFirst({
+    where: { id: exchangeId, status: "DELIVERED" },
+    include: { items: true },
+  });
+  if (!ex) throw new Error("NOT_FOUND");
+
+  await prisma.$transaction(async (tx) => {
+    // Réalloue les cartes entre les parties.
+    for (const item of ex.items) {
+      const fromId = item.fromInitiator ? ex.initiatorId : ex.recipientId;
+      const toId = item.fromInitiator ? ex.recipientId : ex.initiatorId;
+
+      await tx.collectionItem.updateMany({
+        where: { userId: fromId, variantId: item.variantId, condition: item.condition },
+        data: { quantity: { decrement: 1 }, reservedQuantity: { decrement: 1 } },
+      });
+      await tx.collectionItem.upsert({
+        where: {
+          userId_variantId_condition: { userId: toId, variantId: item.variantId, condition: item.condition },
+        },
+        create: { userId: toId, variantId: item.variantId, condition: item.condition, quantity: 1 },
+        update: { quantity: { increment: 1 } },
+      });
+    }
+
+    await tx.exchange.update({
+      where: { id: exchangeId },
+      data: { status: "COMPLETED", completedAt: new Date() },
+    });
+
+    await tx.transactionEvent.create({
+      data: {
+        entityType: "EXCHANGE",
+        entityId: exchangeId,
+        fromStatus: "DELIVERED",
+        toStatus: "COMPLETED",
+        event: "EXCHANGE_COMPLETED",
+      },
+    });
+  });
+
+  if (ex.secured) {
+    await releaseExchangeCautions(exchangeId, "COMPLETED");
+  }
+
+  await dispatchNotification({
+    userId: ex.initiatorId,
+    type: "EXCHANGE_COMPLETED",
+    entityType: "EXCHANGE",
+    entityId: exchangeId,
+  });
+  await dispatchNotification({
+    userId: ex.recipientId,
+    type: "EXCHANGE_COMPLETED",
+    entityType: "EXCHANGE",
+    entityId: exchangeId,
   });
 }

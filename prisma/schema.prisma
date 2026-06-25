@@ -612,6 +612,8 @@ enum WalletEntryType {
   SALE_PAYOUT
   WITHDRAWAL
   ADJUSTMENT
+  CAUTION_LOCK    // Blocage de caution échange sécurisé
+  CAUTION_RELEASE // Restitution de caution après échange complété/annulé
 }
 
 model WalletAccount {
@@ -638,12 +640,14 @@ model WalletLedgerEntry {
   feeAmount               Decimal         @default(0) @db.Decimal(10, 2)
   balanceAfter            Decimal         @db.Decimal(10, 2)
   saleId                  String?
+  exchangeId              String?
   stripeCheckoutSessionId String?         @unique
   stripeTransferId        String?         @unique
   note                    String?
   createdAt               DateTime        @default(now())
 
   @@index([walletAccountId, createdAt])
+  @@index([exchangeId])
 }
 
 model WishlistItem {

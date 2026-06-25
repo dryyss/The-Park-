@@ -385,6 +385,11 @@
     "proposeCta": "Propose",
     "selectOrPropose": "Or pick a member below to send a trade proposal.",
     "guestEmpty": "Sign in to track your active trades.",
+    "cautionInfo": "Deposits (€5/side) will be held in your wallets upon confirmation.",
+    "completeTitle": "Cards received — confirm receipt",
+    "completeHint": "By confirming, the cards are transferred into your respective collections.",
+    "cautionReleaseInfo": "Deposits (€5/side) will be returned upon confirmation.",
+    "confirmReceipt": "Confirm receipt",
     "status": {
       "proposed": "Proposed",
       "accepted": "Accepted",
@@ -763,6 +768,9 @@
     "topUpCancelled": "Top-up cancelled.",
     "historyTitle": "History",
     "historyEmpty": "No transactions yet.",
+    "cautionLockNote": "Secured trade deposit held",
+    "cautionReleaseNote": "Deposit returned after completed trade",
+    "cautionRefundNote": "Deposit refunded (trade cancelled)",
     "entryType": {
       "TOP_UP": "Top-up",
       "PURCHASE": "Marketplace purchase",

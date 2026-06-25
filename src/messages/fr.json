@@ -385,6 +385,11 @@
     "proposeCta": "Proposer",
     "selectOrPropose": "Ou choisis un membre ci-dessous pour lui proposer un échange.",
     "guestEmpty": "Connecte-toi pour suivre tes échanges en cours.",
+    "cautionInfo": "Les cautions (5 €/partie) seront bloquées sur vos portefeuilles à la confirmation.",
+    "completeTitle": "Cartes reçues — confirme la réception",
+    "completeHint": "En confirmant, les cartes sont transférées dans vos collections respectives.",
+    "cautionReleaseInfo": "Les cautions (5 €/partie) seront restituées à la confirmation.",
+    "confirmReceipt": "Confirmer la réception",
     "status": {
       "proposed": "Proposé",
       "accepted": "Accepté",
@@ -763,6 +768,9 @@
     "topUpCancelled": "Recharge annulée.",
     "historyTitle": "Historique",
     "historyEmpty": "Aucune opération pour le moment.",
+    "cautionLockNote": "Caution échange sécurisé bloquée",
+    "cautionReleaseNote": "Caution restituée après échange complété",
+    "cautionRefundNote": "Caution remboursée (échange annulé)",
     "entryType": {
       "TOP_UP": "Recharge",
       "PURCHASE": "Achat marketplace",

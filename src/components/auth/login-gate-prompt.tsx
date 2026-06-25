@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 
@@ -52,10 +53,71 @@ export function LoginGatePrompt({
   );
 }
 
-export function GuestAuthBanner({ messageKey = "loginGateDefault" }: { messageKey?: string }) {
+export function LoginGateModal({
+  open,
+  onClose,
+  messageKey = "loginGateDefault",
+  namespace = "auth",
+}: {
+  open: boolean;
+  onClose: () => void;
+  messageKey?: string;
+  namespace?: string;
+}) {
+  const tAuth = useTranslations("auth");
+
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
   return (
-    <div className="mt-5 mb-1">
-      <LoginGatePrompt messageKey={messageKey} />
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-charbon/80 p-4 backdrop-blur-sm"
+      onClick={onClose}
+      role="presentation"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="login-gate-modal-title"
+        className="relative w-full max-w-md rounded-[16px] border border-carmin/35 bg-charbon-800 p-5 pr-12 shadow-xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-md text-texte-dim transition hover:bg-charbon-700 hover:text-blanc-casse"
+          aria-label={tAuth("loginGateDismiss")}
+        >
+          <span aria-hidden className="text-[18px] leading-none">
+            ×
+          </span>
+        </button>
+        <div id="login-gate-modal-title">
+          <LoginGatePrompt messageKey={messageKey} namespace={namespace} />
+        </div>
+      </div>
     </div>
   );
+}
+
+export function GuestAuthBanner({ messageKey = "loginGateDefault" }: { messageKey?: string }) {
+  const [open, setOpen] = useState(true);
+
+  return <LoginGateModal open={open} onClose={() => setOpen(false)} messageKey={messageKey} />;
 }
