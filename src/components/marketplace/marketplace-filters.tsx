@@ -12,6 +12,7 @@ export interface MarketParams {
   q?: string;
   city?: string;
   wishlist?: boolean;
+  friends?: boolean;
 }
 
 function hrefWith(p: MarketParams, patch: Partial<MarketParams>): string {
@@ -67,6 +68,7 @@ export async function MarketplaceFilters({
 }) {
   const t = await getTranslations("marketplace");
   const tc = await getTranslations("conditions");
+  const tf = await getTranslations("friends");
 
   return (
     <div className="mt-6 flex flex-col gap-2.5">
@@ -141,12 +143,22 @@ export async function MarketplaceFilters({
             {t("filterWishlist")}
           </Chip>
         )}
+        {isAuthenticated && (
+          <Chip
+            href={hrefWith(params, { friends: params.friends ? undefined : true })}
+            active={!!params.friends}
+            glyph="👥"
+          >
+            {tf("friendsOnlyFilter")}
+          </Chip>
+        )}
         <form action={`/${locale}/marketplace`} className="flex items-center gap-2">
           <input type="hidden" name="intent" value={params.intent} />
           {params.rarity && <input type="hidden" name="rarity" value={params.rarity} />}
           {params.condition && <input type="hidden" name="condition" value={params.condition} />}
           {params.version && <input type="hidden" name="version" value={params.version} />}
           {params.wishlist && <input type="hidden" name="wishlist" value="1" />}
+          {params.friends && <input type="hidden" name="friends" value="1" />}
           {params.q && <input type="hidden" name="q" value={params.q} />}
           <span className="text-[10.5px] font-extrabold tracking-[2px] text-texte-dim uppercase">📍</span>
           <input

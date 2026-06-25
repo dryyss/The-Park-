@@ -12,6 +12,7 @@ import {
   getMarketplaceCartListingIds,
 } from "@/server/marketplace-cart/marketplace-cart.service";
 import { getViewerWishlistCardIds } from "@/server/wishlist/wishlist.service";
+import { getFriendUserIds } from "@/server/friend/friend.service";
 import { MarketplaceFilters, type MarketParams } from "@/components/marketplace/marketplace-filters";
 import { MarketplaceListingGrid } from "@/components/marketplace/marketplace-listing-grid";
 import type { ListingCardLabels } from "@/components/marketplace/listing-card-view";
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return localePageMetadata("marketplace", locale, "/marketplace");
 }
 
-type SearchParams = { intent?: string; rarity?: string; condition?: string; version?: string; q?: string; city?: string; wishlist?: string };
+type SearchParams = { intent?: string; rarity?: string; condition?: string; version?: string; q?: string; city?: string; wishlist?: string; friends?: string };
 
 function intentHref(p: MarketParams, intent: MarketIntent): string {
   // Changer d'onglet réinitialise les filtres spécifiques.
@@ -70,10 +71,11 @@ export default async function MarketplacePage({
     q: sp.q || undefined,
     city: sp.city || undefined,
     wishlist: sp.wishlist === "1",
+    friends: sp.friends === "1",
   };
 
   const viewer = await getViewerUser();
-  const [allListings, facets, marketplaceCartCount, cartListingIds, ownedCardNumbers, wishlistCardIds] =
+  const [allListings, facets, marketplaceCartCount, cartListingIds, ownedCardNumbers, wishlistCardIds, friendUserIds] =
     await Promise.all([
       getMarketplaceListings(marketParams),
       getMarketplaceFacets(),
@@ -81,15 +83,21 @@ export default async function MarketplacePage({
       viewer ? getMarketplaceCartListingIds(viewer.id) : Promise.resolve([]),
       viewer ? getViewerOwnedCardNumbers(viewer.id) : Promise.resolve([]),
       viewer ? getViewerWishlistCardIds(viewer.id) : Promise.resolve([]),
+      viewer ? getFriendUserIds(viewer.id) : Promise.resolve([]),
     ]);
   const cartListingIdSet = new Set(cartListingIds);
   const ownedCardNumberSet = new Set(ownedCardNumbers);
   const wishlistCardIdSet = new Set(wishlistCardIds);
+  const friendUserIdSet = new Set(friendUserIds);
 
-  // Filtre wishlist côté page (post-cache, données utilisateur non mises en cache)
-  const listings = marketParams.wishlist && wishlistCardIdSet.size > 0
-    ? allListings.filter((l) => wishlistCardIdSet.has(l.cardId))
-    : allListings;
+  // Filtres post-cache (données utilisateur non mises en cache)
+  let listings = allListings;
+  if (marketParams.wishlist && wishlistCardIdSet.size > 0) {
+    listings = listings.filter((l) => wishlistCardIdSet.has(l.cardId));
+  }
+  if (marketParams.friends && friendUserIdSet.size > 0) {
+    listings = listings.filter((l) => friendUserIdSet.has(l.sellerId));
+  }
 
   const tabs: { intent: MarketIntent; label: string; count: number }[] = [
     { intent: "sell", label: t("tabSell"), count: facets.sellCount },

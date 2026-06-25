@@ -2217,5 +2217,19 @@
     "pendingTitle": "Avis en attente",
     "pendingHint": "Ces transactions sont terminées — laisse un avis à tes partenaires.",
     "pendingCard": "Transaction : {card}"
+  },
+  "friends": {
+    "addFriend": "Ajouter en ami",
+    "requestSent": "Demande envoyée",
+    "alreadyFriends": "Amis",
+    "removeFriend": "Retirer des amis",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "pendingTitle": "Demandes d'amis",
+    "pendingEmpty": "Aucune demande en attente",
+    "friendsTitle": "Mes amis",
+    "friendsEmpty": "Tu n'as pas encore d'amis sur The Park",
+    "friendsOnlyFilter": "Amis seulement",
+    "errorGeneric": "Une erreur est survenue"
   }
 }

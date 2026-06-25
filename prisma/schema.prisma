@@ -280,7 +280,14 @@ enum ReportStatus {
   DISMISSED
 }
 
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+}
+
 enum NotificationType {
+  FRIEND_REQUEST
+  FRIEND_ACCEPTED
   EXCHANGE_PROPOSED
   EXCHANGE_ACCEPTED
   EXCHANGE_COMPLETED
@@ -421,8 +428,27 @@ model User {
 
   walletAccount WalletAccount?
 
+  friendshipsRequested Friendship[] @relation("FriendshipRequester")
+  friendshipsReceived  Friendship[] @relation("FriendshipAddressee")
+
   @@index([role])
   @@index([staffRole])
+  @@index([status])
+}
+
+/// Relation d'amitié entre deux membres (demande → acceptée).
+model Friendship {
+  id          String           @id @default(cuid())
+  requester   User             @relation("FriendshipRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  requesterId String
+  addressee   User             @relation("FriendshipAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+  addresseeId String
+  status      FriendshipStatus @default(PENDING)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([requesterId, addresseeId])
+  @@index([addresseeId])
   @@index([status])
 }
 

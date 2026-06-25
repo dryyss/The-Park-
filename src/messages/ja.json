@@ -2113,5 +2113,19 @@
     "pendingTitle": "レビュー待ち",
     "pendingHint": "これらの取引は完了しています — 相手にレビューを送ろう。",
     "pendingCard": "取引：{card}"
+  },
+  "friends": {
+    "addFriend": "フレンドに追加",
+    "requestSent": "リクエスト送信済み",
+    "alreadyFriends": "フレンド",
+    "removeFriend": "フレンドを解除",
+    "accept": "承認する",
+    "decline": "断る",
+    "pendingTitle": "フレンドリクエスト",
+    "pendingEmpty": "保留中のリクエストはありません",
+    "friendsTitle": "マイフレンド",
+    "friendsEmpty": "The Park にまだフレンドがいません",
+    "friendsOnlyFilter": "フレンドのみ",
+    "errorGeneric": "エラーが発生しました"
   }
 }

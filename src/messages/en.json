@@ -2217,5 +2217,19 @@
     "pendingTitle": "Pending reviews",
     "pendingHint": "These transactions are done — leave a review for your trading partners.",
     "pendingCard": "Transaction: {card}"
+  },
+  "friends": {
+    "addFriend": "Add friend",
+    "requestSent": "Request sent",
+    "alreadyFriends": "Friends",
+    "removeFriend": "Remove friend",
+    "accept": "Accept",
+    "decline": "Decline",
+    "pendingTitle": "Friend requests",
+    "pendingEmpty": "No pending requests",
+    "friendsTitle": "My friends",
+    "friendsEmpty": "You have no friends on The Park yet",
+    "friendsOnlyFilter": "Friends only",
+    "errorGeneric": "Something went wrong"
   }
 }

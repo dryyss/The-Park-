@@ -5,7 +5,7 @@ import { getCardsLikeMeta } from "@/server/card-like/card-like.service";
 import { getRecentListings } from "@/server/marketplace/marketplace.service";
 import { getTopCollectors, getRecentActivity } from "@/server/community/community.service";
 import { getViewerUser } from "@/server/user/user.service";
-import { rarityMeta } from "@/lib/rarity";
+import { RARITY_DEFINITIONS } from "@/lib/rarities";
 import { HeroSection } from "@/components/home/hero-section";
 import { type RarityStripItem } from "@/components/home/rarity-strip";
 import { RarityCarousel } from "@/components/home/rarity-carousel";
@@ -56,15 +56,13 @@ export default async function Home({
     ),
   );
 
-  const rarities: RarityStripItem[] = summary.byRarity.map((r) => {
-    const meta = rarityMeta(r.code);
-    return {
-      glyph: r.symbol ?? meta.glyph,
-      label: r.label,
-      count: ownedByRarity ? (ownedByRarity.get(r.code) ?? 0) : r.count,
-      color: r.color ?? meta.color,
-    };
-  });
+  const countByCode = new Map(summary.byRarity.map((r) => [r.code, r.count]));
+  const rarities: RarityStripItem[] = RARITY_DEFINITIONS.map((def) => ({
+    glyph: def.symbol,
+    label: def.label,
+    count: ownedByRarity ? (ownedByRarity.get(def.code) ?? 0) : (countByCode.get(def.code) ?? 0),
+    color: def.color,
+  }));
 
   return (
     <main className="overflow-x-hidden">

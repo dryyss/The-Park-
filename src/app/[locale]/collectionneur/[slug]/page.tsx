@@ -4,9 +4,12 @@ import type { Metadata } from "next";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import { getCollectorProfile } from "@/server/community/community.service";
 import { getUserCollection } from "@/server/collection/collection.service";
+import { getViewerUser } from "@/server/user/user.service";
+import { getFriendshipStatus } from "@/server/friend/friend.service";
 import { avatarGradient } from "@/lib/avatars";
 import { formatPercent } from "@/lib/format";
 import { CollectionCardTile } from "@/components/collection/collection-card-tile";
+import { FriendButton } from "@/components/friend/friend-button";
 import { collectorPageMetadata } from "@/lib/seo";
 import { getCollectorSeoData } from "@/server/seo/seo.service";
 
@@ -28,8 +31,12 @@ export default async function CollectionneurPage({ params }: { params: Promise<{
   setRequestLocale(locale);
   const t = await getTranslations("collector");
 
-  const profile = await getCollectorProfile(slug);
+  const [profile, viewer] = await Promise.all([getCollectorProfile(slug), getViewerUser()]);
   if (!profile) notFound();
+
+  const isOwnProfile = viewer?.id === profile.userId;
+  const friendshipStatus =
+    viewer && !isOwnProfile ? await getFriendshipStatus(viewer.id, profile.userId) : null;
 
   const collection = await getUserCollection(profile.userId, { segment: "owned" });
 
@@ -55,13 +62,21 @@ export default async function CollectionneurPage({ params }: { params: Promise<{
             </span>
           </div>
         </div>
-        <ContactSellerButton
-          sellerSlug={slug}
-          locale={locale}
-          className="font-display -skew-x-3 rounded-[10px] bg-carmin px-5 py-3 text-[13px] tracking-[1.5px] text-white uppercase transition hover:bg-carmin-alt"
-        >
-          {t("contact")}
-        </ContactSellerButton>
+        <div className="flex flex-wrap gap-2">
+          {friendshipStatus !== null && (
+            <FriendButton
+              addresseeSlug={slug}
+              initialStatus={friendshipStatus}
+            />
+          )}
+          <ContactSellerButton
+            sellerSlug={slug}
+            locale={locale}
+            className="font-display -skew-x-3 rounded-[10px] bg-carmin px-5 py-3 text-[13px] tracking-[1.5px] text-white uppercase transition hover:bg-carmin-alt"
+          >
+            {t("contact")}
+          </ContactSellerButton>
+        </div>
       </div>
 
       {previewCards.length > 0 && (
