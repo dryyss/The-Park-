@@ -6,6 +6,7 @@ import { rarityMeta, cardImage, cardNumberLabel, type HoloVariant } from "@/lib/
 import { conditionColor } from "@/lib/condition";
 import { formatPrice } from "@/lib/format";
 import { VERSION_TYPE_DEFINITIONS } from "@/lib/card-versions";
+import { isFirstEditionLabel } from "@/lib/card-edition";
 import { RARITY_ORDER } from "@/lib/rarity";
 import { ACTIVE_SALE_STATUSES } from "@/server/sale/sale.mutations";
 import { listingNotInActiveCart } from "@/server/marketplace-cart/marketplace-cart.service";
@@ -186,7 +187,11 @@ function toMarketplaceCard(l: FullRow): MarketplaceCard {
     tilt: meta.tilt,
     holo: meta.holo,
     variant: meta.variant,
-    versionLabel: l.variant.versionType.label,
+    versionLabel: isFirstEditionLabel(l.variant.editionLabel)
+      ? "1ère édition"
+      : l.variant.editionLabel
+        ? "Réédition"
+        : l.variant.versionType.label,
     conditionCode: l.condition,
     conditionColor: conditionColor(l.condition),
     isWant,
@@ -341,7 +346,11 @@ async function fetchCardSellListings(slug: string): Promise<CardWithSellers | nu
       priceLabel: formatPrice(l.price),
       conditionCode: l.condition,
       conditionColor: conditionColor(l.condition),
-      versionLabel: l.variant.versionType.label,
+      versionLabel: isFirstEditionLabel(l.variant.editionLabel)
+        ? "1ère édition"
+        : l.variant.editionLabel
+          ? "Réédition"
+          : l.variant.versionType.label,
       purchasable: l.type === "SELL" || l.type === "SELL_OR_TRADE",
       sellerId: l.seller.id,
       quantity: 1,

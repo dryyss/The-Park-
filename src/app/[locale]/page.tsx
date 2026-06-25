@@ -1,6 +1,5 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getCatalogSummary, getCatalogStats, getFeaturedCards, getHeroCards } from "@/server/catalog/catalog.service";
-import { getUserOwnedCountByRarity } from "@/server/collection/collection.service";
 import { getCardsLikeMeta } from "@/server/card-like/card-like.service";
 import { getRecentListings } from "@/server/marketplace/marketplace.service";
 import { getTopCollectors, getRecentActivity } from "@/server/community/community.service";
@@ -47,7 +46,6 @@ export default async function Home({
     getViewerUser(),
   ]);
 
-  const ownedByRarity = viewer ? await getUserOwnedCountByRarity(viewer.id) : null;
   const featuredSlice = featured.slice(3, 8);
   const likeMeta = Object.fromEntries(
     await getCardsLikeMeta(
@@ -60,7 +58,7 @@ export default async function Home({
   const rarities: RarityStripItem[] = RARITY_DEFINITIONS.map((def) => ({
     glyph: def.symbol,
     label: def.label,
-    count: ownedByRarity ? (ownedByRarity.get(def.code) ?? 0) : (countByCode.get(def.code) ?? 0),
+    count: countByCode.get(def.code) ?? 0,
     color: def.color,
   }));
 
@@ -74,7 +72,7 @@ export default async function Home({
       <HeroSection stats={stats} heroCards={heroCards} />
 
       <div className="page-container pb-[60px]">
-        <RarityCarousel rarities={rarities} showOwned={!!viewer} />
+        <RarityCarousel rarities={rarities} />
         <FeaturedCards cards={featuredSlice} likeMeta={likeMeta} isAuthenticated={!!viewer} />
         <SeasonBanner />
         <LatestListings listings={listings} />
