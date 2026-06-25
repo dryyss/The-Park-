@@ -1,6 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { requireAuthViewer } from "@/server/user/user.service";
-import { getUserNotificationPrefs } from "@/server/user/settings.service";
+import { getUserNotificationPrefs, getPrivacySettings } from "@/server/user/settings.service";
 import { getAccountSettings } from "@/server/user/account.service";
 import { PageHeader } from "@/components/common/page-header";
 import { SettingsForm } from "@/components/settings/settings-form";
@@ -16,9 +16,10 @@ export default async function ParametresPage({ params }: { params: Promise<{ loc
   const t = await getTranslations("settings");
 
   const viewer = await requireAuthViewer(`/${locale}/parametres`);
-  const [prefs, account] = await Promise.all([
+  const [prefs, account, privacy] = await Promise.all([
     getUserNotificationPrefs(viewer.id),
     getAccountSettings(viewer.id),
+    getPrivacySettings(viewer.id),
   ]);
 
   if (!account) return null;
@@ -29,6 +30,7 @@ export default async function ParametresPage({ params }: { params: Promise<{ loc
       <div className="mt-8">
         <SettingsForm
           initialPrefs={prefs}
+          initialPrivacy={privacy}
           displayName={account.displayName}
           bio={account.bio}
           slug={account.slug}

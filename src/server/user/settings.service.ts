@@ -41,3 +41,26 @@ export async function saveUserNotificationPrefs(userId: string, prefs: Notificat
     data: { notificationPrefs: prefs as object },
   });
 }
+
+export interface PrivacySettings {
+  allowFriendRequests: boolean;
+  allowMessages: boolean;
+}
+
+export async function getPrivacySettings(userId: string): Promise<PrivacySettings> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { allowFriendRequests: true, allowMessages: true },
+  });
+  return {
+    allowFriendRequests: user?.allowFriendRequests ?? true,
+    allowMessages: user?.allowMessages ?? true,
+  };
+}
+
+export async function savePrivacySettings(userId: string, settings: PrivacySettings): Promise<void> {
+  await prisma.user.update({
+    where: { id: userId },
+    data: settings,
+  });
+}

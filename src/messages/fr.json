@@ -328,7 +328,7 @@
     "valueHint": "Cote marketplace indicative",
     "completion": "Complétion",
     "viewCollection": "Voir mon classeur",
-    "badges": "Badges",
+    "badges": "Succès",
     "reputation": "Réputation",
     "linkCollection": "Collection",
     "linkSettings": "Paramètres",
@@ -627,7 +627,7 @@
       "market": "Marketplace",
       "sale": "Ventes & avis",
       "wallet": "Portefeuille",
-      "badge": "Badges"
+      "badge": "Succès"
     },
     "types": {
       "exchangeProposed": "Échange proposé",
@@ -660,8 +660,8 @@
       "auctionEndedBody": "L'enchère est close.",
       "reviewReceived": "Avis reçu",
       "reviewReceivedBody": "Un membre t'a laissé un avis.",
-      "badgeUnlocked": "Badge débloqué",
-      "badgeUnlockedBody": "Tu as débloqué : {badge}.",
+      "badgeUnlocked": "Succès débloqué",
+      "badgeUnlockedBody": "Tu as débloqué un succès : {badge}.",
       "toastBadgeTitle": "Succès débloqué !",
       "toastBadgeHint": "Clique pour voir tes trophées",
       "listingSold": "Annonce vendue",
@@ -1940,11 +1940,15 @@
     "privacyCollection": "Visibilité collection : publique",
     "privacyProfile": "Profil public : activé",
     "privacyData": "Tes données ne sont jamais revendues.",
+    "privacyAllowFriendRequests": "Autoriser les demandes de rivalité",
+    "privacyAllowFriendRequestsDesc": "Les autres membres peuvent t'envoyer des demandes de rivalité",
+    "privacyAllowMessages": "Autoriser les messages privés",
+    "privacyAllowMessagesDesc": "Les autres membres peuvent t'envoyer des messages directs",
     "exportData": "Exporter mes données (JSON)",
     "exportPending": "Export en cours…"
   },
   "trophies": {
-    "kicker": "Badges · accomplissements",
+    "kicker": "Succès · accomplissements",
     "title": "Trophées",
     "noUser": "Connecte-toi pour voir tes trophées.",
     "progress": "Progression",

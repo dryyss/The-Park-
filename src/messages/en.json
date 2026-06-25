@@ -328,7 +328,7 @@
     "valueHint": "Indicative marketplace quote",
     "completion": "Completion",
     "viewCollection": "View my binder",
-    "badges": "Badges",
+    "badges": "Achievements",
     "reputation": "Reputation",
     "linkCollection": "Collection",
     "linkSettings": "Settings",
@@ -627,7 +627,7 @@
       "market": "Marketplace",
       "sale": "Sales & reviews",
       "wallet": "Wallet",
-      "badge": "Badges"
+      "badge": "Achievements"
     },
     "types": {
       "exchangeProposed": "Trade proposed",
@@ -660,8 +660,8 @@
       "auctionEndedBody": "The auction is closed.",
       "reviewReceived": "Review received",
       "reviewReceivedBody": "A member left you a review.",
-      "badgeUnlocked": "Badge unlocked",
-      "badgeUnlockedBody": "You unlocked: {badge}.",
+      "badgeUnlocked": "Achievement unlocked",
+      "badgeUnlockedBody": "You unlocked an achievement: {badge}.",
       "toastBadgeTitle": "Achievement unlocked!",
       "toastBadgeHint": "Tap to view your trophies",
       "listingSold": "Listing sold",
@@ -1940,11 +1940,15 @@
     "privacyCollection": "Collection visibility: public",
     "privacyProfile": "Public profile: enabled",
     "privacyData": "Your data is never sold.",
+    "privacyAllowFriendRequests": "Allow rival requests",
+    "privacyAllowFriendRequestsDesc": "Other members can send you rival requests",
+    "privacyAllowMessages": "Allow private messages",
+    "privacyAllowMessagesDesc": "Other members can send you direct messages",
     "exportData": "Export my data (JSON)",
     "exportPending": "Exporting…"
   },
   "trophies": {
-    "kicker": "Badges · achievements",
+    "kicker": "Achievements · accomplishments",
     "title": "Trophies",
     "noUser": "Log in to see your trophies.",
     "progress": "Progress",

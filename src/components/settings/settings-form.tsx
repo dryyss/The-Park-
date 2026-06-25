@@ -2,8 +2,8 @@
 
 import { useState, useTransition, type ReactNode } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { saveNotificationPrefsAction } from "@/server/user/settings.actions";
-import type { NotificationPrefs } from "@/server/user/settings.service";
+import { saveNotificationPrefsAction, savePrivacySettingsAction } from "@/server/user/settings.actions";
+import type { NotificationPrefs, PrivacySettings } from "@/server/user/settings.service";
 import { Link } from "@/i18n/navigation";
 import { ProfileIdentityForm } from "@/components/settings/profile-identity-form";
 import { AddressBook } from "@/components/settings/address-book";
@@ -13,6 +13,7 @@ import type { UserAddress } from "@/server/user/address.service";
 
 export function SettingsForm({
   initialPrefs,
+  initialPrivacy,
   displayName,
   bio,
   slug,
@@ -21,6 +22,7 @@ export function SettingsForm({
   securitySection,
 }: {
   initialPrefs: NotificationPrefs;
+  initialPrivacy: PrivacySettings;
   displayName: string;
   bio: string;
   slug: string;
@@ -31,8 +33,10 @@ export function SettingsForm({
   const t = useTranslations("settings");
   const locale = useLocale();
   const [prefs, setPrefs] = useState(initialPrefs);
+  const [privacy, setPrivacy] = useState(initialPrivacy);
   const [pending, startTransition] = useTransition();
   const [saved, setSaved] = useState(false);
+  const [privacySaved, setPrivacySaved] = useState(false);
 
   const tabs = [
     { key: "profile", label: t("tabs.profile"), jp: "身", iconBg: "rgba(216,27,96,0.12)", iconColor: "#ff2e63" },
@@ -62,6 +66,16 @@ export function SettingsForm({
     const next = { ...prefs, [key]: !prefs[key] };
     setPrefs(next);
     persist(next);
+  }
+
+  function togglePrivacy(key: keyof PrivacySettings) {
+    const next = { ...privacy, [key]: !privacy[key] };
+    setPrivacy(next);
+    setPrivacySaved(false);
+    startTransition(async () => {
+      const res = await savePrivacySettingsAction(next);
+      if (res.ok) setPrivacySaved(true);
+    });
   }
 
   const locales = [
@@ -135,11 +149,31 @@ export function SettingsForm({
               </div>
               <div className={panelCls}>
                 <h2 className="font-display mb-4 text-[18px] -skew-x-3 tracking-wide uppercase">{t("privacy")}</h2>
-                <div className="flex flex-col gap-2 text-[13px] font-bold text-texte-dim">
-                  <p>{t("privacyCollection")}</p>
-                  <p>{t("privacyProfile")}</p>
-                  <p>{t("privacyData")}</p>
+                <div className="flex flex-col gap-3">
+                  {([
+                    { key: "allowFriendRequests" as const, label: t("privacyAllowFriendRequests"), desc: t("privacyAllowFriendRequestsDesc") },
+                    { key: "allowMessages" as const, label: t("privacyAllowMessages"), desc: t("privacyAllowMessagesDesc") },
+                  ]).map((tog) => (
+                    <label key={tog.key} className="flex cursor-pointer items-start justify-between gap-4 rounded-lg bg-charbon-700 px-4 py-3">
+                      <div className="min-w-0">
+                        <p className="text-[13px] font-extrabold text-blanc-casse">{tog.label}</p>
+                        <p className="mt-0.5 text-[11px] font-semibold text-texte-dim">{tog.desc}</p>
+                      </div>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={privacy[tog.key]}
+                        aria-label={tog.label}
+                        disabled={pending}
+                        onClick={() => togglePrivacy(tog.key)}
+                        className={`relative mt-0.5 h-6 w-11 shrink-0 rounded-full transition disabled:opacity-50 ${privacy[tog.key] ? "bg-carmin" : "bg-charbon-500"}`}
+                      >
+                        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition ${privacy[tog.key] ? "left-5.5" : "left-0.5"}`} />
+                      </button>
+                    </label>
+                  ))}
                 </div>
+                <p className="mt-3 text-[11px] font-bold text-texte-faible">{privacySaved ? t("notifSaved") : ""}</p>
                 <ExportDataButton />
               </div>
             </div>

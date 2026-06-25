@@ -375,6 +375,10 @@ model User {
 
   notificationPrefs Json?
 
+  // Confidentialité interactions
+  allowFriendRequests Boolean @default(true)
+  allowMessages       Boolean @default(true)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

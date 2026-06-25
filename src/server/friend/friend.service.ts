@@ -48,14 +48,18 @@ export async function getFriendshipStatus(
 export async function sendFriendRequest(requesterId: string, addresseeId: string): Promise<void> {
   if (requesterId === addresseeId) throw new Error("SELF_FRIEND");
 
-  const existing = await prisma.friendship.findFirst({
-    where: {
-      OR: [
-        { requesterId, addresseeId },
-        { requesterId: addresseeId, addresseeId: requesterId },
-      ],
-    },
-  });
+  const [target, existing] = await Promise.all([
+    prisma.user.findUnique({ where: { id: addresseeId }, select: { allowFriendRequests: true } }),
+    prisma.friendship.findFirst({
+      where: {
+        OR: [
+          { requesterId, addresseeId },
+          { requesterId: addresseeId, addresseeId: requesterId },
+        ],
+      },
+    }),
+  ]);
+  if (!target?.allowFriendRequests) throw new Error("FRIEND_REQUESTS_DISABLED");
   if (existing) throw new Error("ALREADY_EXISTS");
 
   await prisma.friendship.create({ data: { requesterId, addresseeId } });

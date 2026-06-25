@@ -15,6 +15,8 @@ import type {
 import { ExchangeActionsPanel } from "@/components/exchange/exchange-actions-panel";
 import { hasViewerReviewedExchange } from "@/server/review/review.service";
 import { ReviewForm } from "@/components/review/review-form";
+import { getFriendshipStatus } from "@/server/friend/friend.service";
+import { FriendButton } from "@/components/friend/friend-button";
 
 function ExchangeTabs({
   tab,
@@ -155,10 +157,14 @@ async function ExchangeDetailPanel({
   const st = exchangeStatusStyle(detail.status);
   const statusKey = EXCHANGE_STATUS_I18N[detail.status];
 
-  const showReview =
-    detail.status === "COMPLETED" &&
-    viewerId &&
-    !(await hasViewerReviewedExchange(viewerId, detail.id));
+  const [showReview, friendshipStatus] = await Promise.all([
+    detail.status === "COMPLETED" && viewerId
+      ? hasViewerReviewedExchange(viewerId, detail.id).then((r) => !r)
+      : Promise.resolve(false),
+    viewerId && viewerId !== detail.partnerId
+      ? getFriendshipStatus(viewerId, detail.partnerId)
+      : Promise.resolve(null),
+  ]);
 
   return (
     <div className="overflow-hidden rounded-[20px] border border-charbon-500 bg-charbon-800">
@@ -183,6 +189,12 @@ async function ExchangeDetailPanel({
           </div>
         </div>
         <div className="flex w-full shrink-0 flex-row flex-wrap items-center justify-end gap-2 sm:w-auto sm:flex-col sm:items-end">
+          {friendshipStatus !== null && (
+            <FriendButton
+              addresseeSlug={detail.partnerSlug}
+              initialStatus={friendshipStatus}
+            />
+          )}
           {detail.conversationId && (
             <Link
               href={`/messages/${detail.conversationId}`}
@@ -223,7 +235,7 @@ async function ExchangeDetailPanel({
 
       <ExchangeActionsPanel detail={detail} ownedCards={ownedCards} />
 
-      {showReview && (
+      {showReview && viewerId && (
         <div className="border-t border-charbon-600 px-6 py-4">
           <ReviewForm
             targetId={detail.partnerId}

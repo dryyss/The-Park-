@@ -90,6 +90,9 @@ export async function sendConversationMessage(
 export async function getOrCreateDirectConversation(viewerId: string, partnerId: string): Promise<string> {
   if (viewerId === partnerId) throw new Error("SELF_CONTACT");
 
+  const partner = await prisma.user.findUnique({ where: { id: partnerId }, select: { allowMessages: true } });
+  if (!partner?.allowMessages) throw new Error("MESSAGES_DISABLED");
+
   const existing = await prisma.conversation.findFirst({
     where: {
       context: "SALE",
