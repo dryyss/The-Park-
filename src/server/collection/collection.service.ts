@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { rarityMeta, cardImage, cardNumberLabel, isPromoRarity, RARITY_ORDER, rarityTitle, rarityJp } from "@/lib/rarity";
+import { isExcludedFromCompletion } from "@/lib/rarities";
 import { isActiveVersionCode } from "@/lib/card-versions";
 import { isFirstEditionLabel, resolveEditionLabel } from "@/lib/card-edition";
 import { sortCollectionCards, type CollectionSort } from "@/lib/collection-sort";
@@ -148,8 +149,13 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     return true;
   });
 
-  const ownedCards = enriched.filter((c) => c.owned).length;
-  const missingCards = enriched.length - ownedCards;
+  // Exclut les raretés "unique" et "signed" du calcul de complétion — trop rares pour que tous puissent atteindre 100%
+  const completionCards = enriched.filter((c) => {
+    const card = cardById.get(c.cardId);
+    return card && !isExcludedFromCompletion(card.rarity.code);
+  });
+  const ownedCards = completionCards.filter((c) => c.owned).length;
+  const missingCards = completionCards.length - ownedCards;
 
   const rarityOrder = RARITY_ORDER;
   const byRarityCode = new Map<string, CollectionCard[]>();
@@ -196,7 +202,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     };
   });
 
-  const overallPct = enriched.length > 0 ? Math.round((ownedCards / enriched.length) * 100) : 0;
+  const overallPct = completionCards.length > 0 ? Math.round((ownedCards / completionCards.length) * 100) : 0;
 
   return {
     overallPct,
@@ -204,7 +210,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     totalVariants,
     rarityBars,
     sections,
-    counts: { all: enriched.length, owned: ownedCards, missing: missingCards },
+    counts: { all: completionCards.length, owned: ownedCards, missing: missingCards },
   };
 }
 

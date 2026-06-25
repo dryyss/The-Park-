@@ -34,6 +34,13 @@ export const RARITY_ORDER = RARITY_DEFINITIONS.map((d) => d.code);
 /** Codes des raretés hors ligne classique (c → g). */
 export const SPECIAL_RARITY_CODES = ["unique", "promotional", "special", "collaboration", "signed"] as const;
 
+/** Raretés exclues du taux de complétion global (trop rares pour être obtenues par tous). */
+export const COMPLETION_EXCLUDED_RARITIES = ["unique", "signed"] as const;
+
+export function isExcludedFromCompletion(code: string): boolean {
+  return (COMPLETION_EXCLUDED_RARITIES as readonly string[]).includes(code);
+}
+
 /** @deprecated Ancien code promo — conservé pour les données historiques. */
 const LEGACY_PROMO_CODE = "p";
 
