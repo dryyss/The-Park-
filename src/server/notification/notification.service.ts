@@ -38,6 +38,8 @@ const TYPE_KEYS: Record<NotificationType, { title: string; body: string }> = {
   WISHLIST_LISTING: { title: "wishlistListing", body: "wishlistListingBody" },
   ORDER_UPDATE: { title: "orderUpdate", body: "orderUpdateBody" },
   MESSAGE_RECEIVED: { title: "messageReceived", body: "messageReceivedBody" },
+  FRIEND_REQUEST: { title: "friendRequest", body: "friendRequestBody" },
+  FRIEND_ACCEPTED: { title: "friendAccepted", body: "friendAcceptedBody" },
 };
 
 function mapNotification(
