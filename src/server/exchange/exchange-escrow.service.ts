@@ -79,8 +79,8 @@ export async function lockExchangeCautions(exchangeId: string): Promise<void> {
       data: {
         entityType: "EXCHANGE",
         entityId: exchangeId,
+        toStatus: "AWAITING_SHIPMENT",
         event: "CAUTIONS_LOCKED",
-        metadata: { amountEur: amount, parties },
       },
     });
   });
@@ -146,6 +146,7 @@ export async function releaseExchangeCautions(
       data: {
         entityType: "EXCHANGE",
         entityId: exchangeId,
+        toStatus: reason === "COMPLETED" ? "COMPLETED" : "CANCELLED",
         event: reason === "COMPLETED" ? "CAUTIONS_RELEASED" : "CAUTIONS_REFUNDED",
       },
     });
