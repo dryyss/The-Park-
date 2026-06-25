@@ -85,7 +85,7 @@ export default async function CollectionPage({
               </Link>
             );
           })}
-          {!activeSeason && (
+          {activeSeason && (
             <div className="flex flex-col items-start">
               <div className="ml-2 mt-0.5 flex gap-1">
                 <span
