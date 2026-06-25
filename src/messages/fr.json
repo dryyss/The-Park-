@@ -662,6 +662,7 @@
       "reviewReceivedBody": "Un membre t'a laissé un avis.",
       "badgeUnlocked": "Badge débloqué",
       "badgeUnlockedBody": "Tu as débloqué : {badge}.",
+      "toastBadgeTitle": "Succès débloqué !",
       "toastBadgeHint": "Clique pour voir tes trophées",
       "listingSold": "Annonce vendue",
       "listingSoldBody": "Ta carte a trouvé preneur.",

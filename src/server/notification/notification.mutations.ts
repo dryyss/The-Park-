@@ -21,7 +21,7 @@ const TYPE_PREF: Partial<Record<NotificationType, PrefKey>> = {
   LISTING_IN_CART: "exchanges",
   LISTING_EXPIRING: "exchanges",
   WISHLIST_LISTING: "exchanges",
-  BADGE_UNLOCKED: "marketing",
+  // BADGE_UNLOCKED intentionally omitted — toujours envoyé, indépendamment des préférences
 };
 
 export async function dispatchNotification(input: {
@@ -54,6 +54,7 @@ export async function dispatchNotification(input: {
   await pushUserEvent(input.userId, "notification", {
     id: notification.id,
     type: input.type,
+    payload: input.payload ?? null,
   });
 
   if (input.emailSubject && input.emailHtml) {

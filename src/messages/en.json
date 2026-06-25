@@ -662,6 +662,7 @@
       "reviewReceivedBody": "A member left you a review.",
       "badgeUnlocked": "Badge unlocked",
       "badgeUnlockedBody": "You unlocked: {badge}.",
+      "toastBadgeTitle": "Achievement unlocked!",
       "toastBadgeHint": "Tap to view your trophies",
       "listingSold": "Listing sold",
       "listingSoldBody": "Your card found a buyer.",

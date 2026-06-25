@@ -651,6 +651,7 @@
       "reviewReceivedBody": "レビューが届きました。",
       "badgeUnlocked": "バッジ解除",
       "badgeUnlockedBody": "解除：{badge}",
+      "toastBadgeTitle": "実績解除！",
       "toastBadgeHint": "タップしてトロフィーを確認",
       "listingSold": "出品売却",
       "listingSoldBody": "カードが売れました。",
