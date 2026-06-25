@@ -31,7 +31,8 @@
     "marketplace": "Marketplace",
     "shop": "Shop",
     "exchanges": "Exchanges",
-    "rankings": "Rankings",
+    "rankings": "Leaderboard",
+    "rivals": "Rivals",
     "profile": "Dashboard",
     "sell": "Sell",
     "search": "Search",
@@ -2219,17 +2220,17 @@
     "pendingCard": "Transaction: {card}"
   },
   "friends": {
-    "addFriend": "Add friend",
+    "addFriend": "Add as rival",
     "requestSent": "Request sent",
-    "alreadyFriends": "Friends",
-    "removeFriend": "Remove friend",
+    "alreadyFriends": "Rivals",
+    "removeFriend": "Remove rival",
     "accept": "Accept",
     "decline": "Decline",
-    "pendingTitle": "Friend requests",
+    "pendingTitle": "Rival requests",
     "pendingEmpty": "No pending requests",
-    "friendsTitle": "My friends",
-    "friendsEmpty": "You have no friends on The Park yet",
-    "friendsOnlyFilter": "Friends only",
+    "friendsTitle": "My rivals",
+    "friendsEmpty": "You have no rivals on The Park yet",
+    "friendsOnlyFilter": "Rivals only",
     "errorGeneric": "Something went wrong"
   }
 }

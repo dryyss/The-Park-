@@ -31,7 +31,8 @@
     "marketplace": "Marketplace",
     "shop": "Boutique",
     "exchanges": "Échanges",
-    "rankings": "Classements",
+    "rankings": "Leaderboard",
+    "rivals": "Rivaux",
     "profile": "Dashboard",
     "sell": "Vendre",
     "search": "Recherche",
@@ -2219,17 +2220,17 @@
     "pendingCard": "Transaction : {card}"
   },
   "friends": {
-    "addFriend": "Ajouter en ami",
+    "addFriend": "Ajouter en rival",
     "requestSent": "Demande envoyée",
-    "alreadyFriends": "Amis",
-    "removeFriend": "Retirer des amis",
+    "alreadyFriends": "Rivaux",
+    "removeFriend": "Retirer des rivaux",
     "accept": "Accepter",
     "decline": "Refuser",
-    "pendingTitle": "Demandes d'amis",
+    "pendingTitle": "Demandes de rivaux",
     "pendingEmpty": "Aucune demande en attente",
-    "friendsTitle": "Mes amis",
-    "friendsEmpty": "Tu n'as pas encore d'amis sur The Park",
-    "friendsOnlyFilter": "Amis seulement",
+    "friendsTitle": "Mes rivaux",
+    "friendsEmpty": "Tu n'as pas encore de rivaux sur The Park",
+    "friendsOnlyFilter": "Rivaux seulement",
     "errorGeneric": "Une erreur est survenue"
   }
 }

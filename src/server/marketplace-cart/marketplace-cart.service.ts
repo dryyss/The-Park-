@@ -87,14 +87,26 @@ export async function getViewerMarketplaceCart(userId: string): Promise<Marketpl
 }
 
 const CART_RESERVATION_MINUTES = 30;
+const CART_COOLDOWN_MINUTES = 10;
 
 function cartExpiresAt(): Date {
   return new Date(Date.now() + CART_RESERVATION_MINUTES * 60 * 1000);
 }
 
+function cooldownUntil(): Date {
+  return new Date(Date.now() + CART_COOLDOWN_MINUTES * 60 * 1000);
+}
+
 /** Réserve une annonce dans le panier marketplace de l'acheteur. */
 export async function addListingToMarketplaceCart(userId: string, listingId: string): Promise<void> {
   const now = new Date();
+
+  // Vérifie le cooldown 10 min (ne peut pas re-réserver juste après avoir libéré)
+  const cooldown = await prisma.marketplaceCartCooldown.findUnique({
+    where: { userId_listingId: { userId, listingId } },
+    select: { cooldownUntil: true },
+  });
+  if (cooldown && cooldown.cooldownUntil > now) throw new Error("CART_COOLDOWN");
 
   const existingOwn = await prisma.marketplaceCartItem.findUnique({
     where: { userId_listingId: { userId, listingId } },
@@ -135,8 +147,15 @@ export async function addListingToMarketplaceCart(userId: string, listingId: str
   // Allow adding if the other buyer's reservation has expired
   if (reservedByOther && reservedByOther.userId !== userId) {
     if (reservedByOther.expiresAt > now) throw new Error("IN_OTHER_CART");
-    // Expired — delete it so we can take over
-    await prisma.marketplaceCartItem.delete({ where: { listingId } });
+    // Expired — delete it, pose cooldown on previous holder, then take over
+    await prisma.$transaction([
+      prisma.marketplaceCartItem.delete({ where: { listingId } }),
+      prisma.marketplaceCartCooldown.upsert({
+        where: { userId_listingId: { userId: reservedByOther.userId, listingId } },
+        create: { userId: reservedByOther.userId, listingId, cooldownUntil: cooldownUntil() },
+        update: { cooldownUntil: cooldownUntil() },
+      }),
+    ]);
   }
 
   await prisma.marketplaceCartItem.create({
@@ -162,9 +181,13 @@ export async function addListingToMarketplaceCart(userId: string, listingId: str
 }
 
 export async function removeMarketplaceCartItem(userId: string, itemId: string): Promise<void> {
-  await prisma.marketplaceCartItem.deleteMany({
+  const item = await prisma.marketplaceCartItem.findFirst({
     where: { id: itemId, userId },
+    select: { listingId: true },
   });
+  if (!item) return;
+  await prisma.marketplaceCartItem.delete({ where: { id: itemId } });
+  // Pas de cooldown quand l'acheteur retire manuellement — il peut reprendre immédiatement
 }
 
 export async function removeMarketplaceCartItemByListing(userId: string, listingId: string): Promise<void> {
@@ -180,10 +203,28 @@ export function listingNotInActiveCart() {
   };
 }
 
-/** Supprime les entrées panier dont la réservation de 30 min a expiré. */
+/** Supprime les entrées panier expirées et pose un cooldown 10 min sur ces acheteurs. */
 export async function purgeExpiredCartItems(): Promise<number> {
-  const result = await prisma.marketplaceCartItem.deleteMany({
-    where: { expiresAt: { lte: new Date() } },
+  const now = new Date();
+  const expired = await prisma.marketplaceCartItem.findMany({
+    where: { expiresAt: { lte: now } },
+    select: { userId: true, listingId: true },
   });
-  return result.count;
+  if (expired.length === 0) return 0;
+
+  await prisma.$transaction([
+    prisma.marketplaceCartItem.deleteMany({ where: { expiresAt: { lte: now } } }),
+    // Purge les vieux cooldowns expirés
+    prisma.marketplaceCartCooldown.deleteMany({ where: { cooldownUntil: { lte: now } } }),
+    // Pose le cooldown 10 min pour chaque acheteur dont la réservation a expiré
+    ...expired.map((e) =>
+      prisma.marketplaceCartCooldown.upsert({
+        where: { userId_listingId: { userId: e.userId, listingId: e.listingId } },
+        create: { userId: e.userId, listingId: e.listingId, cooldownUntil: cooldownUntil() },
+        update: { cooldownUntil: cooldownUntil() },
+      }),
+    ),
+  ]);
+
+  return expired.length;
 }

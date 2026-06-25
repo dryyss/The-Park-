@@ -11,7 +11,7 @@ import { formatWalletEur } from "@/lib/wallet";
 
 type NavItem = {
   href: string;
-  key: "home" | "collection" | "marketplace" | "shop" | "exchanges" | "rankings" | "profile";
+  key: "home" | "collection" | "marketplace" | "shop" | "exchanges" | "rivals" | "rankings" | "profile";
   official?: boolean;
 };
 
@@ -21,6 +21,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/marketplace", key: "marketplace" },
   { href: "/boutique", key: "shop", official: true },
   { href: "/echanges", key: "exchanges" },
+  { href: "/rivaux", key: "rivals" },
   { href: "/classements", key: "rankings" },
   { href: "/profil", key: "profile" },
 ];

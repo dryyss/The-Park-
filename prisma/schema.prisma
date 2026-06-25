@@ -731,8 +731,9 @@ model Listing {
   budgetMax    Decimal?       @db.Decimal(10, 2)
   minCondition CardCondition?
 
-  viewCount Int       @default(0)
-  expiresAt DateTime?
+  viewCount    Int       @default(0)
+  maxPerBuyer  Int?
+  expiresAt    DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -758,6 +759,18 @@ model MarketplaceCartItem {
   @@unique([userId, listingId])
   @@index([userId])
   @@index([expiresAt])
+}
+
+/// Cooldown 10 min : empêche un acheteur de re-réserver une annonce qu'il vient de libérer.
+model MarketplaceCartCooldown {
+  id            String   @id @default(cuid())
+  userId        String
+  listingId     String
+  cooldownUntil DateTime
+  createdAt     DateTime @default(now())
+
+  @@unique([userId, listingId])
+  @@index([cooldownUntil])
 }
 
 model MarketplaceCheckout {
