@@ -45,3 +45,5 @@ next-env.d.ts
 
 # Maquettes HTML de référence (prévisualisation locale uniquement)
 _reference/**/*.html
+
+.vercel
