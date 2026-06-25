@@ -4,19 +4,22 @@ import { settleDueAuctions } from "@/server/auction/auction.mutations";
 import { purgeExpiredShipmentProofs } from "@/server/c2c/shipment.service";
 import { processExchangeTimeouts } from "@/server/c2c/exchange-lifecycle.service";
 import { processSaleTimeouts } from "@/server/sale/sale-lifecycle.service";
+import { purgeExpiredCartItems } from "@/server/marketplace-cart/marketplace-cart.service";
 
 export const dynamic = "force-dynamic";
 
 async function runMaintenance() {
-  const [expiredListings, settledAuctions, purgedProofs, exchangeTimeouts, saleTimeouts] = await Promise.all([
-    expireDueListings(),
-    settleDueAuctions(),
-    purgeExpiredShipmentProofs(),
-    processExchangeTimeouts(),
-    processSaleTimeouts(),
-  ]);
+  const [expiredListings, settledAuctions, purgedProofs, exchangeTimeouts, saleTimeouts, purgedCartItems] =
+    await Promise.all([
+      expireDueListings(),
+      settleDueAuctions(),
+      purgeExpiredShipmentProofs(),
+      processExchangeTimeouts(),
+      processSaleTimeouts(),
+      purgeExpiredCartItems(),
+    ]);
 
-  return { expiredListings, settledAuctions, purgedProofs, exchangeTimeouts, saleTimeouts };
+  return { expiredListings, settledAuctions, purgedProofs, exchangeTimeouts, saleTimeouts, purgedCartItems };
 }
 
 function isAuthorized(request: Request): boolean {

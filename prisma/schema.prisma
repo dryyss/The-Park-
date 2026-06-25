@@ -726,10 +726,12 @@ model MarketplaceCartItem {
   userId    String
   listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
   listingId String   @unique
+  expiresAt DateTime
   createdAt DateTime @default(now())
 
   @@unique([userId, listingId])
   @@index([userId])
+  @@index([expiresAt])
 }
 
 model MarketplaceCheckout {

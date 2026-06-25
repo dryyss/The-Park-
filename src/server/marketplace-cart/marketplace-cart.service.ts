@@ -37,12 +37,12 @@ const listingCartInclude = {
 
 
 export async function getMarketplaceCartItemCount(userId: string): Promise<number> {
-  return prisma.marketplaceCartItem.count({ where: { userId } });
+  return prisma.marketplaceCartItem.count({ where: { userId, expiresAt: { gt: new Date() } } });
 }
 
 export async function getMarketplaceCartListingIds(userId: string): Promise<string[]> {
   const items = await prisma.marketplaceCartItem.findMany({
-    where: { userId },
+    where: { userId, expiresAt: { gt: new Date() } },
     select: { listingId: true },
   });
   return items.map((item) => item.listingId);
@@ -50,7 +50,7 @@ export async function getMarketplaceCartListingIds(userId: string): Promise<stri
 
 export async function getViewerMarketplaceCart(userId: string): Promise<MarketplaceCartSummary> {
   const items = await prisma.marketplaceCartItem.findMany({
-    where: { userId },
+    where: { userId, expiresAt: { gt: new Date() } },
     orderBy: { createdAt: "asc" },
     include: listingCartInclude,
   });
@@ -86,13 +86,28 @@ export async function getViewerMarketplaceCart(userId: string): Promise<Marketpl
   };
 }
 
+const CART_RESERVATION_MINUTES = 30;
+
+function cartExpiresAt(): Date {
+  return new Date(Date.now() + CART_RESERVATION_MINUTES * 60 * 1000);
+}
+
 /** Réserve une annonce dans le panier marketplace de l'acheteur. */
 export async function addListingToMarketplaceCart(userId: string, listingId: string): Promise<void> {
+  const now = new Date();
+
   const existingOwn = await prisma.marketplaceCartItem.findUnique({
     where: { userId_listingId: { userId, listingId } },
-    select: { id: true },
+    select: { id: true, expiresAt: true },
   });
-  if (existingOwn) return;
+  if (existingOwn) {
+    // Renew expiry if already in own cart
+    await prisma.marketplaceCartItem.update({
+      where: { userId_listingId: { userId, listingId } },
+      data: { expiresAt: cartExpiresAt() },
+    });
+    return;
+  }
 
   const listing = await prisma.listing.findFirst({
     where: { id: listingId, status: "ACTIVE", type: { in: ["SELL", "SELL_OR_TRADE"] } },
@@ -115,14 +130,17 @@ export async function addListingToMarketplaceCart(userId: string, listingId: str
 
   const reservedByOther = await prisma.marketplaceCartItem.findUnique({
     where: { listingId },
-    select: { userId: true },
+    select: { userId: true, expiresAt: true },
   });
+  // Allow adding if the other buyer's reservation has expired
   if (reservedByOther && reservedByOther.userId !== userId) {
-    throw new Error("IN_OTHER_CART");
+    if (reservedByOther.expiresAt > now) throw new Error("IN_OTHER_CART");
+    // Expired — delete it so we can take over
+    await prisma.marketplaceCartItem.delete({ where: { listingId } });
   }
 
   await prisma.marketplaceCartItem.create({
-    data: { userId, listingId },
+    data: { userId, listingId, expiresAt: cartExpiresAt() },
   });
 
   const buyer = await prisma.user.findUnique({
@@ -155,7 +173,17 @@ export async function removeMarketplaceCartItemByListing(userId: string, listing
   });
 }
 
-/** Filtre Prisma : annonces non réservées dans un panier. */
-export const LISTING_NOT_IN_CART: { marketplaceCartItems: { none: Record<string, never> } } = {
-  marketplaceCartItems: { none: {} },
-};
+/** Filtre Prisma : annonces sans réservation active (non expirée) dans un panier. */
+export function listingNotInActiveCart() {
+  return {
+    marketplaceCartItems: { none: { expiresAt: { gt: new Date() } } },
+  };
+}
+
+/** Supprime les entrées panier dont la réservation de 30 min a expiré. */
+export async function purgeExpiredCartItems(): Promise<number> {
+  const result = await prisma.marketplaceCartItem.deleteMany({
+    where: { expiresAt: { lte: new Date() } },
+  });
+  return result.count;
+}
