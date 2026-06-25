@@ -2,7 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getCatalogSummary, getSeasonCards } from "@/server/catalog/catalog.service";
 import { getViewerUser } from "@/server/user/user.service";
-import { rarityMeta } from "@/lib/rarity";
+import { RARITY_DEFINITIONS } from "@/lib/rarities";
 import { PageHeader } from "@/components/common/page-header";
 import { type RarityStripItem } from "@/components/home/rarity-strip";
 import { RarityCarousel } from "@/components/home/rarity-carousel";
@@ -28,10 +28,13 @@ export default async function Saison1Page({ params }: { params: Promise<{ locale
     getSeasonCards("S01", viewer?.id),
   ]);
 
-  const rarities: RarityStripItem[] = summary.byRarity.map((r) => {
-    const meta = rarityMeta(r.code);
-    return { glyph: r.symbol ?? meta.glyph, label: r.label, count: r.count, color: r.color ?? meta.color };
-  });
+  const countByCode = new Map(summary.byRarity.map((r) => [r.code, r.count]));
+  const rarities: RarityStripItem[] = RARITY_DEFINITIONS.map((def) => ({
+    glyph: def.symbol,
+    label: def.label,
+    count: countByCode.get(def.code) ?? 0,
+    color: def.color,
+  }));
 
   return (
     <main className="page-section">

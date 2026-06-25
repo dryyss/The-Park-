@@ -8,7 +8,7 @@ export async function SeasonLockedTeaser() {
 
   return (
     <div className="relative overflow-hidden rounded-[24px] border border-charbon-500 bg-charbon-800">
-      <div className="absolute inset-0 flex items-center justify-center bg-charbon/60 backdrop-blur-[2px]">
+      <div className="absolute inset-0 z-10 flex items-center justify-center bg-charbon/75 backdrop-blur-sm">
         <div className="text-center">
           <span className="font-display text-[64px] text-blanc-casse/20">🔒</span>
           <p className="font-display mt-2 text-[24px] tracking-[2px] text-blanc-casse uppercase">{t("locked")}</p>
