@@ -90,7 +90,7 @@ async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
       },
     }),
     prisma.auction.findMany({
-      where: { status: "COMPLETED", winnerId: { not: null } },
+      where: { status: { in: ["SOLD", "CLOSED"] }, winnerId: { not: null } },
       orderBy: { endsAt: "desc" },
       take: limit,
       include: {
