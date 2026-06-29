@@ -57,32 +57,50 @@ export async function getTopCollectors(limit = 5): Promise<TopCollector[]> {
   })();
 }
 
-/** Type d'événement affiché dans le flux — calque sur Listing.type. */
-export type ActivityKind = "SELL" | "TRADE" | "WANT";
+/** Type d'événement affiché dans le flux. */
+export type ActivityKind = "SELL" | "TRADE" | "WANT" | "BADGE" | "AUCTION_WIN";
 
 export interface ActivityItem {
   id: string;
   kind: ActivityKind;
   actorName: string;
   cardName: string;
-  /** Renseigné pour SELL / TRADE ; null pour WANT (recherche). */
+  badgeLabel?: string;
   price: unknown;
   at: Date;
 }
 
-/** Flux d'activité du park (dérivé des dernières annonces réelles). */
 async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
-  const listings = await prisma.listing.findMany({
-    where: { status: "ACTIVE" },
-    orderBy: { createdAt: "desc" },
-    take: limit,
-    include: {
-      seller: { select: { displayName: true } },
-      variant: { include: { card: { select: { name: true } } } },
-    },
-  });
+  const [listings, badgeEvents, auctionWins] = await Promise.all([
+    prisma.listing.findMany({
+      where: { status: "ACTIVE" },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      include: {
+        seller: { select: { displayName: true } },
+        variant: { include: { card: { select: { name: true } } } },
+      },
+    }),
+    prisma.userBadge.findMany({
+      orderBy: { unlockedAt: "desc" },
+      take: limit,
+      include: {
+        user: { select: { displayName: true } },
+        badge: { select: { label: true } },
+      },
+    }),
+    prisma.auction.findMany({
+      where: { status: "COMPLETED", winnerId: { not: null } },
+      orderBy: { endsAt: "desc" },
+      take: limit,
+      include: {
+        winner: { select: { displayName: true } },
+        variant: { include: { card: { select: { name: true } } } },
+      },
+    }),
+  ]);
 
-  return listings.map((l) => ({
+  const listingItems: ActivityItem[] = listings.map((l) => ({
     id: l.id,
     kind: l.type === "WANT" ? "WANT" : l.type === "SELL_OR_TRADE" ? "TRADE" : "SELL",
     actorName: l.seller.displayName,
@@ -90,9 +108,34 @@ async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
     price: l.type === "WANT" ? null : l.price,
     at: l.createdAt,
   }));
+
+  const badgeItems: ActivityItem[] = badgeEvents.map((b) => ({
+    id: `badge-${b.userId}-${b.badgeId}`,
+    kind: "BADGE",
+    actorName: b.user.displayName,
+    cardName: "",
+    badgeLabel: b.badge.label,
+    price: null,
+    at: b.unlockedAt,
+  }));
+
+  const auctionItems: ActivityItem[] = auctionWins
+    .filter((a) => a.winner)
+    .map((a) => ({
+      id: `auction-${a.id}`,
+      kind: "AUCTION_WIN",
+      actorName: a.winner!.displayName,
+      cardName: a.variant.card.name,
+      price: a.currentPrice,
+      at: a.endsAt,
+    }));
+
+  return [...listingItems, ...badgeItems, ...auctionItems]
+    .sort((a, b) => b.at.getTime() - a.at.getTime())
+    .slice(0, limit);
 }
 
-export async function getRecentActivity(limit = 5): Promise<ActivityItem[]> {
+export async function getRecentActivity(limit = 8): Promise<ActivityItem[]> {
   return unstable_cache(() => fetchRecentActivity(limit), ["recent-activity", String(limit)], {
     revalidate: 30,
     tags: ["listings"],

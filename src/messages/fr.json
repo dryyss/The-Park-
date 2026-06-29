@@ -110,6 +110,21 @@
     "activityListing": "{actor} a mis en vente {card} · {price}",
     "activityTrade": "{actor} propose {card} à la vente ou à l'échange · {price}",
     "activityWant": "{actor} recherche {card}",
+    "howTitle": "Comment dominer Le Park ?",
+    "howGarageTitle": "Constitue ton Garage",
+    "howGarageDesc": "Référence tes trouvailles dans ton classeur virtuel et suis la complétion de tes sets en temps réel.",
+    "howTradeTitle": "Trade & Deal",
+    "howTradeDesc": "Achète en direct, propose des échanges sécurisés ou remporte des enchères acharnées.",
+    "howLegendTitle": "Deviens une Légende",
+    "howLegendDesc": "Débloque des succès exclusifs et grimpe au sommet du Leaderboard pour prouver qui est le roi du JDM.",
+    "marketTitle": "SUR LE MARCHÉ",
+    "marketJp": "市場",
+    "marketTabListings": "Fraîchement listées",
+    "marketTabAuctions": "Enchères en cours",
+    "marketBidLabel": "Mise actuelle",
+    "marketNoAuctions": "Aucune enchère en cours",
+    "activityBadge": "{actor} vient de débloquer le succès « {badge} » !",
+    "activityAuctionWin": "{actor} a remporté l'enchère pour {card} · {price}",
     "live": "En direct",
     "topCollectorsTitle": "Top collectionneurs",
     "seeFullRanking": "Voir le classement complet",
@@ -2236,6 +2251,8 @@
     "friendsTitle": "Mes rivaux",
     "friendsEmpty": "Tu n'as pas encore de rivaux sur The Park",
     "friendsOnlyFilter": "Rivaux seulement",
-    "errorGeneric": "Une erreur est survenue"
+    "errorGeneric": "Une erreur est survenue",
+    "searchPlaceholder": "Rechercher un rival…",
+    "noSearchResult": "Aucun rival trouvé."
   }
 }

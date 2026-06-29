@@ -110,6 +110,21 @@
     "activityListing": "{actor} が {card} を出品 · {price}",
     "activityTrade": "{actor} が {card} を出品・交換 · {price}",
     "activityWant": "{actor} が {card} を募集中",
+    "howTitle": "ザ・パークを制覇する方法",
+    "howGarageTitle": "ガレージを作れ",
+    "howGarageDesc": "コレクションを登録してセット達成率をリアルタイムで追え。",
+    "howTradeTitle": "トレード＆ディール",
+    "howTradeDesc": "直接購入、安全なトレード提案、またはオークションで勝利せよ。",
+    "howLegendTitle": "レジェンドになれ",
+    "howLegendDesc": "限定実績を解除してリーダーボードの頂点へ。JDMの王者を証明せよ。",
+    "marketTitle": "マーケット",
+    "marketJp": "市場",
+    "marketTabListings": "新着リスト",
+    "marketTabAuctions": "進行中オークション",
+    "marketBidLabel": "現在の入札額",
+    "marketNoAuctions": "進行中のオークションなし",
+    "activityBadge": "{actor}が「{badge}」実績を解除した！",
+    "activityAuctionWin": "{actor}が{card}のオークションを落札 · {price}",
     "live": "ライブ",
     "topCollectorsTitle": "トップコレクター",
     "seeFullRanking": "ランキング全体を見る",
@@ -2160,6 +2175,8 @@
     "friendsTitle": "マイライバル",
     "friendsEmpty": "まだThe Parkにライバルがいません",
     "friendsOnlyFilter": "ライバルのみ",
-    "errorGeneric": "エラーが発生しました"
+    "errorGeneric": "エラーが発生しました",
+    "searchPlaceholder": "ライバルを検索…",
+    "noSearchResult": "ライバルが見つかりません。"
   }
 }

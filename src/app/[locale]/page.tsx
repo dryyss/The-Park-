@@ -2,20 +2,21 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getCatalogSummary, getCatalogStats, getFeaturedCards, getHeroCards } from "@/server/catalog/catalog.service";
 import { getCardsLikeMeta } from "@/server/card-like/card-like.service";
 import { getRecentListings } from "@/server/marketplace/marketplace.service";
+import { getActiveAuctions } from "@/server/auction/auction.service";
 import { getTopCollectors, getRecentActivity } from "@/server/community/community.service";
 import { getViewerUser } from "@/server/user/user.service";
 import { RARITY_DEFINITIONS } from "@/lib/rarities";
 import { HeroSection } from "@/components/home/hero-section";
 import { type RarityStripItem } from "@/components/home/rarity-strip";
 import { RarityCarousel } from "@/components/home/rarity-carousel";
+import { HowToDominate } from "@/components/home/how-to-dominate";
 import { FeaturedCards } from "@/components/home/featured-cards";
 import { SeasonBanner } from "@/components/home/season-banner";
-import { LatestListings } from "@/components/home/latest-listings";
+import { MarketTabs } from "@/components/home/market-tabs";
 import { ActivityFeed } from "@/components/home/activity-feed";
 import { TopCollectors } from "@/components/home/top-collectors";
 import { localePageMetadata } from "@/lib/seo-messages";
 
-// Catalogue en cache (unstable_cache 120 s) ; comptes membre lus live depuis Neon.
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -34,15 +35,17 @@ export default async function Home({
   const { auth_error: authError } = await searchParams;
   setRequestLocale(locale);
   const tAuth = authError ? await getTranslations("auth") : null;
+  const t = await getTranslations("home");
 
-  const [stats, summary, heroCards, featured, listings, collectors, activity, viewer] = await Promise.all([
+  const [stats, summary, heroCards, featured, listings, auctions, collectors, activity, viewer] = await Promise.all([
     getCatalogStats(),
     getCatalogSummary(),
     getHeroCards(),
     getFeaturedCards(8),
     getRecentListings(6),
+    getActiveAuctions(),
     getTopCollectors(5),
-    getRecentActivity(5),
+    getRecentActivity(8),
     getViewerUser(),
   ]);
 
@@ -73,9 +76,20 @@ export default async function Home({
 
       <div className="page-container pb-[60px]">
         <RarityCarousel rarities={rarities} />
+        <HowToDominate />
         <FeaturedCards cards={featuredSlice} likeMeta={likeMeta} isAuthenticated={!!viewer} />
         <SeasonBanner />
-        <LatestListings listings={listings} />
+        <MarketTabs
+          listings={listings}
+          auctions={auctions}
+          tabListings={t("marketTabListings")}
+          tabAuctions={t("marketTabAuctions")}
+          marketTitle={t("marketTitle")}
+          marketJp={t("marketJp")}
+          bidLabel={t("marketBidLabel")}
+          noAuctions={t("marketNoAuctions")}
+          seeAll={t("seeAllMarket")}
+        />
 
         <div className="animate-fade-up mt-[60px] grid grid-cols-1 items-start gap-[18px] lg:grid-cols-[1.3fr_1fr]">
           <ActivityFeed items={activity} />

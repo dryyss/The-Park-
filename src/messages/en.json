@@ -110,6 +110,21 @@
     "activityListing": "{actor} listed {card} · {price}",
     "activityTrade": "{actor} offers {card} for sale or trade · {price}",
     "activityWant": "{actor} is looking for {card}",
+    "howTitle": "How to dominate The Park?",
+    "howGarageTitle": "Build your Garage",
+    "howGarageDesc": "Log your finds in your virtual binder and track set completion in real time.",
+    "howTradeTitle": "Trade & Deal",
+    "howTradeDesc": "Buy directly, propose secure trades or win hard-fought auctions.",
+    "howLegendTitle": "Become a Legend",
+    "howLegendDesc": "Unlock exclusive achievements and climb the Leaderboard to prove who's king of JDM.",
+    "marketTitle": "ON THE MARKET",
+    "marketJp": "市場",
+    "marketTabListings": "Freshly listed",
+    "marketTabAuctions": "Ongoing auctions",
+    "marketBidLabel": "Current bid",
+    "marketNoAuctions": "No auctions in progress",
+    "activityBadge": "{actor} just unlocked the « {badge} » achievement!",
+    "activityAuctionWin": "{actor} won the auction for {card} · {price}",
     "live": "Live",
     "topCollectorsTitle": "Top collectors",
     "seeFullRanking": "See the full ranking",
@@ -2236,6 +2251,8 @@
     "friendsTitle": "My rivals",
     "friendsEmpty": "You have no rivals on The Park yet",
     "friendsOnlyFilter": "Rivals only",
-    "errorGeneric": "Something went wrong"
+    "errorGeneric": "Something went wrong",
+    "searchPlaceholder": "Search a rival…",
+    "noSearchResult": "No rival found."
   }
 }
