@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return localePageMetadata("collection", locale, "/collection");
 }
 
-type SP = { segment?: string; rarity?: string; q?: string; cols?: string; sort?: string; season?: string };
+type SP = { segment?: string; rarity?: string; q?: string; cols?: string; sort?: string; season?: string; edition?: string };
 
 export default async function CollectionPage({
   params,
@@ -41,6 +41,7 @@ export default async function CollectionPage({
   const isAuthenticated = !!viewer;
 
   const activeSeason = sp.season ?? null;
+  const activeEdition = (sp.edition === "first" || sp.edition === "reprint" ? sp.edition : null) as "first" | "reprint" | null;
 
   const collParams = {
     segment: (sp.segment === "owned" || sp.segment === "missing" ? sp.segment : "all") as "all" | "owned" | "missing",
@@ -49,6 +50,7 @@ export default async function CollectionPage({
     cols: parseCollectionGridCols(sp.cols),
     sort: parseCollectionSort(sp.sort),
     season: activeSeason ?? undefined,
+    edition: activeEdition ?? undefined,
   };
 
   const [data, wishlistCardIds, seasons] = await Promise.all([
@@ -86,21 +88,37 @@ export default async function CollectionPage({
             );
           })}
           {activeSeason && (
-            <div className="flex flex-col items-start">
-              <div className="ml-2 mt-0.5 flex gap-1">
-                <span
-                  className="bg-carmin px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] text-white"
-                  style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))" }}
-                >
-                  {t("editionBadge1st")}
-                </span>
-                <span
-                  className="bg-charbon-600 px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] text-texte-faible"
-                  style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))" }}
-                >
-                  {t("editionBadgeReprint")}
-                </span>
-              </div>
+            <div className="ml-2 mt-0.5 flex gap-1">
+              <Link
+                href={
+                  activeEdition === "first"
+                    ? `/collection?season=${activeSeason}`
+                    : `/collection?season=${activeSeason}&edition=first`
+                }
+                className="px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] transition"
+                style={{
+                  clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))",
+                  background: activeEdition === "first" || activeEdition === null ? "var(--color-carmin)" : "#3a3a3a",
+                  color: activeEdition === "first" || activeEdition === null ? "#fff" : "var(--color-texte-faible)",
+                }}
+              >
+                {t("editionBadge1st")}
+              </Link>
+              <Link
+                href={
+                  activeEdition === "reprint"
+                    ? `/collection?season=${activeSeason}`
+                    : `/collection?season=${activeSeason}&edition=reprint`
+                }
+                className="px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] transition"
+                style={{
+                  clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))",
+                  background: activeEdition === "reprint" ? "var(--color-carmin)" : "#3a3a3a",
+                  color: activeEdition === "reprint" ? "#fff" : "var(--color-texte-faible)",
+                }}
+              >
+                {t("editionBadgeReprint")}
+              </Link>
             </div>
           )}
         </div>
@@ -108,7 +126,7 @@ export default async function CollectionPage({
 
       {!isAuthenticated && <CollectionGuestBanner messageKey="loginGateCollection" />}
 
-      <CompletionPanel data={data} />
+      <CompletionPanel data={data} activeEdition={activeEdition} />
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3.5">
         <CollectionFiltersBar params={collParams} counts={data.counts} locale={locale} />
         <Suspense fallback={null}>

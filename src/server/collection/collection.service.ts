@@ -15,6 +15,8 @@ export interface CollectionFilters {
   sort?: CollectionSort;
   /** Code de saison (ex: "S01", "HS"). Null = toutes saisons. */
   season?: string;
+  /** Filtre par édition : "first" = 1ère édition, "reprint" = réédition. */
+  edition?: "first" | "reprint";
 }
 
 export interface CollectionCard {
@@ -34,8 +36,18 @@ export interface CollectionCard {
   standardVariantId: string;
   isPromo: boolean;
   hasFirstEdition: boolean;
+  hasReprint: boolean;
   numberLabel: string;
   dots: { code: string; owned: boolean }[];
+}
+
+export interface EditionStats {
+  firstTotal: number;
+  firstOwned: number;
+  firstPct: number;
+  reprintTotal: number;
+  reprintOwned: number;
+  reprintPct: number;
 }
 
 export interface RaritySection {
@@ -57,6 +69,7 @@ export interface CollectionView {
   rarityBars: { code: string; label: string; glyph: string; color: string; owned: number; total: number; pct: number }[];
   sections: RaritySection[];
   counts: { all: number; owned: number; missing: number };
+  editionStats?: EditionStats;
 }
 
 /** Classeur complet (possédé / manquant par carte). userId null = visiteur (tout en manquant). */
@@ -80,17 +93,18 @@ export async function getUserCollection(userId: string | null, filters: Collecti
   const cardById = new Map(cards.map((c) => [c.id, c]));
   const ownedByCard = new Map<
     string,
-    { qty: number; versions: Set<string>; hasFirstEdition: boolean }
+    { qty: number; versions: Set<string>; hasFirstEdition: boolean; hasReprint: boolean }
   >();
 
   for (const item of items) {
     const cardId = item.variant.cardId;
-    const cur = ownedByCard.get(cardId) ?? { qty: 0, versions: new Set<string>(), hasFirstEdition: false };
+    const cur = ownedByCard.get(cardId) ?? { qty: 0, versions: new Set<string>(), hasFirstEdition: false, hasReprint: false };
     cur.qty += item.quantity;
     const code = vtCodes.get(item.variant.versionTypeId);
     if (code) cur.versions.add(code);
     const effective = resolveEditionLabel(item.editionLabel, item.variant.editionLabel);
     if (isFirstEditionLabel(effective)) cur.hasFirstEdition = true;
+    else if (effective != null) cur.hasReprint = true;
     ownedByCard.set(cardId, cur);
   }
 
@@ -120,6 +134,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
       standardVariantId: standardVariant?.id ?? card.variants[0]?.id ?? "",
       isPromo: isPromoRarity(card.rarity.code),
       hasFirstEdition: own?.hasFirstEdition ?? false,
+      hasReprint: own?.hasReprint ?? false,
       numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code),
       dots: card.variants
         .filter((v) => isActiveVersionCode(v.versionType.code))
@@ -138,6 +153,8 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     if (filters.segment === "missing" && c.owned) return false;
     if (filters.rarity && card.rarity.code !== filters.rarity) return false;
     if (filters.season && card.season.code !== filters.season) return false;
+    if (filters.edition === "first" && !card.variants.some((v) => isFirstEditionLabel(v.editionLabel))) return false;
+    if (filters.edition === "reprint" && !card.variants.some((v) => v.editionLabel != null && !isFirstEditionLabel(v.editionLabel))) return false;
     if (q) {
       const nameMatch = c.name.toLowerCase().includes(q);
       const numPadded = String(c.number).padStart(2, "0");
@@ -204,6 +221,31 @@ export async function getUserCollection(userId: string | null, filters: Collecti
 
   const overallPct = completionCards.length > 0 ? Math.round((ownedCards / completionCards.length) * 100) : 0;
 
+  let editionStats: EditionStats | undefined = undefined;
+  if (filters.season) {
+    let firstTotal = 0, firstOwned = 0, reprintTotal = 0, reprintOwned = 0;
+    for (const c of enriched) {
+      const card = cardById.get(c.cardId);
+      if (!card || card.season.code !== filters.season || isExcludedFromCompletion(card.rarity.code)) continue;
+      if (card.variants.some((v) => isFirstEditionLabel(v.editionLabel))) {
+        firstTotal++;
+        if (c.hasFirstEdition) firstOwned++;
+      }
+      if (card.variants.some((v) => v.editionLabel != null && !isFirstEditionLabel(v.editionLabel))) {
+        reprintTotal++;
+        if (c.hasReprint) reprintOwned++;
+      }
+    }
+    editionStats = {
+      firstTotal,
+      firstOwned,
+      firstPct: firstTotal > 0 ? Math.round((firstOwned / firstTotal) * 100) : 0,
+      reprintTotal,
+      reprintOwned,
+      reprintPct: reprintTotal > 0 ? Math.round((reprintOwned / reprintTotal) * 100) : 0,
+    };
+  }
+
   return {
     overallPct,
     overallOwned: ownedCards,
@@ -211,6 +253,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     rarityBars,
     sections,
     counts: { all: completionCards.length, owned: ownedCards, missing: missingCards },
+    editionStats,
   };
 }
 
