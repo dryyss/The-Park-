@@ -111,7 +111,7 @@ export function AuctionBidForm({
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value))}
           onBlur={() => setAmount((v) => normalize(v))}
-          className="flex-1 rounded-[11px] border border-charbon-500 bg-charbon-700 px-4 py-2.5 font-display text-[18px] text-or outline-none focus:border-carmin"
+          className="w-[140px] min-w-0 rounded-[11px] border border-charbon-500 bg-charbon-700 px-4 py-2.5 font-display text-[18px] text-or outline-none focus:border-carmin"
         />
         <button
           type="submit"

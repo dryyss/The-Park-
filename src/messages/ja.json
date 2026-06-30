@@ -1917,6 +1917,7 @@
     },
     "identity": "公開プロフィール",
     "identityDesc": "他のメンバーに表示される情報です。",
+    "identityViewProfile": "プロフィールを見る",
     "identityDisplayName": "表示名",
     "identityBio": "自己紹介",
     "identityBioPlaceholder": "コレクションやドリフト/JDMへの想いを…",

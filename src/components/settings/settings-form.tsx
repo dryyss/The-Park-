@@ -95,17 +95,14 @@ export function SettingsForm({
       {(active) => (
         <>
           {active === "profile" && (
-            <div className={panelCls}>
-              <h2 className="font-display mb-4 text-[18px] -skew-x-3 tracking-wide uppercase">{t("identity")}</h2>
-              <ProfileIdentityForm
-                initialDisplayName={displayName}
-                initialBio={bio}
-                initialSlug={slug}
-                initialCity={city}
-                initialCountry={country}
-                initialLanguage={language}
-              />
-            </div>
+            <ProfileIdentityForm
+              initialDisplayName={displayName}
+              initialBio={bio}
+              initialSlug={slug}
+              initialCity={city}
+              initialCountry={country}
+              initialLanguage={language}
+            />
           )}
           {active === "shipping" && (
             <div className={panelCls}>

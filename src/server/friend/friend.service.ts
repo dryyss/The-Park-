@@ -14,6 +14,7 @@ export interface FriendEntry {
   displayName: string;
   slug: string;
   avatarUrl: string | null;
+  pct: number;
 }
 
 export interface FriendRequest {
@@ -118,10 +119,26 @@ export async function getFriends(userId: string): Promise<FriendEntry[]> {
     },
   });
 
-  return friendships.map((f) => {
-    const other = f.requesterId === userId ? f.addressee : f.requester;
-    return { id: f.id, userId: other.id, displayName: other.displayName, slug: other.slug, avatarUrl: other.avatarUrl };
-  });
+  const otherIds = friendships.map((f) => f.requesterId === userId ? f.addressee.id : f.requester.id);
+
+  const [totalVariants, collectionCounts] = await Promise.all([
+    prisma.cardVariant.count(),
+    prisma.collectionItem.groupBy({
+      by: ['userId'],
+      where: { userId: { in: otherIds }, quantity: { gt: 0 } },
+      _count: { variantId: true },
+    }),
+  ]);
+  const countByUser = new Map(collectionCounts.map((c) => [c.userId, c._count.variantId]));
+
+  return friendships
+    .map((f) => {
+      const other = f.requesterId === userId ? f.addressee : f.requester;
+      const owned = countByUser.get(other.id) ?? 0;
+      const pct = totalVariants > 0 ? Math.round((owned / totalVariants) * 100) : 0;
+      return { id: f.id, userId: other.id, displayName: other.displayName, slug: other.slug, avatarUrl: other.avatarUrl, pct };
+    })
+    .sort((a, b) => b.pct - a.pct);
 }
 
 /** Demandes reçues en attente. */

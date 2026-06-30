@@ -1917,6 +1917,7 @@
     },
     "identity": "Identity",
     "identityDesc": "What other members see on your collector profile.",
+    "identityViewProfile": "View my profile",
     "identityDisplayName": "Display name",
     "identityBio": "Bio",
     "identityBioPlaceholder": "A few words about your collection, drift/JDM passions…",

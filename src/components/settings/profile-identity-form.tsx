@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { updateProfileAction } from "@/server/user/profile.actions";
 import { normalizeProfileSlug } from "@/lib/slug";
 import { countryOptions } from "@/lib/countries";
@@ -68,12 +68,28 @@ export function ProfileIdentityForm({
   const inputClass =
     "w-full rounded-lg border border-charbon-500 bg-charbon px-3.5 py-2.5 text-[13px] text-blanc-casse outline-none focus:border-carmin";
 
-  return (
-    <section className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
-      <h2 className="font-display text-[16px] tracking-wide text-blanc-casse uppercase">{t("identity")}</h2>
-      <p className="mt-1.5 text-[12.5px] font-semibold text-texte-dim">{t("identityDesc")}</p>
+  const bioWarn = bio.length >= 500 ? "text-neon-rouge" : bio.length > 450 ? "text-or" : "text-texte-faible";
 
-      <div className="mt-4 flex flex-col gap-3.5">
+  return (
+    <section className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5 sm:p-6">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="font-display text-[18px] -skew-x-3 tracking-wide text-blanc-casse uppercase">{t("identity")}</h2>
+          <p className="mt-1.5 text-[12.5px] font-semibold text-texte-dim">{t("identityDesc")}</p>
+        </div>
+        {slug && (
+          <Link
+            href={`/collectionneur/${slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 rounded-lg border border-charbon-500 px-3.5 py-2 text-[11.5px] font-extrabold text-texte-doux transition hover:border-carmin hover:text-carmin"
+          >
+            {t("identityViewProfile")} ↗
+          </Link>
+        )}
+      </div>
+
+      <div className="mt-5 flex flex-col gap-3.5">
         <label className="flex flex-col gap-1.5">
           <span className="text-[10.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("identityDisplayName")}</span>
           <input
@@ -97,7 +113,7 @@ export function ProfileIdentityForm({
             placeholder={t("identityBioPlaceholder")}
             className={`${inputClass} resize-y min-h-[80px]`}
           />
-          <span className="text-[10px] font-bold text-texte-faible">{bio.length}/500</span>
+          <span className={`self-end text-[10px] font-bold tabular-nums ${bioWarn}`}>{bio.length}/500</span>
         </label>
 
         <label className="flex flex-col gap-1.5">
@@ -165,17 +181,18 @@ export function ProfileIdentityForm({
           <span className="text-[10px] font-bold text-texte-faible">{t("identitySlugHint")}</span>
         </label>
 
-        {error && <p className="text-[12px] font-bold text-neon-rouge">{error}</p>}
-        {saved && <p className="text-[12px] font-bold text-statut-succes">{t("identitySaved")}</p>}
-
-        <button
-          type="button"
-          disabled={pending || !displayName.trim() || !slug.trim()}
-          onClick={submit}
-          className="font-display self-start -skew-x-3 rounded-lg bg-carmin px-5 py-2.5 text-[12px] tracking-[1px] text-white uppercase transition hover:bg-carmin-alt disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {pending ? t("identitySaving") : t("identitySave")}
-        </button>
+        <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <button
+            type="button"
+            disabled={pending || !displayName.trim() || !slug.trim()}
+            onClick={submit}
+            className="font-display -skew-x-3 rounded-lg bg-carmin px-5 py-2.5 text-[12px] tracking-[1px] text-white uppercase transition hover:bg-carmin-alt disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {pending ? t("identitySaving") : t("identitySave")}
+          </button>
+          {error && <p className="text-[12px] font-bold text-neon-rouge">{error}</p>}
+          {saved && !error && <p className="text-[12px] font-bold text-statut-succes">✓ {t("identitySaved")}</p>}
+        </div>
       </div>
     </section>
   );
