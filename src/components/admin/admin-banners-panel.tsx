@@ -288,6 +288,10 @@ export function AdminBannersPanel({ banners: initialBanners, uploadMode }: { ban
                 className="h-9 w-[5px] shrink-0 rounded-full"
                 style={{ background: b.color }}
               />
+              {b.imageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element -- aperçu admin
+                <img src={cardImage(b.imageUrl)} alt="" className="h-9 w-14 shrink-0 rounded-md object-cover" />
+              )}
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   {b.label && (

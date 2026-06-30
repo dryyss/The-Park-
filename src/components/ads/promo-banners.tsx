@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { cardImage } from "@/lib/rarity";
 
 interface PromoSlide {
   id: string;
@@ -115,7 +116,7 @@ function BannerWidget({ slides, position }: { slides: PromoSlide[]; position: "b
       >
         {slide.imageUrl && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={slide.imageUrl} alt={slide.title} className="h-[88px] w-full object-cover" />
+          <img src={cardImage(slide.imageUrl)} alt={slide.title} className="h-[88px] w-full object-cover" />
         )}
         <div className="px-3 py-3">
           <div className="font-display text-[15px] leading-tight tracking-[1px] text-blanc-casse">
@@ -170,7 +171,7 @@ export function PromoBannerStrip({ className = "" }: { className?: string }) {
 
       {s.imageUrl && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={s.imageUrl} alt={s.title} className="h-10 w-16 shrink-0 rounded-md object-cover sm:h-12 sm:w-20" />
+        <img src={cardImage(s.imageUrl)} alt={s.title} className="h-10 w-16 shrink-0 rounded-md object-cover sm:h-12 sm:w-20" />
       )}
 
       <div className="min-w-0 flex-1">
@@ -220,7 +221,7 @@ export function PromoBannerRail({ className = "" }: { className?: string }) {
       <a href={s.href} className="block transition hover:opacity-95">
         {s.imageUrl && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={s.imageUrl} alt={s.title} className="aspect-4/3 w-full object-cover" />
+          <img src={cardImage(s.imageUrl)} alt={s.title} className="aspect-4/3 w-full object-cover" />
         )}
         <div className="px-4 py-4">
           <div className="font-display text-[17px] leading-tight tracking-[0.5px] text-blanc-casse">{s.title}</div>

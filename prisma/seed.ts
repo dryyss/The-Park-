@@ -748,6 +748,33 @@ async function main() {
       });
     }
 
+    // Bannières publicitaires de démo (un bandeau horizontal + un panneau latéral).
+    await prisma.promoBanner.deleteMany({ where: { href: { in: ["/boutique", "/marketplace"] }, label: { in: ["PARTENAIRE", "MARKETPLACE"] } } });
+    await prisma.promoBanner.createMany({
+      data: [
+        {
+          label: "PARTENAIRE",
+          title: "AUTOBACS — Drift & Style JDM",
+          subtitle: "Pièces de performance, jantes & accessoires",
+          cta: "Découvrir →",
+          href: "/boutique",
+          color: "#ff7a00",
+          position: "top",
+          sortOrder: 0,
+        },
+        {
+          label: "MARKETPLACE",
+          title: "Vends tes doubles",
+          subtitle: "Mets en vente tes cartes en 2 minutes",
+          cta: "Vendre une carte →",
+          href: "/marketplace",
+          color: "#d81b60",
+          position: "side",
+          sortOrder: 0,
+        },
+      ],
+    });
+
     const booster = await prisma.product.findFirst({ where: { sku: "TP-S01-BOOSTER" } });
     const display = await prisma.product.findFirst({ where: { sku: "TP-S01-DISPLAY" } });
     if (booster && display) {
