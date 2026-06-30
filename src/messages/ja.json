@@ -125,6 +125,7 @@
     "marketNoAuctions": "進行中のオークションなし",
     "activityBadge": "{actor}が「{badge}」実績を解除した！",
     "activityAuctionWin": "{actor}が{card}のオークションを落札 · {price}",
+    "activityAuction": "{actor} が {card} をオークションに出品 · 開始価格 {price}",
     "live": "ライブ",
     "topCollectorsTitle": "トップコレクター",
     "seeFullRanking": "ランキング全体を見る",

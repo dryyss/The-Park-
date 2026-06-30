@@ -58,7 +58,7 @@ export async function getTopCollectors(limit = 5): Promise<TopCollector[]> {
 }
 
 /** Type d'événement affiché dans le flux. */
-export type ActivityKind = "SELL" | "TRADE" | "WANT" | "BADGE" | "AUCTION_WIN";
+export type ActivityKind = "SELL" | "TRADE" | "WANT" | "BADGE" | "AUCTION" | "AUCTION_WIN";
 
 export interface ActivityItem {
   id: string;
@@ -72,7 +72,7 @@ export interface ActivityItem {
 }
 
 async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
-  const [listings, badgeEvents, auctionWins] = await Promise.all([
+  const [listings, badgeEvents, activeAuctions, auctionWins] = await Promise.all([
     prisma.listing.findMany({
       where: { status: "ACTIVE" },
       orderBy: { createdAt: "desc" },
@@ -88,6 +88,15 @@ async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
       include: {
         user: { select: { displayName: true } },
         badge: { select: { label: true } },
+      },
+    }),
+    prisma.auction.findMany({
+      where: { status: { in: ["ACTIVE", "SCHEDULED"] } },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      include: {
+        seller: { select: { displayName: true } },
+        variant: { include: { card: { select: { name: true, slug: true } } } },
       },
     }),
     prisma.auction.findMany({
@@ -122,11 +131,21 @@ async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
     href: "/trophees",
   }));
 
+  const newAuctionItems: ActivityItem[] = activeAuctions.map((a) => ({
+    id: `auction-new-${a.id}`,
+    kind: "AUCTION" as const,
+    actorName: a.seller.displayName,
+    cardName: a.variant.card.name,
+    price: a.startPrice,
+    at: a.createdAt,
+    href: `/encheres/${a.id}`,
+  }));
+
   const auctionItems: ActivityItem[] = auctionWins
     .filter((a) => a.winner)
     .map((a) => ({
       id: `auction-${a.id}`,
-      kind: "AUCTION_WIN",
+      kind: "AUCTION_WIN" as const,
       actorName: a.winner!.displayName,
       cardName: a.variant.card.name,
       price: a.currentPrice,
@@ -134,7 +153,7 @@ async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
       href: `/encheres/${a.id}`,
     }));
 
-  return [...listingItems, ...badgeItems, ...auctionItems]
+  return [...listingItems, ...badgeItems, ...newAuctionItems, ...auctionItems]
     .sort((a, b) => b.at.getTime() - a.at.getTime())
     .slice(0, limit);
 }

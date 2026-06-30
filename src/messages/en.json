@@ -125,6 +125,7 @@
     "marketNoAuctions": "No auctions in progress",
     "activityBadge": "{actor} just unlocked the « {badge} » achievement!",
     "activityAuctionWin": "{actor} won the auction for {card} · {price}",
+    "activityAuction": "{actor} listed {card} for auction · starting at {price}",
     "live": "Live",
     "topCollectorsTitle": "Top collectors",
     "seeFullRanking": "See the full ranking",

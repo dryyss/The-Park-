@@ -125,6 +125,7 @@
     "marketNoAuctions": "Aucune enchère en cours",
     "activityBadge": "{actor} vient de débloquer le succès « {badge} » !",
     "activityAuctionWin": "{actor} a remporté l'enchère pour {card} · {price}",
+    "activityAuction": "{actor} a mis {card} en enchère · départ {price}",
     "live": "En direct",
     "topCollectorsTitle": "Top collectionneurs",
     "seeFullRanking": "Voir le classement complet",

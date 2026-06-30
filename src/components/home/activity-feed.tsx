@@ -10,10 +10,16 @@ function ActivityIcon({ kind }: { kind: ActivityItem["kind"] }) {
       ★
     </span>
   );
+  if (kind === "AUCTION") return (
+    <span className="flex h-[38px] w-[38px] shrink-0 rotate-[-3deg] items-center justify-center rounded-[10px] text-[17px]"
+      style={{ background: "rgba(232,178,58,0.15)", color: "#E8B23A" }}>
+      ⚡
+    </span>
+  );
   if (kind === "AUCTION_WIN") return (
     <span className="flex h-[38px] w-[38px] shrink-0 rotate-[-3deg] items-center justify-center rounded-[10px] text-[17px]"
       style={{ background: "rgba(176,92,255,0.15)", color: "#b05cff" }}>
-      ⚡
+      🏆
     </span>
   );
   if (kind === "WANT") return (
@@ -57,6 +63,8 @@ export async function ActivityFeed({ items }: { items: ActivityItem[] }) {
           let message = "";
           if (a.kind === "BADGE") {
             message = t("activityBadge", { actor: a.actorName, badge: a.badgeLabel ?? "" });
+          } else if (a.kind === "AUCTION") {
+            message = t("activityAuction", { actor: a.actorName, card: a.cardName, price: formatPrice(a.price) });
           } else if (a.kind === "AUCTION_WIN") {
             message = t("activityAuctionWin", { actor: a.actorName, card: a.cardName, price: formatPrice(a.price) });
           } else if (a.kind === "WANT") {
