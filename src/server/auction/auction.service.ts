@@ -36,6 +36,7 @@ export interface AuctionDetail extends AuctionListItem {
   reservePrice: string | null;
   reserveMet: boolean | null;
   bidIncrement: string;
+  bidIncrementValue: number;
   minBidAmount: number;
   bids: AuctionBid[];
   winnerName: string | null;
@@ -110,6 +111,7 @@ export async function getAuctionById(id: string): Promise<AuctionDetail | null> 
     reservePrice: a.reservePrice ? formatPrice(a.reservePrice) : null,
     reserveMet,
     bidIncrement: formatPrice(a.bidIncrement),
+    bidIncrementValue: Number(a.bidIncrement),
     minBidAmount,
     winnerName: a.winner?.displayName ?? null,
     bids: a.bids.map((b) => ({

@@ -10,7 +10,7 @@ export interface MarketParams {
   condition?: string;
   version?: string;
   q?: string;
-  city?: string;
+  country?: string;
   wishlist?: boolean;
   friends?: boolean;
 }
@@ -97,6 +97,7 @@ export async function MarketplaceFilters({
           {params.rarity && <input type="hidden" name="rarity" value={params.rarity} />}
           {params.condition && <input type="hidden" name="condition" value={params.condition} />}
           {params.version && <input type="hidden" name="version" value={params.version} />}
+          {params.country && <input type="hidden" name="country" value={params.country} />}
           <input
             name="q"
             defaultValue={params.q ?? ""}
@@ -160,12 +161,12 @@ export async function MarketplaceFilters({
           {params.wishlist && <input type="hidden" name="wishlist" value="1" />}
           {params.friends && <input type="hidden" name="friends" value="1" />}
           {params.q && <input type="hidden" name="q" value={params.q} />}
-          <span className="text-[10.5px] font-extrabold tracking-[2px] text-texte-dim uppercase">📍</span>
+          <span className="text-[10.5px] font-extrabold tracking-[2px] text-texte-dim uppercase">🌍</span>
           <input
-            name="city"
-            defaultValue={params.city ?? ""}
-            placeholder={t("filterCityPlaceholder")}
-            aria-label={t("filterCityPlaceholder")}
+            name="country"
+            defaultValue={params.country ?? ""}
+            placeholder={t("filterCountryPlaceholder")}
+            aria-label={t("filterCountryPlaceholder")}
             className="w-full min-w-0 rounded-full border border-charbon-500 bg-charbon-800 px-3.5 py-1.5 text-[12px] text-blanc-casse outline-none focus:border-carmin sm:w-[160px]"
           />
         </form>

@@ -48,7 +48,7 @@ export async function createAuction(
         startPrice: input.startPrice,
         reservePrice: input.reservePrice ?? null,
         currentPrice: input.startPrice,
-        bidIncrement: input.bidIncrement ?? 1,
+        bidIncrement: input.bidIncrement ?? 0.1,
         status: "ACTIVE",
         startsAt: new Date(now),
         endsAt,

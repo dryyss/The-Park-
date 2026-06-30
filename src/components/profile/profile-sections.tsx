@@ -82,6 +82,34 @@ export async function ProfileSidebar({ profile }: { profile: ViewerProfile }) {
           <h2 className="font-display text-[18px] tracking-[2px] -skew-x-3 uppercase text-blanc-casse">{t("completion")}</h2>
           <span className="font-jp text-[11px] font-bold tracking-[2px] text-texte-faible">完成度</span>
         </div>
+
+        {/* Marque-pages par saison */}
+        {profile.seasonPcts.length > 0 && (
+          <div className="mb-4 flex flex-wrap gap-1.5">
+            {profile.seasonPcts.map((sp) => (
+              <Link
+                key={sp.code}
+                href={`/collection?season=${sp.code}`}
+                className="group relative flex flex-col items-center rounded-[8px] border border-charbon-500 bg-charbon-900 px-2.5 py-1.5 transition hover:border-carmin/60 hover:bg-charbon-800"
+                style={{
+                  clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))",
+                }}
+                title={`${sp.name} — ${sp.pct}%`}
+              >
+                <span className="text-[9px] font-extrabold tracking-[1px] text-texte-doux uppercase leading-tight">
+                  {sp.name}
+                </span>
+                <span
+                  className="text-[11px] font-extrabold tabular-nums leading-tight"
+                  style={{ color: sp.pct >= 100 ? "var(--color-statut-succes)" : sp.pct > 0 ? "var(--color-carmin)" : "var(--color-texte-faible)" }}
+                >
+                  {sp.pct}%
+                </span>
+              </Link>
+            ))}
+          </div>
+        )}
+
         <div className="flex flex-col gap-3">
           {profile.rarityBars.map((b) => (
             <div key={b.code}>

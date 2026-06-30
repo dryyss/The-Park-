@@ -6,6 +6,7 @@ import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { AddToMarketplaceCartButton } from "@/components/marketplace/add-to-marketplace-cart-button";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import { OwnListingRowActions } from "@/components/marketplace/own-listing-row-actions";
+import { UserHoverCard } from "@/components/profile/user-hover-card";
 import { getCardSellListings } from "@/server/marketplace/marketplace.service";
 import { getViewerUser } from "@/server/user/user.service";
 import { getMarketplaceCartListingIds } from "@/server/marketplace-cart/marketplace-cart.service";
@@ -133,10 +134,7 @@ export default async function CardSellersPage({
               className="grid grid-cols-1 gap-3 rounded-2xl border border-charbon-500 bg-charbon-800 px-5 py-4 transition hover:border-charbon-400 sm:grid-cols-[1fr_120px_120px_120px_200px] sm:items-center sm:gap-4"
             >
               {/* Vendeur */}
-              <Link
-                href={`/collectionneur/${s.seller.slug}`}
-                className="flex items-center gap-2.5 transition hover:opacity-80"
-              >
+              <div className="flex items-center gap-2.5">
                 <span
                   className="font-display flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] text-white"
                   style={{ background: AV_GRADIENTS[s.seller.initial] ?? AV_GRADIENTS.L }}
@@ -145,7 +143,7 @@ export default async function CardSellersPage({
                 </span>
                 <div>
                   <div className="flex items-center gap-1.5 text-[13px] font-extrabold text-blanc-casse">
-                    {s.seller.name}
+                    <UserHoverCard slug={s.seller.slug}>{s.seller.name}</UserHoverCard>
                     {s.quantity > 1 && (
                       <span className="rounded bg-charbon-600 px-1.5 py-0.5 text-[10px] font-extrabold text-texte-dim">
                         ×{s.quantity}
@@ -162,7 +160,7 @@ export default async function CardSellersPage({
                     {t("sellersLowestBadge")}
                   </span>
                 )}
-              </Link>
+              </div>
 
               {/* État */}
               <div className="flex items-center gap-1.5 sm:justify-start">

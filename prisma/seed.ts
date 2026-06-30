@@ -733,6 +733,7 @@ async function main() {
           variantId: variant.id,
           startPrice: a.start,
           currentPrice: a.current,
+          bidIncrement: 0.1,
           status: "ACTIVE",
           startsAt: new Date(endsBase - 86400000),
           endsAt: new Date(endsBase + a.hours * 3600000),

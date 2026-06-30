@@ -1,31 +1,49 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useMemo, useState, useTransition } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { updateProfileAction } from "@/server/user/profile.actions";
 import { normalizeProfileSlug } from "@/lib/slug";
+import { countryOptions } from "@/lib/countries";
+
+const SPOKEN_LANGUAGES = [
+  { code: "FR", label: "🇫🇷 Français" },
+  { code: "EN", label: "🇬🇧 English" },
+  { code: "JP", label: "🇯🇵 日本語" },
+  { code: "DE", label: "🇩🇪 Deutsch" },
+  { code: "US", label: "🇺🇸 English (US)" },
+] as const;
 
 export function ProfileIdentityForm({
   initialDisplayName,
   initialBio,
   initialSlug,
   initialCity = "",
+  initialCountry = "",
+  initialLanguage = "FR",
 }: {
   initialDisplayName: string;
   initialBio: string;
   initialSlug: string;
   initialCity?: string;
+  initialCountry?: string;
+  initialLanguage?: string;
 }) {
   const t = useTranslations("settings");
+  const locale = useLocale();
   const router = useRouter();
   const [displayName, setDisplayName] = useState(initialDisplayName);
   const [bio, setBio] = useState(initialBio);
   const [slug, setSlug] = useState(initialSlug);
   const [city, setCity] = useState(initialCity);
+  const [country, setCountry] = useState(initialCountry);
+  const [language, setLanguage] = useState(initialLanguage);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [pending, startTransition] = useTransition();
+
+  const countries = useMemo(() => countryOptions(locale), [locale]);
 
   function handleSlugChange(value: string) {
     setSlug(normalizeProfileSlug(value));
@@ -35,7 +53,7 @@ export function ProfileIdentityForm({
     setError(null);
     setSaved(false);
     startTransition(async () => {
-      const res = await updateProfileAction({ displayName, bio, slug, city });
+      const res = await updateProfileAction({ displayName, bio, slug, city, country, language });
       if (!res.ok) {
         if (res.error === "SLUG_TAKEN") setError(t("identitySlugTaken"));
         else if (res.error === "VALIDATION") setError(t("identityValidation"));
@@ -95,6 +113,41 @@ export function ProfileIdentityForm({
           />
           <span className="text-[10px] font-bold text-texte-faible">{t("identityCityHint")}</span>
         </label>
+
+        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+          <label className="flex flex-col gap-1.5">
+            <span className="text-[10.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("identityCountry")}</span>
+            <select
+              value={country}
+              disabled={pending}
+              onChange={(e) => setCountry(e.target.value)}
+              className={inputClass}
+            >
+              <option value="">{t("identityCountryNone")}</option>
+              {countries.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.flag} {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className="text-[10.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("identityLanguage")}</span>
+            <select
+              value={language}
+              disabled={pending}
+              onChange={(e) => setLanguage(e.target.value)}
+              className={inputClass}
+            >
+              {SPOKEN_LANGUAGES.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
 
         <label className="flex flex-col gap-1.5">
           <span className="text-[10.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("identitySlug")}</span>

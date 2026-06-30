@@ -1,6 +1,7 @@
 import "server-only";
 import { getUserAddresses, type UserAddress } from "@/server/user/address.service";
 import { prisma } from "@/lib/prisma";
+import type { Language } from "@/generated/prisma/client";
 
 export interface AccountSettings {
   email: string;
@@ -8,6 +9,8 @@ export interface AccountSettings {
   bio: string;
   slug: string;
   city: string;
+  country: string;
+  language: Language;
   addresses: UserAddress[];
   passwordResetUrl: string | null;
 }
@@ -15,7 +18,7 @@ export interface AccountSettings {
 export async function getAccountSettings(userId: string): Promise<AccountSettings | null> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { email: true, displayName: true, bio: true, slug: true, city: true },
+    select: { email: true, displayName: true, bio: true, slug: true, city: true, country: true, language: true },
   });
   if (!user) return null;
 
@@ -34,6 +37,8 @@ export async function getAccountSettings(userId: string): Promise<AccountSetting
     bio: user.bio ?? "",
     slug: user.slug,
     city: user.city ?? "",
+    country: user.country ?? "",
+    language: user.language,
     addresses,
     passwordResetUrl,
   };

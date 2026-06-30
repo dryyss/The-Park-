@@ -339,6 +339,8 @@ model User {
   avatarUrl   String?
   bio         String?
   city        String?
+  /// Pays d'origine déclaré (code ISO-3166-1 alpha-2 : JP, FR, US…). Affiché sur le mini-profil.
+  country     String?
   role        UserRole   @default(MEMBER)
   /// Sous-rôle staff (null = membre simple). Vérifié côté serveur.
   staffRole   AdminRole?
@@ -941,7 +943,7 @@ model Auction {
   startPrice   Decimal       @db.Decimal(10, 2)
   reservePrice Decimal?      @db.Decimal(10, 2)
   currentPrice Decimal       @default(0) @db.Decimal(10, 2)
-  bidIncrement Decimal       @default(1) @db.Decimal(10, 2)
+  bidIncrement Decimal       @default(0.1) @db.Decimal(10, 2)
   status       AuctionStatus @default(SCHEDULED)
   antiSnipe    Boolean       @default(true)
   startsAt     DateTime

@@ -1,4 +1,4 @@
-import "server-only";
+﻿import "server-only";
 import { prisma } from "@/lib/prisma";
 import { rarityMeta, cardImage, cardNumberLabel, isPromoRarity, RARITY_ORDER, rarityTitle, rarityJp } from "@/lib/rarity";
 import { isExcludedFromCompletion } from "@/lib/rarities";
@@ -15,7 +15,7 @@ export interface CollectionFilters {
   sort?: CollectionSort;
   /** Code de saison (ex: "S01", "HS"). Null = toutes saisons. */
   season?: string;
-  /** Filtre par édition : "first" = 1ère édition, "reprint" = réédition. */
+  /** Filtre par Ã©dition : "first" = 1Ã¨re Ã©dition, "reprint" = rÃ©Ã©dition. */
   edition?: "first" | "reprint";
 }
 
@@ -64,6 +64,7 @@ export interface RaritySection {
 
 export interface SeasonCompletion {
   code: string;
+  name: string;
   total: number;
   owned: number;
   pct: number;
@@ -80,7 +81,7 @@ export interface CollectionView {
   seasonPcts: SeasonCompletion[];
 }
 
-/** Classeur complet (possédé / manquant par carte). userId null = visiteur (tout en manquant). */
+/** Classeur complet (possÃ©dÃ© / manquant par carte). userId null = visiteur (tout en manquant). */
 export async function getUserCollection(userId: string | null, filters: CollectionFilters): Promise<CollectionView> {
   const [cards, items, versionTypes, totalVariants] = await Promise.all([
     prisma.card.findMany({
@@ -174,8 +175,8 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     return true;
   });
 
-  // Base de calcul : filtrée par saison si une saison est active, sinon tout le catalogue.
-  // Exclut "unique" et "signed" du taux de complétion (trop rares pour atteindre 100%).
+  // Base de calcul : filtrÃ©e par saison si une saison est active, sinon tout le catalogue.
+  // Exclut "unique" et "signed" du taux de complÃ©tion (trop rares pour atteindre 100%).
   const contextBase = enriched.filter((c) => {
     const card = cardById.get(c.cardId);
     if (!card || isExcludedFromCompletion(card.rarity.code)) return false;
@@ -257,7 +258,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     };
   }
 
-  // Taux de complétion globaux par saison (calculés toujours sur l'ensemble du catalogue).
+  // Taux de complÃ©tion globaux par saison (calculÃ©s toujours sur l'ensemble du catalogue).
   const seasonCodeSet = new Set(enriched.map((c) => cardById.get(c.cardId)?.season.code).filter(Boolean) as string[]);
   const seasonPcts: SeasonCompletion[] = Array.from(seasonCodeSet).map((code) => {
     const sc = enriched.filter((c) => {
@@ -265,7 +266,8 @@ export async function getUserCollection(userId: string | null, filters: Collecti
       return card && card.season.code === code && !isExcludedFromCompletion(card.rarity.code);
     });
     const owned = sc.filter((c) => c.owned).length;
-    return { code, total: sc.length, owned, pct: sc.length > 0 ? Math.round((owned / sc.length) * 100) : 0 };
+    const seasonName = enriched.map((c) => cardById.get(c.cardId)).find((card) => card?.season.code === code)?.season.name ?? code;
+    return { code, name: seasonName, total: sc.length, owned, pct: sc.length > 0 ? Math.round((owned / sc.length) * 100) : 0 };
   });
 
   return {
@@ -280,7 +282,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
   };
 }
 
-/** Quantités possédées par code de rareté, toutes saisons confondues (y compris hors série). */
+/** QuantitÃ©s possÃ©dÃ©es par code de raretÃ©, toutes saisons confondues (y compris hors sÃ©rie). */
 export async function getUserOwnedCountByRarity(userId: string): Promise<Map<string, number>> {
   const items = await prisma.collectionItem.findMany({
     where: { userId, quantity: { gt: 0 } },
@@ -298,7 +300,7 @@ export async function getUserOwnedCountByRarity(userId: string): Promise<Map<str
   return counts;
 }
 
-/** Numéros de cartes possédées par le membre (au moins 1 exemplaire). */
+/** NumÃ©ros de cartes possÃ©dÃ©es par le membre (au moins 1 exemplaire). */
 export async function getViewerOwnedCardNumbers(userId: string): Promise<number[]> {
   const items = await prisma.collectionItem.findMany({
     where: { userId, quantity: { gt: 0 } },
@@ -307,7 +309,7 @@ export async function getViewerOwnedCardNumbers(userId: string): Promise<number[
   return [...new Set(items.map((item) => item.variant.card.number))];
 }
 
-/** Complétion d'un membre (profil public). */
+/** ComplÃ©tion d'un membre (profil public). */
 export async function getUserCompletion(userId: string) {
   const [owned, total] = await Promise.all([
     prisma.collectionItem.count({ where: { userId } }),

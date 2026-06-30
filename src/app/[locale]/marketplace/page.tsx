@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return localePageMetadata("marketplace", locale, "/marketplace");
 }
 
-type SearchParams = { intent?: string; rarity?: string; condition?: string; version?: string; q?: string; city?: string; wishlist?: string; friends?: string };
+type SearchParams = { intent?: string; rarity?: string; condition?: string; version?: string; q?: string; country?: string; wishlist?: string; friends?: string };
 
 function intentHref(p: MarketParams, intent: MarketIntent): string {
   // Changer d'onglet réinitialise les filtres spécifiques.
@@ -69,7 +69,7 @@ export default async function MarketplacePage({
     condition: sp.condition || undefined,
     version: sp.version || undefined,
     q: sp.q || undefined,
-    city: sp.city || undefined,
+    country: sp.country || undefined,
     wishlist: sp.wishlist === "1",
     friends: sp.friends === "1",
   };

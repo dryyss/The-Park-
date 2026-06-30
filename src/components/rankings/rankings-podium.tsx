@@ -1,4 +1,5 @@
 import { avatarGradient } from "@/lib/avatars";
+import { UserHoverCard } from "@/components/profile/user-hover-card";
 import type { RankingRow } from "@/server/community/community.service";
 
 const MEDALS = ["🥇", "🥈", "🥉"];
@@ -58,7 +59,7 @@ export function RankingsPodium({ rows }: { rows: RankingRow[] }) {
                 isWinner ? "mt-3 text-[14px] sm:mt-4 sm:text-[21px]" : "mt-2.5 text-[12px] sm:mt-3.5 sm:text-[17px]",
               ].join(" ")}
             >
-              {p.displayName}
+              {p.slug ? <UserHoverCard slug={p.slug}>{p.displayName}</UserHoverCard> : p.displayName}
             </div>
             <div
               className={[
@@ -108,7 +109,7 @@ export function RankingsTable({ rows }: { rows: RankingRow[] }) {
             {r.initial}
           </span>
           <span className="min-w-[100px] flex-1 truncate text-[12.5px] font-extrabold text-blanc-casse sm:w-[190px] sm:flex-none sm:text-[13.5px]">
-            {r.displayName}
+            {r.slug ? <UserHoverCard slug={r.slug}>{r.displayName}</UserHoverCard> : r.displayName}
             {r.isViewer && <span className="ml-1 text-[10px] font-bold text-carmin sm:text-[10.5px]">(toi)</span>}
           </span>
           <div className="hidden h-1.5 min-w-[80px] flex-1 overflow-hidden rounded bg-charbon-600 sm:block">

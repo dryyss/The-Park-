@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
 import {
@@ -48,6 +48,7 @@ export async function listCollectionItemAction(input: unknown): Promise<Marketpl
       condition: parsed.data.condition,
       price: parsed.data.price,
     });
+    revalidateTag("listings");
     revalidatePath("/marketplace");
     revalidatePath("/carte", "layout");
     revalidatePath("/dashboard");
@@ -81,6 +82,7 @@ export async function publishListingAction(input: unknown): Promise<MarketplaceA
       price: parsed.data.price,
       description: parsed.data.description,
     });
+    revalidateTag("listings");
     revalidatePath("/marketplace");
     revalidatePath("/vendre");
     revalidatePath("/dashboard");
@@ -100,6 +102,7 @@ export async function publishWantListingAction(input: unknown): Promise<Marketpl
 
   try {
     const listingId = await publishWantListing(viewer.id, parsed.data);
+    revalidateTag("listings");
     revalidatePath("/marketplace");
     revalidatePath("/dashboard");
     return { ok: true, listingId };
@@ -115,6 +118,8 @@ export async function pauseListingAction(input: unknown): Promise<MarketplaceAct
   if (!parsed.success) return { ok: false, error: "VALIDATION" };
   try {
     await pauseListing(viewer.id, parsed.data.listingId);
+    revalidateTag("listings");
+    revalidatePath("/marketplace");
     revalidatePath("/dashboard");
     return { ok: true };
   } catch (err) {
@@ -129,6 +134,8 @@ export async function resumeListingAction(input: unknown): Promise<MarketplaceAc
   if (!parsed.success) return { ok: false, error: "VALIDATION" };
   try {
     await resumeListing(viewer.id, parsed.data.listingId);
+    revalidateTag("listings");
+    revalidatePath("/marketplace");
     revalidatePath("/dashboard");
     return { ok: true };
   } catch (err) {
@@ -143,6 +150,7 @@ export async function cancelListingAction(input: unknown): Promise<MarketplaceAc
   if (!parsed.success) return { ok: false, error: "VALIDATION" };
   try {
     await cancelListing(viewer.id, parsed.data.listingId);
+    revalidateTag("listings");
     revalidatePath("/dashboard");
     revalidatePath("/marketplace");
     return { ok: true };

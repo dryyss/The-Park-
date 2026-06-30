@@ -35,6 +35,8 @@ export default async function ParametresPage({ params }: { params: Promise<{ loc
           bio={account.bio}
           slug={account.slug}
           city={account.city}
+          country={account.country}
+          language={account.language}
           addresses={account.addresses}
           securitySection={
             <AccountSecuritySection email={account.email} passwordResetUrl={account.passwordResetUrl} />

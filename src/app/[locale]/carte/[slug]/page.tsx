@@ -6,6 +6,7 @@ import { OwnedVariantStack } from "@/components/cards/owned-variant-stack";
 import { CardCommunityPhotos } from "@/components/collection/card-community-photos";
 import { getCardDetail } from "@/server/catalog/catalog.service";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
+import { UserHoverCard } from "@/components/profile/user-hover-card";
 import { getViewerUser, getAuthenticatedViewer } from "@/server/user/user.service";
 import { CardMemberActions } from "@/components/cards/card-member-actions";
 import { CardWantButton } from "@/components/cards/card-want-button";
@@ -268,7 +269,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
                         <span className="truncate text-[13px] font-extrabold text-blanc-casse">
-                          {isOwn ? t("ownListingYou") : l.sellerName}
+                          {isOwn ? t("ownListingYou") : <UserHoverCard slug={l.sellerSlug}>{l.sellerName}</UserHoverCard>}
                         </span>
                         {!isOwn && <span className="text-[11px] font-bold text-or">★ {l.rating}</span>}
                         {idx === 0 && (

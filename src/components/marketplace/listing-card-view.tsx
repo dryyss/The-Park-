@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import { AddToMarketplaceCartButton } from "@/components/marketplace/add-to-marketplace-cart-button";
 import { WishlistQuickAddButton } from "@/components/wishlist/wishlist-quick-add-button";
+import { UserHoverCard } from "@/components/profile/user-hover-card";
 import type { MarketplaceCard } from "@/server/marketplace/marketplace.service";
 
 const AV_GRADIENTS: Record<string, string> = {
@@ -91,10 +92,7 @@ export function ListingCardView({
           </div>
         </div>
 
-        <Link
-          href={isOwnListing ? "/dashboard" : `/collectionneur/${l.seller.slug}`}
-          className="flex items-center gap-2 rounded-[9px] border border-charbon-600 bg-charbon-700 px-2.5 py-1.5 transition hover:border-carmin"
-        >
+        <div className="flex items-center gap-2 rounded-[9px] border border-charbon-600 bg-charbon-700 px-2.5 py-1.5 transition hover:border-carmin">
           <span
             className="font-display flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10.5px] text-white"
             style={{ background: AV_GRADIENTS[l.seller.initial] ?? AV_GRADIENTS.L }}
@@ -103,7 +101,13 @@ export function ListingCardView({
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[11.5px] font-bold text-texte-doux">
-              {isOwnListing ? labels.ownListingYou : l.seller.name}
+              {isOwnListing ? (
+                <Link href="/dashboard" className="hover:text-carmin">
+                  {labels.ownListingYou}
+                </Link>
+              ) : (
+                <UserHoverCard slug={l.seller.slug}>{l.seller.name}</UserHoverCard>
+              )}
             </p>
             {l.sellerCity && !isOwnListing && (
               <p className="truncate text-[10px] font-bold text-texte-faible">📍 {l.sellerCity}</p>
@@ -115,7 +119,7 @@ export function ListingCardView({
               <span className="text-[10.5px] font-bold text-texte-faible">({l.seller.reviews})</span>
             </>
           )}
-        </Link>
+        </div>
 
         <div className="mt-auto flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">

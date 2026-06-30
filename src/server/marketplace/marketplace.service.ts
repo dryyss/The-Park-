@@ -20,10 +20,15 @@ export interface MarketplaceFilters {
   intent: MarketIntent;
   rarity?: string; // code rareté (c,r,u,l,g,p)
   condition?: string; // CardCondition
-  version?: string; // code versionType
+  version?: string; // code versionType (catégorie)
   q?: string;
-  city?: string; // ville du vendeur
+  country?: string; // pays d'origine de la carte (code : JP, US, DE…)
 }
+
+/** Raretés exclues de la rangée « raretés » du marketplace : ce sont des catégories, pas des raretés. */
+const MARKETPLACE_NON_RARITY_CODES = ["promotional", "special", "collaboration"] as const;
+/** Codes de catégorie (ex-« version ») masqués du filtre marketplace. */
+const MARKETPLACE_HIDDEN_CATEGORY_CODES = ["unique"] as const;
 
 export interface MarketplaceCard {
   id: string;
@@ -140,19 +145,21 @@ function buildWhere(f: MarketplaceFilters): Prisma.ListingWhereInput {
     where.marketplaceCartItems = listingNotInActiveCart().marketplaceCartItems;
   }
   if (f.condition) where.condition = f.condition as Prisma.EnumCardConditionFilter["equals"];
-  if (f.rarity) where.variant = { card: { rarity: { code: f.rarity } } };
-  if (f.version) {
-    where.variant = { ...(where.variant as object), versionType: { code: f.version } };
-  }
+
+  const cardWhere: Prisma.CardWhereInput = {};
+  if (f.rarity) cardWhere.rarity = { code: f.rarity };
+  if (f.country?.trim()) cardWhere.country = { contains: f.country.trim(), mode: "insensitive" };
+  const variantWhere: Prisma.CardVariantWhereInput = {};
+  if (f.version) variantWhere.versionType = { code: f.version };
+  if (Object.keys(cardWhere).length > 0) variantWhere.card = cardWhere;
+  if (Object.keys(variantWhere).length > 0) where.variant = variantWhere;
+
   if (f.q?.trim()) {
     const q = f.q.trim();
     where.OR = [
       { variant: { card: { name: { contains: q, mode: "insensitive" } } } },
       { seller: { displayName: { contains: q, mode: "insensitive" } } },
     ];
-  }
-  if (f.city?.trim()) {
-    where.seller = { city: { contains: f.city.trim(), mode: "insensitive" } };
   }
   return where;
 }
@@ -227,7 +234,7 @@ export async function getMarketplaceListings(f: MarketplaceFilters): Promise<Mar
     f.condition ?? "",
     f.version ?? "",
     f.q ?? "",
-    f.city ?? "",
+    f.country ?? "",
   ];
   return unstable_cache(() => fetchMarketplaceListings(f), key, {
     revalidate: 60,
@@ -273,11 +280,17 @@ async function fetchMarketplaceFacets(): Promise<MarketplaceFacets> {
   return {
     sellCount,
     wantCount,
-    versions: VERSION_TYPE_DEFINITIONS.map((v) => ({ code: v.code, label: v.label })),
-    rarities: RARITY_ORDER.map((code) => ({
-      code,
-      count: rarityGroups.find((r) => r.code === code)?._count.cards ?? 0,
-    })).filter((r) => r.count > 0),
+    versions: VERSION_TYPE_DEFINITIONS.filter(
+      (v) => !(MARKETPLACE_HIDDEN_CATEGORY_CODES as readonly string[]).includes(v.code),
+    ).map((v) => ({ code: v.code, label: v.label })),
+    rarities: RARITY_ORDER.filter(
+      (code) => !(MARKETPLACE_NON_RARITY_CODES as readonly string[]).includes(code),
+    )
+      .map((code) => ({
+        code,
+        count: rarityGroups.find((r) => r.code === code)?._count.cards ?? 0,
+      }))
+      .filter((r) => r.count > 0),
   };
 }
 

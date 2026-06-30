@@ -5,6 +5,7 @@ import { rarityMeta } from "@/lib/rarity";
 import type { AuctionListItem } from "@/server/auction/auction.service";
 import { AuctionBidForm } from "@/components/auction/auction-bid-form";
 import { AuctionCountdown } from "@/components/auction/auction-countdown";
+import { UserHoverCard } from "@/components/profile/user-hover-card";
 
 export async function AuctionGrid({ auctions }: { auctions: AuctionListItem[] }) {
   const t = await getTranslations("auctions");
@@ -63,15 +64,37 @@ export async function AuctionDetailPanel({ auction }: { auction: import("@/serve
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
       <div className="rounded-[18px] border border-charbon-500 bg-charbon-800 p-6">
-        <h2 className="font-display text-[24px] tracking-wide text-blanc-casse uppercase">{auction.cardName}</h2>
-        <p className="mt-1 text-[13px] font-bold text-texte-dim">
-          {t("seller")} ·{" "}
-          <Link href={`/collectionneur/${auction.sellerSlug}`} className="text-carmin hover:underline">
-            {auction.sellerName}
+        <div className="flex flex-col gap-5 sm:flex-row">
+          <Link
+            href={`/carte/${auction.cardSlug}`}
+            className="group relative aspect-3/4 w-40 shrink-0 overflow-hidden rounded-[14px] border border-charbon-500 bg-charbon-700"
+          >
+            {auction.image ? (
+              <Image
+                src={auction.image}
+                alt={auction.cardName}
+                fill
+                className="object-cover transition group-hover:scale-105"
+                sizes="160px"
+              />
+            ) : (
+              <span className="absolute inset-0 flex items-center justify-center font-display text-[28px] text-charbon-500">
+                {rarityMeta(auction.rarityCode).glyph}
+              </span>
+            )}
           </Link>
-        </p>
-        <p className="mt-6 font-display text-[36px] text-or">{auction.currentPrice}</p>
-        <p className="text-[12px] font-bold text-texte-faible">{t("increment", { amount: auction.bidIncrement })}</p>
+          <div className="min-w-0 flex-1">
+            <h2 className="font-display text-[24px] tracking-wide text-blanc-casse uppercase">{auction.cardName}</h2>
+            <p className="mt-1 text-[13px] font-bold text-texte-dim">
+              {t("seller")} ·{" "}
+              <UserHoverCard slug={auction.sellerSlug} className="text-carmin">
+                {auction.sellerName}
+              </UserHoverCard>
+            </p>
+            <p className="mt-6 font-display text-[36px] text-or">{auction.currentPrice}</p>
+            <p className="text-[12px] font-bold text-texte-faible">{t("increment", { amount: auction.bidIncrement })}</p>
+          </div>
+        </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <span className="text-[11px] font-extrabold tracking-wide text-texte-dim uppercase">{t("timeLeft")}</span>
@@ -92,7 +115,7 @@ export async function AuctionDetailPanel({ auction }: { auction: import("@/serve
         </div>
 
         {auction.status === "ACTIVE" ? (
-          <AuctionBidForm auctionId={auction.id} minAmount={auction.minBidAmount} />
+          <AuctionBidForm auctionId={auction.id} minAmount={auction.minBidAmount} increment={auction.bidIncrementValue} />
         ) : (
           <div className="mt-6 rounded-[12px] border border-charbon-500 bg-charbon-700/50 p-4">
             <p className="text-[13px] font-extrabold text-blanc-casse">

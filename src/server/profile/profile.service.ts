@@ -1,9 +1,10 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/format";
-import { getUserCollection } from "@/server/collection/collection.service";
-import type { AdminRole } from "@/generated/prisma/client";
+import { getUserCollection, type SeasonCompletion } from "@/server/collection/collection.service";
+import type { AdminRole, Language } from "@/generated/prisma/client";
 import { getDefaultDashboardForStaffRole } from "@/server/auth/roles.definition";
+import { badgeIcon } from "@/lib/badges";
 
 export interface ProfileBadge {
   code: string;
@@ -39,11 +40,11 @@ export interface ViewerProfile {
   staffRole: AdminRole | null;
   staffDashboardHref: string | null;
   rarityBars: { code: string; label: string; glyph: string; color: string; owned: number; total: number; pct: number }[];
+  seasonPcts: SeasonCompletion[];
   badges: ProfileBadge[];
   recentReviews: ProfileReview[];
 }
 
-import { badgeIcon } from "@/lib/badges";
 export async function getViewerProfile(userId: string): Promise<ViewerProfile | null> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -112,6 +113,7 @@ export async function getViewerProfile(userId: string): Promise<ViewerProfile | 
     staffRole: user.staffRole,
     staffDashboardHref: user.staffRole ? getDefaultDashboardForStaffRole(user.staffRole) : null,
     rarityBars: collection.rarityBars,
+    seasonPcts: collection.seasonPcts,
     badges,
     recentReviews: reviews.map((r) => ({
       id: r.id,
@@ -120,6 +122,81 @@ export async function getViewerProfile(userId: string): Promise<ViewerProfile | 
       rating: r.rating,
       comment: r.comment,
       createdAt: r.createdAt,
+    })),
+  };
+}
+
+// ─── Mini-profil au survol d'un pseudo ────────────────────────────────────────
+
+export interface UserHoverCard {
+  slug: string;
+  displayName: string;
+  initial: string;
+  avatarUrl: string | null;
+  country: string | null; // code ISO-2 (null si non renseigné / profil privé)
+  language: Language;
+  rating: string;
+  reviews: number;
+  listingCount: number;
+  memberSince: Date;
+  staffRole: AdminRole | null;
+  /** null si la collection est privée. */
+  collection: { owned: number; total: number; pct: number } | null;
+  badgeCount: number;
+  topBadges: { code: string; name: string; icon: string }[];
+}
+
+/** Données condensées d'un membre pour le mini-profil affiché au survol de son pseudo. */
+export async function getUserHoverCard(slug: string): Promise<UserHoverCard | null> {
+  const user = await prisma.user.findFirst({
+    where: { slug, deletedAt: null },
+    select: {
+      id: true,
+      displayName: true,
+      slug: true,
+      avatarUrl: true,
+      country: true,
+      language: true,
+      ratingAvg: true,
+      reviewCount: true,
+      createdAt: true,
+      staffRole: true,
+      collectionVisibility: true,
+      _count: { select: { listings: { where: { status: "ACTIVE" } } } },
+    },
+  });
+  if (!user) return null;
+
+  const collectionPublic = user.collectionVisibility === "PUBLIC";
+  const [collection, userBadges] = await Promise.all([
+    collectionPublic ? getUserCollection(user.id, { segment: "all" }) : Promise.resolve(null),
+    prisma.userBadge.findMany({
+      where: { userId: user.id },
+      orderBy: { unlockedAt: "desc" },
+      include: { badge: { select: { code: true, label: true } } },
+    }),
+  ]);
+
+  return {
+    slug: user.slug,
+    displayName: user.displayName,
+    initial: user.displayName.charAt(0).toUpperCase(),
+    avatarUrl: user.avatarUrl,
+    country: user.country,
+    language: user.language,
+    rating: user.ratingAvg.toFixed(1).replace(".", ","),
+    reviews: user.reviewCount,
+    listingCount: user._count.listings,
+    memberSince: user.createdAt,
+    staffRole: user.staffRole,
+    collection: collection
+      ? { owned: collection.overallOwned, total: collection.totalVariants, pct: collection.overallPct }
+      : null,
+    badgeCount: userBadges.length,
+    topBadges: userBadges.slice(0, 3).map((ub) => ({
+      code: ub.badge.code,
+      name: ub.badge.label,
+      icon: badgeIcon(ub.badge.code),
     })),
   };
 }
