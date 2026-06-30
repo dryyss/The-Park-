@@ -1466,3 +1466,33 @@ model PlatformConfig {
   listingDefaultDays   Int      @default(30)
   updatedAt            DateTime @updatedAt
 }
+
+// ============================================================================
+//  BANNIÈRES PUBLICITAIRES  (gestion admin → affichage coin d'écran)
+// ============================================================================
+
+model PromoBanner {
+  id        String    @id @default(cuid())
+  /// Label affiché en chip (ex: "NOUVEAUTÉ", "ENCHÈRES")
+  label     String?
+  title     String
+  subtitle  String?
+  /// Texte du CTA (ex: "Découvrir →")
+  cta       String?
+  /// URL de redirection (interne ou externe)
+  href      String
+  /// Couleur accent hex (ex: "#d81b60")
+  color     String    @default("#d81b60")
+  /// Coin d'affichage : bottom-left | bottom-right
+  position  String    @default("bottom-left")
+  active    Boolean   @default(true)
+  sortOrder Int       @default(0)
+  /// Afficher à partir de cette date (null = toujours)
+  startAt   DateTime?
+  /// Ne plus afficher après cette date (null = toujours)
+  endAt     DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([active, position])
+}

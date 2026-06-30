@@ -68,6 +68,7 @@ export interface ActivityItem {
   badgeLabel?: string;
   price: unknown;
   at: Date;
+  href: string;
 }
 
 async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
@@ -78,7 +79,7 @@ async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
       take: limit,
       include: {
         seller: { select: { displayName: true } },
-        variant: { include: { card: { select: { name: true } } } },
+        variant: { include: { card: { select: { name: true, slug: true } } } },
       },
     }),
     prisma.userBadge.findMany({
@@ -95,7 +96,7 @@ async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
       take: limit,
       include: {
         winner: { select: { displayName: true } },
-        variant: { include: { card: { select: { name: true } } } },
+        variant: { include: { card: { select: { name: true, slug: true } } } },
       },
     }),
   ]);
@@ -107,6 +108,7 @@ async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
     cardName: l.variant.card.name,
     price: l.type === "WANT" ? null : l.price,
     at: l.createdAt,
+    href: `/carte/${l.variant.card.slug}`,
   }));
 
   const badgeItems: ActivityItem[] = badgeEvents.map((b) => ({
@@ -117,6 +119,7 @@ async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
     badgeLabel: b.badge.label,
     price: null,
     at: b.unlockedAt,
+    href: "/trophees",
   }));
 
   const auctionItems: ActivityItem[] = auctionWins
@@ -128,6 +131,7 @@ async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
       cardName: a.variant.card.name,
       price: a.currentPrice,
       at: a.endsAt,
+      href: `/encheres/${a.id}`,
     }));
 
   return [...listingItems, ...badgeItems, ...auctionItems]

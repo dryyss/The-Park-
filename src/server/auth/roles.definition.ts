@@ -36,7 +36,8 @@ export interface AdminDashboard {
     | "auctions"
     | "finance"
     | "content"
-    | "messages";
+    | "messages"
+    | "ads";
 }
 
 /** Dashboards disponibles — filtrés par MODULES_BY_STAFF_ROLE côté serveur. */
@@ -56,6 +57,7 @@ export const ADMIN_DASHBOARDS: AdminDashboard[] = [
   { module: "auctions", href: "/admin/encheres", labelKey: "auctions" },
   { module: "finance", href: "/admin/finances", labelKey: "finance" },
   { module: "content", href: "/admin/contenu", labelKey: "content" },
+  { module: "content", href: "/admin/publicites", labelKey: "ads" },
   { module: "staff", href: "/admin/roles", labelKey: "staff" },
 ];
 

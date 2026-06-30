@@ -133,7 +133,12 @@
     "rarityPrev": "Rareté précédente",
     "rarityNext": "Rareté suivante",
     "rarityScroll": "Parcourir les raretés",
-    "raritySwipeHint": "Glisse pour parcourir"
+    "raritySwipeHint": "Glisse pour parcourir",
+    "spotlightTitle": "Cartes Vedettes",
+    "spotlightJp": "注目",
+    "endingSoonTitle": "Enchères Imminentes",
+    "endingSoonJp": "終了間近",
+    "seeAllAuctions": "Voir toutes les enchères"
   },
   "pages": {
     "soon": "Cette section est déjà branchée à la navigation. Son contenu dynamique arrive très bientôt.",
@@ -992,7 +997,8 @@
       "auctions": "Enchères",
       "finance": "Finances",
       "stocks": "Stocks",
-      "content": "Contenu"
+      "content": "Contenu",
+      "ads": "Publicités"
     },
     "overview": {
       "currentRole": "Ton rôle :",

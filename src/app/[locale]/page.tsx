@@ -1,7 +1,7 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getCatalogSummary, getCatalogStats, getFeaturedCards, getHeroCards } from "@/server/catalog/catalog.service";
 import { getCardsLikeMeta } from "@/server/card-like/card-like.service";
-import { getRecentListings } from "@/server/marketplace/marketplace.service";
+import { getRecentListings, getMostWantedForSale } from "@/server/marketplace/marketplace.service";
 import { getActiveAuctions } from "@/server/auction/auction.service";
 import { getTopCollectors, getRecentActivity } from "@/server/community/community.service";
 import { getViewerUser } from "@/server/user/user.service";
@@ -13,6 +13,7 @@ import { HowToDominate } from "@/components/home/how-to-dominate";
 import { FeaturedCards } from "@/components/home/featured-cards";
 import { SeasonBanner } from "@/components/home/season-banner";
 import { MarketTabs } from "@/components/home/market-tabs";
+import { SpotlightSection } from "@/components/home/spotlight-section";
 import { ActivityFeed } from "@/components/home/activity-feed";
 import { TopCollectors } from "@/components/home/top-collectors";
 import { localePageMetadata } from "@/lib/seo-messages";
@@ -37,7 +38,7 @@ export default async function Home({
   const tAuth = authError ? await getTranslations("auth") : null;
   const t = await getTranslations("home");
 
-  const [stats, summary, heroCards, featured, listings, auctions, collectors, activity, viewer] = await Promise.all([
+  const [stats, summary, heroCards, featured, listings, auctions, collectors, activity, viewer, wantedCards] = await Promise.all([
     getCatalogStats(),
     getCatalogSummary(),
     getHeroCards(),
@@ -47,6 +48,7 @@ export default async function Home({
     getTopCollectors(5),
     getRecentActivity(8),
     getViewerUser(),
+    getMostWantedForSale(3),
   ]);
 
   const featuredSlice = featured.slice(3, 8);
@@ -90,6 +92,8 @@ export default async function Home({
           noAuctions={t("marketNoAuctions")}
           seeAll={t("seeAllMarket")}
         />
+
+        <SpotlightSection wantedCards={wantedCards} endingSoonAuctions={auctions} />
 
         <div className="animate-fade-up mt-[60px] grid grid-cols-1 items-start gap-[18px] lg:grid-cols-[1.3fr_1fr]">
           <ActivityFeed items={activity} />

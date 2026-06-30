@@ -133,7 +133,12 @@
     "rarityPrev": "Previous rarity",
     "rarityNext": "Next rarity",
     "rarityScroll": "Browse rarities",
-    "raritySwipeHint": "Swipe to browse"
+    "raritySwipeHint": "Swipe to browse",
+    "spotlightTitle": "Featured Cards",
+    "spotlightJp": "注目",
+    "endingSoonTitle": "Ending Soon",
+    "endingSoonJp": "終了間近",
+    "seeAllAuctions": "See all auctions"
   },
   "pages": {
     "soon": "This section is already wired into the navigation. Its dynamic content is coming very soon.",
@@ -992,7 +997,8 @@
       "auctions": "Auctions",
       "finance": "Finance",
       "stocks": "Stocks",
-      "content": "Content"
+      "content": "Content",
+      "ads": "Ads"
     },
     "overview": {
       "currentRole": "Your role:",

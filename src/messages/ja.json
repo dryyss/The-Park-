@@ -133,7 +133,12 @@
     "rarityPrev": "前のレアリティ",
     "rarityNext": "次のレアリティ",
     "rarityScroll": "レアリティをスクロール",
-    "raritySwipeHint": "スワイプして移動"
+    "raritySwipeHint": "スワイプして移動",
+    "spotlightTitle": "注目カード",
+    "spotlightJp": "注目",
+    "endingSoonTitle": "まもなく終了",
+    "endingSoonJp": "終了間近",
+    "seeAllAuctions": "すべてのオークション"
   },
   "pages": {
     "soon": "このセクションはすでにナビゲーションに接続されています。動的コンテンツは近日公開予定です。",
@@ -633,6 +638,17 @@
     "markAllRead": "すべて既読にする",
     "markRead": "既読にする",
     "markAllHint": "すべて既読 — 近日対応",
+    "unreadKicker": "未読 {count}件 · アラートセンター",
+    "allReadKicker": "すべて最新 · アラートセンター",
+    "emptyFilter": "このカテゴリーに通知はありません。",
+    "filters": {
+      "all": "すべて",
+      "trade": "交換",
+      "market": "マーケット",
+      "sale": "販売・レビュー",
+      "wallet": "ウォレット",
+      "badge": "実績"
+    },
     "types": {
       "exchangeProposed": "交換提案",
       "exchangeProposedBody": "{partner}から交換提案。",
@@ -981,7 +997,8 @@
       "auctions": "オークション",
       "finance": "財務",
       "stocks": "在庫",
-      "content": "コンテンツ"
+      "content": "コンテンツ",
+      "ads": "広告"
     },
     "overview": {
       "currentRole": "あなたのロール：",
@@ -1185,6 +1202,22 @@
         "PROMO_PACK": "Promo pack",
         "MERCH": "Merch",
         "LIMITED_EDITION": "限定版"
+      },
+      "stats": {
+        "total": "商品数",
+        "active": "公開中",
+        "lowStock": "在庫わずか",
+        "outOfStock": "在庫切れ"
+      },
+      "table": {
+        "product": "商品",
+        "category": "カテゴリー",
+        "price": "価格",
+        "stock": "在庫",
+        "visibility": "表示",
+        "visible": "表示中",
+        "hidden": "非表示",
+        "empty": "商品はありません。"
       }
     },
     "catalog": {
@@ -1861,6 +1894,13 @@
   "settings": {
     "kicker": "マイアカウント",
     "title": "設定",
+    "tabs": {
+      "profile": "プロフィール",
+      "shipping": "配送",
+      "notifications": "通知",
+      "security": "セキュリティ",
+      "privacy": "プライバシー"
+    },
     "identity": "公開プロフィール",
     "identityDesc": "他のメンバーに表示される情報です。",
     "identityDisplayName": "表示名",

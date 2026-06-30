@@ -1,4 +1,5 @@
 import { getTranslations, getFormatter } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { formatPrice } from "@/lib/format";
 import type { ActivityItem } from "@/server/community/community.service";
 
@@ -75,6 +76,13 @@ export async function ActivityFeed({ items }: { items: ActivityItem[] }) {
               <span className="shrink-0 text-[10.5px] font-bold whitespace-nowrap text-texte-faible">
                 {format.relativeTime(a.at)}
               </span>
+              <Link
+                href={a.href}
+                className="shrink-0 flex h-[28px] w-[28px] items-center justify-center rounded-[8px] border border-charbon-500 text-[13px] text-texte-faible transition hover:border-carmin hover:text-carmin"
+                aria-label="Voir"
+              >
+                →
+              </Link>
             </div>
           );
         })}

@@ -406,3 +406,103 @@ export async function getCardSellListings(slug: string): Promise<CardWithSellers
     tags: ["listings"],
   })();
 }
+
+// ─── Cartes vedettes (les plus recherchées disponibles à la vente) ──────────
+
+export interface WantedForSaleCard {
+  listingId: string;
+  cardId: string;
+  cardName: string;
+  cardSlug: string;
+  cardNumber: number;
+  image: string;
+  glyph: string;
+  color: string;
+  tilt: number;
+  holo: number;
+  wantCount: number;
+  lowestPrice: string;
+  sellerName: string;
+  sellerSlug: string;
+}
+
+async function fetchMostWantedForSale(limit: number): Promise<WantedForSaleCard[]> {
+  // Compter les annonces WANT actives par variante
+  const wantGroups = await prisma.listing.groupBy({
+    by: ["variantId"],
+    where: { type: "WANT", status: "ACTIVE" },
+    _count: { id: true },
+    orderBy: { _count: { id: "desc" } },
+    take: 50,
+  });
+  if (wantGroups.length === 0) return [];
+
+  const variantIds = wantGroups.map((w) => w.variantId);
+  const variants = await prisma.cardVariant.findMany({
+    where: { id: { in: variantIds } },
+    select: { id: true, cardId: true },
+  });
+  const variantToCard = new Map(variants.map((v) => [v.id, v.cardId]));
+
+  // Agréger par card
+  const wantByCard = new Map<string, number>();
+  for (const w of wantGroups) {
+    const cardId = variantToCard.get(w.variantId);
+    if (!cardId) continue;
+    wantByCard.set(cardId, (wantByCard.get(cardId) ?? 0) + w._count.id);
+  }
+  const cardIdsSorted = [...wantByCard.entries()].sort((a, b) => b[1] - a[1]).map(([id]) => id);
+
+  // Trouver le listing SELL le moins cher par carte
+  const sellListings = await prisma.listing.findMany({
+    where: {
+      type: { in: ["SELL", "SELL_OR_TRADE"] },
+      status: "ACTIVE",
+      variant: { cardId: { in: cardIdsSorted } },
+    },
+    orderBy: { price: "asc" },
+    include: {
+      seller: { select: { displayName: true, slug: true } },
+      variant: { include: { card: { include: { rarity: true, season: true } } } },
+    },
+  });
+
+  const cheapestByCard = new Map<string, (typeof sellListings)[0]>();
+  for (const l of sellListings) {
+    const cardId = l.variant.cardId;
+    if (!cheapestByCard.has(cardId)) cheapestByCard.set(cardId, l);
+  }
+
+  const result: WantedForSaleCard[] = [];
+  for (const cardId of cardIdsSorted) {
+    if (result.length >= limit) break;
+    const l = cheapestByCard.get(cardId);
+    if (!l) continue;
+    const card = l.variant.card;
+    const meta = rarityMeta(card.rarity.code);
+    result.push({
+      listingId: l.id,
+      cardId: card.id,
+      cardName: card.name,
+      cardSlug: card.slug,
+      cardNumber: card.number,
+      image: cardImage(card.imageUrl),
+      glyph: card.rarity.symbol ?? meta.glyph,
+      color: card.rarity.color ?? meta.color,
+      tilt: meta.tilt,
+      holo: meta.holo,
+      wantCount: wantByCard.get(cardId) ?? 0,
+      lowestPrice: formatPrice(l.price as unknown as number),
+      sellerName: l.seller.displayName,
+      sellerSlug: l.seller.slug,
+    });
+  }
+  return result;
+}
+
+export async function getMostWantedForSale(limit = 3): Promise<WantedForSaleCard[]> {
+  return unstable_cache(() => fetchMostWantedForSale(limit), ["most-wanted-for-sale", String(limit)], {
+    revalidate: 60,
+    tags: ["listings"],
+  })();
+}
