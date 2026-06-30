@@ -4,6 +4,7 @@ import { MarketplaceRecapClient } from "@/components/marketplace/marketplace-rec
 import { requireAuthViewer } from "@/server/user/user.service";
 import { getMarketplaceRecap, cancelMarketplaceCheckoutById } from "@/server/marketplace-cart/marketplace-cart-checkout.service";
 import { getWalletSpendableBalanceEur } from "@/server/wallet/wallet.service";
+import { getUserAddresses } from "@/server/user/address.service";
 
 export const dynamic = "force-dynamic";
 
@@ -31,9 +32,10 @@ export default async function MarketplaceRecapPage({
   }
 
   const cartItemIds = parseCartItemIds(sp.items);
-  const [recap, walletBalance] = await Promise.all([
+  const [recap, walletBalance, addresses] = await Promise.all([
     getMarketplaceRecap(viewer.id, cartItemIds),
     getWalletSpendableBalanceEur(viewer.id),
+    getUserAddresses(viewer.id),
   ]);
 
   return (
@@ -46,7 +48,7 @@ export default async function MarketplaceRecapPage({
         </p>
       )}
 
-      <MarketplaceRecapClient recap={recap} locale={locale} cartItemIds={cartItemIds} walletBalance={walletBalance} />
+      <MarketplaceRecapClient recap={recap} locale={locale} cartItemIds={cartItemIds} walletBalance={walletBalance} addresses={addresses} />
     </main>
   );
 }

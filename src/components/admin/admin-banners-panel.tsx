@@ -2,6 +2,18 @@
 
 import { useState, useTransition } from "react";
 import type { PromoBanner } from "@/generated/prisma/client";
+import { cardImage } from "@/lib/rarity";
+import { AdminImageDropzone } from "@/components/admin/admin-image-dropzone";
+import type { AdminImageUploadMode } from "@/lib/admin-image-upload.types";
+
+type BannerPosition = "bottom-left" | "bottom-right" | "top" | "side";
+
+const POSITION_OPTIONS: { value: BannerPosition; label: string }[] = [
+  { value: "top", label: "Bandeau horizontal (haut)" },
+  { value: "side", label: "Panneau latéral" },
+  { value: "bottom-left", label: "Coin bas gauche" },
+  { value: "bottom-right", label: "Coin bas droite" },
+];
 
 type BannerForm = {
   label: string;
@@ -9,8 +21,9 @@ type BannerForm = {
   subtitle: string;
   cta: string;
   href: string;
+  imageUrl: string;
   color: string;
-  position: "bottom-left" | "bottom-right";
+  position: BannerPosition;
   active: boolean;
   sortOrder: number;
   startAt: string;
@@ -23,8 +36,9 @@ const EMPTY_FORM: BannerForm = {
   subtitle: "",
   cta: "Découvrir →",
   href: "/",
+  imageUrl: "",
   color: "#d81b60",
-  position: "bottom-left",
+  position: "top",
   active: true,
   sortOrder: 0,
   startAt: "",
@@ -38,8 +52,9 @@ function toForm(b: PromoBanner): BannerForm {
     subtitle: b.subtitle ?? "",
     cta: b.cta ?? "",
     href: b.href,
+    imageUrl: b.imageUrl ?? "",
     color: b.color,
-    position: (b.position as "bottom-left" | "bottom-right") ?? "bottom-left",
+    position: (b.position as BannerPosition) ?? "bottom-left",
     active: b.active,
     sortOrder: b.sortOrder,
     startAt: b.startAt ? b.startAt.toISOString?.()?.slice(0, 16) ?? "" : "",
@@ -47,7 +62,7 @@ function toForm(b: PromoBanner): BannerForm {
   };
 }
 
-function BannerFormFields({ form, setForm }: { form: BannerForm; setForm: (f: BannerForm) => void }) {
+function BannerFormFields({ form, setForm, uploadMode }: { form: BannerForm; setForm: (f: BannerForm) => void; uploadMode: AdminImageUploadMode }) {
   const field = (key: keyof BannerForm) => ({
     value: String(form[key]),
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
@@ -89,11 +104,34 @@ function BannerFormFields({ form, setForm }: { form: BannerForm; setForm: (f: Ba
         </div>
       </div>
       <div>
-        <label className="label-admin">Position</label>
+        <label className="label-admin">Emplacement</label>
         <select {...field("position")} className="input-admin">
-          <option value="bottom-left">Bas gauche</option>
-          <option value="bottom-right">Bas droite</option>
+          {POSITION_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
         </select>
+      </div>
+      <div className="sm:col-span-2">
+        <label className="label-admin">Visuel annonceur (optionnel)</label>
+        <div className="flex items-start gap-3">
+          <div className="h-16 w-24 shrink-0 overflow-hidden rounded-lg border border-charbon-500 bg-charbon-900">
+            {form.imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element -- aperçu admin
+              <img src={cardImage(form.imageUrl)} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-[9px] font-bold text-texte-faible">Aucun</div>
+            )}
+          </div>
+          <div className="min-w-0 flex-1 space-y-2">
+            <AdminImageDropzone
+              scope="shop"
+              uploadMode={uploadMode}
+              compact
+              onUploaded={(fileName) => setForm({ ...form, imageUrl: fileName })}
+            />
+            <input {...field("imageUrl")} placeholder="ou colle une URL https://…" className="input-admin" />
+          </div>
+        </div>
       </div>
       <div>
         <label className="label-admin">Ordre (tri croissant)</label>
@@ -121,7 +159,7 @@ function BannerFormFields({ form, setForm }: { form: BannerForm; setForm: (f: Ba
   );
 }
 
-export function AdminBannersPanel({ banners: initialBanners }: { banners: PromoBanner[] }) {
+export function AdminBannersPanel({ banners: initialBanners, uploadMode }: { banners: PromoBanner[]; uploadMode: AdminImageUploadMode }) {
   const [banners, setBanners] = useState<PromoBanner[]>(initialBanners);
   const [showCreate, setShowCreate] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
@@ -155,6 +193,7 @@ export function AdminBannersPanel({ banners: initialBanners }: { banners: PromoB
       title: form.title,
       subtitle: form.subtitle || null,
       cta: form.cta || null,
+      imageUrl: form.imageUrl || null,
       href: form.href,
       color: form.color,
       position: form.position,
@@ -212,7 +251,7 @@ export function AdminBannersPanel({ banners: initialBanners }: { banners: PromoB
           <h3 className="mb-4 font-display text-[16px] tracking-[1.5px] text-blanc-casse uppercase">
             {editId ? "Modifier la bannière" : "Nouvelle bannière"}
           </h3>
-          <BannerFormFields form={form} setForm={setForm} />
+          <BannerFormFields form={form} setForm={setForm} uploadMode={uploadMode} />
           {error && <p className="mt-3 text-[12px] font-bold text-statut-danger">{error}</p>}
           <div className="mt-5 flex gap-3">
             <button

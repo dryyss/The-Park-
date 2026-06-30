@@ -21,6 +21,7 @@ export async function GET() {
       href: true,
       color: true,
       position: true,
+      imageUrl: true,
     },
   });
   return NextResponse.json(banners);

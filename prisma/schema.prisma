@@ -486,7 +486,8 @@ model Address {
   phone     String?
   isDefault Boolean @default(false)
 
-  orders Order[]
+  orders               Order[]
+  marketplaceCheckouts MarketplaceCheckout[] @relation("CheckoutShipping")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -788,6 +789,8 @@ model MarketplaceCheckout {
   subtotal                Decimal                   @db.Decimal(10, 2)
   total                   Decimal                   @db.Decimal(10, 2)
   stripeCheckoutSessionId String?                   @unique
+  shippingAddress         Address?                  @relation("CheckoutShipping", fields: [shippingAddressId], references: [id], onDelete: SetNull)
+  shippingAddressId       String?
   paidAt                  DateTime?
   createdAt               DateTime                  @default(now())
   updatedAt               DateTime                  @updatedAt
@@ -796,6 +799,7 @@ model MarketplaceCheckout {
 
   @@index([buyerId])
   @@index([status])
+  @@index([shippingAddressId])
 }
 
 model MarketplaceCheckoutLine {
@@ -1481,11 +1485,13 @@ model PromoBanner {
   subtitle  String?
   /// Texte du CTA (ex: "Découvrir →")
   cta       String?
+  /// Visuel annonceur (logo / creative). Optionnel — sinon affichage texte seul.
+  imageUrl  String?
   /// URL de redirection (interne ou externe)
   href      String
   /// Couleur accent hex (ex: "#d81b60")
   color     String    @default("#d81b60")
-  /// Coin d'affichage : bottom-left | bottom-right
+  /// Emplacement : bottom-left | bottom-right (coin) | top (bandeau horizontal) | side (panneau latéral)
   position  String    @default("bottom-left")
   active    Boolean   @default(true)
   sortOrder Int       @default(0)

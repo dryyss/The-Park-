@@ -25,6 +25,7 @@ export async function POST(req: Request) {
       title: body.title,
       subtitle: body.subtitle ?? null,
       cta: body.cta ?? null,
+      imageUrl: body.imageUrl ?? null,
       href: body.href,
       color: body.color ?? "#d81b60",
       position: body.position ?? "bottom-left",

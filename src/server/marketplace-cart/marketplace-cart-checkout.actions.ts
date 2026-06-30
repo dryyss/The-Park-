@@ -28,6 +28,21 @@ const startSchema = z.object({
   cartItemIds: z.array(z.string().min(1)).optional(),
 });
 
+const walletSchema = z.object({
+  locale: z.string().min(2),
+  cartItemIds: z.array(z.string().min(1)).optional(),
+  addressId: z.string().min(1).optional(),
+  newAddress: z.object({
+    fullName: z.string().min(1),
+    line1: z.string().min(1),
+    line2: z.string().optional(),
+    zip: z.string().min(1),
+    city: z.string().min(1),
+    country: z.string().optional(),
+    phone: z.string().optional(),
+  }).optional(),
+});
+
 const confirmSchema = z.object({ sessionId: z.string().min(1) });
 
 const cancelSchema = z.object({ checkoutId: z.string().min(1) });
@@ -109,7 +124,7 @@ export async function payMarketplaceWithWalletAction(
   const viewer = await getAuthenticatedViewer();
   if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
 
-  const parsed = startSchema.safeParse(input);
+  const parsed = walletSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "VALIDATION" };
 
   try {
@@ -119,6 +134,8 @@ export async function payMarketplaceWithWalletAction(
     const { checkoutId } = await startAndFulfillMarketplaceCheckoutWithWallet({
       buyerId: viewer.id,
       cartItemIds: parsed.data.cartItemIds,
+      addressId: parsed.data.addressId,
+      newAddress: parsed.data.newAddress,
     });
 
     revalidatePath("/marketplace");

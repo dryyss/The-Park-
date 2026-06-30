@@ -291,12 +291,39 @@ export async function fulfillMarketplaceCheckout(checkoutId: string, stripeSessi
 export async function startAndFulfillMarketplaceCheckoutWithWallet(input: {
   buyerId: string;
   cartItemIds?: string[];
+  addressId?: string;
+  newAddress?: { fullName: string; line1: string; line2?: string; zip: string; city: string; country?: string; phone?: string };
 }): Promise<{ checkoutId: string }> {
   const recap = await getMarketplaceRecap(input.buyerId, input.cartItemIds);
   if (recap.lines.length === 0) throw new Error("EMPTY_CART");
 
   const walletBalance = await getWalletSpendableBalanceEur(input.buyerId);
   if (walletBalance < recap.subtotalRaw) throw new Error("INSUFFICIENT_WALLET");
+
+  // Résout l'adresse de livraison
+  let shippingAddressId: string | null = null;
+  if (input.addressId) {
+    const addr = await prisma.address.findFirst({
+      where: { id: input.addressId, userId: input.buyerId },
+      select: { id: true },
+    });
+    if (addr) shippingAddressId = addr.id;
+  } else if (input.newAddress) {
+    const created = await prisma.address.create({
+      data: {
+        userId: input.buyerId,
+        fullName: input.newAddress.fullName.trim(),
+        line1: input.newAddress.line1.trim(),
+        line2: input.newAddress.line2?.trim() || null,
+        zip: input.newAddress.zip.trim(),
+        city: input.newAddress.city.trim(),
+        country: input.newAddress.country?.trim() || "FR",
+        phone: input.newAddress.phone?.trim() || null,
+        isDefault: false,
+      },
+    });
+    shippingAddressId = created.id;
+  }
 
   // Annule les checkouts Stripe en attente (ex : utilisateur ayant fermé l'onglet Stripe
   // sans passer par l'URL d'annulation) pour éviter le conflit de clé unique sur saleId.
@@ -315,6 +342,7 @@ export async function startAndFulfillMarketplaceCheckoutWithWallet(input: {
       buyerId: input.buyerId,
       subtotal: recap.subtotalRaw,
       total: recap.subtotalRaw,
+      ...(shippingAddressId ? { shippingAddressId } : {}),
     },
   });
 

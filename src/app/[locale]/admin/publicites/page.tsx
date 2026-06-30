@@ -5,6 +5,7 @@ import { requireModule } from "@/server/auth/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/common/page-header";
 import { AdminBannersPanel } from "@/components/admin/admin-banners-panel";
+import { getAdminImageUploadMode } from "@/lib/admin-image-storage";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export default async function AdminBannersPage({ params }: { params: Promise<{ l
         <PageHeader kicker="ADMIN" title="Bannières publicitaires" jp="広告" />
       </div>
       <div className="mt-8">
-        <AdminBannersPanel banners={banners} />
+        <AdminBannersPanel banners={banners} uploadMode={getAdminImageUploadMode()} />
       </div>
     </main>
   );

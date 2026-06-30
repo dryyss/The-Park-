@@ -16,6 +16,7 @@ import { MarketTabs } from "@/components/home/market-tabs";
 import { SpotlightSection } from "@/components/home/spotlight-section";
 import { ActivityFeed } from "@/components/home/activity-feed";
 import { TopCollectors } from "@/components/home/top-collectors";
+import { PromoBannerStrip, PromoBannerRail } from "@/components/ads/promo-banners";
 import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
@@ -77,6 +78,7 @@ export default async function Home({
       <HeroSection stats={stats} heroCards={heroCards} />
 
       <div className="page-container pb-[60px]">
+        <PromoBannerStrip className="mt-6" />
         <RarityCarousel rarities={rarities} />
         <HowToDominate />
         <FeaturedCards cards={featuredSlice} likeMeta={likeMeta} isAuthenticated={!!viewer} />
@@ -97,7 +99,10 @@ export default async function Home({
 
         <div className="animate-fade-up mt-[60px] grid grid-cols-1 items-start gap-[18px] lg:grid-cols-[1.3fr_1fr]">
           <ActivityFeed items={activity} />
-          <TopCollectors collectors={collectors} />
+          <div className="flex flex-col gap-[18px]">
+            <TopCollectors collectors={collectors} />
+            <PromoBannerRail />
+          </div>
         </div>
       </div>
     </main>
