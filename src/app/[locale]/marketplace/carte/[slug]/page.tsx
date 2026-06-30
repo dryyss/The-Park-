@@ -120,7 +120,7 @@ export default async function CardSellersPage({
       ) : (
         <div className="mt-8 flex flex-col gap-3">
           {/* Header colonnes (desktop) */}
-          <div className="hidden grid-cols-[1fr_120px_120px_120px_200px] gap-4 rounded-xl border border-charbon-600 bg-charbon-800/60 px-5 py-3 text-[10px] font-extrabold tracking-[1.5px] text-texte-faible uppercase sm:grid">
+          <div className="hidden grid-cols-[1fr_120px_120px_100px_220px] gap-4 rounded-xl border border-charbon-600 bg-charbon-800/60 px-5 py-3 text-[10px] font-extrabold tracking-[1.5px] text-texte-faible uppercase sm:grid">
             <span>{t("sellersColSeller")}</span>
             <span>{t("sellersColCondition")}</span>
             <span>{t("sellersColVersion")}</span>
@@ -131,7 +131,7 @@ export default async function CardSellersPage({
           {card.sellers.map((s, idx) => (
             <div
               key={s.listingId}
-              className="grid grid-cols-1 gap-3 rounded-2xl border border-charbon-500 bg-charbon-800 px-5 py-4 transition hover:border-charbon-400 sm:grid-cols-[1fr_120px_120px_120px_200px] sm:items-center sm:gap-4"
+              className="grid grid-cols-1 gap-3 rounded-2xl border border-charbon-500 bg-charbon-800 px-5 py-4 transition hover:border-charbon-400 sm:grid-cols-[1fr_120px_120px_100px_220px] sm:items-center sm:gap-4"
             >
               {/* Vendeur */}
               <div className="flex items-center gap-2.5">
@@ -187,7 +187,7 @@ export default async function CardSellersPage({
                 {s.price === 0 ? (
                   <span className="text-[14px] font-bold text-texte-dim">{t("sellersTradeLabel")}</span>
                 ) : (
-                  <span className="font-display text-[22px] leading-none text-blanc-casse">
+                  <span className="font-display text-[22px] leading-none whitespace-nowrap text-blanc-casse">
                     {s.priceLabel}
                     {idx === 0 && (
                       <span className="ml-2 hidden rounded-md bg-statut-succes/15 px-2 py-0.5 text-[9px] font-extrabold tracking-[1px] text-statut-succes uppercase sm:inline">

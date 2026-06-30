@@ -311,7 +311,7 @@
     "resultCountFiltered": "{count} carte(s)",
     "noResultsFiltered": "Aucune carte pour ces filtres.",
     "filterRarity": "Rareté",
-    "filterVersion": "Version",
+    "filterVersion": "Catégorie",
     "allRarities": "Toutes raretés",
     "allVersions": "Toutes versions",
     "sortLabel": "Trier",

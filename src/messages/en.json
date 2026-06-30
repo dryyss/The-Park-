@@ -311,7 +311,7 @@
     "resultCountFiltered": "{count} card(s)",
     "noResultsFiltered": "No cards match these filters.",
     "filterRarity": "Rarity",
-    "filterVersion": "Version",
+    "filterVersion": "Category",
     "allRarities": "All rarities",
     "allVersions": "All versions",
     "sortLabel": "Sort",

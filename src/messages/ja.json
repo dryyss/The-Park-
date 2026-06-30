@@ -311,7 +311,7 @@
     "resultCountFiltered": "{count}件のカード",
     "noResultsFiltered": "この条件に合うカードはありません。",
     "filterRarity": "レアリティ",
-    "filterVersion": "バージョン",
+    "filterVersion": "カテゴリー",
     "allRarities": "すべてのレアリティ",
     "allVersions": "すべてのバージョン",
     "sortLabel": "並び替え",

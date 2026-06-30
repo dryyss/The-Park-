@@ -76,7 +76,7 @@ export async function CompletionPanel({
         )}
       </div>
       <div className="grid content-center gap-3.5 p-5 sm:grid-cols-2 lg:grid-cols-3 lg:px-6 lg:py-5">
-        {data.rarityBars.map((b) => (
+        {data.rarityBars.filter((b) => b.total > 0).map((b) => (
           <div key={b.code}>
             <div className="mb-1.5 flex items-baseline justify-between">
               <div className="flex items-baseline gap-1.5">
