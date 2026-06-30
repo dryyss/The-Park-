@@ -6,12 +6,14 @@ import { useRouter } from "@/i18n/navigation";
 import { CONDITION_ORDER, conditionColor, type ConditionCode } from "@/lib/condition";
 import { adjustCollectionVariantAction, updateCollectionGradingAction, updateCollectionSignatureAction } from "@/server/collection/collection.actions";
 import { listCollectionItemAction, cancelListingAction } from "@/server/marketplace/marketplace.actions";
+import { createAuctionAction } from "@/server/auction/auction.actions";
+import { AUCTION_COMMISSION_RATE } from "@/lib/platform-fees";
 import { CollectionPhotoManager } from "@/components/collection/collection-photo-manager";
 import { QuantityStepper } from "@/components/collection/quantity-stepper";
 import { GRADE_COMPANIES, GRADE_SCORES, formatGradeScore, type GradeCompanyCode } from "@/lib/grading";
 import type { CollectionItemPhotoView } from "@/server/collection/collection-photos.service";
 
-type ListingType = "SELL" | "TRADE" | "SELL_OR_TRADE";
+type ListingType = "SELL" | "TRADE" | "SELL_OR_TRADE" | "AUCTION";
 
 export type ConditionRow = {
   condition: string;
@@ -154,6 +156,8 @@ export function VariantConditionManager({
 
           {sellFor === c.condition && (
             <ListItemForm
+              variantId={variantId}
+              condition={c.condition}
               pending={pending}
               onSubmit={(type, price) =>
                 run(() => listCollectionItemAction({ variantId, condition: c.condition, type, price }))
@@ -441,71 +445,130 @@ function SignatureAuthorField({
 }
 
 function ListItemForm({
+  variantId,
+  condition,
   pending,
   onSubmit,
   onClose,
 }: {
+  variantId: string;
+  condition: string;
   pending: boolean;
   onSubmit: (type: ListingType, price?: number) => void;
   onClose: () => void;
 }) {
   const t = useTranslations("card");
+  const router = useRouter();
   const [type, setType] = useState<ListingType>("SELL");
   const [price, setPrice] = useState("");
-  const needsPrice = type !== "TRADE";
+  const [auctionDays, setAuctionDays] = useState("3");
+  const [auctionPending, startAuctionTransition] = useTransition();
+  const [auctionError, setAuctionError] = useState<string | null>(null);
+  const needsPrice = type !== "TRADE" && type !== "AUCTION";
+  const isAuction = type === "AUCTION";
+  const commissionPct = Math.round(AUCTION_COMMISSION_RATE * 100);
 
   function submit() {
+    if (isAuction) {
+      const parsed = parseFloat(price.replace(",", "."));
+      if (!Number.isFinite(parsed) || parsed <= 0) { setAuctionError("Prix invalide"); return; }
+      setAuctionError(null);
+      startAuctionTransition(async () => {
+        const res = await createAuctionAction({ variantId, startPrice: parsed, durationDays: parseInt(auctionDays, 10) });
+        if (res.ok && res.auctionId) { router.push(`/encheres/${res.auctionId}`); }
+        else if (!res.ok) { setAuctionError(res.error); }
+      });
+      return;
+    }
     const parsed = price.trim() ? parseFloat(price.replace(",", ".")) : undefined;
     onSubmit(type, parsed);
   }
 
+  const isPending = pending || auctionPending;
+
   return (
-    <div className="mt-2 flex flex-wrap items-end gap-2 rounded-lg bg-charbon-700/60 p-2.5">
-      <label className="flex flex-col gap-1">
-        <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("listingTypeLabel")}</span>
-        <select
-          value={type}
-          onChange={(e) => setType(e.target.value as ListingType)}
-          className="rounded-md border border-charbon-500 bg-charbon px-2 py-1.5 text-[11px] font-extrabold text-blanc-casse outline-none focus:border-carmin"
-        >
-          <option value="SELL">{t("listingTypeSell")}</option>
-          <option value="TRADE">{t("listingTypeTrade")}</option>
-          <option value="SELL_OR_TRADE">{t("listingTypeBoth")}</option>
-        </select>
-      </label>
-      {needsPrice && (
+    <div className="mt-2 flex flex-col gap-2 rounded-lg bg-charbon-700/60 p-2.5">
+      <div className="flex flex-wrap items-end gap-2">
         <label className="flex flex-col gap-1">
-          <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("listingPrice")}</span>
-          <div className="relative">
-            <input
-              type="number"
-              min="0"
-              step="0.01"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="0"
-              className="w-28 rounded-md border border-charbon-500 bg-charbon px-2.5 py-1.5 pr-7 text-[13px] font-bold text-blanc-casse outline-none focus:border-carmin"
-            />
-            <span className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-[12px] text-texte-faible">€</span>
-          </div>
+          <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{t("listingTypeLabel")}</span>
+          <select
+            value={type}
+            onChange={(e) => { setType(e.target.value as ListingType); setPrice(""); setAuctionError(null); }}
+            className="rounded-md border border-charbon-500 bg-charbon px-2 py-1.5 text-[11px] font-extrabold text-blanc-casse outline-none focus:border-carmin"
+          >
+            <option value="SELL">{t("listingTypeSell")}</option>
+            <option value="TRADE">{t("listingTypeTrade")}</option>
+            <option value="SELL_OR_TRADE">{t("listingTypeBoth")}</option>
+            <option value="AUCTION">⚡ Enchère</option>
+          </select>
         </label>
+
+        {(needsPrice || isAuction) && (
+          <label className="flex flex-col gap-1">
+            <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">
+              {isAuction ? "Prix de départ (€)" : t("listingPrice")}
+            </span>
+            <div className="relative">
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="0"
+                className="w-28 rounded-md border border-charbon-500 bg-charbon px-2.5 py-1.5 pr-7 text-[13px] font-bold text-blanc-casse outline-none focus:border-carmin"
+              />
+              <span className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-[12px] text-texte-faible">€</span>
+            </div>
+          </label>
+        )}
+
+        {isAuction && (
+          <label className="flex flex-col gap-1">
+            <span className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">Durée</span>
+            <select
+              value={auctionDays}
+              onChange={(e) => setAuctionDays(e.target.value)}
+              className="rounded-md border border-charbon-500 bg-charbon px-2 py-1.5 text-[11px] font-extrabold text-blanc-casse outline-none focus:border-or/60"
+            >
+              {[1, 3, 5, 7, 10, 14].map((d) => (
+                <option key={d} value={d}>{d} jour{d > 1 ? "s" : ""}</option>
+              ))}
+            </select>
+          </label>
+        )}
+
+        <button
+          type="button"
+          disabled={isPending || ((needsPrice || isAuction) && !price.trim())}
+          onClick={submit}
+          className="rounded-md bg-carmin px-3 py-2 text-[11px] font-extrabold text-white transition hover:bg-carmin-alt disabled:opacity-50"
+        >
+          {isPending ? "…" : t("listingPublish")}
+        </button>
+        <button
+          type="button"
+          disabled={isPending}
+          onClick={onClose}
+          className="rounded-md border border-charbon-500 px-3 py-2 text-[11px] font-extrabold text-texte-dim transition hover:border-charbon-400 disabled:opacity-50"
+        >
+          {t("close")}
+        </button>
+      </div>
+
+      {isAuction && (
+        <p className="text-[10px] font-bold text-texte-faible">
+          ℹ️ Une commission de <span className="text-or font-extrabold">{commissionPct}%</span> est prélevée sur le montant final de l&apos;enchère.
+        </p>
       )}
-      <button
-        type="button"
-        disabled={pending || (needsPrice && !price.trim())}
-        onClick={submit}
-        className="rounded-md bg-carmin px-3 py-2 text-[11px] font-extrabold text-white transition hover:bg-carmin-alt disabled:opacity-50"
-      >
-        {t("listingPublish")}
-      </button>
-      <button
-        type="button"
-        disabled={pending}
-        onClick={onClose}
-        className="rounded-md border border-charbon-500 px-3 py-2 text-[11px] font-extrabold text-texte-dim transition hover:border-charbon-400 disabled:opacity-50"
-      >
-        {t("close")}
-      </button>
+      {auctionError && (
+        <p className="text-[10.5px] font-extrabold text-statut-danger">
+          {auctionError === "NOT_OWNED" ? "Tu ne possèdes pas cet exemplaire."
+            : auctionError === "ALL_RESERVED" ? "Tous tes exemplaires sont déjà réservés."
+            : auctionError === "VALIDATION" ? "Vérifie les champs."
+            : "Une erreur est survenue."}
+        </p>
+      )}
     </div>
   );
 }

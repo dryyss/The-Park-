@@ -6,9 +6,11 @@ import { buildCollectionHref, type CollectionUrlParams } from "@/lib/collection-
 export async function CompletionPanel({
   data,
   activeEdition,
+  seasonLabel,
 }: {
   data: CollectionView;
   activeEdition?: "first" | "reprint" | null;
+  seasonLabel?: string | null;
 }) {
   const t = await getTranslations("collection");
 
@@ -31,7 +33,9 @@ export async function CompletionPanel({
     ? t("editionBadge1st")
     : activeEdition === "reprint"
       ? t("editionBadgeReprint")
-      : t("overallHint");
+      : seasonLabel
+        ? seasonLabel
+        : t("overallHint");
 
   return (
     <div className="mt-7 grid overflow-hidden rounded-[18px] border border-charbon-500 bg-charbon-800 lg:grid-cols-[230px_1fr]">

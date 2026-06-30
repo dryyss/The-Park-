@@ -70,12 +70,13 @@ export default async function CollectionPage({
             const isHS = s.code === HORS_SERIE_SEASON_CODE;
             const isActive = activeSeason === s.code;
             const href = isActive ? "/collection" : `/collection?season=${s.code}`;
+            const sp = data.seasonPcts.find((p) => p.code === s.code);
             return (
               <Link
                 key={s.id}
                 href={href}
                 className={[
-                  "font-display rounded-lg px-4.5 py-2.5 text-[13px] tracking-[1.5px] transition",
+                  "font-display flex flex-col items-center rounded-lg px-4.5 py-2 text-[13px] tracking-[1.5px] transition",
                   isActive
                     ? "bg-blanc-casse text-charbon shadow-[3px_3px_0_var(--color-carmin)]"
                     : isHS
@@ -83,7 +84,12 @@ export default async function CollectionPage({
                       : "border border-dashed border-charbon-400 text-texte-faible hover:border-charbon-300 hover:text-blanc-casse",
                 ].join(" ")}
               >
-                {isHS ? t("seasonHS") : s.name}
+                <span>{isHS ? t("seasonHS") : s.name}</span>
+                {sp && (
+                  <span className={`mt-0.5 text-[9px] font-extrabold tracking-wide tabular-nums ${isActive ? "text-charbon/60" : "text-texte-faible"}`}>
+                    {sp.pct}%
+                  </span>
+                )}
               </Link>
             );
           })}
@@ -126,7 +132,11 @@ export default async function CollectionPage({
 
       {!isAuthenticated && <CollectionGuestBanner messageKey="loginGateCollection" />}
 
-      <CompletionPanel data={data} activeEdition={activeEdition} />
+      <CompletionPanel
+        data={data}
+        activeEdition={activeEdition}
+        seasonLabel={activeSeason ? (seasons.find((s) => s.code === activeSeason)?.name ?? null) : null}
+      />
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3.5">
         <CollectionFiltersBar params={collParams} counts={data.counts} locale={locale} />
         <Suspense fallback={null}>

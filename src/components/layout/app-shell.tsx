@@ -4,6 +4,7 @@ import { usePathname } from "@/i18n/navigation";
 import { TopBar } from "@/components/layout/top-bar";
 import { Footer } from "@/components/layout/footer";
 import { MobileTabs } from "@/components/layout/mobile-tabs";
+import { PromoBannerCorner } from "@/components/ads/promo-banners";
 
 /** Chrome membre (nav, footer) — masqué dans la console staff (/admin). */
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -23,6 +24,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Footer />
       </div>
       <MobileTabs />
+      <PromoBannerCorner position="bottom-left" />
     </>
   );
 }

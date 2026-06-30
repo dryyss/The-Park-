@@ -62,6 +62,13 @@ export interface RaritySection {
   cards: CollectionCard[];
 }
 
+export interface SeasonCompletion {
+  code: string;
+  total: number;
+  owned: number;
+  pct: number;
+}
+
 export interface CollectionView {
   overallPct: number;
   overallOwned: number;
@@ -70,6 +77,7 @@ export interface CollectionView {
   sections: RaritySection[];
   counts: { all: number; owned: number; missing: number };
   editionStats?: EditionStats;
+  seasonPcts: SeasonCompletion[];
 }
 
 /** Classeur complet (possédé / manquant par carte). userId null = visiteur (tout en manquant). */
@@ -166,13 +174,16 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     return true;
   });
 
-  // Exclut les raretés "unique" et "signed" du calcul de complétion — trop rares pour que tous puissent atteindre 100%
-  const completionCards = enriched.filter((c) => {
+  // Base de calcul : filtrée par saison si une saison est active, sinon tout le catalogue.
+  // Exclut "unique" et "signed" du taux de complétion (trop rares pour atteindre 100%).
+  const contextBase = enriched.filter((c) => {
     const card = cardById.get(c.cardId);
-    return card && !isExcludedFromCompletion(card.rarity.code);
+    if (!card || isExcludedFromCompletion(card.rarity.code)) return false;
+    if (filters.season && card.season.code !== filters.season) return false;
+    return true;
   });
-  const ownedCards = completionCards.filter((c) => c.owned).length;
-  const missingCards = completionCards.length - ownedCards;
+  const ownedCards = contextBase.filter((c) => c.owned).length;
+  const missingCards = contextBase.length - ownedCards;
 
   const rarityOrder = RARITY_ORDER;
   const byRarityCode = new Map<string, CollectionCard[]>();
@@ -187,7 +198,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     .filter((code) => byRarityCode.has(code))
     .map((code) => {
       const sectionCards = byRarityCode.get(code)!;
-      const allInRarity = enriched.filter((c) => cardById.get(c.cardId)?.rarity.code === code);
+      const allInRarity = contextBase.filter((c) => cardById.get(c.cardId)?.rarity.code === code);
       const ownedInRarity = allInRarity.filter((c) => c.owned).length;
       const meta = rarityMeta(code);
       return {
@@ -204,7 +215,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     });
 
   const rarityBars = rarityOrder.map((code) => {
-    const allInRarity = enriched.filter((c) => cardById.get(c.cardId)?.rarity.code === code);
+    const allInRarity = contextBase.filter((c) => cardById.get(c.cardId)?.rarity.code === code);
     const ownedInRarity = allInRarity.filter((c) => c.owned).length;
     const meta = rarityMeta(code);
     const r = cards.find((x) => x.rarity.code === code)?.rarity;
@@ -219,7 +230,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     };
   });
 
-  const overallPct = completionCards.length > 0 ? Math.round((ownedCards / completionCards.length) * 100) : 0;
+  const overallPct = contextBase.length > 0 ? Math.round((ownedCards / contextBase.length) * 100) : 0;
 
   let editionStats: EditionStats | undefined = undefined;
   if (filters.season) {
@@ -246,14 +257,26 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     };
   }
 
+  // Taux de complétion globaux par saison (calculés toujours sur l'ensemble du catalogue).
+  const seasonCodeSet = new Set(enriched.map((c) => cardById.get(c.cardId)?.season.code).filter(Boolean) as string[]);
+  const seasonPcts: SeasonCompletion[] = Array.from(seasonCodeSet).map((code) => {
+    const sc = enriched.filter((c) => {
+      const card = cardById.get(c.cardId);
+      return card && card.season.code === code && !isExcludedFromCompletion(card.rarity.code);
+    });
+    const owned = sc.filter((c) => c.owned).length;
+    return { code, total: sc.length, owned, pct: sc.length > 0 ? Math.round((owned / sc.length) * 100) : 0 };
+  });
+
   return {
     overallPct,
     overallOwned: ownedCards,
     totalVariants,
     rarityBars,
     sections,
-    counts: { all: completionCards.length, owned: ownedCards, missing: missingCards },
+    counts: { all: contextBase.length, owned: ownedCards, missing: missingCards },
     editionStats,
+    seasonPcts,
   };
 }
 
