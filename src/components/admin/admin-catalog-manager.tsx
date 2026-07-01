@@ -334,6 +334,7 @@ function NewCardForm({
           quoteValue: num(fd, "quoteValue") ?? 0,
           imageUrl: optStr(fd, "imageUrl"),
           country: optStr(fd, "country"),
+          brand: optStr(fd, "brand"),
           description: optStr(fd, "description"),
           isUnique: fd.get("isUnique") === "on",
         }),
@@ -371,6 +372,7 @@ function NewCardForm({
         </Field>
         <Field label={t("quote")}><input name="quoteValue" type="number" step="0.01" defaultValue={0} className={inputCls} /></Field>
         <Field label={t("country")}><input name="country" maxLength={8} className={inputCls} /></Field>
+        <Field label={t("brand")}><input name="brand" maxLength={60} placeholder={t("brandPlaceholder")} className={inputCls} /></Field>
         <ImageUrlField uploadMode={uploadMode} className="sm:col-span-2 lg:col-span-3" />
         <Field label={t("description")} className="sm:col-span-2 lg:col-span-3">
           <textarea name="description" rows={3} className={`${inputCls} resize-none`} />
@@ -419,6 +421,7 @@ function CardEditor({
         powerCh: num(fd, "powerCh") ?? null,
         weightKg: num(fd, "weightKg") ?? null,
         country: optStr(fd, "country"),
+        brand: optStr(fd, "brand"),
         description: optStr(fd, "description"),
         isUnique: fd.get("isUnique") === "on",
       }),
@@ -448,6 +451,7 @@ function CardEditor({
         <Field label={t("power")}><input name="powerCh" type="number" defaultValue={card.powerCh ?? ""} className={inputCls} /></Field>
         <Field label={t("weight")}><input name="weightKg" type="number" defaultValue={card.weightKg ?? ""} className={inputCls} /></Field>
         <Field label={t("country")}><input name="country" maxLength={8} defaultValue={card.country ?? ""} className={inputCls} /></Field>
+        <Field label={t("brand")}><input name="brand" maxLength={60} defaultValue={card.brand ?? ""} placeholder={t("brandPlaceholder")} className={inputCls} /></Field>
         <ImageUrlField uploadMode={uploadMode} key={`${card.id}-${card.imageUrl ?? ""}`} defaultValue={card.imageUrl ?? ""} className="sm:col-span-2 lg:col-span-4" />
         <Field label={t("description")} className="sm:col-span-2 lg:col-span-4">
           <textarea name="description" defaultValue={card.description ?? ""} rows={2} className={`${inputCls} resize-none`} />

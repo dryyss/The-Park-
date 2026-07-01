@@ -190,6 +190,7 @@ export interface AdminCardFull {
   powerCh: number | null;
   weightKg: number | null;
   country: string | null;
+  brand: string | null;
   description: string | null;
   isUnique: boolean;
   variants: AdminVariantRow[];
@@ -245,6 +246,7 @@ export async function getAdminCatalog(): Promise<AdminCatalogSeason[]> {
       powerCh: c.powerCh,
       weightKg: c.weightKg,
       country: c.country,
+      brand: c.brand,
       description: c.description,
       isUnique: c.isUnique,
       variants: c.variants
@@ -283,6 +285,7 @@ export interface CreateCardInput {
   powerCh?: number | null;
   weightKg?: number | null;
   country?: string | null;
+  brand?: string | null;
   description?: string | null;
   isUnique?: boolean;
 }
@@ -310,6 +313,7 @@ export async function createCard(input: CreateCardInput): Promise<string> {
         powerCh: input.powerCh ?? null,
         weightKg: input.weightKg ?? null,
         country: input.country ?? null,
+        brand: input.brand ?? null,
         description: input.description ?? null,
         isUnique: input.isUnique ?? false,
       },
@@ -330,6 +334,7 @@ export interface UpdateCardInput {
   powerCh?: number | null;
   weightKg?: number | null;
   country?: string | null;
+  brand?: string | null;
   description?: string | null;
   isUnique?: boolean;
 }
@@ -347,6 +352,7 @@ export async function updateCard(cardId: string, data: UpdateCardInput): Promise
         ...(data.powerCh !== undefined ? { powerCh: data.powerCh } : {}),
         ...(data.weightKg !== undefined ? { weightKg: data.weightKg } : {}),
         ...(data.country !== undefined ? { country: data.country } : {}),
+        ...(data.brand !== undefined ? { brand: data.brand } : {}),
         ...(data.description !== undefined ? { description: data.description } : {}),
         ...(data.isUnique !== undefined ? { isUnique: data.isUnique } : {}),
       },

@@ -1268,6 +1268,8 @@
       "power": "パワー (ch)",
       "weight": "重量 (kg)",
       "country": "国",
+      "brand": "メーカー",
+      "brandPlaceholder": "例: Nissan",
       "description": "説明",
       "isUnique": "ユニークカード",
       "create": "作成",

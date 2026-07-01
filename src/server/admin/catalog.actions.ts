@@ -11,6 +11,7 @@ import {
   updateCardVariant,
   deleteCardVariant,
 } from "@/server/admin/admin.mutations";
+import { syncCatalogBadges } from "@/server/badge/badge.service";
 
 export type CatalogActionResult = { ok: true; id?: string } | { ok: false; error: string };
 
@@ -29,6 +30,7 @@ const createCardSchema = z.object({
   powerCh: nullableInt,
   weightKg: nullableInt,
   country: z.string().trim().max(8).nullish(),
+  brand: z.string().trim().max(60).nullish(),
   description: z.string().trim().max(2000).nullish(),
   isUnique: z.boolean().optional(),
 });
@@ -43,6 +45,7 @@ const updateCardSchema = z.object({
   powerCh: nullableInt,
   weightKg: nullableInt,
   country: z.string().trim().max(8).nullish(),
+  brand: z.string().trim().max(60).nullish(),
   description: z.string().trim().max(2000).nullish(),
   isUnique: z.boolean().optional(),
 });
@@ -91,6 +94,7 @@ export async function createCardAction(input: unknown): Promise<CatalogActionRes
 
   try {
     const id = await createCard(parsed.data);
+    await syncCatalogBadges().catch(() => {});
     revalidateCatalog();
     return { ok: true, id };
   } catch (err) {
@@ -108,6 +112,7 @@ export async function updateCardAction(input: unknown): Promise<CatalogActionRes
   const { cardId, ...data } = parsed.data;
   try {
     await updateCard(cardId, data);
+    await syncCatalogBadges().catch(() => {});
     revalidateCatalog();
     return { ok: true };
   } catch (err) {

@@ -544,6 +544,8 @@ model Card {
   powerCh     Int? // puissance (ch)
   weightKg    Int? // poids (kg)
   country     String? // code pays, extensible (JP, US, DE…)
+  /// Marque / constructeur (ex. Nissan, Mazda). Alimente les badges de collection par marque.
+  brand       String?
   description String?
   isUnique    Boolean @default(false)
 

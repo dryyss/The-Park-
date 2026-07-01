@@ -1268,6 +1268,8 @@
       "power": "Puissance (ch)",
       "weight": "Poids (kg)",
       "country": "Pays",
+      "brand": "Marque",
+      "brandPlaceholder": "ex : Nissan",
       "description": "Description",
       "isUnique": "Carte unique",
       "create": "Créer",

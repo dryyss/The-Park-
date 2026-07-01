@@ -1268,6 +1268,8 @@
       "power": "Power (hp)",
       "weight": "Weight (kg)",
       "country": "Country",
+      "brand": "Brand",
+      "brandPlaceholder": "e.g. Nissan",
       "description": "Description",
       "isUnique": "Unique card",
       "create": "Create",
