@@ -1,15 +1,16 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { FEATURES } from "@/lib/features";
 
 export async function OnboardingSteps() {
   const t = await getTranslations("onboarding");
 
   const steps = [
-    { num: "01", title: t("step1Title"), desc: t("step1Desc"), href: "/collection" },
-    { num: "02", title: t("step2Title"), desc: t("step2Desc"), href: "/marketplace" },
-    { num: "03", title: t("step3Title"), desc: t("step3Desc"), href: "/echanges" },
-    { num: "04", title: t("step4Title"), desc: t("step4Desc"), href: "/boutique" },
-  ];
+    { title: t("step1Title"), desc: t("step1Desc"), href: "/collection" },
+    { title: t("step2Title"), desc: t("step2Desc"), href: "/marketplace" },
+    ...(FEATURES.exchange ? [{ title: t("step3Title"), desc: t("step3Desc"), href: "/echanges" }] : []),
+    { title: t("step4Title"), desc: t("step4Desc"), href: "/boutique" },
+  ].map((s, i) => ({ ...s, num: String(i + 1).padStart(2, "0") }));
 
   return (
     <div className="flex flex-col gap-5">

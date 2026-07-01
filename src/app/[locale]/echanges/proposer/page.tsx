@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import { FEATURES } from "@/lib/features";
 import { getViewerUser } from "@/server/user/user.service";
 import { getViewerOwnedCardsForPropose } from "@/server/exchange/exchange.service";
 import { PageHeader } from "@/components/common/page-header";
@@ -19,6 +21,7 @@ export default async function EchangesProposerPage({
   const { locale } = await params;
   const sp = await searchParams;
   setRequestLocale(locale);
+  if (!FEATURES.exchange) redirect(`/${locale}`);
   const t = await getTranslations("exchangePropose");
 
   const viewer = await getViewerUser();

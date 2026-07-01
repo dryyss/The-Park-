@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import { FEATURES } from "@/lib/features";
 import { getViewerUser } from "@/server/user/user.service";
 import { getViewerExchanges, getViewerOwnedCardsForPropose, getTradeOpportunities, type ExchangeTab } from "@/server/exchange/exchange.service";
 import { PageHeader } from "@/components/common/page-header";
@@ -26,6 +28,7 @@ export default async function EchangesPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  if (!FEATURES.exchange) redirect(`/${locale}`);
   const sp = await searchParams;
   const t = await getTranslations("exchanges");
 

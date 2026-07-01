@@ -11,10 +11,11 @@ import { UserMenu } from "@/components/layout/user-menu";
 import { MobileNavDrawer } from "@/components/layout/mobile-nav-drawer";
 import { LiveNotificationToast } from "@/components/notifications/notification-toast";
 import { formatWalletEur } from "@/lib/wallet";
+import { FEATURES } from "@/lib/features";
 
 type NavItem = { href: string; key: "home" | "collection" | "marketplace" | "shop" | "exchanges" | "auctions" | "rivals" | "rankings" | "profile"; official?: boolean };
 
-const NAV_ITEMS: NavItem[] = [
+const NAV_ITEMS: NavItem[] = ([
   { href: "/", key: "home" },
   { href: "/collection", key: "collection" },
   { href: "/marketplace", key: "marketplace" },
@@ -24,7 +25,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/rivaux", key: "rivals" },
   { href: "/classements", key: "rankings" },
   { href: "/profil", key: "profile" },
-];
+] satisfies NavItem[]).filter((i) => FEATURES.exchange || i.key !== "exchanges");
 
 function IconButton({ href, title, children, badge }: { href: string; title: string; children: React.ReactNode; badge?: "dot" | string }) {
   return (

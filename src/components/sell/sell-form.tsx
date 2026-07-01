@@ -9,6 +9,7 @@ import type { OwnedCardForSale } from "@/server/marketplace/sell.service";
 import { listCollectionItemAction } from "@/server/marketplace/marketplace.actions";
 import { createAuctionAction } from "@/server/auction/auction.actions";
 import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
+import { FEATURES } from "@/lib/features";
 
 export function SellForm({
   cards,
@@ -133,7 +134,7 @@ export function SellForm({
             <TypeCard active={listingType === "fixed"} icon={<TagIcon />} title={t("typeFixed")} desc={t("typeFixedDesc")} onClick={() => setListingType("fixed")} />
             <TypeCard active={listingType === "auction"} icon={<GavelIcon />} title={t("typeAuction")} desc={t("typeAuctionDesc")} onClick={() => setListingType("auction")} />
           </div>
-          {listingType === "fixed" && (
+          {listingType === "fixed" && FEATURES.exchange && (
             <div className="mb-4">
               <label className="text-[10.5px] font-extrabold tracking-[2px] text-texte-faible uppercase">{t("saleKindLabel")}</label>
               <div className="mt-1.5 flex flex-wrap gap-2">

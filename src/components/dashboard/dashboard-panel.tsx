@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import type { DashboardStats } from "@/server/dashboard/dashboard.service";
 import { ListingActions } from "@/components/dashboard/listing-actions";
 import { AuthGatedLink } from "@/components/auth/auth-gated-link";
+import { FEATURES } from "@/lib/features";
 
 export async function DashboardPanel({
   stats,
@@ -16,8 +17,12 @@ export async function DashboardPanel({
   const cards = [
     { label: t("activeListings"), value: stats.activeListings, color: "text-carmin" },
     { label: t("totalViews"), value: stats.totalViews, color: "text-blanc-casse" },
-    { label: t("pendingExchanges"), value: stats.pendingExchanges, color: "text-or" },
-    { label: t("completedExchanges"), value: stats.completedExchanges, color: "text-neon-vert" },
+    ...(FEATURES.exchange
+      ? [
+          { label: t("pendingExchanges"), value: stats.pendingExchanges, color: "text-or" },
+          { label: t("completedExchanges"), value: stats.completedExchanges, color: "text-neon-vert" },
+        ]
+      : []),
     { label: t("activeAuctions"), value: stats.activeAuctions, color: "text-blanc-casse" },
     { label: t("estimatedRevenue"), value: stats.estimatedRevenue, color: "text-or" },
   ];

@@ -8,6 +8,7 @@ import { useUser } from "@auth0/nextjs-auth0";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { LogoutLink } from "@/components/auth/logout-link";
 import { formatWalletEur } from "@/lib/wallet";
+import { FEATURES } from "@/lib/features";
 
 type NavItem = {
   href: string;
@@ -15,7 +16,7 @@ type NavItem = {
   official?: boolean;
 };
 
-const NAV_ITEMS: NavItem[] = [
+const NAV_ITEMS: NavItem[] = ([
   { href: "/", key: "home" },
   { href: "/collection", key: "collection" },
   { href: "/marketplace", key: "marketplace" },
@@ -25,7 +26,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/rivaux", key: "rivals" },
   { href: "/classements", key: "rankings" },
   { href: "/profil", key: "profile" },
-];
+] satisfies NavItem[]).filter((i) => FEATURES.exchange || i.key !== "exchanges");
 
 const EXTRA_LINKS = [
   { href: "/drop", key: "drop" as const },

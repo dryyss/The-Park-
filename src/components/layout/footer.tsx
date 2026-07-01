@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { FEATURES } from "@/lib/features";
 
 function FooterLink({ href, children, gold, live }: { href: string; children: React.ReactNode; gold?: boolean; live?: boolean }) {
   return (
@@ -83,7 +84,7 @@ export function Footer() {
           <div>
             <ColTitle>{t("colCommunity")}</ColTitle>
             <div className="flex flex-col gap-2.5">
-              <FooterLink href="/echanges">{t("linkExchanges")}</FooterLink>
+              {FEATURES.exchange && <FooterLink href="/echanges">{t("linkExchanges")}</FooterLink>}
               <FooterLink href="/classements">{t("linkRankings")}</FooterLink>
               <FooterLink href="/trophees">{t("linkTrophies")}</FooterLink>
               <FooterLink href="/drop" live>{t("linkDrop")}</FooterLink>

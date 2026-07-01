@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useUser } from "@auth0/nextjs-auth0";
 import { Link, usePathname } from "@/i18n/navigation";
+import { FEATURES } from "@/lib/features";
 
 function Tab({ href, label, active, children }: { href: string; label: string; active: boolean; children: React.ReactNode }) {
   return (
@@ -43,14 +44,24 @@ export function MobileTabs() {
       >
         <span className="text-xl sm:text-2xl">🎴</span>
       </Link>
-      <Tab href="/echanges" label={t("exchanges")} active={is("/echanges")}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:h-[22px] sm:w-[22px]">
-          <polyline points="17 1 21 5 17 9" />
-          <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-          <polyline points="7 23 3 19 7 15" />
-          <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-        </svg>
-      </Tab>
+      {FEATURES.exchange ? (
+        <Tab href="/echanges" label={t("exchanges")} active={is("/echanges")}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:h-[22px] sm:w-[22px]">
+            <polyline points="17 1 21 5 17 9" />
+            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+            <polyline points="7 23 3 19 7 15" />
+            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+          </svg>
+        </Tab>
+      ) : (
+        <Tab href="/marketplace" label={t("marketplace")} active={is("/marketplace")}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:h-[22px] sm:w-[22px]">
+            <path d="M3 9l1.5-5h15L21 9" />
+            <path d="M4 9h16v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9z" />
+            <path d="M9 13h6" />
+          </svg>
+        </Tab>
+      )}
       <Tab href="/profil" label={t("profile")} active={is("/profil")}>
         <span className="font-display flex h-5 w-5 items-center justify-center rounded-full bg-linear-to-br from-carmin to-rouge-fonce text-[10px] text-white sm:h-[22px] sm:w-[22px] sm:text-[11px]">
           {initial}

@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { avatarGradient } from "@/lib/avatars";
 import { formatPercent } from "@/lib/format";
+import { FEATURES } from "@/lib/features";
 import { LogoutLink } from "@/components/auth/logout-link";
 import type { ViewerProfile } from "@/server/profile/profile.service";
 
@@ -224,7 +225,7 @@ export async function ProfileQuickLinks({ profile }: { profile: ViewerProfile })
   const links = [
     { href: "/parametres", label: t("linkSettings"), pct: "⚙" },
     { href: "/collection", label: t("linkCollection"), pct: formatPercent(profile.pct / 100) },
-    { href: "/echanges", label: t("linkExchanges"), pct: String(profile.exchangeCount) },
+    ...(FEATURES.exchange ? [{ href: "/echanges", label: t("linkExchanges"), pct: String(profile.exchangeCount) }] : []),
     { href: "/vendre", label: t("linkSell"), pct: String(profile.listingCount) },
     { href: `/collectionneur/${profile.slug}`, label: t("linkPublic"), pct: "→" },
   ];
