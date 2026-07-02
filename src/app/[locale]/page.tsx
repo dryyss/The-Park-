@@ -1,5 +1,5 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { getCatalogSummary, getCatalogStats, getFeaturedCards, getHeroCards } from "@/server/catalog/catalog.service";
+import { getCatalogSummary, getFeaturedCards, getHeroCards } from "@/server/catalog/catalog.service";
 import { getCardsLikeMeta } from "@/server/card-like/card-like.service";
 import { getRecentListings, getMostWantedForSale } from "@/server/marketplace/marketplace.service";
 import { getActiveAuctions } from "@/server/auction/auction.service";
@@ -39,8 +39,7 @@ export default async function Home({
   const tAuth = authError ? await getTranslations("auth") : null;
   const t = await getTranslations("home");
 
-  const [stats, summary, heroCards, featured, listings, auctions, collectors, activity, viewer, wantedCards] = await Promise.all([
-    getCatalogStats(),
+  const [summary, heroCards, featured, listings, auctions, collectors, activity, viewer, wantedCards] = await Promise.all([
     getCatalogSummary(),
     getHeroCards(),
     getFeaturedCards(8),
@@ -75,7 +74,7 @@ export default async function Home({
           {tAuth("loginFailed", { code: authError })}
         </div>
       )}
-      <HeroSection stats={stats} heroCards={heroCards} />
+      <HeroSection heroCards={heroCards} />
 
       <div className="page-container pb-[60px]">
         <PromoBannerStrip className="mt-6" />

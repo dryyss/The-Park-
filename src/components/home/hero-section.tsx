@@ -3,22 +3,8 @@ import { Link } from "@/i18n/navigation";
 import { HeroCardFan } from "@/components/home/hero-card-fan";
 import type { CardDisplay } from "@/server/catalog/catalog.service";
 
-interface HeroStats {
-  totalCards: number;
-  rarityCount: number;
-  versionCount: number;
-  uniqueCount: number;
-}
-
-export async function HeroSection({ stats, heroCards }: { stats: HeroStats; heroCards: CardDisplay[] }) {
+export async function HeroSection({ heroCards }: { heroCards: CardDisplay[] }) {
   const t = await getTranslations("home");
-
-  const statItems = [
-    { v: stats.totalCards, l: t("statCards"), gold: false },
-    { v: stats.rarityCount, l: t("statRarities"), gold: false },
-    { v: stats.versionCount, l: t("statVersions"), gold: false },
-    { v: stats.uniqueCount, l: t("statUnique"), gold: true },
-  ];
 
   return (
     <section className="page-container relative grid grid-cols-1 items-center gap-8 pt-12 pb-10 sm:gap-10 sm:pt-[70px] sm:pb-[50px] lg:grid-cols-[1.05fr_1fr] lg:gap-8">
@@ -53,14 +39,6 @@ export async function HeroSection({ stats, heroCards }: { stats: HeroStats; hero
           >
             {t("ctaMarketplace")}
           </Link>
-        </div>
-        <div className="mt-[38px] flex flex-wrap gap-7">
-          {statItems.map((s) => (
-            <div key={s.l}>
-              <div className={["font-display text-[26px]", s.gold ? "text-carmin" : "text-blanc-casse"].join(" ")}>{s.v}</div>
-              <div className="text-[11.5px] font-bold tracking-[1.5px] text-texte-dim uppercase">{s.l}</div>
-            </div>
-          ))}
         </div>
       </div>
 

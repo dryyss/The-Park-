@@ -73,7 +73,21 @@ export async function MarketplaceFilters({
   return (
     <div className="mt-6 flex flex-col gap-2.5">
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3.5">
-        <div className="flex flex-wrap gap-1.5">
+        <form action={`/${locale}/marketplace`} className="order-2 flex min-w-0 flex-1 sm:order-0 sm:ml-auto sm:justify-end">
+          <input type="hidden" name="intent" value={params.intent} />
+          {params.rarity && <input type="hidden" name="rarity" value={params.rarity} />}
+          {params.condition && <input type="hidden" name="condition" value={params.condition} />}
+          {params.version && <input type="hidden" name="version" value={params.version} />}
+          {params.country && <input type="hidden" name="country" value={params.country} />}
+          <input
+            name="q"
+            defaultValue={params.q ?? ""}
+            placeholder={t("searchPlaceholder")}
+            aria-label={t("searchSubmit")}
+            className="w-full min-w-0 rounded-full border border-charbon-500 bg-charbon-800 px-4 py-2.5 text-[13px] text-blanc-casse outline-none focus:border-carmin sm:max-w-[300px]"
+          />
+        </form>
+        <div className="order-1 flex flex-wrap gap-1.5 sm:order-0">
           <Chip href={hrefWith(params, { rarity: undefined })} active={!params.rarity} glyph="☰" glyphColor="#8E8E98">
             {t("allRarities")}
           </Chip>
@@ -92,22 +106,16 @@ export async function MarketplaceFilters({
             );
           })}
         </div>
-        <form action={`/${locale}/marketplace`} className="flex min-w-0 flex-1 sm:ml-auto sm:justify-end">
-          <input type="hidden" name="intent" value={params.intent} />
-          {params.rarity && <input type="hidden" name="rarity" value={params.rarity} />}
-          {params.condition && <input type="hidden" name="condition" value={params.condition} />}
-          {params.version && <input type="hidden" name="version" value={params.version} />}
-          {params.country && <input type="hidden" name="country" value={params.country} />}
-          <input
-            name="q"
-            defaultValue={params.q ?? ""}
-            placeholder={t("searchPlaceholder")}
-            aria-label={t("searchSubmit")}
-            className="w-full min-w-0 rounded-full border border-charbon-500 bg-charbon-800 px-4 py-2.5 text-[13px] text-blanc-casse outline-none focus:border-carmin sm:max-w-[300px]"
-          />
-        </form>
       </div>
 
+      <details className="group [&_summary::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer list-none items-center gap-2 self-start rounded-full border border-charbon-500 bg-charbon-800 px-4 py-2 text-[12px] font-bold text-blanc-casse sm:hidden">
+          <span className="text-texte-dim">⚙</span>
+          {t("filtersToggle")}
+          <span className="ml-auto transition-transform group-open:rotate-180">▾</span>
+        </summary>
+
+        <div className="mt-2.5 hidden flex-col gap-2.5 group-open:flex sm:mt-0 sm:flex">
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2.5">
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-[10.5px] font-extrabold tracking-[2px] text-texte-dim uppercase">{t("filterCondition")}</span>
@@ -171,6 +179,8 @@ export async function MarketplaceFilters({
           />
         </form>
       </div>
+        </div>
+      </details>
     </div>
   );
 }
