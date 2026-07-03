@@ -24,7 +24,8 @@ export function notificationHref(
     case "AUCTION_OUTBID":
     case "AUCTION_WON":
     case "AUCTION_ENDED":
-      return entityId ? `/encheres?id=${entityId}` : "/encheres";
+      // Page détail : reste accessible après la clôture (suivi gagnant/vendeur).
+      return entityId ? `/encheres/${entityId}` : "/encheres";
     case "LISTING_SOLD":
     case "LISTING_IN_CART":
     case "LISTING_EXPIRING":

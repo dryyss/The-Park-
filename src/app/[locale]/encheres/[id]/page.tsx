@@ -1,6 +1,7 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { getAuctionById } from "@/server/auction/auction.service";
+import { getViewerUser } from "@/server/user/user.service";
 import { PageHeader } from "@/components/common/page-header";
 import { AuctionDetailPanel } from "@/components/auction/auction-sections";
 import { Link } from "@/i18n/navigation";
@@ -16,7 +17,7 @@ export default async function EnchereDetailPage({
   setRequestLocale(locale);
   const t = await getTranslations("auctions");
 
-  const auction = await getAuctionById(id);
+  const [auction, viewer] = await Promise.all([getAuctionById(id), getViewerUser()]);
   if (!auction) notFound();
 
   return (
@@ -28,7 +29,7 @@ export default async function EnchereDetailPage({
         <PageHeader title={auction.cardName} jp="入札" />
       </div>
       <div className="mt-8">
-        <AuctionDetailPanel auction={auction} />
+        <AuctionDetailPanel auction={auction} viewerId={viewer?.id ?? null} />
       </div>
     </main>
   );

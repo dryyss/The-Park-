@@ -37,10 +37,8 @@ export function AuctionBidForm({
   const [showLoginGate, setShowLoginGate] = useState(false);
   const [pending, startTransition] = useTransition();
 
-  // Boutons de suggestion : minimum, puis quelques paliers au-dessus.
-  const suggestions = [0, 1, 5, 10]
-    .map((k) => round2(minAmount + k * step))
-    .filter((v, i, arr) => arr.indexOf(v) === i);
+  // Paliers rapides : chaque clic ajoute le montant au champ (en euros).
+  const quickIncrements = [1, 5, 10, 100];
 
   const eur = (v: number) => format.number(v, { style: "currency", currency: "EUR" });
 
@@ -87,18 +85,25 @@ export function AuctionBidForm({
       <label className="text-[11px] font-extrabold tracking-wide text-texte-dim uppercase">{t("yourBid")}</label>
 
       <div className="mt-2 flex flex-wrap gap-2">
-        {suggestions.map((value, i) => (
+        <button
+          type="button"
+          onClick={() => setAmount(round2(minAmount))}
+          className={`rounded-full border px-3.5 py-1.5 text-[12px] font-extrabold transition ${
+            amount === round2(minAmount)
+              ? "border-carmin bg-carmin/15 text-carmin"
+              : "border-charbon-500 bg-charbon-700 text-texte-dim hover:border-carmin/60 hover:text-blanc-casse"
+          }`}
+        >
+          {t("bidMin", { amount: eur(round2(minAmount)) })}
+        </button>
+        {quickIncrements.map((inc) => (
           <button
-            key={value}
+            key={inc}
             type="button"
-            onClick={() => setAmount(value)}
-            className={`rounded-full border px-3.5 py-1.5 text-[12px] font-extrabold transition ${
-              amount === value
-                ? "border-carmin bg-carmin/15 text-carmin"
-                : "border-charbon-500 bg-charbon-700 text-texte-dim hover:border-carmin/60 hover:text-blanc-casse"
-            }`}
+            onClick={() => setAmount((v) => normalize((Number.isFinite(v) ? v : minAmount) + inc))}
+            className="rounded-full border border-charbon-500 bg-charbon-700 px-3.5 py-1.5 text-[12px] font-extrabold text-texte-dim transition hover:border-carmin/60 hover:text-blanc-casse"
           >
-            {i === 0 ? t("bidMin", { amount: eur(value) }) : eur(value)}
+            +{inc} €
           </button>
         ))}
       </div>

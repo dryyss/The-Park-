@@ -40,6 +40,10 @@ export interface AuctionDetail extends AuctionListItem {
   minBidAmount: number;
   bids: AuctionBid[];
   winnerName: string | null;
+  winnerId: string | null;
+  sellerId: string;
+  /** Fil gagnant ⇄ vendeur ouvert à la clôture (suivi paiement / livraison). */
+  conversationId: string | null;
 }
 
 function mapAuction(
@@ -91,6 +95,7 @@ export async function getAuctionById(id: string): Promise<AuctionDetail | null> 
     include: {
       seller: { select: { displayName: true, slug: true } },
       winner: { select: { displayName: true } },
+      conversation: { select: { id: true } },
       variant: { include: { card: { include: { rarity: true } }, versionType: true } },
       bids: {
         orderBy: { amount: "desc" },
@@ -114,6 +119,9 @@ export async function getAuctionById(id: string): Promise<AuctionDetail | null> 
     bidIncrementValue: Number(a.bidIncrement),
     minBidAmount,
     winnerName: a.winner?.displayName ?? null,
+    winnerId: a.winnerId,
+    sellerId: a.sellerId,
+    conversationId: a.conversation?.id ?? null,
     bids: a.bids.map((b) => ({
       id: b.id,
       bidderName: b.bidder.displayName,

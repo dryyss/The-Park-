@@ -135,6 +135,19 @@ export async function settleDueAuctions(): Promise<number> {
         where: { userId: a.sellerId, variantId: a.variantId, reservedQuantity: { gt: 0 } },
         data: { reservedQuantity: { decrement: 1 }, forSale: false },
       });
+      // Suivi post-enchère : ouvre le fil gagnant ⇄ vendeur pour organiser
+      // paiement et livraison (upsert — la clôture peut être appelée en concurrence).
+      if (sold) {
+        await tx.conversation.upsert({
+          where: { auctionId: a.id },
+          update: {},
+          create: {
+            context: "AUCTION",
+            auctionId: a.id,
+            participants: { create: [{ userId: top.bidderId }, { userId: a.sellerId }] },
+          },
+        });
+      }
     });
 
     if (sold) {
@@ -146,6 +159,8 @@ export async function settleDueAuctions(): Promise<number> {
         entityId: a.id,
         payload: { amount: formatPrice(top.amount) },
       });
+      // Succès liés aux enchères remportées (Sniper de l'Ombre, Flambeur de Tokyo).
+      await evaluateUserBadgesSafe(top.bidderId);
     }
     await dispatchNotification({
       userId: a.sellerId,

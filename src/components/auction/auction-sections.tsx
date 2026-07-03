@@ -58,8 +58,16 @@ export async function AuctionGrid({ auctions }: { auctions: AuctionListItem[] })
   );
 }
 
-export async function AuctionDetailPanel({ auction }: { auction: import("@/server/auction/auction.service").AuctionDetail }) {
+export async function AuctionDetailPanel({
+  auction,
+  viewerId = null,
+}: {
+  auction: import("@/server/auction/auction.service").AuctionDetail;
+  viewerId?: string | null;
+}) {
   const t = await getTranslations("auctions");
+  const isWinner = viewerId != null && viewerId === auction.winnerId;
+  const isSeller = viewerId != null && viewerId === auction.sellerId;
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
@@ -125,6 +133,25 @@ export async function AuctionDetailPanel({ auction }: { auction: import("@/serve
               <p className="mt-1 text-[12px] font-bold text-texte-dim">
                 {t("winner", { name: auction.winnerName })} · {auction.currentPrice}
               </p>
+            )}
+            {/* Suivi post-enchère : visible uniquement par le gagnant et le vendeur. */}
+            {auction.status === "SOLD" && (isWinner || isSeller) && (
+              <div className="mt-4 rounded-[10px] border border-carmin/40 bg-carmin/8 p-4">
+                <p className="font-display text-[14px] tracking-[1px] text-carmin uppercase">
+                  {isWinner ? t("followupWonTitle") : t("followupSoldTitle")}
+                </p>
+                <p className="mt-1 text-[12.5px] font-bold text-texte-doux">
+                  {isWinner ? t("followupWonBody") : t("followupSoldBody")}
+                </p>
+                {auction.conversationId && (
+                  <Link
+                    href={`/messages/${auction.conversationId}`}
+                    className="font-display mt-3 inline-block -skew-x-3 rounded-lg bg-carmin px-5 py-2.5 text-[12px] tracking-[1.5px] text-white uppercase transition hover:bg-carmin-alt"
+                  >
+                    {isWinner ? t("followupContactSeller") : t("followupContactBuyer")}
+                  </Link>
+                )}
+              </div>
             )}
           </div>
         )}
