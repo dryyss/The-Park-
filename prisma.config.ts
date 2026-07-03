@@ -3,6 +3,13 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
+/** Neon (serverless) se suspend au repos : son réveil peut dépasser les 5 s
+ *  par défaut de Prisma (P1001 au migrate deploy). On allonge le timeout. */
+function withConnectTimeout(url: string | undefined): string | undefined {
+  if (!url || url.includes("connect_timeout")) return url;
+  return `${url}${url.includes("?") ? "&" : "?"}connect_timeout=20`;
+}
+
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
@@ -10,6 +17,6 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    url: withConnectTimeout(process.env["DATABASE_URL"]),
   },
 });
