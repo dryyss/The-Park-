@@ -11,19 +11,21 @@ export interface TrophyBadge {
   unlockedAt: Date | null;
 }
 
-import { badgeIcon } from "@/lib/badges";
+import { badgeIcon, badgeSortIndex } from "@/lib/badges";
 
 export async function getCatalogTrophies(): Promise<TrophyBadge[]> {
-  const allBadges = await prisma.badge.findMany({ orderBy: { code: "asc" } });
-  return allBadges.map((b) => ({
-    code: b.code,
-    label: b.label,
-    description: b.description ?? "",
-    icon: b.icon ?? badgeIcon(b.code),
-    unlocked: false,
-    progress: 0,
-    unlockedAt: null,
-  }));
+  const allBadges = await prisma.badge.findMany();
+  return allBadges
+    .map((b) => ({
+      code: b.code,
+      label: b.label,
+      description: b.description ?? "",
+      icon: b.icon ?? badgeIcon(b.code),
+      unlocked: false,
+      progress: 0,
+      unlockedAt: null,
+    }))
+    .sort((a, b) => badgeSortIndex(a.code) - badgeSortIndex(b.code));
 }
 
 export async function getCatalogTrophyStats() {
@@ -33,24 +35,26 @@ export async function getCatalogTrophyStats() {
 
 export async function getViewerTrophies(userId: string): Promise<TrophyBadge[]> {
   const [allBadges, userBadges] = await Promise.all([
-    prisma.badge.findMany({ orderBy: { code: "asc" } }),
+    prisma.badge.findMany(),
     prisma.userBadge.findMany({ where: { userId } }),
   ]);
 
   const unlockedMap = new Map(userBadges.map((ub) => [ub.badgeId, ub]));
 
-  return allBadges.map((b) => {
-    const ub = unlockedMap.get(b.id);
-    return {
-      code: b.code,
-      label: b.label,
-      description: b.description ?? "",
-      icon: b.icon ?? badgeIcon(b.code),
-      unlocked: !!ub,
-      progress: ub?.progress ?? 0,
-      unlockedAt: ub?.unlockedAt ?? null,
-    };
-  });
+  return allBadges
+    .map((b) => {
+      const ub = unlockedMap.get(b.id);
+      return {
+        code: b.code,
+        label: b.label,
+        description: b.description ?? "",
+        icon: b.icon ?? badgeIcon(b.code),
+        unlocked: !!ub,
+        progress: ub?.progress ?? 0,
+        unlockedAt: ub?.unlockedAt ?? null,
+      };
+    })
+    .sort((a, b) => badgeSortIndex(a.code) - badgeSortIndex(b.code));
 }
 
 export async function getTrophyStats(userId: string) {

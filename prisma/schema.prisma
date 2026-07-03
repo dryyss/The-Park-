@@ -1345,6 +1345,16 @@ model UserBadge {
   @@unique([userId, badgeId])
 }
 
+/// Présence quotidienne au top 3 du classement collectionneurs
+/// (succès « Roi de la Glisse » — 7 jours consécutifs).
+model RankStreak {
+  userId     String   @id
+  days       Int      @default(0)
+  /// Jour (YYYY-MM-DD) de la dernière évaluation comptabilisée.
+  lastDayKey String   @default("")
+  updatedAt  DateTime @updatedAt
+}
+
 // ============================================================================
 //  MESSAGERIE CONTEXTUALISÉE  (Module 8 — pas de messagerie privée libre)
 // ============================================================================

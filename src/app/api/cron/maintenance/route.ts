@@ -5,11 +5,12 @@ import { purgeExpiredShipmentProofs } from "@/server/c2c/shipment.service";
 import { processExchangeTimeouts } from "@/server/c2c/exchange-lifecycle.service";
 import { processSaleTimeouts } from "@/server/sale/sale-lifecycle.service";
 import { purgeExpiredCartItems } from "@/server/marketplace-cart/marketplace-cart.service";
+import { evaluateLeaderboardBadges } from "@/server/badge/badge.service";
 
 export const dynamic = "force-dynamic";
 
 async function runMaintenance() {
-  const [expiredListings, settledAuctions, purgedProofs, exchangeTimeouts, saleTimeouts, purgedCartItems] =
+  const [expiredListings, settledAuctions, purgedProofs, exchangeTimeouts, saleTimeouts, purgedCartItems, leaderboardBadges] =
     await Promise.all([
       expireDueListings(),
       settleDueAuctions(),
@@ -17,9 +18,12 @@ async function runMaintenance() {
       processExchangeTimeouts(),
       processSaleTimeouts(),
       purgeExpiredCartItems(),
+      // Succès de classement (Midnight Club, Drift King, Roi de la Glisse) :
+      // évalués chaque jour pour le haut du leaderboard, sans attendre une visite.
+      evaluateLeaderboardBadges(),
     ]);
 
-  return { expiredListings, settledAuctions, purgedProofs, exchangeTimeouts, saleTimeouts, purgedCartItems };
+  return { expiredListings, settledAuctions, purgedProofs, exchangeTimeouts, saleTimeouts, purgedCartItems, leaderboardBadges };
 }
 
 function isAuthorized(request: Request): boolean {

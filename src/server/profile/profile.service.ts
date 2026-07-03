@@ -4,7 +4,7 @@ import { formatPrice } from "@/lib/format";
 import { getUserCollection, type SeasonCompletion } from "@/server/collection/collection.service";
 import type { AdminRole, Language } from "@/generated/prisma/client";
 import { getDefaultDashboardForStaffRole } from "@/server/auth/roles.definition";
-import { badgeIcon } from "@/lib/badges";
+import { badgeIcon, badgeSortIndex } from "@/lib/badges";
 
 export interface ProfileBadge {
   code: string;
@@ -86,13 +86,15 @@ export async function getViewerProfile(userId: string): Promise<ViewerProfile | 
   const unlockedIds = new Set(userBadges.map((ub) => ub.badgeId));
   const estimated = items.reduce((sum, i) => sum + Number(i.variant.card.quoteValue) * i.quantity, 0);
 
-  const badges: ProfileBadge[] = allBadges.map((b) => ({
-    code: b.code,
-    name: b.label,
-    description: b.description ?? "",
-    unlocked: unlockedIds.has(b.id),
-    icon: badgeIcon(b.code),
-  }));
+  const badges: ProfileBadge[] = allBadges
+    .map((b) => ({
+      code: b.code,
+      name: b.label,
+      description: b.description ?? "",
+      unlocked: unlockedIds.has(b.id),
+      icon: b.icon ?? badgeIcon(b.code),
+    }))
+    .sort((a, b) => badgeSortIndex(a.code) - badgeSortIndex(b.code));
 
   const exchangeCount = user._count.exchangesInitiated + user._count.exchangesReceived;
 

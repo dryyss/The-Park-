@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
 import { deleteUserAddress, updateUserProfile, upsertUserAddress } from "@/server/user/address.service";
+import { evaluateUserBadgesSafe } from "@/server/badge/badge.service";
 
 export type ProfileActionResult = { ok: true; addressId?: string } | { ok: false; error: string };
 
@@ -71,6 +72,8 @@ export async function updateProfileAction(input: unknown): Promise<ProfileAction
 
   try {
     await updateUserProfile(viewer.id, parsed.data);
+    // Succès « Contrôle Technique Validé » (profil complété).
+    await evaluateUserBadgesSafe(viewer.id);
     revalidatePath("/profil");
     revalidatePath("/parametres");
     revalidatePath("/vendre");

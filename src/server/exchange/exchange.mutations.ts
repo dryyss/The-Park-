@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import type { CardCondition } from "@/generated/prisma/client";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
 import { lockExchangeCautions, releaseExchangeCautions } from "@/server/exchange/exchange-escrow.service";
+import { evaluateUserBadgesSafe } from "@/server/badge/badge.service";
 
 /** Propose un échange — double validation requise ensuite. */
 export async function proposeExchange(
@@ -93,6 +94,9 @@ export async function proposeExchange(
     entityId: exchange.id,
     payload: { message: input.message ?? null },
   });
+
+  // Succès « Appel de Phares » (première proposition d'échange).
+  await evaluateUserBadgesSafe(initiatorId);
 
   return exchange.id;
 }

@@ -5,6 +5,7 @@ import { PrismaClient } from "../src/generated/prisma/client";
 import { CARDS, CARD_EXTRA_VERSIONS, DEFAULT_S01_EDITION_LABEL, CARD_EDITION_LABELS } from "./cards-data.mjs";
 import { VERSION_TYPE_DEFINITIONS } from "../src/lib/card-versions";
 import { RARITY_DEFINITIONS, isSpecialRarity } from "../src/lib/rarities";
+import { BADGE_DEFINITIONS } from "../src/lib/badges";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -216,73 +217,21 @@ async function main() {
     }
   }
 
-  console.log("→ Badges (CDC Module 9)");
-  const badges = [
-    {
-      code: "first_card",
-      label: "Première carte",
-      description: "Ajouter sa première carte à la collection",
-    },
-    {
-      code: "first_holo",
-      label: "Première holo",
-      description: "Posséder sa première carte holographique",
-    },
-    {
-      code: "collector_25",
-      label: "Collectionneur",
-      description: "Posséder 25 cartes différentes dans le classeur",
-    },
-    {
-      code: "legendary_owner",
-      label: "Légendaire",
-      description: "Posséder une carte légendaire",
-    },
-    {
-      code: "ultra_rare_owner",
-      label: "Ultra rare",
-      description: "Posséder une carte ultra rare",
-    },
-    { code: "set_gold", label: "Set Gold", description: "Compléter le palier Gold" },
-    {
-      code: "unique_owner",
-      label: "Carte unique",
-      description: "Détenir la carte unique de la saison",
-    },
-    {
-      code: "first_trade",
-      label: "Premier échange",
-      description: "Réaliser son premier échange ou sa première vente",
-    },
-    {
-      code: "exchange_veteran",
-      label: "Vétéran des échanges",
-      description: "Réaliser 5 échanges complétés",
-    },
-    {
-      code: "first_listing",
-      label: "Première annonce",
-      description: "Publier sa première annonce sur la marketplace",
-    },
-    {
-      code: "first_sale",
-      label: "Première vente",
-      description: "Réaliser sa première vente marketplace",
-    },
-    {
-      code: "first_purchase",
-      label: "Premier achat",
-      description: "Effectuer son premier achat marketplace",
-    },
-    { code: "full_season", label: "Saison complète", description: "Compléter la Saison 1 à 100 %" },
-    {
-      code: "wallet_pioneer",
-      label: "Portefeuille activé",
-      description: "Effectuer sa première recharge de crédits",
-    },
-  ];
-  for (const b of badges) {
-    await prisma.badge.upsert({ where: { code: b.code }, update: b, create: b });
+  console.log(`→ Succès (${BADGE_DEFINITIONS.length} — liste client)`);
+  for (const { code, label, description, icon } of BADGE_DEFINITIONS) {
+    const data = { code, label, description, icon };
+    await prisma.badge.upsert({ where: { code }, update: data, create: data });
+  }
+  // Purge les badges hérités absents de la liste client (et leurs déblocages).
+  const validBadgeCodes = BADGE_DEFINITIONS.map((b) => b.code);
+  const obsoleteBadges = await prisma.badge.findMany({
+    where: { code: { notIn: validBadgeCodes } },
+    select: { id: true },
+  });
+  if (obsoleteBadges.length > 0) {
+    const obsoleteIds = obsoleteBadges.map((b) => b.id);
+    await prisma.userBadge.deleteMany({ where: { badgeId: { in: obsoleteIds } } });
+    await prisma.badge.deleteMany({ where: { id: { in: obsoleteIds } } });
   }
 
   console.log("→ Membres de démo + collections");
@@ -602,21 +551,16 @@ async function main() {
       });
     }
 
-    const firstBadge = await prisma.badge.findFirst({ where: { code: "first_card" } });
-    const holoBadge = await prisma.badge.findFirst({ where: { code: "first_holo" } });
-    if (firstBadge) {
-      await prisma.userBadge.upsert({
-        where: { userId_badgeId: { userId: factoryId, badgeId: firstBadge.id } },
-        update: {},
-        create: { userId: factoryId, badgeId: firstBadge.id },
-      });
-    }
-    if (holoBadge) {
-      await prisma.userBadge.upsert({
-        where: { userId_badgeId: { userId: factoryId, badgeId: holoBadge.id } },
-        update: {},
-        create: { userId: factoryId, badgeId: holoBadge.id },
-      });
+    // Succès de démo (nouveaux codes du catalogue client).
+    for (const demoCode of ["apprenti_contact_mis", "garage_rotatif_hurlant"]) {
+      const demoBadge = await prisma.badge.findFirst({ where: { code: demoCode } });
+      if (demoBadge) {
+        await prisma.userBadge.upsert({
+          where: { userId_badgeId: { userId: factoryId, badgeId: demoBadge.id } },
+          update: {},
+          create: { userId: factoryId, badgeId: demoBadge.id },
+        });
+      }
     }
 
     if (midnightId && driftId) {
