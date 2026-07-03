@@ -582,6 +582,7 @@
     "sellersColCondition": "Condition",
     "sellersColVersion": "Category",
     "sellersColPrice": "Price",
+    "sellersColAction": "Action",
     "emptyJp": "何もない",
     "emptyText": "No listing matches these filters.",
     "wantCtaPublish": "Post a want"

@@ -582,6 +582,7 @@
     "sellersColCondition": "状態",
     "sellersColVersion": "カテゴリー",
     "sellersColPrice": "価格",
+    "sellersColAction": "アクション",
     "emptyJp": "何もない",
     "emptyText": "条件に合う出品がありません。",
     "wantCtaPublish": "募集を出す"

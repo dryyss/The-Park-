@@ -119,19 +119,19 @@ export default async function CardSellersPage({
         </div>
       ) : (
         <div className="mt-8 flex flex-col gap-3">
-          {/* Header colonnes (desktop) */}
-          <div className="hidden grid-cols-[1fr_120px_120px_100px_220px] gap-4 rounded-xl border border-charbon-600 bg-charbon-800/60 px-5 py-3 text-[10px] font-extrabold tracking-[1.5px] text-texte-faible uppercase sm:grid">
+          {/* Header colonnes (desktop) — même grille que les lignes pour rester aligné */}
+          <div className="hidden grid-cols-[minmax(0,1fr)_110px_120px_110px_minmax(230px,auto)] gap-4 rounded-xl border border-charbon-600 bg-charbon-800/60 px-5 py-3 text-[10px] font-extrabold tracking-[1.5px] text-texte-faible uppercase sm:grid">
             <span>{t("sellersColSeller")}</span>
             <span>{t("sellersColCondition")}</span>
             <span>{t("sellersColVersion")}</span>
             <span className="text-right">{t("sellersColPrice")}</span>
-            <span />
+            <span className="text-right">{t("sellersColAction")}</span>
           </div>
 
           {card.sellers.map((s, idx) => (
             <div
               key={s.listingId}
-              className="grid grid-cols-1 gap-3 rounded-2xl border border-charbon-500 bg-charbon-800 px-5 py-4 transition hover:border-charbon-400 sm:grid-cols-[1fr_120px_120px_100px_220px] sm:items-center sm:gap-4"
+              className="grid grid-cols-1 gap-3 rounded-2xl border border-charbon-500 bg-charbon-800 px-5 py-4 transition hover:border-charbon-400 sm:grid-cols-[minmax(0,1fr)_110px_120px_110px_minmax(230px,auto)] sm:items-center sm:gap-4"
             >
               {/* Vendeur */}
               <div className="flex items-center gap-2.5">
@@ -209,7 +209,7 @@ export default async function CardSellersPage({
                   );
                 }
                 return (
-                  <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-end">
                     {s.purchasable && (
                       <AddToMarketplaceCartButton
                         listingId={s.listingId}

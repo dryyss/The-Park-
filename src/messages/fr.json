@@ -582,6 +582,7 @@
     "sellersColCondition": "État",
     "sellersColVersion": "Catégorie",
     "sellersColPrice": "Prix",
+    "sellersColAction": "Action",
     "emptyJp": "何もない",
     "emptyText": "Aucune annonce ne correspond à ces filtres.",
     "wantCtaPublish": "Publier une recherche"
