@@ -14,6 +14,8 @@ export default defineConfig({
     environment: "node",
     globals: true,
     include: ["test/**/*.test.ts"],
+    // Les tests d'intégration exigent une vraie base — config dédiée : vitest.integration.config.ts.
+    exclude: ["test/integration/**", "node_modules/**"],
     coverage: {
       provider: "v8",
       include: ["src/server/**", "src/lib/**"],

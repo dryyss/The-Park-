@@ -11,8 +11,9 @@ vi.mock("@/lib/prisma", () => {
   };
   return {
     prisma: {
-      user: { findFirst: vi.fn() },
+      user: { findFirst: vi.fn(), findUnique: vi.fn() },
       collectionItem: { findMany: vi.fn() },
+      notification: { create: vi.fn() },
       $transaction: vi.fn(async (cb: (t: typeof tx) => unknown) => cb(tx)),
       __tx: tx,
     },
@@ -31,6 +32,8 @@ const INITIATOR = "user-A";
 beforeEach(() => {
   vi.clearAllMocks();
   p.user.findFirst.mockResolvedValue({ id: "user-B" });
+  p.user.findUnique.mockResolvedValue({ notificationPrefs: null });
+  p.notification.create.mockResolvedValue({ id: "notif-1" });
   p.collectionItem.findMany.mockResolvedValue([]);
   tx.exchange.create.mockResolvedValue({ id: "ex-1" });
   tx.exchangeItem.create.mockResolvedValue({});
