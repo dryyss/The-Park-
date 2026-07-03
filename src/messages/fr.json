@@ -2297,6 +2297,10 @@
     "friendsOnlyFilter": "Rivaux seulement",
     "errorGeneric": "Une erreur est survenue",
     "searchPlaceholder": "Rechercher un rival…",
-    "noSearchResult": "Aucun rival trouvé."
+    "noSearchResult": "Aucun rival trouvé.",
+    "findTitle": "Trouver des rivaux",
+    "findPlaceholder": "Cherche un membre par pseudo…",
+    "findNoResult": "Aucun membre ne correspond.",
+    "emptyHint": "Cherche un membre ci-dessus ou défie un collectionneur depuis le leaderboard."
   }
 }

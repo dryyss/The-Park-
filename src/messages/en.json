@@ -2297,6 +2297,10 @@
     "friendsOnlyFilter": "Rivals only",
     "errorGeneric": "Something went wrong",
     "searchPlaceholder": "Search a rival…",
-    "noSearchResult": "No rival found."
+    "noSearchResult": "No rival found.",
+    "findTitle": "Find rivals",
+    "findPlaceholder": "Search a member by name…",
+    "findNoResult": "No member matches.",
+    "emptyHint": "Search a member above or challenge a collector from the leaderboard."
   }
 }

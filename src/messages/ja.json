@@ -2297,6 +2297,10 @@
     "friendsOnlyFilter": "ライバルのみ",
     "errorGeneric": "エラーが発生しました",
     "searchPlaceholder": "ライバルを検索…",
-    "noSearchResult": "ライバルが見つかりません。"
+    "noSearchResult": "ライバルが見つかりません。",
+    "findTitle": "ライバルを探す",
+    "findPlaceholder": "メンバー名で検索…",
+    "findNoResult": "該当するメンバーがいません。",
+    "emptyHint": "上でメンバーを検索するか、リーダーボードからコレクターに挑もう。"
   }
 }

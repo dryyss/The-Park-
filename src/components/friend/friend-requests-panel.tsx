@@ -4,6 +4,7 @@ import { avatarGradient } from "@/lib/avatars";
 import { getPendingFriendRequests, getFriends } from "@/server/friend/friend.service";
 import { FriendButton } from "./friend-button";
 import { FriendsListWithSearch } from "./friends-list-with-search";
+import { MemberSearch } from "./member-search";
 
 export async function FriendRequestsPanel({ viewerId }: { viewerId: string }) {
   const t = await getTranslations("friends");
@@ -12,10 +13,10 @@ export async function FriendRequestsPanel({ viewerId }: { viewerId: string }) {
     getFriends(viewerId),
   ]);
 
-  if (requests.length === 0 && friends.length === 0) return null;
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Toujours visible : c'est le point d'entrée pour ajouter des rivaux. */}
+      <MemberSearch />
       {requests.length > 0 && (
         <section>
           <h2 className="font-display mb-3 text-[14px] tracking-[1.5px] -skew-x-3 uppercase text-blanc-casse">
@@ -49,12 +50,20 @@ export async function FriendRequestsPanel({ viewerId }: { viewerId: string }) {
         </section>
       )}
 
-      <FriendsListWithSearch
-        friends={friends}
-        title={t("friendsTitle")}
-        searchPlaceholder={t("searchPlaceholder")}
-        noResult={t("noSearchResult")}
-      />
+      {friends.length > 0 ? (
+        <FriendsListWithSearch
+          friends={friends}
+          title={t("friendsTitle")}
+          searchPlaceholder={t("searchPlaceholder")}
+          noResult={t("noSearchResult")}
+        />
+      ) : (
+        <div className="rounded-[16px] border border-dashed border-charbon-400 bg-charbon-800/50 px-6 py-10 text-center">
+          <div className="font-jp text-[30px] font-black text-charbon-500">ライバル募集</div>
+          <p className="mt-2 text-[13.5px] font-bold text-texte-dim">{t("friendsEmpty")}</p>
+          <p className="mt-1 text-[12px] font-bold text-texte-faible">{t("emptyHint")}</p>
+        </div>
+      )}
     </div>
   );
 }

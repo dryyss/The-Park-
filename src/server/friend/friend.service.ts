@@ -161,6 +161,62 @@ export async function getPendingFriendRequests(userId: string): Promise<FriendRe
   }));
 }
 
+export interface MemberSearchResult {
+  userId: string;
+  displayName: string;
+  slug: string;
+  status: FriendshipView;
+  friendshipId: string | null;
+}
+
+/** Recherche de membres par pseudo/slug pour ajouter des rivaux. */
+export async function searchMembers(viewerId: string, q: string): Promise<MemberSearchResult[]> {
+  const query = q.trim();
+  if (query.length < 2) return [];
+
+  const users = await prisma.user.findMany({
+    where: {
+      role: "MEMBER",
+      status: "ACTIVE",
+      id: { not: viewerId },
+      OR: [
+        { displayName: { contains: query, mode: "insensitive" } },
+        { slug: { contains: query, mode: "insensitive" } },
+      ],
+    },
+    select: { id: true, displayName: true, slug: true },
+    orderBy: { displayName: "asc" },
+    take: 8,
+  });
+  if (users.length === 0) return [];
+
+  const userIds = users.map((u) => u.id);
+  const friendships = await prisma.friendship.findMany({
+    where: {
+      OR: [
+        { requesterId: viewerId, addresseeId: { in: userIds } },
+        { addresseeId: viewerId, requesterId: { in: userIds } },
+      ],
+    },
+    select: { id: true, status: true, requesterId: true, addresseeId: true },
+  });
+  const byOtherId = new Map(
+    friendships.map((f) => [f.requesterId === viewerId ? f.addresseeId : f.requesterId, f]),
+  );
+
+  return users.map((u) => {
+    const f = byOtherId.get(u.id);
+    const status: FriendshipView = !f
+      ? "NONE"
+      : f.status === "ACCEPTED"
+        ? "ACCEPTED"
+        : f.requesterId === viewerId
+          ? "PENDING_SENT"
+          : "PENDING_RECEIVED";
+    return { userId: u.id, displayName: u.displayName, slug: u.slug, status, friendshipId: f?.id ?? null };
+  });
+}
+
 /** IDs des amis pour filtrer le marketplace. */
 export async function getFriendUserIds(userId: string): Promise<string[]> {
   const friendships = await prisma.friendship.findMany({
