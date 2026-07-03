@@ -16,6 +16,7 @@ import { getFriendUserIds } from "@/server/friend/friend.service";
 import { MarketplaceFilters, type MarketParams } from "@/components/marketplace/marketplace-filters";
 import { MarketplaceListingGrid } from "@/components/marketplace/marketplace-listing-grid";
 import type { ListingCardLabels } from "@/components/marketplace/listing-card-view";
+import { PromoBannerStrip } from "@/components/ads/promo-banners";
 import { CONDITION_ORDER } from "@/lib/condition";
 import { localePageMetadata } from "@/lib/seo-messages";
 
@@ -158,6 +159,8 @@ export default async function MarketplacePage({
           )}
         </div>
       </div>
+
+      <PromoBannerStrip className="mt-5" />
 
       {/* Bannière enchères */}
       <Link

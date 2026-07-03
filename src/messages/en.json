@@ -1,7 +1,8 @@
 {
   "common": {
     "start": "Get started",
-    "browseCatalog": "Browse the catalog"
+    "browseCatalog": "Browse the catalog",
+    "backToTop": "Back to top"
   },
   "auth": {
     "login": "Log in",
@@ -27,7 +28,7 @@
   },
   "nav": {
     "home": "Home",
-    "collection": "Collection",
+    "collection": "Garage",
     "marketplace": "Marketplace",
     "shop": "Shop",
     "exchanges": "Exchanges",
@@ -49,7 +50,7 @@
     "staffConsole": "Admin console"
   },
   "footer": {
-    "tagline": "The platform for Pocket Drifterz collectors. Binder, secure trades and marketplace — among drift and JDM enthusiasts.",
+    "tagline": "The platform for Pocket Drifterz collectors. Binder, marketplace and auctions — among drift and JDM enthusiasts.",
     "newsletterTitle": "Stay in the race",
     "newsletterPlaceholder": "you@email.jp",
     "newsletterCta": "OK",
@@ -88,7 +89,7 @@
     "heroKicker": "Collection platform · Pocket Drifterz",
     "heroTitleLine1": "Collect",
     "heroTitleLine2": "the drift",
-    "heroIntro": "Manage your binder, track every version of every card, trade with the community and hunt the holos of <b>Season 1 · Forged Engine</b>.",
+    "heroIntro": "Manage your binder, track every version of every card and hunt the holos of <b>Season 1 · Forged Engine</b>.",
     "statCards": "Cards",
     "statRarities": "Rarities",
     "statVersions": "Versions / card",
@@ -113,8 +114,8 @@
     "howTitle": "How to dominate The Park?",
     "howGarageTitle": "Build your Garage",
     "howGarageDesc": "Log your finds in your virtual binder and track set completion in real time.",
-    "howTradeTitle": "Trade & Deal",
-    "howTradeDesc": "Buy directly, propose secure trades or win hard-fought auctions.",
+    "howTradeTitle": "Deal",
+    "howTradeDesc": "Buy directly or win hard-fought auctions.",
     "howLegendTitle": "Become a Legend",
     "howLegendDesc": "Unlock exclusive achievements and climb the Leaderboard to prove who's king of JDM.",
     "marketTitle": "ON THE MARKET",
@@ -862,6 +863,12 @@
     "endedShort": "Ended",
     "timeLeft": "Time left",
     "winner": "Won by {name}",
+    "followupWonTitle": "You won this auction!",
+    "followupWonBody": "Contact the seller to arrange payment and delivery of your card.",
+    "followupContactSeller": "Contact the seller",
+    "followupSoldTitle": "Card sold",
+    "followupSoldBody": "Contact the buyer to arrange payment and shipping of the card.",
+    "followupContactBuyer": "Contact the buyer",
     "reserveMet": "Reserve met",
     "reserveNotMet": "Reserve not met",
     "errorBidTooLow": "Bid too low — minimum {amount} €.",
@@ -2027,7 +2034,7 @@
     "welcomeKicker": "Welcome, driver",
     "welcomeTitle1": "Enter",
     "welcomeTitle2": "the park",
-    "welcomeDesc": "Collect Pocket Drifterz cards, complete Season 1 and trade with the drift/JDM community.",
+    "welcomeDesc": "Collect Pocket Drifterz cards, complete your Season 1 binder and join the drift/JDM community.",
     "welcomeCta": "LET'S GO",
     "step1of3": "Step 1 / 3",
     "step2of3": "Step 2 / 3",

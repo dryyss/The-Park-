@@ -2,6 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getActiveAuctions } from "@/server/auction/auction.service";
 import { PageHeader } from "@/components/common/page-header";
 import { AuctionGrid } from "@/components/auction/auction-sections";
+import { PromoBannerStrip } from "@/components/ads/promo-banners";
 import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +23,7 @@ export default async function EncheresPage({ params }: { params: Promise<{ local
     <main className="page-section">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="オークション" />
       <p className="mt-3 max-w-2xl text-[13px] font-bold text-texte-dim">{t("subtitle")}</p>
+      <PromoBannerStrip className="mt-6" />
       <div className="mt-8">
         <AuctionGrid auctions={auctions} />
       </div>

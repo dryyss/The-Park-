@@ -5,6 +5,7 @@ import { TopBar } from "@/components/layout/top-bar";
 import { Footer } from "@/components/layout/footer";
 import { MobileTabs } from "@/components/layout/mobile-tabs";
 import { PromoBannerCorner } from "@/components/ads/promo-banners";
+import { BackToTopButton } from "@/components/layout/back-to-top-button";
 
 /** Chrome membre (nav, footer) — masqué dans la console staff (/admin). */
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -24,7 +25,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Footer />
       </div>
       <MobileTabs />
+      <BackToTopButton />
       <PromoBannerCorner position="bottom-left" />
+      <PromoBannerCorner position="bottom-right" />
     </>
   );
 }

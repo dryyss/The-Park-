@@ -80,8 +80,9 @@ function BannerWidget({ slides, position }: { slides: PromoSlide[]; position: "b
   if (!visible || slides.length === 0) return null;
 
   const slide = slides[current];
+  // Coin gauche : décalé au-dessus de la flèche « remonter en haut ».
   const posClass = position === "bottom-left"
-    ? "left-4 bottom-24 md:bottom-6"
+    ? "left-4 bottom-[152px] md:bottom-20"
     : "right-4 bottom-24 md:bottom-6";
 
   return (

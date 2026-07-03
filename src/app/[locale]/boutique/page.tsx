@@ -7,6 +7,7 @@ import {
   ShopHero,
   ShopOfficialBanner,
 } from "@/components/shop/shop-sections";
+import { PromoBannerStrip } from "@/components/ads/promo-banners";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +41,7 @@ export default async function BoutiquePage({
   return (
     <main className="page-section pt-8">
       <ShopOfficialBanner />
+      <PromoBannerStrip className="mt-6" />
       {featured && category === "all" && <ShopHero product={featured} />}
 
       <div className="mt-11 flex flex-wrap items-center gap-3.5">

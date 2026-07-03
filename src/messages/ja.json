@@ -1,7 +1,8 @@
 {
   "common": {
     "start": "はじめる",
-    "browseCatalog": "カタログを見る"
+    "browseCatalog": "カタログを見る",
+    "backToTop": "ページ上部へ戻る"
   },
   "auth": {
     "login": "ログイン",
@@ -27,7 +28,7 @@
   },
   "nav": {
     "home": "ホーム",
-    "collection": "コレクション",
+    "collection": "ガレージ",
     "marketplace": "マーケット",
     "shop": "ショップ",
     "exchanges": "交換",
@@ -49,7 +50,7 @@
     "staffConsole": "管理コンソール"
   },
   "footer": {
-    "tagline": "Pocket Drifterz コレクターのためのプラットフォーム。バインダー、安全な交換、マーケット — ドリフトと JDM の愛好家のために。",
+    "tagline": "Pocket Drifterz コレクターのためのプラットフォーム。バインダー、マーケット、オークション — ドリフトと JDM の愛好家のために。",
     "newsletterTitle": "レースに乗り遅れないで",
     "newsletterPlaceholder": "you@email.jp",
     "newsletterCta": "OK",
@@ -88,7 +89,7 @@
     "heroKicker": "コレクションプラットフォーム · Pocket Drifterz",
     "heroTitleLine1": "ドリフトを",
     "heroTitleLine2": "集めろ",
-    "heroIntro": "バインダーを管理し、各カードの各バージョンを記録し、コミュニティと交換し、<b>シーズン1 · 鍛造エンジン</b>のホロを狙え。",
+    "heroIntro": "バインダーを管理し、各カードの各バージョンを記録して、<b>シーズン1 · 鍛造エンジン</b>のホロを狙え。",
     "statCards": "カード",
     "statRarities": "レアリティ",
     "statVersions": "バージョン / カード",
@@ -113,8 +114,8 @@
     "howTitle": "ザ・パークを制覇する方法",
     "howGarageTitle": "ガレージを作れ",
     "howGarageDesc": "コレクションを登録してセット達成率をリアルタイムで追え。",
-    "howTradeTitle": "トレード＆ディール",
-    "howTradeDesc": "直接購入、安全なトレード提案、またはオークションで勝利せよ。",
+    "howTradeTitle": "Deal",
+    "howTradeDesc": "直接購入するか、白熱のオークションで勝ち取れ。",
     "howLegendTitle": "レジェンドになれ",
     "howLegendDesc": "限定実績を解除してリーダーボードの頂点へ。JDMの王者を証明せよ。",
     "marketTitle": "マーケット",
@@ -862,6 +863,12 @@
     "endedShort": "終了",
     "timeLeft": "残り時間",
     "winner": "{name}が落札",
+    "followupWonTitle": "このオークションを落札しました！",
+    "followupWonBody": "出品者に連絡して、支払いとカードの受け取りを調整しましょう。",
+    "followupContactSeller": "出品者に連絡",
+    "followupSoldTitle": "カード売却成立",
+    "followupSoldBody": "落札者に連絡して、支払いとカードの発送を調整しましょう。",
+    "followupContactBuyer": "落札者に連絡",
     "reserveMet": "最低価格クリア",
     "reserveNotMet": "最低価格未達",
     "errorBidTooLow": "入札額が低すぎ — 最低{amount}€。",
@@ -2027,7 +2034,7 @@
     "welcomeKicker": "ようこそ",
     "welcomeTitle1": "パークへ",
     "welcomeTitle2": "ようこそ",
-    "welcomeDesc": "Pocket Drifterz カードを集め、シーズン1のコレクションを完成させ、ドリフト/JDMコミュニティと交換しよう。",
+    "welcomeDesc": "Pocket Drifterz カードを集め、シーズン1のバインダーを完成させ、ドリフト/JDMコミュニティに参加しよう。",
     "welcomeCta": "さあ行こう",
     "step1of3": "ステップ 1 / 3",
     "step2of3": "ステップ 2 / 3",
