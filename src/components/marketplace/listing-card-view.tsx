@@ -122,7 +122,9 @@ export function ListingCardView({
         </div>
 
         <div className="mt-auto flex flex-col gap-2">
-          <div className="flex items-center justify-between gap-2">
+          {/* flex-wrap : si le bouton ne tient pas à côté du prix (cartes étroites
+              en mobile), il passe en pleine largeur sur la ligne du dessous. */}
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <div className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">
                 {l.isWant ? labels.budgetCaption : l.purchasable ? labels.priceFixed : labels.priceCaption}
@@ -132,17 +134,17 @@ export function ListingCardView({
             {isOwnListing ? (
               <Link
                 href="/dashboard"
-                className="font-display -skew-x-3 rounded-lg border-[1.5px] border-or bg-or/10 px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap text-or uppercase transition hover:bg-or/20"
+                className="font-display grow -skew-x-3 rounded-lg border-[1.5px] border-or bg-or/10 px-3 py-2.5 text-center text-[11px] tracking-[1px] whitespace-nowrap text-or uppercase transition hover:bg-or/20"
               >
                 {labels.actionManage}
               </Link>
             ) : l.purchasable ? (
-              <div className="flex flex-col items-end gap-1.5">
+              <div className="flex grow flex-col items-stretch gap-1.5">
                 <AddToMarketplaceCartButton listingId={l.id} inCart={inCart} />
                 <ContactSellerButton
                   sellerSlug={l.seller.slug}
                   locale={locale}
-                  className="text-[10px] font-extrabold tracking-wide text-texte-faible uppercase transition hover:text-carmin"
+                  className="text-center text-[10px] font-extrabold tracking-wide text-texte-faible uppercase transition hover:text-carmin"
                 >
                   {labels.actionContact}
                 </ContactSellerButton>
@@ -152,7 +154,7 @@ export function ListingCardView({
                 sellerSlug={l.seller.slug}
                 locale={locale}
                 className={[
-                  "font-display -skew-x-3 rounded-lg border-[1.5px] px-3 py-2.5 text-[11px] tracking-[1px] whitespace-nowrap uppercase transition hover:-translate-y-0.5",
+                  "font-display grow -skew-x-3 rounded-lg border-[1.5px] px-3 py-2.5 text-center text-[11px] tracking-[1px] whitespace-nowrap uppercase transition hover:-translate-y-0.5",
                   l.isWant
                     ? "border-charbon-400 text-blanc-casse hover:border-carmin"
                     : "border-carmin bg-carmin text-white hover:bg-carmin-alt",

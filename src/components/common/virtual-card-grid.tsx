@@ -68,7 +68,7 @@ export function VirtualCardGrid<T>({
     if (width <= 0) return 280;
     const cardWidth = (width - gapPx * (columns - 1)) / columns;
     const cardHeight = cardWidth * CARD_ASPECT;
-    return cardHeight + estimateExtraHeight + gapPx;
+    return cardHeight + estimateExtraHeight;
   }, [width, columns, estimateExtraHeight, gapPx]);
 
   const virtualizer = useWindowVirtualizer({
@@ -76,6 +76,7 @@ export function VirtualCardGrid<T>({
     estimateSize: () => rowHeight,
     overscan: 3,
     scrollMargin,
+    gap: gapPx,
   });
 
   if (items.length < VIRTUALIZE_THRESHOLD) {
@@ -95,6 +96,8 @@ export function VirtualCardGrid<T>({
         return (
           <div
             key={virtualRow.key}
+            ref={virtualizer.measureElement}
+            data-index={virtualRow.index}
             className={gridClass}
             style={{
               position: "absolute",
