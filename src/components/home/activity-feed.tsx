@@ -78,7 +78,7 @@ export async function ActivityFeed({ items }: { items: ActivityItem[] }) {
           return (
             <div key={a.id} className="flex items-center gap-3 border-b border-charbon-600 py-3 last:border-0">
               <ActivityIcon kind={a.kind} />
-              <div className="min-w-0 flex-1 text-[12.5px] font-bold leading-snug text-texte-doux">
+              <div className="min-w-0 flex-1 text-[12.5px] font-bold leading-snug wrap-break-word text-texte-doux">
                 {message}
               </div>
               <span className="shrink-0 text-[10.5px] font-bold whitespace-nowrap text-texte-faible">

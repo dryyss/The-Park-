@@ -20,7 +20,7 @@ export function PageHeader({
         {kicker && (
           <div className="mb-2.5 text-[12px] font-bold tracking-[4px] text-carmin uppercase">{kicker}</div>
         )}
-        <h1 className="font-display text-[clamp(44px,6vw,74px)] leading-[0.95] -skew-x-6 uppercase text-blanc-casse [text-shadow:4px_4px_0_var(--color-carmin)]">
+        <h1 className="font-display text-[clamp(32px,8vw,74px)] leading-[0.95] wrap-break-word -skew-x-6 uppercase text-blanc-casse [text-shadow:4px_4px_0_var(--color-carmin)]">
           {title}
         </h1>
       </div>
