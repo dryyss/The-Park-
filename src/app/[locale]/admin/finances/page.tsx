@@ -54,6 +54,12 @@ export default async function AdminFinancePage({
       <div className="mt-4">
         <PageHeader kicker={t("finance.kicker")} title={t("finance.title")} jp="財務" />
       </div>
+      <Link
+        href="/admin/retraits"
+        className="mt-4 inline-block rounded-[10px] border border-charbon-400 px-4 py-2 font-display text-[11.5px] tracking-[1px] text-texte-doux uppercase transition hover:border-carmin hover:text-carmin"
+      >
+        💸 Retraits vendeurs en attente
+      </Link>
       <div className="mt-8">
         <AdminFinancePanel
           tab={tab}
