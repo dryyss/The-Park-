@@ -672,6 +672,105 @@
       "UNKNOWN": "Could not complete purchase."
     }
   },
+  "saleTracking": {
+    "titleBuyer": "My purchase tracking",
+    "titleSeller": "My sale tracking",
+    "backPurchases": "My purchases",
+    "backSales": "My sales",
+    "salesKicker": "Seller space",
+    "salesTitle": "My sales",
+    "salesEmpty": "No sales yet — publish a listing on the marketplace.",
+    "purchasesKicker": "Buyer space",
+    "purchasesTitle": "My purchases",
+    "purchasesEmpty": "No purchases yet — explore the marketplace.",
+    "actionRequired": "Action required",
+    "soldBy": "sold by",
+    "soldTo": "sold to",
+    "shippingSuffix": "shipping",
+    "trackingTitle": "Carrier tracking",
+    "printSlip": "Print shipping slip",
+    "contactSeller": "Contact the seller",
+    "contactBuyer": "Contact the buyer",
+    "addressSellerTitle": "Ship to",
+    "addressBuyerTitle": "Delivery to",
+    "steps": {
+      "PAID": "Paid",
+      "AWAITING_SHIPMENT": "Preparing",
+      "SHIPPED": "Shipped",
+      "DELIVERED": "Delivered",
+      "COMPLETED": "Confirmed"
+    },
+    "status": {
+      "PAID": "To ship",
+      "AWAITING_SHIPMENT": "Preparing",
+      "SHIPPED": "Shipped",
+      "DELIVERED_WINDOW": "Delivered · to confirm",
+      "DELIVERED": "Delivered",
+      "COMPLETED": "Completed",
+      "DISPUTED": "Dispute",
+      "NOT_SHIPPED_CANCELLED": "Cancelled (not shipped)",
+      "CANCELLED": "Cancelled",
+      "REFUNDED": "Refunded"
+    },
+    "exception": {
+      "DISPUTED": "A dispute is open on this sale — The Park team is arbitrating.",
+      "CANCELLED": "This sale was cancelled and the buyer refunded."
+    },
+    "carriers": {
+      "COLISSIMO": "Colissimo",
+      "LAPOSTE": "La Poste (tracked letter)",
+      "CHRONOPOST": "Chronopost",
+      "MONDIAL_RELAY": "Mondial Relay",
+      "OTHER": "Other carrier"
+    },
+    "seller": {
+      "paidTitle": "Sale paid — prepare your shipment",
+      "paidBody": "Funds are secured by The Park. Open the shipment to get your daily token and the shipping deadline.",
+      "openShipment": "Prepare shipment",
+      "handTitle": "Hand delivery",
+      "handBody": "Arrange a meetup via chat. The buyer will confirm receipt at handover — funds are then credited to you.",
+      "awaitingTitle": "Pack the card and ship it",
+      "deadline": "Ship before {date} — otherwise the sale is cancelled and refunded.",
+      "dropToken": "Daily token (show it in your packing video):",
+      "shipTitle": "Parcel dropped off? Enter the tracking",
+      "trackingPlaceholder": "Tracking number",
+      "markShipped": "Mark as shipped",
+      "shippedTitle": "Parcel on its way",
+      "shippedBody": "The buyer will confirm receipt on arrival. Funds are credited automatically after confirmation (or 72h after delivery).",
+      "completedTitle": "Sale completed — earnings credited",
+      "completedBody": "The amount (card + shipping) has been added to your seller balance.",
+      "viewWallet": "View my wallet"
+    },
+    "buyer": {
+      "waitingTitle": "The seller is preparing your shipment",
+      "waitingBody": "You'll be notified as soon as the parcel ships. If it isn't sent within 3 days, you're refunded automatically.",
+      "handTitle": "Hand delivery",
+      "handBody": "Arrange a meetup via chat. Once the card is in your hands, confirm receipt below.",
+      "shippedTitle": "Your parcel is on its way",
+      "shippedBody": "On arrival, report the delivery to open the 72h verification window.",
+      "markDelivered": "I received the parcel",
+      "deliveredTitle": "Check your card",
+      "deliveredBody": "Film your unboxing (proof in case of dispute), then confirm receipt to release the funds to the seller.",
+      "guaranteeUntil": "Verification window until {date} — automatic confirmation afterwards.",
+      "confirmReceipt": "All good — confirm receipt",
+      "completedTitle": "Purchase completed",
+      "completedBody": "The card has joined your binder. Thanks for the deal!"
+    },
+    "dispute": {
+      "open": "A problem? Open a dispute",
+      "title": "Open a dispute",
+      "placeholder": "Describe the issue (10 characters minimum)…",
+      "submit": "Submit dispute",
+      "pending": "⚠ Dispute in progress — The Park team is arbitrating."
+    },
+    "errors": {
+      "UNAUTHORIZED": "Login required.",
+      "NOT_FOUND": "Action not possible in the current state.",
+      "VALIDATION": "Invalid data.",
+      "SALE_NOT_FOUND": "Sale not found.",
+      "UNKNOWN": "Something went wrong."
+    }
+  },
   "notifications": {
     "kicker": "Activity · live",
     "title": "Notifications",
@@ -996,6 +1095,8 @@
     "activeAuctions": "Active auctions",
     "estimatedRevenue": "Est. revenue",
     "recentListings": "Recent listings",
+    "mySales": "My sales tracking",
+    "myPurchases": "My purchases tracking",
     "newListing": "+ New listing",
     "noListings": "No listings.",
     "views": "views",

@@ -36,6 +36,25 @@ export async function markShipmentDelivered(shipmentId: string, recipientId: str
         },
       });
     }
+
+    // Vente marketplace : ouvre la fenêtre de garantie 72 h côté Sale.
+    if (shipment.saleId) {
+      await tx.sale.update({
+        where: { id: shipment.saleId },
+        data: { status: "DELIVERED_WINDOW" },
+      });
+      await tx.transactionEvent.create({
+        data: {
+          entityType: "SALE",
+          entityId: shipment.saleId,
+          fromStatus: "SHIPPED",
+          toStatus: "DELIVERED_WINDOW",
+          event: "DELIVERED",
+          actorId: recipientId,
+          metadata: { shipmentId },
+        },
+      });
+    }
   });
 }
 

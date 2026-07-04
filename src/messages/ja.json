@@ -672,6 +672,105 @@
       "UNKNOWN": "購入を完了できませんでした。"
     }
   },
+  "saleTracking": {
+    "titleBuyer": "購入の追跡",
+    "titleSeller": "販売の追跡",
+    "backPurchases": "購入履歴",
+    "backSales": "販売履歴",
+    "salesKicker": "出品者スペース",
+    "salesTitle": "販売履歴",
+    "salesEmpty": "まだ販売がありません — マーケットに出品しよう。",
+    "purchasesKicker": "購入者スペース",
+    "purchasesTitle": "購入履歴",
+    "purchasesEmpty": "まだ購入がありません — マーケットを見てみよう。",
+    "actionRequired": "要対応",
+    "soldBy": "出品者",
+    "soldTo": "購入者",
+    "shippingSuffix": "送料",
+    "trackingTitle": "配送追跡",
+    "printSlip": "配送伝票を印刷",
+    "contactSeller": "出品者に連絡",
+    "contactBuyer": "購入者に連絡",
+    "addressSellerTitle": "発送先",
+    "addressBuyerTitle": "お届け先",
+    "steps": {
+      "PAID": "支払済",
+      "AWAITING_SHIPMENT": "準備中",
+      "SHIPPED": "発送済",
+      "DELIVERED": "配達済",
+      "COMPLETED": "確認済"
+    },
+    "status": {
+      "PAID": "発送待ち",
+      "AWAITING_SHIPMENT": "準備中",
+      "SHIPPED": "発送済",
+      "DELIVERED_WINDOW": "配達済 · 確認待ち",
+      "DELIVERED": "配達済",
+      "COMPLETED": "完了",
+      "DISPUTED": "係争中",
+      "NOT_SHIPPED_CANCELLED": "キャンセル（未発送）",
+      "CANCELLED": "キャンセル",
+      "REFUNDED": "返金済"
+    },
+    "exception": {
+      "DISPUTED": "この取引は係争中です — The Park チームが仲裁します。",
+      "CANCELLED": "この取引はキャンセルされ、購入者に返金されました。"
+    },
+    "carriers": {
+      "COLISSIMO": "Colissimo",
+      "LAPOSTE": "La Poste（追跡付きレター）",
+      "CHRONOPOST": "Chronopost",
+      "MONDIAL_RELAY": "Mondial Relay",
+      "OTHER": "その他"
+    },
+    "seller": {
+      "paidTitle": "支払完了 — 発送を準備しよう",
+      "paidBody": "代金は The Park が保全しています。発送を開始して本日のトークンと発送期限を確認してください。",
+      "openShipment": "発送を準備",
+      "handTitle": "手渡し",
+      "handBody": "チャットで待ち合わせを決めましょう。受け渡し時に購入者が受領を確認すると、代金が入金されます。",
+      "awaitingTitle": "カードを梱包して発送",
+      "deadline": "{date}までに発送 — 過ぎると取引はキャンセル・返金されます。",
+      "dropToken": "本日のトークン（梱包動画に写してください）：",
+      "shipTitle": "発送済み？追跡番号を入力",
+      "trackingPlaceholder": "追跡番号",
+      "markShipped": "発送済みにする",
+      "shippedTitle": "荷物は配送中",
+      "shippedBody": "到着後、購入者が受領を確認します。確認後（または配達から72時間後）に自動で入金されます。",
+      "completedTitle": "取引完了 — 売上が入金されました",
+      "completedBody": "カード代金と送料が出品者残高に追加されました。",
+      "viewWallet": "ウォレットを見る"
+    },
+    "buyer": {
+      "waitingTitle": "出品者が発送を準備中",
+      "waitingBody": "発送され次第通知します。3日以内に発送されない場合は自動で返金されます。",
+      "handTitle": "手渡し",
+      "handBody": "チャットで待ち合わせを決めましょう。カードを受け取ったら、下で受領を確認してください。",
+      "shippedTitle": "荷物は配送中",
+      "shippedBody": "届いたら配達を報告して、72時間の確認期間を開始してください。",
+      "markDelivered": "荷物を受け取った",
+      "deliveredTitle": "カードを確認",
+      "deliveredBody": "開封動画を撮影し（係争時の証拠）、受領を確認して出品者への支払いを確定しましょう。",
+      "guaranteeUntil": "確認期間は{date}まで — その後は自動確認されます。",
+      "confirmReceipt": "問題なし — 受領を確認",
+      "completedTitle": "購入完了",
+      "completedBody": "カードがバインダーに追加されました。良い取引を！"
+    },
+    "dispute": {
+      "open": "問題がある？係争を開く",
+      "title": "係争を開く",
+      "placeholder": "問題を説明してください（10文字以上）…",
+      "submit": "係争を送信",
+      "pending": "⚠ 係争中 — The Park チームが仲裁します。"
+    },
+    "errors": {
+      "UNAUTHORIZED": "ログインが必要です。",
+      "NOT_FOUND": "現在の状態では実行できません。",
+      "VALIDATION": "無効なデータです。",
+      "SALE_NOT_FOUND": "取引が見つかりません。",
+      "UNKNOWN": "エラーが発生しました。"
+    }
+  },
   "notifications": {
     "kicker": "アクティビティ",
     "title": "通知",
@@ -996,6 +1095,8 @@
     "activeAuctions": "開催中オークション",
     "estimatedRevenue": "推定売上",
     "recentListings": "最近の出品",
+    "mySales": "販売の追跡",
+    "myPurchases": "購入の追跡",
     "newListing": "+ 新規出品",
     "noListings": "出品なし",
     "views": "閲覧",

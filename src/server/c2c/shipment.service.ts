@@ -65,8 +65,14 @@ export async function recordShipmentProof(
     tokenShown?: string;
   },
 ): Promise<string> {
+  // L'expéditeur filme l'emballage/dépôt ; le destinataire filme le déballage.
   const shipment = await prisma.shipment.findFirst({
-    where: { id: shipmentId, shipperId: uploaderId },
+    where: {
+      id: shipmentId,
+      ...(input.kind === "UNBOXING"
+        ? { OR: [{ shipperId: uploaderId }, { recipientId: uploaderId }] }
+        : { shipperId: uploaderId }),
+    },
   });
   if (!shipment) throw new Error("SHIPMENT_NOT_FOUND");
 
@@ -97,18 +103,19 @@ export async function purgeExpiredShipmentProofs(): Promise<number> {
   return result.count;
 }
 
-/** Marque un colis comme expédié avec numéro de suivi. */
+/** Marque un colis comme expédié avec numéro de suivi (et transporteur). */
 export async function markShipmentShipped(
   shipmentId: string,
   shipperId: string,
   trackingNumber: string,
+  carrier?: import("@/generated/prisma/client").Carrier,
 ): Promise<void> {
   let recipientId: string | null = null;
 
   await prisma.$transaction(async (tx) => {
     const shipment = await tx.shipment.update({
       where: { id: shipmentId, shipperId },
-      data: { status: "SHIPPED", trackingNumber },
+      data: { status: "SHIPPED", trackingNumber, shippedAt: new Date(), ...(carrier ? { carrier } : {}) },
     });
 
     recipientId = shipment.recipientId;
@@ -127,6 +134,24 @@ export async function markShipmentShipped(
           event: "TRACKING_ADDED",
           actorId: shipperId,
           metadata: { trackingNumber },
+        },
+      });
+    }
+
+    if (shipment.saleId) {
+      await tx.sale.update({
+        where: { id: shipment.saleId },
+        data: { status: "SHIPPED" },
+      });
+      await tx.transactionEvent.create({
+        data: {
+          entityType: "SALE",
+          entityId: shipment.saleId,
+          fromStatus: "AWAITING_SHIPMENT",
+          toStatus: "SHIPPED",
+          event: "TRACKING_ADDED",
+          actorId: shipperId,
+          metadata: { trackingNumber, ...(carrier ? { carrier } : {}) },
         },
       });
     }

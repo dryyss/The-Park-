@@ -42,9 +42,12 @@ export async function POST(request: Request) {
           .safeParse(JSON.parse(clientPayload ?? "{}"));
         if (!payload.success) throw new Error("VALIDATION");
 
-        // Vérifie que l'utilisateur est bien le shipper de cet envoi.
+        // Expéditeur (preuves d'emballage/dépôt) ou destinataire (déballage filmé).
         const shipment = await prisma.shipment.findFirst({
-          where: { id: payload.data.shipmentId, shipperId: viewer.id },
+          where: {
+            id: payload.data.shipmentId,
+            OR: [{ shipperId: viewer.id }, { recipientId: viewer.id }],
+          },
           select: { id: true },
         });
         if (!shipment) throw new Error("FORBIDDEN");

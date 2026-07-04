@@ -38,6 +38,22 @@ export async function DashboardPanel({
         ))}
       </div>
 
+      {/* Accès rapide : suivi des ventes et des achats */}
+      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <Link
+          href="/dashboard/ventes"
+          className="font-display -skew-x-3 rounded-[14px] border-[1.5px] border-carmin bg-carmin/10 px-5 py-3.5 text-center text-[13px] tracking-[1.5px] text-carmin uppercase transition hover:bg-carmin hover:text-white"
+        >
+          📦 {t("mySales")}
+        </Link>
+        <Link
+          href="/marketplace/achats"
+          className="font-display -skew-x-3 rounded-[14px] border-[1.5px] border-charbon-400 px-5 py-3.5 text-center text-[13px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin hover:text-carmin"
+        >
+          🛒 {t("myPurchases")}
+        </Link>
+      </div>
+
       <div className="mt-8 rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-[18px] tracking-wide text-blanc-casse uppercase">{t("recentListings")}</h2>

@@ -20,6 +20,7 @@ export function notificationHref(
     case "REVIEW_RECEIVED":
       return "/profil";
     case "WISHLIST_LISTING":
+    case "WISHLIST_PRICE_DROP":
       return "/wishlist";
     case "AUCTION_OUTBID":
     case "AUCTION_WON":
@@ -32,11 +33,15 @@ export function notificationHref(
     case "OFFER_RECEIVED":
       return "/marketplace";
     case "SALE_CREATED":
+      // Vendeur : une vente à expédier.
+      return "/dashboard/ventes";
     case "SHIPMENT_SHIPPED":
     case "SHIPMENT_DELIVERED":
+    case "GUARANTEE_EXPIRING":
+      // Acheteur : suivi de ses achats.
+      return "/marketplace/achats";
     case "DISPUTE_OPENED":
     case "DISPUTE_RESOLVED":
-    case "GUARANTEE_EXPIRING":
     case "ORDER_UPDATE":
       return "/dashboard";
     default:
@@ -67,6 +72,7 @@ const MARKET_TYPES: NotificationType[] = [
   "LISTING_IN_CART",
   "LISTING_EXPIRING",
   "WISHLIST_LISTING",
+  "WISHLIST_PRICE_DROP",
   "MESSAGE_RECEIVED",
 ];
 

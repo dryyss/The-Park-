@@ -117,10 +117,18 @@ async function reallocateCollection(
   });
 }
 
-/** Clôture la vente : l'acheteur confirme la réception (ou auto via cron). */
+/** Clôture la vente : l'acheteur confirme la réception (ou auto via cron).
+ *  Remise en main propre : confirmable dès le paiement (pas d'expédition). */
 export async function confirmSaleReceipt(saleId: string, buyerId: string): Promise<void> {
   const sale = await prisma.sale.findFirst({
-    where: { id: saleId, buyerId, status: { in: ["DELIVERED_WINDOW", "DELIVERED"] } },
+    where: {
+      id: saleId,
+      buyerId,
+      OR: [
+        { status: { in: ["DELIVERED_WINDOW", "DELIVERED"] } },
+        { shippingMode: "HAND_DELIVERY", status: { in: ["PAID", "AWAITING_SHIPMENT", "SHIPPED"] } },
+      ],
+    },
     include: { listing: true },
   });
   if (!sale) throw new Error("NOT_FOUND");

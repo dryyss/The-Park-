@@ -1,77 +1,91 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
-import { requireAuthViewer } from "@/server/user/user.service";
-import { getSaleForBuyer } from "@/server/sale/sale.service";
-import { confirmSaleCheckoutAction } from "@/server/sale/sale.actions";
+import { getViewerUser } from "@/server/user/user.service";
+import { getSaleTrackingForViewer } from "@/server/sale/sale.service";
+import { SaleTrackingPanel, type SaleTrackingView } from "@/components/sale/sale-tracking-panel";
+import { GuestAuthBanner } from "@/components/auth/login-gate-prompt";
+import { cardImage } from "@/lib/rarity";
 import { formatPrice } from "@/lib/format";
+import { isHandDelivery } from "@/lib/shipping";
+import { PRIVATE_METADATA } from "@/lib/seo-messages";
 
+export const metadata = PRIVATE_METADATA;
 export const dynamic = "force-dynamic";
 
-export default async function MarketplaceAchatPage({
+export default async function SaleTrackingPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: string; saleId: string }>;
-  searchParams: Promise<{ success?: string; session_id?: string }>;
 }) {
   const { locale, saleId } = await params;
-  const sp = await searchParams;
   setRequestLocale(locale);
-  const t = await getTranslations("saleCheckout");
+  const t = await getTranslations("saleTracking");
 
-  const viewer = await requireAuthViewer(`/${locale}/marketplace/achat/${saleId}`);
-
-  if (sp.success === "1" && sp.session_id) {
-    await confirmSaleCheckoutAction(sp.session_id);
+  const viewer = await getViewerUser();
+  if (!viewer) {
+    return (
+      <main className="page-section">
+        <GuestAuthBanner messageKey="loginGateDashboard" />
+      </main>
+    );
   }
 
-  const sale = await getSaleForBuyer(saleId, viewer.id);
-  if (!sale) notFound();
+  const tracking = await getSaleTrackingForViewer(saleId, viewer.id);
+  if (!tracking) notFound();
+  const { sale, isBuyer } = tracking;
 
-  const card = sale.listing.variant.card;
-  const isPaid = sale.status !== "PENDING_PAYMENT" && sale.status !== "CANCELLED";
-  const conversationId = sale.conversation?.id;
+  const counterpart = isBuyer ? sale.seller : sale.buyer;
+  const address = sale.deliveryAddress as SaleTrackingView["deliveryAddress"];
+  const shippingCost = Number(sale.shippingCost);
 
-  if (isPaid && conversationId && sp.success === "1") {
-    redirect(`/${locale}/messages/${conversationId}?purchased=1`);
-  }
+  const view: SaleTrackingView = {
+    saleId: sale.id,
+    status: sale.status,
+    shippingMode: sale.shippingMode,
+    handDelivery: isHandDelivery(sale.shippingMode),
+    priceLabel: formatPrice(Number(sale.price)),
+    shippingCostLabel: shippingCost > 0 ? formatPrice(shippingCost) : null,
+    totalLabel: formatPrice(Number(sale.price) + Number(sale.serviceFee) + shippingCost),
+    isBuyer,
+    card: {
+      name: sale.listing.variant.card.name,
+      image: cardImage(sale.listing.variant.imageUrl ?? sale.listing.variant.card.imageUrl),
+      versionLabel: sale.listing.variant.versionType.label,
+    },
+    counterpart: { name: counterpart.displayName, slug: counterpart.slug },
+    conversationId: sale.conversation?.id ?? null,
+    deliveryAddress: address ?? null,
+    shipment: sale.shipment
+      ? {
+          id: sale.shipment.id,
+          status: sale.shipment.status,
+          trackingNumber: sale.shipment.trackingNumber,
+          carrier: sale.shipment.carrier,
+          // Le jeton du jour n'est montré qu'à l'expéditeur (anti-fraude).
+          dropToken: isBuyer ? null : sale.shipment.dropToken,
+          notShipDeadline: sale.shipment.notShipDeadline?.toISOString() ?? null,
+          guaranteeEndsAt: sale.shipment.guaranteeEndsAt?.toISOString() ?? null,
+          proofs: sale.shipment.proofs.map((p) => ({ id: p.id, kind: p.kind, mediaUrl: p.mediaUrl })),
+        }
+      : null,
+    disputeOpen: sale.disputes.some((d) => d.status !== "RESOLVED" && d.status !== "CLOSED"),
+  };
 
   return (
-    <main className="mx-auto max-w-[640px] page-pad pt-9 pb-[60px]">
-      <nav className="flex items-center gap-3 text-[12.5px] font-bold text-texte-dim">
-        <Link href="/marketplace" className="hover:text-carmin">
-          {t("breadcrumbMarket")}
-        </Link>
-        <span className="text-charbon-400">/</span>
-        <span className="text-texte-doux">{t("breadcrumbCheckout")}</span>
-      </nav>
-
-      <h1 className="font-display mt-4 text-[clamp(28px,4vw,40px)] leading-tight -skew-x-3 uppercase text-blanc-casse">
-        {isPaid ? t("titleSuccess") : t("titlePending")}
-      </h1>
-
-      <div className="mt-6 rounded-[18px] border border-charbon-500 bg-charbon-800 p-5">
-        <div className="text-[14px] font-extrabold text-blanc-casse">{card.name}</div>
-        <div className="mt-1 text-[12px] font-bold text-texte-dim">
-          #{String(card.number).padStart(2, "0")} · {sale.listing.variant.versionType.label}
-        </div>
-        <div className="font-display mt-4 text-[24px] text-blanc-casse">{formatPrice(sale.price)}</div>
-        <p className="mt-3 text-[12.5px] font-semibold text-texte-dim">{t("sellerNotified")}</p>
-      </div>
-
-      {conversationId && (
-        <Link
-          href={`/messages/${conversationId}`}
-          className="font-display mt-6 inline-block -skew-x-3 rounded-lg bg-carmin px-6 py-3 text-[12.5px] tracking-[1.5px] text-white uppercase transition hover:bg-carmin-alt"
-        >
-          {t("goMessages")} →
-        </Link>
-      )}
-
-      <Link href="/marketplace" className="mt-4 block text-[12px] font-bold text-texte-faible hover:text-carmin">
-        ← {t("backMarket")}
+    <main className="page-section">
+      <Link
+        href={isBuyer ? "/marketplace/achats" : "/dashboard/ventes"}
+        className="text-[12px] font-extrabold text-carmin hover:underline"
+      >
+        ← {isBuyer ? t("backPurchases") : t("backSales")}
       </Link>
+      <h1 className="font-display mt-4 text-[clamp(28px,4vw,44px)] leading-tight -skew-x-3 uppercase text-blanc-casse [text-shadow:3px_3px_0_var(--color-carmin)]">
+        {t(isBuyer ? "titleBuyer" : "titleSeller")}
+      </h1>
+      <div className="mt-8">
+        <SaleTrackingPanel view={view} />
+      </div>
     </main>
   );
 }

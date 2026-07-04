@@ -672,6 +672,105 @@
       "UNKNOWN": "Impossible de finaliser l'achat."
     }
   },
+  "saleTracking": {
+    "titleBuyer": "Suivi de mon achat",
+    "titleSeller": "Suivi de ma vente",
+    "backPurchases": "Mes achats",
+    "backSales": "Mes ventes",
+    "salesKicker": "Espace vendeur",
+    "salesTitle": "Mes ventes",
+    "salesEmpty": "Aucune vente pour le moment — publie une annonce sur le marketplace.",
+    "purchasesKicker": "Espace acheteur",
+    "purchasesTitle": "Mes achats",
+    "purchasesEmpty": "Aucun achat pour le moment — explore le marketplace.",
+    "actionRequired": "Action requise",
+    "soldBy": "vendu par",
+    "soldTo": "vendu à",
+    "shippingSuffix": "de port",
+    "trackingTitle": "Suivi transporteur",
+    "printSlip": "Imprimer le bordereau",
+    "contactSeller": "Contacter le vendeur",
+    "contactBuyer": "Contacter l'acheteur",
+    "addressSellerTitle": "Adresse d'expédition",
+    "addressBuyerTitle": "Livraison à",
+    "steps": {
+      "PAID": "Payé",
+      "AWAITING_SHIPMENT": "En préparation",
+      "SHIPPED": "Expédié",
+      "DELIVERED": "Livré",
+      "COMPLETED": "Validé"
+    },
+    "status": {
+      "PAID": "À expédier",
+      "AWAITING_SHIPMENT": "En préparation",
+      "SHIPPED": "Expédié",
+      "DELIVERED_WINDOW": "Livré · à valider",
+      "DELIVERED": "Livré",
+      "COMPLETED": "Terminé",
+      "DISPUTED": "Litige",
+      "NOT_SHIPPED_CANCELLED": "Annulé (non expédié)",
+      "CANCELLED": "Annulé",
+      "REFUNDED": "Remboursé"
+    },
+    "exception": {
+      "DISPUTED": "Un litige est en cours sur cette vente — l'équipe The Park arbitre.",
+      "CANCELLED": "Cette vente a été annulée et l'acheteur remboursé."
+    },
+    "carriers": {
+      "COLISSIMO": "Colissimo",
+      "LAPOSTE": "La Poste (lettre suivie)",
+      "CHRONOPOST": "Chronopost",
+      "MONDIAL_RELAY": "Mondial Relay",
+      "OTHER": "Autre transporteur"
+    },
+    "seller": {
+      "paidTitle": "Vente payée — prépare ton envoi",
+      "paidBody": "Les fonds sont sécurisés par The Park. Ouvre l'envoi pour obtenir ton jeton du jour et le délai d'expédition.",
+      "openShipment": "Préparer l'envoi",
+      "handTitle": "Remise en main propre",
+      "handBody": "Convenez d'un rendez-vous via le chat. L'acheteur validera la réception au moment de la remise — les fonds te seront alors crédités.",
+      "awaitingTitle": "Emballe la carte et expédie",
+      "deadline": "À expédier avant le {date} — sinon la vente est annulée et remboursée.",
+      "dropToken": "Jeton du jour (à montrer dans ta vidéo d'emballage) :",
+      "shipTitle": "Colis déposé ? Renseigne le suivi",
+      "trackingPlaceholder": "N° de suivi",
+      "markShipped": "Marquer expédié",
+      "shippedTitle": "Colis en route",
+      "shippedBody": "L'acheteur validera la réception à l'arrivée. Les fonds te seront crédités automatiquement après validation (ou 72 h après la livraison).",
+      "completedTitle": "Vente terminée — gains crédités",
+      "completedBody": "Le montant (carte + frais de port) a été ajouté à ton solde vendeur.",
+      "viewWallet": "Voir mon portefeuille"
+    },
+    "buyer": {
+      "waitingTitle": "Le vendeur prépare ton envoi",
+      "waitingBody": "Tu seras notifié dès que le colis est expédié. S'il n'est pas envoyé sous 3 jours, tu es remboursé automatiquement.",
+      "handTitle": "Remise en main propre",
+      "handBody": "Convenez d'un rendez-vous via le chat. Une fois la carte en main, valide la réception ci-dessous.",
+      "shippedTitle": "Ton colis est en route",
+      "shippedBody": "À la réception, signale l'arrivée du colis pour ouvrir la fenêtre de vérification de 72 h.",
+      "markDelivered": "J'ai reçu le colis",
+      "deliveredTitle": "Vérifie ta carte",
+      "deliveredBody": "Filme ton déballage (preuve en cas de litige), puis valide la réception pour libérer les fonds au vendeur.",
+      "guaranteeUntil": "Fenêtre de vérification jusqu'au {date} — validation automatique ensuite.",
+      "confirmReceipt": "Tout est bon — je valide la réception",
+      "completedTitle": "Achat terminé",
+      "completedBody": "La carte a rejoint ton classeur. Merci pour ce deal !"
+    },
+    "dispute": {
+      "open": "Un problème ? Ouvrir un litige",
+      "title": "Ouvrir un litige",
+      "placeholder": "Décris le problème (10 caractères minimum)…",
+      "submit": "Envoyer le litige",
+      "pending": "⚠ Litige en cours — l'équipe The Park arbitre."
+    },
+    "errors": {
+      "UNAUTHORIZED": "Connexion requise.",
+      "NOT_FOUND": "Action impossible dans l'état actuel.",
+      "VALIDATION": "Données invalides.",
+      "SALE_NOT_FOUND": "Vente introuvable.",
+      "UNKNOWN": "Une erreur est survenue."
+    }
+  },
   "notifications": {
     "kicker": "Activité · en direct",
     "title": "Notifications",
@@ -996,6 +1095,8 @@
     "activeAuctions": "Enchères actives",
     "estimatedRevenue": "CA indicatif",
     "recentListings": "Annonces récentes",
+    "mySales": "Suivi de mes ventes",
+    "myPurchases": "Suivi de mes achats",
     "newListing": "+ Nouvelle annonce",
     "noListings": "Aucune annonce.",
     "views": "vues",
