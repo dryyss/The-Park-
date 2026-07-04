@@ -56,7 +56,7 @@ export async function publishListing(
     });
   });
 
-  await notifyWishlistForNewListing(listing.id, sellerId, input.variantId).catch((err) => {
+  await notifyWishlistForNewListing(listing.id, sellerId).catch((err) => {
     console.error("[marketplace] wishlist notify failed", err);
   });
 

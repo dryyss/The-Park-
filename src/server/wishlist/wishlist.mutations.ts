@@ -62,6 +62,22 @@ export async function addWishlistItem(
   return item.id;
 }
 
+/** Définit (ou retire, si null) le seuil d'alerte prix d'une carte de la wishlist. */
+export async function setWishlistItemAlertPrice(
+  userId: string,
+  wishlistItemId: string,
+  alertPrice: number | null,
+): Promise<void> {
+  if (alertPrice != null && (!Number.isFinite(alertPrice) || alertPrice <= 0)) {
+    throw new Error("INVALID_PRICE");
+  }
+  const updated = await prisma.wishlistItem.updateMany({
+    where: { id: wishlistItemId, userId },
+    data: { alertPrice: alertPrice == null ? null : new Prisma.Decimal(alertPrice.toFixed(2)) },
+  });
+  if (updated.count === 0) throw new Error("NOT_FOUND");
+}
+
 export async function removeWishlistItem(userId: string, wishlistItemId: string): Promise<void> {
   const deleted = await prisma.wishlistItem.deleteMany({
     where: { id: wishlistItemId, userId },

@@ -10,6 +10,7 @@ import { Link } from "@/i18n/navigation";
 import { rarityMeta } from "@/lib/rarity";
 import { conditionColor } from "@/lib/condition";
 import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
+import { WishlistAlertControl } from "@/components/wishlist/wishlist-alert-control";
 
 export function WishlistGridClient({
   items,
@@ -79,11 +80,22 @@ export function WishlistGridClient({
               </p>
               <p className="text-[11px] font-bold text-texte-dim">{card.quoteValue}</p>
             </Link>
+            <WishlistAlertControl
+              wishlistItemId={card.id}
+              alertPrice={card.alertPrice}
+              onRequireAuth={() => {
+                if (!isAuthenticated) {
+                  setShowLoginGate(true);
+                  return true;
+                }
+                return false;
+              }}
+            />
             <button
               type="button"
               disabled={pending}
               onClick={() => remove(card.id)}
-              className="mt-2 w-full rounded-lg border border-charbon-500 py-1.5 text-[11px] font-extrabold text-texte-dim hover:border-neon-rouge hover:text-neon-rouge disabled:opacity-50"
+              className="mt-1.5 w-full rounded-lg border border-charbon-500 py-1.5 text-[11px] font-extrabold text-texte-dim hover:border-neon-rouge hover:text-neon-rouge disabled:opacity-50"
             >
               {t("remove")}
             </button>

@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { Auth0Provider } from "@auth0/nextjs-auth0";
 import { routing } from "@/i18n/routing";
 import { AppShell } from "@/components/layout/app-shell";
+import { ConnectionLogger } from "@/components/auth/connection-logger";
 import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 import { DEFAULT_OG_IMAGE, SITE_URL } from "@/lib/seo";
 import "../globals.css";
@@ -101,6 +102,7 @@ export default async function LocaleLayout({
       <body className={`${display.variable} ${sans.variable} ${jp.variable} antialiased`}>
         <Auth0Provider>
           <NextIntlClientProvider>
+            <ConnectionLogger />
             <AppShell>{children}</AppShell>
           </NextIntlClientProvider>
         </Auth0Provider>

@@ -225,9 +225,9 @@ describe(`wishlist [${TAG}] — notification à la mise en vente`, () => {
     });
   });
 
-  it("notifyWishlistForNewListing sur variante inexistante est un no-op silencieux", async () => {
+  it("notifyWishlistForNewListing sur annonce inexistante est un no-op silencieux", async () => {
     await expect(
-      notifyWishlistForNewListing(`listing-x-${TAG}`, seller.id, "variant-inexistant"),
+      notifyWishlistForNewListing(`listing-x-${TAG}`, seller.id),
     ).resolves.toBeUndefined();
     expect(
       await prisma.notification.count({ where: { type: "WISHLIST_LISTING", entityId: `listing-x-${TAG}` } }),

@@ -4,6 +4,7 @@ import { getAuthenticatedViewer } from "@/server/user/user.service";
 import { sendConversationMessage } from "@/server/messaging/messaging.mutations";
 import { saveMessagePhotoFile } from "@/lib/message-photo-storage";
 import { MAX_MESSAGE_PHOTOS } from "@/lib/message-photos.constants";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 import { prisma } from "@/lib/prisma";
 
 function revalidateMessaging(conversationId: string) {
@@ -25,6 +26,9 @@ export async function POST(request: Request) {
   if (!viewer) {
     return NextResponse.json({ ok: false, error: "UNAUTHORIZED" }, { status: 401 });
   }
+
+  const rl = await rateLimit("messages-send", viewer.id, { limit: 20, windowSec: 60 });
+  if (!rl.ok) return tooManyRequests(rl);
 
   let form: FormData;
   try {

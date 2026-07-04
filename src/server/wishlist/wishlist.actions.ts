@@ -3,7 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
-import { addWishlistItem, removeWishlistItem, mapWishlistError } from "@/server/wishlist/wishlist.mutations";
+import {
+  addWishlistItem,
+  removeWishlistItem,
+  setWishlistItemAlertPrice,
+  mapWishlistError,
+} from "@/server/wishlist/wishlist.mutations";
 import { EDITION_PRESET_CODES } from "@/lib/card-edition";
 import { CONDITION_ORDER } from "@/lib/condition";
 
@@ -41,6 +46,28 @@ export async function addToWishlistAction(input: unknown): Promise<WishlistActio
     return { ok: true };
   } catch (err) {
     console.error("[wishlist] add failed:", err);
+    return { ok: false, error: mapWishlistError(err) };
+  }
+}
+
+const alertSchema = z.object({
+  wishlistItemId: z.string().min(1),
+  // null = retirer l'alerte prix (revenir à l'alerte de disponibilité).
+  alertPrice: z.number().positive().max(1_000_000).nullable(),
+});
+
+export async function setWishlistAlertPriceAction(input: unknown): Promise<WishlistActionResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  const parsed = alertSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "VALIDATION" };
+
+  try {
+    await setWishlistItemAlertPrice(viewer.id, parsed.data.wishlistItemId, parsed.data.alertPrice);
+    revalidatePath("/wishlist");
+    return { ok: true };
+  } catch (err) {
     return { ok: false, error: mapWishlistError(err) };
   }
 }

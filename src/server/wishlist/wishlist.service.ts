@@ -21,6 +21,8 @@ export interface WishlistCard {
   editionLabel: string | null;
   isFirstEdition: boolean;
   note: string | null;
+  /** Seuil d'alerte prix (€) ou null si simple alerte de disponibilité. */
+  alertPrice: number | null;
   addedAt: Date;
 }
 
@@ -52,6 +54,7 @@ export async function getViewerWishlist(userId: string): Promise<WishlistCard[]>
     editionLabel: wishlistEditionDisplayLabel(w.editionPreset, w.variant.editionLabel),
     isFirstEdition: wishlistIsFirstEdition(w.editionPreset, w.variant.editionLabel),
     note: w.note,
+    alertPrice: w.alertPrice == null ? null : Number(w.alertPrice.toString()),
     addedAt: w.createdAt,
   }));
 }

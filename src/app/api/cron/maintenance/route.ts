@@ -6,24 +6,48 @@ import { processExchangeTimeouts } from "@/server/c2c/exchange-lifecycle.service
 import { processSaleTimeouts } from "@/server/sale/sale-lifecycle.service";
 import { purgeExpiredCartItems } from "@/server/marketplace-cart/marketplace-cart.service";
 import { evaluateLeaderboardBadges } from "@/server/badge/badge.service";
+import { purgeExpiredRateLimitHits } from "@/lib/rate-limit";
+import { purgeExpiredConnectionLogs } from "@/server/platform/connection-log.service";
 
 export const dynamic = "force-dynamic";
 
 async function runMaintenance() {
-  const [expiredListings, settledAuctions, purgedProofs, exchangeTimeouts, saleTimeouts, purgedCartItems, leaderboardBadges] =
-    await Promise.all([
-      expireDueListings(),
-      settleDueAuctions(),
-      purgeExpiredShipmentProofs(),
-      processExchangeTimeouts(),
-      processSaleTimeouts(),
-      purgeExpiredCartItems(),
-      // Succès de classement (Midnight Club, Drift King, Roi de la Glisse) :
-      // évalués chaque jour pour le haut du leaderboard, sans attendre une visite.
-      evaluateLeaderboardBadges(),
-    ]);
+  const [
+    expiredListings,
+    settledAuctions,
+    purgedProofs,
+    exchangeTimeouts,
+    saleTimeouts,
+    purgedCartItems,
+    leaderboardBadges,
+    purgedRateLimits,
+    purgedConnectionLogs,
+  ] = await Promise.all([
+    expireDueListings(),
+    settleDueAuctions(),
+    purgeExpiredShipmentProofs(),
+    processExchangeTimeouts(),
+    processSaleTimeouts(),
+    purgeExpiredCartItems(),
+    // Succès de classement (Midnight Club, Drift King, Roi de la Glisse) :
+    // évalués chaque jour pour le haut du leaderboard, sans attendre une visite.
+    evaluateLeaderboardBadges(),
+    purgeExpiredRateLimitHits(),
+    // LCEN : conservation 1 an des journaux de connexion.
+    purgeExpiredConnectionLogs(),
+  ]);
 
-  return { expiredListings, settledAuctions, purgedProofs, exchangeTimeouts, saleTimeouts, purgedCartItems, leaderboardBadges };
+  return {
+    expiredListings,
+    settledAuctions,
+    purgedProofs,
+    exchangeTimeouts,
+    saleTimeouts,
+    purgedCartItems,
+    leaderboardBadges,
+    purgedRateLimits,
+    purgedConnectionLogs,
+  };
 }
 
 function isAuthorized(request: Request): boolean {

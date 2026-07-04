@@ -21,6 +21,7 @@ const TYPE_PREF: Partial<Record<NotificationType, PrefKey>> = {
   LISTING_IN_CART: "exchanges",
   LISTING_EXPIRING: "exchanges",
   WISHLIST_LISTING: "exchanges",
+  WISHLIST_PRICE_DROP: "exchanges",
   // BADGE_UNLOCKED intentionally omitted — toujours envoyé, indépendamment des préférences
 };
 

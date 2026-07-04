@@ -4,7 +4,9 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { OwnedVariantStack } from "@/components/cards/owned-variant-stack";
 import { CardCommunityPhotos } from "@/components/collection/card-community-photos";
+import { CardPriceHistory } from "@/components/cards/card-price-history";
 import { getCardDetail } from "@/server/catalog/catalog.service";
+import { getCardPriceHistory } from "@/server/catalog/price-history.service";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import { UserHoverCard } from "@/components/profile/user-hover-card";
 import { getViewerUser, getAuthenticatedViewer } from "@/server/user/user.service";
@@ -44,6 +46,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
   if (!card) notFound();
 
   const likeMeta = await getCardLikeMeta(card.id, viewer?.id);
+  const priceHistory = await getCardPriceHistory(card.id, { limit: 60 });
 
   const totalQty = card.versions.reduce((s, v) => s + v.quantity, 0);
   const ownedAny = totalQty > 0;
@@ -353,6 +356,10 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
           </div>
         </section>
       )}
+
+      <section className="mt-8">
+        <CardPriceHistory history={priceHistory} />
+      </section>
     </main>
   );
 }

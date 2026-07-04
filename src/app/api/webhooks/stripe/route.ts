@@ -1,11 +1,32 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
+import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma/client";
 import { fulfillOrderFromStripeSession } from "@/server/checkout/checkout.service";
 import { fulfillSaleFromStripeSession } from "@/server/sale/sale-checkout.service";
 import { syncConnectAccountByStripeId } from "@/server/wallet/wallet-connect.service";
 
 export const runtime = "nodejs";
+
+/**
+ * Verrou d'idempotence : l'insertion de l'id d'évènement Stripe sert de garde.
+ * Un doublon (rejeu, double livraison Stripe) viole la PK → on ignore sans
+ * retraiter. Retourne `true` si l'évènement est nouveau et doit être traité.
+ */
+async function claimEvent(event: Stripe.Event): Promise<boolean> {
+  try {
+    await prisma.processedWebhookEvent.create({
+      data: { id: event.id, provider: "stripe", type: event.type },
+    });
+    return true;
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      return false;
+    }
+    throw err;
+  }
+}
 
 export async function POST(request: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -27,6 +48,18 @@ export async function POST(request: Request) {
   } catch (err) {
     console.error("[stripe webhook] signature invalide", err);
     return NextResponse.json({ error: "Signature invalide" }, { status: 400 });
+  }
+
+  // Idempotence : ne traiter chaque évènement qu'une fois (Stripe peut rejouer).
+  let fresh: boolean;
+  try {
+    fresh = await claimEvent(event);
+  } catch (err) {
+    console.error("[stripe webhook] verrou idempotence échoué", err);
+    return NextResponse.json({ error: "Verrou indisponible" }, { status: 503 });
+  }
+  if (!fresh) {
+    return NextResponse.json({ received: true, duplicate: true });
   }
 
   try {
@@ -71,6 +104,10 @@ export async function POST(request: Request) {
     }
   } catch (err) {
     console.error("[stripe webhook] traitement", event.type, err);
+    // Libérer le verrou pour que le rejeu Stripe puisse retraiter l'évènement.
+    await prisma.processedWebhookEvent
+      .delete({ where: { id: event.id } })
+      .catch(() => {});
     return NextResponse.json({ error: "Traitement échoué" }, { status: 500 });
   }
 

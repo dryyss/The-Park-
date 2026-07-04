@@ -1,9 +1,81 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { FEATURES } from "@/lib/features";
+
+type NewsletterState = "idle" | "sending" | "sent" | "already" | "error";
+
+function NewsletterForm() {
+  const t = useTranslations("footer");
+  const locale = useLocale();
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState<NewsletterState>("idle");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (state === "sending") return;
+    setState("sending");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, locale }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; result?: string };
+      if (res.ok && data.ok) {
+        setState(data.result === "ALREADY_CONFIRMED" ? "already" : "sent");
+        setEmail("");
+      } else {
+        setState("error");
+      }
+    } catch {
+      setState("error");
+    }
+  }
+
+  const message =
+    state === "sent"
+      ? t("newsletterSuccess")
+      : state === "already"
+        ? t("newsletterAlready")
+        : state === "error"
+          ? t("newsletterError")
+          : null;
+
+  return (
+    <div className="mt-[18px]">
+      <div className="mb-2 text-[10px] font-extrabold tracking-[2px] text-texte-dim uppercase">{t("newsletterTitle")}</div>
+      <form className="flex max-w-[300px] gap-2" onSubmit={handleSubmit}>
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (state !== "idle") setState("idle");
+          }}
+          placeholder={t("newsletterPlaceholder")}
+          className="min-w-0 flex-1 rounded-[9px] border-[1.5px] border-charbon-500 bg-charbon-800 px-3.5 py-2.5 text-[13px] text-blanc-casse outline-none focus:border-carmin"
+        />
+        <button
+          type="submit"
+          disabled={state === "sending"}
+          className="font-display -skew-x-3 rounded-[9px] bg-carmin px-4 py-2.5 text-[12px] tracking-[1px] text-white transition hover:bg-carmin-alt disabled:opacity-60"
+        >
+          {state === "sending" ? t("newsletterSending") : t("newsletterCta")}
+        </button>
+      </form>
+      {message && (
+        <p className={`mt-2 text-[11px] font-bold ${state === "error" ? "text-neon-rouge" : "text-statut-succes"}`}>
+          {message}
+        </p>
+      )}
+    </div>
+  );
+}
 
 function FooterLink({ href, children, gold, live }: { href: string; children: React.ReactNode; gold?: boolean; live?: boolean }) {
   return (
@@ -48,22 +120,7 @@ export function Footer() {
             </div>
             <p className="mt-4 max-w-[300px] text-[13px] leading-relaxed text-texte-muet">{t("tagline")}</p>
 
-            <div className="mt-[18px]">
-              <div className="mb-2 text-[10px] font-extrabold tracking-[2px] text-texte-dim uppercase">{t("newsletterTitle")}</div>
-              <form className="flex max-w-[300px] gap-2">
-                <input
-                  type="email"
-                  placeholder={t("newsletterPlaceholder")}
-                  className="min-w-0 flex-1 rounded-[9px] border-[1.5px] border-charbon-500 bg-charbon-800 px-3.5 py-2.5 text-[13px] text-blanc-casse outline-none focus:border-carmin"
-                />
-                <button
-                  type="submit"
-                  className="font-display -skew-x-3 rounded-[9px] bg-carmin px-4 py-2.5 text-[12px] tracking-[1px] text-white transition hover:bg-carmin-alt"
-                >
-                  {t("newsletterCta")}
-                </button>
-              </form>
-            </div>
+            <NewsletterForm />
           </div>
 
           {/* Explorer */}

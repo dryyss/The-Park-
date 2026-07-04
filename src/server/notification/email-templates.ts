@@ -81,6 +81,17 @@ export function buildNotificationEmail(
         html: wrap(`<p><strong>${cardName}</strong> vient d'être listée sur le marketplace.</p>`),
       };
     }
+    case "WISHLIST_PRICE_DROP": {
+      const cardName = typeof payload.cardName === "string" ? payload.cardName : "une carte";
+      const price = typeof payload.price === "string" ? payload.price : null;
+      const alertPrice = typeof payload.alertPrice === "string" ? payload.alertPrice : null;
+      return {
+        subject: `Alerte prix — ${cardName}`,
+        html: wrap(
+          `<p><strong>${cardName}</strong> est en vente${price ? ` à <strong>${price}</strong>` : ""}${alertPrice ? `, sous ton seuil d'alerte (${alertPrice})` : ""}.</p>`,
+        ),
+      };
+    }
     case "SALE_CREATED": {
       const amount = typeof payload.amount === "string" ? payload.amount : "";
       return {
