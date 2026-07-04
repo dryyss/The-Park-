@@ -16,7 +16,7 @@ export interface MarketplaceCartLine {
   sellerName: string;
   priceLabel: string;
   priceRaw: number;
-  shippingMode: "STANDARD" | "SECURED";
+  shippingMode: import("@/generated/prisma/client").ShippingMode;
 }
 
 export interface MarketplaceCartSummary {

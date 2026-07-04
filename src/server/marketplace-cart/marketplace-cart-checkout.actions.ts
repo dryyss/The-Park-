@@ -21,26 +21,35 @@ export type MarketplaceCheckoutActionError =
   | "LISTING_UNAVAILABLE"
   | "ALREADY_SOLD"
   | "INSUFFICIENT_WALLET"
+  | "MISSING_ADDRESS"
   | "UNKNOWN";
+
+const shippingFields = {
+  shippingMode: z.enum(["HAND_DELIVERY", "LETTER_TRACKED", "PICKUP_POINT", "COLISSIMO", "SECURED"]),
+  addressId: z.string().min(1).optional(),
+  newAddress: z
+    .object({
+      fullName: z.string().min(1),
+      line1: z.string().min(1),
+      line2: z.string().optional(),
+      zip: z.string().min(1),
+      city: z.string().min(1),
+      country: z.string().optional(),
+      phone: z.string().optional(),
+    })
+    .optional(),
+};
 
 const startSchema = z.object({
   locale: z.string().min(2),
   cartItemIds: z.array(z.string().min(1)).optional(),
+  ...shippingFields,
 });
 
 const walletSchema = z.object({
   locale: z.string().min(2),
   cartItemIds: z.array(z.string().min(1)).optional(),
-  addressId: z.string().min(1).optional(),
-  newAddress: z.object({
-    fullName: z.string().min(1),
-    line1: z.string().min(1),
-    line2: z.string().optional(),
-    zip: z.string().min(1),
-    city: z.string().min(1),
-    country: z.string().optional(),
-    phone: z.string().optional(),
-  }).optional(),
+  ...shippingFields,
 });
 
 const confirmSchema = z.object({ sessionId: z.string().min(1) });
@@ -64,6 +73,11 @@ export async function startMarketplaceStripeCheckoutAction(
       buyerId: viewer.id,
       locale: parsed.data.locale,
       cartItemIds: parsed.data.cartItemIds,
+      shipping: {
+        shippingMode: parsed.data.shippingMode,
+        addressId: parsed.data.addressId,
+        newAddress: parsed.data.newAddress,
+      },
     });
 
     revalidatePath("/marketplace");
@@ -78,6 +92,7 @@ export async function startMarketplaceStripeCheckoutAction(
     if (message === "STRIPE_NOT_CONFIGURED") return { ok: false, error: "STRIPE_NOT_CONFIGURED" };
     if (message === "LISTING_UNAVAILABLE") return { ok: false, error: "LISTING_UNAVAILABLE" };
     if (message === "ALREADY_SOLD") return { ok: false, error: "ALREADY_SOLD" };
+    if (message === "MISSING_ADDRESS") return { ok: false, error: "MISSING_ADDRESS" };
     if (message.includes("STRIPE_MIN")) return { ok: false, error: "STRIPE_MIN_AMOUNT" };
     console.error("[marketplace-checkout:start]", err);
     return { ok: false, error: mapStripeCheckoutError(err) === "STRIPE_MIN_AMOUNT" ? "STRIPE_MIN_AMOUNT" : "UNKNOWN" };
@@ -134,8 +149,11 @@ export async function payMarketplaceWithWalletAction(
     const { checkoutId } = await startAndFulfillMarketplaceCheckoutWithWallet({
       buyerId: viewer.id,
       cartItemIds: parsed.data.cartItemIds,
-      addressId: parsed.data.addressId,
-      newAddress: parsed.data.newAddress,
+      shipping: {
+        shippingMode: parsed.data.shippingMode,
+        addressId: parsed.data.addressId,
+        newAddress: parsed.data.newAddress,
+      },
     });
 
     revalidatePath("/marketplace");
@@ -151,6 +169,7 @@ export async function payMarketplaceWithWalletAction(
     if (message === "LISTING_UNAVAILABLE") return { ok: false, error: "LISTING_UNAVAILABLE" };
     if (message === "ALREADY_SOLD") return { ok: false, error: "ALREADY_SOLD" };
     if (message === "INSUFFICIENT_WALLET") return { ok: false, error: "INSUFFICIENT_WALLET" };
+    if (message === "MISSING_ADDRESS") return { ok: false, error: "MISSING_ADDRESS" };
     console.error("[marketplace-checkout:wallet]", err);
     return { ok: false, error: "UNKNOWN" };
   }

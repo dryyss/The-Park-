@@ -13,8 +13,68 @@ import {
 import type { MarketplaceRecapSummary } from "@/server/marketplace-cart/marketplace-cart-checkout.service";
 import type { UserAddress } from "@/server/user/address.service";
 import { formatPrice } from "@/lib/format";
+import { SELECTABLE_SHIPPING_MODES, shippingFeeEur, isHandDelivery } from "@/lib/shipping";
+import type { ShippingMode } from "@/generated/prisma/client";
 
 type AddressMode = "existing" | "new";
+
+function ShippingModePicker({
+  selected,
+  onSelect,
+  sellerCount,
+}: {
+  selected: ShippingMode;
+  onSelect: (mode: ShippingMode) => void;
+  sellerCount: number;
+}) {
+  const t = useTranslations("marketplaceCart");
+
+  return (
+    <div className="mt-5 rounded-[14px] border border-charbon-500 bg-charbon-700/40 p-4">
+      <p className="mb-3 text-[10px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">
+        {t("shippingTitle")}
+      </p>
+      <div className="flex flex-col gap-2">
+        {SELECTABLE_SHIPPING_MODES.map((mode) => {
+          const fee = mode.feeEur * sellerCount;
+          return (
+            <label
+              key={mode.code}
+              className={`flex cursor-pointer items-start gap-3 rounded-[10px] border p-3 transition ${
+                selected === mode.code ? "border-carmin bg-carmin/10" : "border-charbon-500 hover:border-charbon-400"
+              }`}
+            >
+              <input
+                type="radio"
+                name="shippingMode"
+                value={mode.code}
+                checked={selected === mode.code}
+                onChange={() => onSelect(mode.code)}
+                className="mt-0.5 accent-carmin"
+              />
+              <span className="min-w-0 flex-1 text-[12px]">
+                <span className="flex items-center justify-between gap-2">
+                  <span className="font-extrabold text-blanc-casse">{t(`shippingModes.${mode.code}`)}</span>
+                  <span className={`shrink-0 font-extrabold ${fee === 0 ? "text-neon-vert" : "text-texte-doux"}`}>
+                    {fee === 0 ? t("shippingFree") : `+${formatPrice(fee)}`}
+                  </span>
+                </span>
+                <span className="mt-0.5 block text-[10.5px] font-semibold text-texte-faible">
+                  {t(`shippingModeDesc.${mode.code}`)}
+                </span>
+              </span>
+            </label>
+          );
+        })}
+      </div>
+      {sellerCount > 1 && (
+        <p className="mt-2 text-[10.5px] font-semibold text-texte-faible">
+          {t("shippingPerSeller", { count: sellerCount })}
+        </p>
+      )}
+    </div>
+  );
+}
 
 interface NewAddressFields {
   fullName: string;
@@ -202,6 +262,12 @@ export function MarketplaceRecapClient({
     setNewAddress((prev) => ({ ...prev, [k]: v }));
   }
 
+  const [shippingMode, setShippingMode] = useState<ShippingMode>("LETTER_TRACKED");
+  const handDelivery = isHandDelivery(shippingMode);
+  const sellerCount = new Set(recap.lines.map((l) => l.sellerId)).size;
+  const shippingTotalRaw = Math.round(shippingFeeEur(shippingMode) * sellerCount * 100) / 100;
+  const orderTotalRaw = Math.round((recap.subtotalRaw + shippingTotalRaw) * 100) / 100;
+
   const newAddressValid =
     newAddress.fullName.trim().length > 0 &&
     newAddress.line1.trim().length > 0 &&
@@ -209,13 +275,13 @@ export function MarketplaceRecapClient({
     newAddress.city.trim().length > 0;
 
   const addressReady =
-    addressMode === "existing" ? !!selectedAddressId : newAddressValid;
+    handDelivery || (addressMode === "existing" ? !!selectedAddressId : newAddressValid);
 
-  const canPayWithWallet = walletBalance >= recap.subtotalRaw;
-  const hasPartialWallet = walletBalance > 0 && walletBalance < recap.subtotalRaw;
+  const canPayWithWallet = walletBalance >= orderTotalRaw;
+  const hasPartialWallet = walletBalance > 0 && walletBalance < orderTotalRaw;
 
   const stripeFeeRaw = Math.round(recap.subtotalRaw * 0.05 * 100) / 100;
-  const stripeTotalRaw = recap.subtotalRaw + stripeFeeRaw;
+  const stripeTotalRaw = Math.round((orderTotalRaw + stripeFeeRaw) * 100) / 100;
 
   function handlePayWithWallet() {
     setError(null);
@@ -238,7 +304,8 @@ export function MarketplaceRecapClient({
       const result = await payMarketplaceWithWalletAction({
         locale,
         cartItemIds,
-        ...addressPayload,
+        shippingMode,
+        ...(handDelivery ? {} : addressPayload),
       });
       if (result.ok) {
         router.push(`/marketplace/panier/confirmation/${result.checkoutId}?success=1`);
@@ -251,7 +318,28 @@ export function MarketplaceRecapClient({
   function handlePayWithStripe() {
     setError(null);
     startTransition(async () => {
-      const result = await startMarketplaceStripeCheckoutAction({ locale, cartItemIds });
+      const addressPayload =
+        addressMode === "existing" && selectedAddressId
+          ? { addressId: selectedAddressId }
+          : newAddressValid
+            ? {
+                newAddress: {
+                  fullName: newAddress.fullName,
+                  line1: newAddress.line1,
+                  line2: newAddress.line2 || undefined,
+                  zip: newAddress.zip,
+                  city: newAddress.city,
+                  country: newAddress.country || "FR",
+                  phone: newAddress.phone || undefined,
+                },
+              }
+            : {};
+      const result = await startMarketplaceStripeCheckoutAction({
+        locale,
+        cartItemIds,
+        shippingMode,
+        ...(handDelivery ? {} : addressPayload),
+      });
       if (result.ok) {
         window.location.href = result.url;
       } else {
@@ -312,6 +400,12 @@ export function MarketplaceRecapClient({
             <span>{t("subtotal")}</span>
             <span>{recap.subtotal}</span>
           </div>
+          <div className="flex justify-between text-texte-dim">
+            <span>{t("shippingFees")}</span>
+            <span className={shippingTotalRaw === 0 ? "text-neon-vert" : undefined}>
+              {shippingTotalRaw === 0 ? t("shippingFree") : `+${formatPrice(shippingTotalRaw)}`}
+            </span>
+          </div>
           {(canPayWithWallet || hasPartialWallet) && (
             <div className="flex justify-between text-texte-dim">
               <span>{t("walletBalance")}</span>
@@ -321,25 +415,30 @@ export function MarketplaceRecapClient({
           {hasPartialWallet && (
             <div className="flex justify-between text-texte-faible text-[11px]">
               <span>{t("walletShortfall")}</span>
-              <span>{formatPrice(recap.subtotalRaw - walletBalance)}</span>
+              <span>{formatPrice(orderTotalRaw - walletBalance)}</span>
             </div>
           )}
           <div className="mt-2 flex justify-between border-t border-charbon-500 pt-3 text-blanc-casse">
             <span className="font-extrabold">{t("total")}</span>
-            <span className="font-display text-[20px] text-carmin">{recap.subtotal}</span>
+            <span className="font-display text-[20px] text-carmin">{formatPrice(orderTotalRaw)}</span>
           </div>
         </div>
 
-        {/* Adresse de livraison — requise pour paiement portefeuille */}
-        <AddressPicker
-          addresses={addresses}
-          selectedId={selectedAddressId}
-          onSelect={setSelectedAddressId}
-          mode={addressMode}
-          onModeChange={setAddressMode}
-          newFields={newAddress}
-          onNewField={setNewField}
-        />
+        {/* Mode d'envoi — les frais s'ajoutent au total (un envoi par vendeur) */}
+        <ShippingModePicker selected={shippingMode} onSelect={setShippingMode} sellerCount={sellerCount} />
+
+        {/* Adresse de livraison — inutile en remise en main propre */}
+        {!handDelivery && (
+          <AddressPicker
+            addresses={addresses}
+            selectedId={selectedAddressId}
+            onSelect={setSelectedAddressId}
+            mode={addressMode}
+            onModeChange={setAddressMode}
+            newFields={newAddress}
+            onNewField={setNewField}
+          />
+        )}
 
         {canPayWithWallet ? (
           <>
@@ -349,7 +448,7 @@ export function MarketplaceRecapClient({
               disabled={pending || !addressReady}
               className="font-display mt-4 flex w-full items-center justify-center rounded-[12px] bg-statut-succes py-3.5 text-[14px] tracking-[1.5px] text-charbon uppercase shadow-[3px_3px_0_rgba(0,0,0,0.4)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {pending ? t("processingWallet") : t("payWithWallet", { amount: formatPrice(recap.subtotalRaw) })}
+              {pending ? t("processingWallet") : t("payWithWallet", { amount: formatPrice(orderTotalRaw) })}
             </button>
             {!addressReady && (
               <p className="mt-1 text-center text-[10.5px] font-semibold text-texte-faible">

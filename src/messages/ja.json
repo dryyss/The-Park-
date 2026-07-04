@@ -628,6 +628,24 @@
     "historyEmpty": "まだマーケット購入がありません。",
     "shippingStandard": "通常配送",
     "shippingSecured": "セキュア配送",
+    "shippingTitle": "配送方法",
+    "shippingFees": "送料",
+    "shippingFree": "無料",
+    "shippingPerSeller": "{count}人の出品者 = {count}個の荷物 — 送料は荷物ごとに適用されます。",
+    "shippingModes": {
+      "HAND_DELIVERY": "手渡し",
+      "LETTER_TRACKED": "追跡付きレター",
+      "PICKUP_POINT": "受取ポイント",
+      "COLISSIMO": "Colissimo 宅配",
+      "SECURED": "セキュア配送"
+    },
+    "shippingModeDesc": {
+      "HAND_DELIVERY": "出品者と対面 — 当日コードで確認。",
+      "LETTER_TRACKED": "2〜4営業日、オンライン追跡。",
+      "PICKUP_POINT": "3〜5営業日、受取ポイントで受け取り。",
+      "COLISSIMO": "2〜3営業日、自宅にお届け。",
+      "SECURED": "Colissimo + 動画証拠 + 72時間保証。"
+    },
     "addressTitle": "配送先住所",
     "addressNewLabel": "新しい住所",
     "addressNoSaved": "アカウントに保存された住所がありません。",
@@ -650,6 +668,7 @@
       "VALIDATION": "無効なデータです。",
       "STRIPE_NOT_CONFIGURED": "お支払いを利用できません。",
       "INSUFFICIENT_WALLET": "ウォレット残高が不足しています。",
+      "MISSING_ADDRESS": "配送先住所を選択または入力してください。",
       "UNKNOWN": "購入を完了できませんでした。"
     }
   },
@@ -717,6 +736,8 @@
       "listingExpiringBody": "24時間以内に期限切れ。",
       "wishlistListing": "ウィッシュリストのカード出品",
       "wishlistListingBody": "{cardName}がマーケットに出品されました。",
+      "wishlistPriceDrop": "ウィッシュリスト値下げ",
+      "wishlistPriceDropBody": "{cardName}が{price}に値下がりしました。",
       "orderUpdate": "ショップ注文",
       "orderUpdateBody": "注文{orderNumber}：{status}",
       "messageReceived": "新着メッセージ",

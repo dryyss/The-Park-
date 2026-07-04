@@ -24,9 +24,26 @@ export const ACTIVE_SALE_STATUSES = [
  * la pré-autorisation Stripe (capture manuelle). Sans Stripe : la vente passe
  * directement à PAID (mode dev). Le stock du vendeur est déjà réservé par l'annonce.
  */
+export interface SaleShippingInput {
+  shippingMode: import("@/generated/prisma/client").ShippingMode;
+  /** Frais de port imputés à CETTE vente (un seul frais par vendeur dans un panier groupé). */
+  shippingCostEur: number;
+  /** Snapshot d'adresse (null pour la remise en main propre). */
+  deliveryAddress: {
+    fullName: string;
+    line1: string;
+    line2?: string | null;
+    zip: string;
+    city: string;
+    country: string;
+    phone?: string | null;
+  } | null;
+}
+
 export async function createSaleFromListing(
   buyerId: string,
   listingId: string,
+  shipping?: SaleShippingInput,
 ): Promise<{ saleId: string; clientSecret: string | null }> {
   const listing = await prisma.listing.findFirst({
     where: { id: listingId, status: "ACTIVE", type: { in: ["SELL", "SELL_OR_TRADE"] } },
@@ -49,7 +66,9 @@ export async function createSaleFromListing(
 
   const price = Number(listing.price);
   const serviceFee = Math.round(price * SALE_SERVICE_FEE_PCT) / 100;
-  const total = price + serviceFee;
+  const shippingMode = shipping?.shippingMode ?? listing.shippingMode;
+  const shippingCost = shipping ? Math.round(shipping.shippingCostEur * 100) / 100 : 0;
+  const total = price + serviceFee + shippingCost;
 
   const { saleId, paymentId } = await prisma.$transaction(async (tx) => {
     const sale = await tx.sale.create({
@@ -60,8 +79,9 @@ export async function createSaleFromListing(
         status: "PENDING_PAYMENT",
         price,
         serviceFee,
-        shippingMode: listing.shippingMode,
-        shippingCost: 0,
+        shippingMode,
+        shippingCost,
+        deliveryAddress: shipping?.deliveryAddress ?? undefined,
       },
     });
 

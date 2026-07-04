@@ -189,7 +189,10 @@ describe(`marketplace-cart [${TAG}] — paiement wallet`, () => {
 
     const { checkoutId } = await startAndFulfillMarketplaceCheckoutWithWallet({
       buyerId: buyer.id,
-      newAddress: { fullName: "QA Buyer", line1: "1 rue du Test", zip: "75001", city: "Paris" },
+      shipping: {
+        shippingMode: "LETTER_TRACKED",
+        newAddress: { fullName: "QA Buyer", line1: "1 rue du Test", zip: "75001", city: "Paris" },
+      },
     });
 
     const checkout = await prisma.marketplaceCheckout.findUniqueOrThrow({
@@ -238,7 +241,7 @@ describe(`marketplace-cart [${TAG}] — paiement wallet`, () => {
     await addListingToMarketplaceCart(buyer.id, listing.id);
 
     await expect(
-      startAndFulfillMarketplaceCheckoutWithWallet({ buyerId: buyer.id }),
+      startAndFulfillMarketplaceCheckoutWithWallet({ buyerId: buyer.id, shipping: { shippingMode: "HAND_DELIVERY" } }),
     ).rejects.toThrow("INSUFFICIENT_WALLET");
 
     // Aucun checkout créé (le contrôle du solde précède la création).
@@ -252,7 +255,7 @@ describe(`marketplace-cart [${TAG}] — paiement wallet`, () => {
     const buyer = await createTestUser(TAG, 17);
     await creditTestWallet(buyer.id, 100);
     await expect(
-      startAndFulfillMarketplaceCheckoutWithWallet({ buyerId: buyer.id }),
+      startAndFulfillMarketplaceCheckoutWithWallet({ buyerId: buyer.id, shipping: { shippingMode: "HAND_DELIVERY" } }),
     ).rejects.toThrow("EMPTY_CART");
   });
 
@@ -262,7 +265,7 @@ describe(`marketplace-cart [${TAG}] — paiement wallet`, () => {
     const { listing } = await makeSellerWithListing(19, 0, variants, 8);
     await creditTestWallet(buyer.id, 20);
     await addListingToMarketplaceCart(buyer.id, listing.id);
-    const { checkoutId } = await startAndFulfillMarketplaceCheckoutWithWallet({ buyerId: buyer.id });
+    const { checkoutId } = await startAndFulfillMarketplaceCheckoutWithWallet({ buyerId: buyer.id, shipping: { shippingMode: "HAND_DELIVERY" } });
 
     // Le checkout est PAID → cancel est un no-op (filtre status PENDING).
     await cancelMarketplaceCheckoutById(checkoutId, buyer.id);
@@ -351,7 +354,7 @@ describe(`marketplace-cart [${TAG}] — bug de course E2`, () => {
     // 2) L'acheteur paie AILLEURS l'annonce B au wallet.
     await prisma.marketplaceCartItem.deleteMany({ where: { userId: buyer.id } });
     await addListingToMarketplaceCart(buyer.id, b.listing.id);
-    await startAndFulfillMarketplaceCheckoutWithWallet({ buyerId: buyer.id });
+    await startAndFulfillMarketplaceCheckoutWithWallet({ buyerId: buyer.id, shipping: { shippingMode: "HAND_DELIVERY" } });
 
     // 3) Vérifie l'effet de bord : le checkout PENDING (annonce A) a été annulé.
     const afterCheckout = await prisma.marketplaceCheckout.findUniqueOrThrow({ where: { id: pendingCheckout.id } });

@@ -99,8 +99,12 @@ enum ListingStatus {
 }
 
 enum ShippingMode {
-  STANDARD
-  SECURED
+  STANDARD // hérité — équivalent lettre suivie
+  SECURED // envoi sécurisé (preuves vidéo + garantie)
+  LETTER_TRACKED // lettre suivie
+  COLISSIMO // colissimo domicile
+  PICKUP_POINT // point relais
+  HAND_DELIVERY // remise en main propre (code de confirmation)
 }
 
 /// Transporteurs supportés par l'agrégateur de suivi (CDC couche C2C).
@@ -308,6 +312,7 @@ enum NotificationType {
   LISTING_IN_CART
   LISTING_EXPIRING
   WISHLIST_LISTING
+  WISHLIST_PRICE_DROP
   ORDER_UPDATE
   MESSAGE_RECEIVED
 }
@@ -425,7 +430,8 @@ model User {
   messages      Message[]
   notifications Notification[]
 
-  addresses         Address[]
+  addresses          Address[]
+  withdrawalRequests WithdrawalRequest[]
   transactionEvents TransactionEvent[]
 
   reportsMade       Report[]
@@ -699,10 +705,13 @@ model WishlistItem {
   /// "first" | "unlimited" — édition recherchée (aligné collection / vente).
   editionPreset String        @default("unlimited")
   note          String?
+  /// Alerte prix : notifier quand une annonce de cette carte descend à ce prix (€) ou moins. Null = alerte disponibilité simple.
+  alertPrice    Decimal?      @db.Decimal(10, 2)
   createdAt     DateTime      @default(now())
 
   @@unique([userId, variantId, condition, editionPreset])
   @@index([userId])
+  @@index([cardId])
 }
 
 /// Appréciation publique d'une carte (distinct de la wishlist).
@@ -1046,6 +1055,8 @@ model Sale {
   serviceFee   Decimal      @default(0) @db.Decimal(10, 2)
   shippingMode ShippingMode @default(STANDARD)
   shippingCost Decimal      @default(0) @db.Decimal(10, 2)
+  /// Snapshot de l'adresse de livraison au moment de l'achat (immutable).
+  deliveryAddress Json?
 
   shipment     Shipment?
   payments     Payment[]
@@ -1345,6 +1356,43 @@ model UserBadge {
   @@unique([userId, badgeId])
 }
 
+enum WithdrawalMethod {
+  BANK_TRANSFER // virement SEPA (IBAN)
+  PAYPAL
+}
+
+enum WithdrawalStatus {
+  PENDING
+  PAID
+  REJECTED
+}
+
+/// Demande de retrait des gains vendeur (earnedBalance) — traitée par l'admin.
+model WithdrawalRequest {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  amount Decimal          @db.Decimal(10, 2)
+  method WithdrawalMethod
+  /// Coordonnées de versement (IBAN + titulaire, ou e-mail PayPal) — snapshot.
+  details Json
+  status  WithdrawalStatus @default(PENDING)
+
+  /// Entrée de ledger du débit (restaurée si la demande est rejetée).
+  ledgerEntryId String?
+  processedAt   DateTime?
+  /// Admin ayant traité la demande.
+  processedBy   String?
+  adminNote     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
 /// Présence quotidienne au top 3 du classement collectionneurs
 /// (succès « Roi de la Glisse » — 7 jours consécutifs).
 model RankStreak {
@@ -1515,4 +1563,62 @@ model PromoBanner {
   updatedAt DateTime  @updatedAt
 
   @@index([active, position])
+}
+
+// ============================================================================
+//  RATE LIMITING  (compteur fenêtre fixe, portable serverless via Postgres)
+// ============================================================================
+
+/// Compteur de fenêtre fixe pour le rate-limiting des endpoints sensibles.
+/// Correct en multi-instances (Vercel) car partagé via la base. Purge par cron.
+model RateLimitHit {
+  id          String   @id @default(cuid())
+  /// Clé logique : `${scope}:${identifier}` (ex: "newsletter:1.2.3.4").
+  key         String
+  /// Début de la fenêtre courante (arrondi à la taille de fenêtre).
+  windowStart DateTime
+  count       Int      @default(0)
+
+  @@unique([key, windowStart])
+  @@index([windowStart])
+}
+
+// ============================================================================
+//  NEWSLETTER  (double opt-in — RGPD)
+// ============================================================================
+
+enum NewsletterStatus {
+  PENDING
+  CONFIRMED
+  UNSUBSCRIBED
+}
+
+model NewsletterSubscription {
+  id          String           @id @default(cuid())
+  email       String           @unique
+  status      NewsletterStatus @default(PENDING)
+  locale      String           @default("fr")
+  /// Jeton de confirmation / désinscription (opaque, régénéré à chaque réinscription).
+  token       String           @unique
+  source      String?          @default("footer")
+  confirmedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([status])
+}
+
+// ============================================================================
+//  IDEMPOTENCE WEBHOOKS  (Stripe — anti-rejeu)
+// ============================================================================
+
+/// Évènements webhook déjà traités (idempotence). L'insertion sert de verrou :
+/// un doublon (même id Stripe) viole la PK et est ignoré sans retraiter.
+model ProcessedWebhookEvent {
+  id          String   @id
+  provider    String   @default("stripe")
+  type        String
+  processedAt DateTime @default(now())
+
+  @@index([processedAt])
 }

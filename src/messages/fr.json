@@ -628,6 +628,24 @@
     "historyEmpty": "Aucun achat marketplace pour le moment.",
     "shippingStandard": "Envoi standard",
     "shippingSecured": "Envoi sécurisé",
+    "shippingTitle": "Mode d'envoi",
+    "shippingFees": "Frais de livraison",
+    "shippingFree": "Gratuit",
+    "shippingPerSeller": "{count} vendeurs = {count} colis distincts — les frais s'appliquent par envoi.",
+    "shippingModes": {
+      "HAND_DELIVERY": "Remise en main propre",
+      "LETTER_TRACKED": "Lettre suivie",
+      "PICKUP_POINT": "Point relais",
+      "COLISSIMO": "Colissimo domicile",
+      "SECURED": "Envoi sécurisé"
+    },
+    "shippingModeDesc": {
+      "HAND_DELIVERY": "Rencontre le vendeur — confirmation par code le jour J.",
+      "LETTER_TRACKED": "2 à 4 jours ouvrés, suivi en ligne.",
+      "PICKUP_POINT": "3 à 5 jours ouvrés, retrait en point relais.",
+      "COLISSIMO": "2 à 3 jours ouvrés, remise à domicile.",
+      "SECURED": "Colissimo + preuves vidéo + garantie 72 h."
+    },
     "addressTitle": "Adresse de livraison",
     "addressNewLabel": "Nouvelle adresse",
     "addressNoSaved": "Aucune adresse enregistrée dans ton compte.",
@@ -650,6 +668,7 @@
       "VALIDATION": "Données invalides.",
       "STRIPE_NOT_CONFIGURED": "Paiement indisponible.",
       "INSUFFICIENT_WALLET": "Solde insuffisant dans ton portefeuille.",
+      "MISSING_ADDRESS": "Choisis ou saisis une adresse de livraison.",
       "UNKNOWN": "Impossible de finaliser l'achat."
     }
   },
@@ -717,6 +736,8 @@
       "listingExpiringBody": "Une de tes annonces expire dans 24 h.",
       "wishlistListing": "Carte wishlist listée",
       "wishlistListingBody": "{cardName} est disponible sur le marketplace.",
+      "wishlistPriceDrop": "Baisse de prix wishlist",
+      "wishlistPriceDropBody": "{cardName} est passée à {price}.",
       "orderUpdate": "Commande boutique",
       "orderUpdateBody": "Commande {orderNumber} : {status}.",
       "messageReceived": "Nouveau message",

@@ -628,6 +628,24 @@
     "historyEmpty": "No marketplace purchases yet.",
     "shippingStandard": "Standard shipping",
     "shippingSecured": "Secured shipping",
+    "shippingTitle": "Shipping method",
+    "shippingFees": "Shipping fees",
+    "shippingFree": "Free",
+    "shippingPerSeller": "{count} sellers = {count} separate parcels — fees apply per shipment.",
+    "shippingModes": {
+      "HAND_DELIVERY": "Hand delivery",
+      "LETTER_TRACKED": "Tracked letter",
+      "PICKUP_POINT": "Pickup point",
+      "COLISSIMO": "Colissimo home delivery",
+      "SECURED": "Secured shipping"
+    },
+    "shippingModeDesc": {
+      "HAND_DELIVERY": "Meet the seller — code confirmation on the day.",
+      "LETTER_TRACKED": "2–4 business days, online tracking.",
+      "PICKUP_POINT": "3–5 business days, pickup point collection.",
+      "COLISSIMO": "2–3 business days, home delivery.",
+      "SECURED": "Colissimo + video proofs + 72h guarantee."
+    },
     "addressTitle": "Shipping address",
     "addressNewLabel": "New address",
     "addressNoSaved": "No address saved in your account.",
@@ -650,6 +668,7 @@
       "VALIDATION": "Invalid data.",
       "STRIPE_NOT_CONFIGURED": "Payment unavailable.",
       "INSUFFICIENT_WALLET": "Insufficient wallet balance.",
+      "MISSING_ADDRESS": "Choose or enter a shipping address.",
       "UNKNOWN": "Could not complete purchase."
     }
   },
@@ -717,6 +736,8 @@
       "listingExpiringBody": "One of your listings expires in 24 h.",
       "wishlistListing": "Wishlist card listed",
       "wishlistListingBody": "{cardName} is now on the marketplace.",
+      "wishlistPriceDrop": "Wishlist price drop",
+      "wishlistPriceDropBody": "{cardName} dropped to {price}.",
       "orderUpdate": "Shop order",
       "orderUpdateBody": "Order {orderNumber}: {status}.",
       "messageReceived": "New message",

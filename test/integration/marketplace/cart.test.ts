@@ -168,6 +168,7 @@ describe(`panier marketplace [${TAG}] — réservation exclusive, TTL, cooldown,
 
     const { checkoutId } = await startAndFulfillMarketplaceCheckoutWithWallet({
       buyerId: buyer.id,
+      shipping: { shippingMode: "HAND_DELIVERY" },
     });
 
     const checkout = await prisma.marketplaceCheckout.findUniqueOrThrow({
@@ -225,7 +226,7 @@ describe(`panier marketplace [${TAG}] — réservation exclusive, TTL, cooldown,
     await addListingToMarketplaceCart(buyer.id, listing.id);
 
     await expect(
-      startAndFulfillMarketplaceCheckoutWithWallet({ buyerId: buyer.id }),
+      startAndFulfillMarketplaceCheckoutWithWallet({ buyerId: buyer.id, shipping: { shippingMode: "HAND_DELIVERY" } }),
     ).rejects.toThrow("INSUFFICIENT_WALLET");
 
     // Aucune vente créée, annonce toujours ACTIVE, wallet intact, pas de checkout.
@@ -261,7 +262,7 @@ describe(`panier marketplace [${TAG}] — réservation exclusive, TTL, cooldown,
     await prisma.listing.update({ where: { id: listing2.id }, data: { status: "CANCELLED" } });
 
     await expect(
-      startAndFulfillMarketplaceCheckoutWithWallet({ buyerId: buyer.id }),
+      startAndFulfillMarketplaceCheckoutWithWallet({ buyerId: buyer.id, shipping: { shippingMode: "HAND_DELIVERY" } }),
     ).rejects.toThrow("LISTING_UNAVAILABLE");
 
     // La vente créée pour listing1 est annulée, l'annonce réactivée.
