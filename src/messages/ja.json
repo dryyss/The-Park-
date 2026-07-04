@@ -2404,6 +2404,18 @@
         "step2": "モデレーション",
         "step3": "デポジット判定"
       }
+    },
+    "states": {
+      "secured": "保護済み",
+      "shipBy": "発送期限",
+      "guaranteeUntil": "保証期限",
+      "reauthBy": "デポジット再承認期限",
+      "interrupted": "フローが中断されました：{status}。",
+      "extendHint": "確認にもっと時間が必要？延長 {used}/{max} 使用済み。",
+      "extend": "72時間延長",
+      "extending": "…",
+      "timeline": "履歴",
+      "system": "システム"
     }
   },
   "want": {

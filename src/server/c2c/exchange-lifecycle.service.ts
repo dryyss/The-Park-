@@ -164,6 +164,14 @@ export async function processExchangeTimeouts(): Promise<{ notShipped: number; c
     notShipped += 1;
   }
 
+  // ── Ossature J+5 (ré-autorisation caution, échanges sécurisés) ──────────────
+  // La transition vers GUARANTEE_SUSPENDED dépend du RÉSULTAT d'une ré-autorisation
+  // Stripe de la caution (capture_method: manual, réautorisée à J+5). Cette brique
+  // financière est hors périmètre actuel (avenant PSP/KYC). Le calcul de l'échéance
+  // J+5 est déjà exposé côté état (state-machine.service.getExchangeStateMachine →
+  // deadlines.reauthBy) pour information ; le déclencheur se branchera ici via le
+  // webhook payment_intent lors de l'activation de la couche financière.
+
   const expiredGuarantee = await prisma.exchange.findMany({
     where: { status: "DELIVERED_WINDOW" },
     include: { shipments: true },

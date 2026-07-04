@@ -2404,6 +2404,18 @@
         "step2": "Examen modération, accès URLs signées",
         "step3": "Verdict : capture caution totale/partielle/aucune"
       }
+    },
+    "states": {
+      "secured": "Sécurisé",
+      "shipBy": "Expédier avant",
+      "guaranteeUntil": "Garantie jusqu'au",
+      "reauthBy": "Ré-autorisation caution avant",
+      "interrupted": "Parcours interrompu : {status}.",
+      "extendHint": "Besoin de plus de temps pour vérifier ? Prolongation {used}/{max} utilisée.",
+      "extend": "Prolonger 72 h",
+      "extending": "…",
+      "timeline": "Historique",
+      "system": "Système"
     }
   },
   "want": {

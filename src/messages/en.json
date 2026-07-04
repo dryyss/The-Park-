@@ -2404,6 +2404,18 @@
         "step2": "Moderation review",
         "step3": "Verdict: full/partial/no capture"
       }
+    },
+    "states": {
+      "secured": "Secured",
+      "shipBy": "Ship by",
+      "guaranteeUntil": "Guaranteed until",
+      "reauthBy": "Re-authorize deposit by",
+      "interrupted": "Flow interrupted: {status}.",
+      "extendHint": "Need more time to check? Extension {used}/{max} used.",
+      "extend": "Extend 72 h",
+      "extending": "…",
+      "timeline": "Timeline",
+      "system": "System"
     }
   },
   "want": {
