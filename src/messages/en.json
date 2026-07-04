@@ -87,7 +87,9 @@
     "help": "Help",
     "status": "All systems operational",
     "developedBy": "Developed by",
-    "developedByAlt": "Magar Développement"
+    "developedByAlt": "Magar Développement",
+    "linkReferral": "Referrals",
+    "linkSupport": "Support"
   },
   "home": {
     "heroKicker": "Collection platform · Pocket Drifterz",
@@ -196,7 +198,12 @@
       "quantity-desc": "Quantity ↓",
       "quantity-asc": "Quantity ↑"
     },
-    "noUser": "No profile available."
+    "noUser": "No profile available.",
+    "exportCsv": "Export CSV",
+    "exportJson": "Export JSON",
+    "share": "Share",
+    "shareCopied": "Link copied ✓",
+    "shareTitle": "My The Park collection"
   },
   "rankings": {
     "kicker": "Season 1 · Forged Engine",
@@ -844,7 +851,11 @@
       "orderUpdate": "Shop order",
       "orderUpdateBody": "Order {orderNumber}: {status}.",
       "messageReceived": "New message",
-      "messageReceivedBody": "{preview}"
+      "messageReceivedBody": "{preview}",
+      "referralReward": "Referral bonus 🎉",
+      "referralRewardBody": "{amount} in credits has been added to your wallet.",
+      "ticketReply": "Support reply",
+      "ticketReplyBody": "Support replied to your ticket."
     }
   },
   "messages": {
@@ -2459,5 +2470,74 @@
     "findPlaceholder": "Search a member by name…",
     "findNoResult": "No member matches.",
     "emptyHint": "Search a member above or challenge a collector from the leaderboard."
+  },
+  "referral": {
+    "kicker": "Referrals",
+    "title": "Invite friends, earn credits",
+    "intro": "Share your code: when your referral tops up their wallet for the first time, you both get credits.",
+    "yourCode": "Your code",
+    "copyLink": "Copy link",
+    "copied": "Copied ✓",
+    "explain": "{amount} for you and your referral on their first deposit.",
+    "rewarded": "Confirmed",
+    "pending": "Pending",
+    "earned": "Earned",
+    "haveCode": "Got a referral code?",
+    "codePlaceholder": "Referral code",
+    "apply": "Apply",
+    "applying": "…",
+    "alreadyReferredNote": "A referrer is already linked to your account.",
+    "yourReferrals": "Your referrals",
+    "statusRewarded": "Confirmed",
+    "statusPending": "Pending",
+    "errorInvalid": "Invalid code.",
+    "errorSelf": "You can't use your own code.",
+    "errorAlready": "A referrer is already linked to your account.",
+    "errorGeneric": "Something went wrong."
+  },
+  "push": {
+    "title": "Browser notifications",
+    "hint": "Get alerted even when the tab is closed.",
+    "enabledHint": "Enabled on this device.",
+    "unsupported": "Not supported by this browser.",
+    "denied": "Blocked — allow them in your browser settings.",
+    "enable": "Enable",
+    "disable": "Disable",
+    "working": "…"
+  },
+  "support": {
+    "kicker": "Support",
+    "title": "Help & tickets",
+    "intro": "Got a question or an issue? Open a ticket and the team will reply right here.",
+    "newTicket": "New ticket",
+    "subjectPlaceholder": "Subject",
+    "bodyPlaceholder": "Describe your request…",
+    "sending": "Sending…",
+    "send": "Send",
+    "cancel": "Cancel",
+    "errorGeneric": "Something went wrong.",
+    "empty": "No tickets yet.",
+    "messageCount": "{count, plural, one {# message} other {# messages}}",
+    "you": "You",
+    "staffLabel": "Support",
+    "closedNote": "This ticket is closed.",
+    "replyPlaceholder": "Your reply…",
+    "reply": "Reply",
+    "queueTitle": "Ticket queue ({count})",
+    "queueEmpty": "No tickets.",
+    "category": {
+      "GENERAL": "General",
+      "ORDER": "Order",
+      "PAYMENT": "Payment",
+      "MODERATION": "Moderation",
+      "BUG": "Bug",
+      "OTHER": "Other"
+    },
+    "status": {
+      "OPEN": "Open",
+      "PENDING": "Pending",
+      "RESOLVED": "Resolved",
+      "CLOSED": "Closed"
+    }
   }
 }

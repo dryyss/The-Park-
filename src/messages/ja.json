@@ -87,7 +87,9 @@
     "help": "ヘルプ",
     "status": "全システム稼働中",
     "developedBy": "開発",
-    "developedByAlt": "Magar Développement"
+    "developedByAlt": "Magar Développement",
+    "linkReferral": "紹介",
+    "linkSupport": "サポート"
   },
   "home": {
     "heroKicker": "コレクションプラットフォーム · Pocket Drifterz",
@@ -196,7 +198,12 @@
       "quantity-desc": "枚数 ↓",
       "quantity-asc": "枚数 ↑"
     },
-    "noUser": "プロフィールがありません。"
+    "noUser": "プロフィールがありません。",
+    "exportCsv": "CSVエクスポート",
+    "exportJson": "JSONエクスポート",
+    "share": "シェア",
+    "shareCopied": "リンクをコピーしました ✓",
+    "shareTitle": "The Park のマイコレクション"
   },
   "rankings": {
     "kicker": "シーズン1 · 鍛造エンジン",
@@ -844,7 +851,11 @@
       "orderUpdate": "ショップ注文",
       "orderUpdateBody": "注文{orderNumber}：{status}",
       "messageReceived": "新着メッセージ",
-      "messageReceivedBody": "{preview}"
+      "messageReceivedBody": "{preview}",
+      "referralReward": "紹介ボーナス 🎉",
+      "referralRewardBody": "{amount} 分のクレジットがウォレットに追加されたよ。",
+      "ticketReply": "サポートからの返信",
+      "ticketReplyBody": "サポートがチケットに返信したよ。"
     }
   },
   "messages": {
@@ -2459,5 +2470,74 @@
     "findPlaceholder": "メンバー名で検索…",
     "findNoResult": "該当するメンバーがいません。",
     "emptyHint": "上でメンバーを検索するか、リーダーボードからコレクターに挑もう。"
+  },
+  "referral": {
+    "kicker": "紹介",
+    "title": "友だちを招待してクレジットをゲット",
+    "intro": "コードをシェアしよう。招待した友だちが初めてウォレットに入金すると、二人ともクレジットがもらえるよ。",
+    "yourCode": "あなたのコード",
+    "copyLink": "リンクをコピー",
+    "copied": "コピーしました ✓",
+    "explain": "友だちの初回入金で、あなたにも友だちにも {amount} をプレゼント。",
+    "rewarded": "確定",
+    "pending": "保留中",
+    "earned": "獲得",
+    "haveCode": "紹介コードを持ってる？",
+    "codePlaceholder": "紹介コード",
+    "apply": "適用",
+    "applying": "…",
+    "alreadyReferredNote": "すでに紹介者がアカウントに紐づいています。",
+    "yourReferrals": "あなたの招待した友だち",
+    "statusRewarded": "確定",
+    "statusPending": "保留中",
+    "errorInvalid": "無効なコードです。",
+    "errorSelf": "自分のコードは使えません。",
+    "errorAlready": "すでに紹介者がアカウントに紐づいています。",
+    "errorGeneric": "エラーが発生しました。"
+  },
+  "push": {
+    "title": "ブラウザ通知",
+    "hint": "タブを閉じていても通知を受け取れるよ。",
+    "enabledHint": "この端末で有効になっています。",
+    "unsupported": "このブラウザは対応していません。",
+    "denied": "ブロック中 — ブラウザの設定で許可してね。",
+    "enable": "有効にする",
+    "disable": "無効にする",
+    "working": "…"
+  },
+  "support": {
+    "kicker": "サポート",
+    "title": "ヘルプ＆チケット",
+    "intro": "質問や困りごとがある？チケットを開けば、チームがここで返信するよ。",
+    "newTicket": "新規チケット",
+    "subjectPlaceholder": "件名",
+    "bodyPlaceholder": "内容を書いてね…",
+    "sending": "送信中…",
+    "send": "送信",
+    "cancel": "キャンセル",
+    "errorGeneric": "エラーが発生しました。",
+    "empty": "まだチケットはありません。",
+    "messageCount": "{count} メッセージ",
+    "you": "あなた",
+    "staffLabel": "サポート",
+    "closedNote": "このチケットはクローズされています。",
+    "replyPlaceholder": "返信を入力…",
+    "reply": "返信",
+    "queueTitle": "チケット一覧（{count}）",
+    "queueEmpty": "チケットはありません。",
+    "category": {
+      "GENERAL": "一般",
+      "ORDER": "注文",
+      "PAYMENT": "支払い",
+      "MODERATION": "モデレーション",
+      "BUG": "バグ",
+      "OTHER": "その他"
+    },
+    "status": {
+      "OPEN": "オープン",
+      "PENDING": "保留中",
+      "RESOLVED": "解決済み",
+      "CLOSED": "クローズ"
+    }
   }
 }

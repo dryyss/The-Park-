@@ -27,6 +27,7 @@ export async function GET() {
     stripeWebhook: Boolean(process.env.STRIPE_WEBHOOK_SECRET?.trim()),
     resend: isResendConfigured(),
     pusher: Boolean(process.env.PUSHER_APP_ID?.trim() && process.env.NEXT_PUBLIC_PUSHER_KEY?.trim()),
+    webPush: Boolean(process.env.VAPID_PUBLIC_KEY?.trim() && process.env.VAPID_PRIVATE_KEY?.trim()),
     cronSecret: Boolean(process.env.CRON_SECRET?.trim()),
     appBaseUrl: Boolean((process.env.APP_BASE_URL ?? process.env.NEXT_PUBLIC_APP_URL)?.trim()),
   };

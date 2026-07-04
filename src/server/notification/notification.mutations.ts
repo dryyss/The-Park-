@@ -5,6 +5,7 @@ import { pushUserEvent } from "@/lib/pusher";
 import { sendTransactionalEmail, isResendConfigured } from "@/lib/resend";
 import { buildNotificationEmail } from "@/server/notification/email-templates";
 import { getUserNotificationPrefs } from "@/server/user/settings.service";
+import { notificationHref } from "@/lib/notification-display";
 
 type PrefKey = "exchanges" | "messages" | "auctions" | "orders" | "marketing";
 
@@ -57,6 +58,19 @@ export async function dispatchNotification(input: {
     type: input.type,
     payload: input.payload ?? null,
   });
+
+  // Web Push (best-effort) — notification navigateur même app fermée.
+  const pushEmail = buildNotificationEmail(input.type, input.payload ?? {});
+  void import("@/server/push/push.service")
+    .then(({ sendPushToUser }) =>
+      sendPushToUser(input.userId, {
+        title: "The Park",
+        body: pushEmail?.subject ?? "Nouvelle notification",
+        url: notificationHref(input.type, input.entityType ?? null, input.entityId ?? null) ?? "/notifications",
+        tag: input.type,
+      }),
+    )
+    .catch((err) => console.error("[push] dispatch failed", err));
 
   if (input.emailSubject && input.emailHtml) {
     const user = await prisma.user.findUnique({

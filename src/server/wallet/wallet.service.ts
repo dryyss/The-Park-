@@ -112,6 +112,40 @@ export async function creditWalletFromTopUp(input: {
   await evaluateUserBadgesSafe(input.userId);
 }
 
+/** Crédite un bonus promotionnel (parrainage) sur le solde dépôt (non retirable). */
+export async function creditWalletReferralBonus(input: {
+  userId: string;
+  creditEur: number;
+  note: string;
+}): Promise<void> {
+  await prisma.$transaction(async (tx) => {
+    const account = await tx.walletAccount.upsert({
+      where: { userId: input.userId },
+      create: { userId: input.userId, depositBalance: 0, earnedBalance: 0 },
+      update: {},
+    });
+
+    const credit = roundEur(input.creditEur);
+    const depositAfter = roundEur(Number(account.depositBalance) + credit);
+    const earnedAfter = roundEur(Number(account.earnedBalance));
+
+    await tx.walletAccount.update({
+      where: { id: account.id },
+      data: { depositBalance: depositAfter },
+    });
+
+    await tx.walletLedgerEntry.create({
+      data: {
+        walletAccountId: account.id,
+        type: "REFERRAL_BONUS",
+        amount: credit,
+        balanceAfter: totalBalance(depositAfter, earnedAfter),
+        note: input.note,
+      },
+    });
+  });
+}
+
 /**
  * Débite le portefeuille pour une vente marketplace.
  * Priorité : crédits déposés, puis gains vendeur si besoin.

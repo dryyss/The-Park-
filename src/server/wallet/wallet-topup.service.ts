@@ -67,4 +67,10 @@ export async function fulfillWalletTopUpFromStripeSession(sessionId: string): Pr
     feeEur: Number.isFinite(feeEur) ? feeEur : 0,
     stripeCheckoutSessionId: session.id,
   });
+
+  // Le 1er dépôt qualifie un éventuel parrainage → bonus au parrain et au filleul.
+  const { rewardReferralIfEligible } = await import("@/server/referral/referral.service");
+  await rewardReferralIfEligible(userId).catch((err) => {
+    console.error("[referral] reward on top-up failed", err);
+  });
 }

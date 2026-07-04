@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/common/page-header";
 import { CompletionPanel, CollectionFiltersBar } from "@/components/collection/collection-filters";
 import { CollectionCardGrid } from "@/components/collection/collection-card-grid";
 import { CollectionDisplayControls } from "@/components/collection/collection-display-controls";
+import { CollectionExportShare } from "@/components/collection/collection-export-share";
 import { CollectionGuestBanner } from "@/components/collection/collection-guest-banner";
 import { parseCollectionGridCols, parseCollectionSort } from "@/lib/collection-grid";
 import { Link } from "@/i18n/navigation";
@@ -138,9 +139,12 @@ export default async function CollectionPage({
       />
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3.5">
         <CollectionFiltersBar params={collParams} counts={data.counts} locale={locale} />
-        <Suspense fallback={null}>
-          <CollectionDisplayControls />
-        </Suspense>
+        <div className="flex flex-wrap items-center gap-3.5">
+          {isAuthenticated && <CollectionExportShare slug={viewer?.slug ?? null} />}
+          <Suspense fallback={null}>
+            <CollectionDisplayControls />
+          </Suspense>
+        </div>
       </div>
 
       {data.sections.map((sec) => (

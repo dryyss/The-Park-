@@ -44,6 +44,10 @@ export function notificationHref(
     case "DISPUTE_RESOLVED":
     case "ORDER_UPDATE":
       return "/dashboard";
+    case "REFERRAL_REWARD":
+      return "/parrainage";
+    case "TICKET_REPLY":
+      return entityId ? `/support/${entityId}` : "/support";
     default:
       return null;
   }
@@ -87,7 +91,7 @@ const SALE_TYPES: NotificationType[] = [
   "DISPUTE_RESOLVED",
 ];
 
-const WALLET_TYPES: NotificationType[] = ["PAYMENT_AUTHORIZED", "ORDER_UPDATE"];
+const WALLET_TYPES: NotificationType[] = ["PAYMENT_AUTHORIZED", "ORDER_UPDATE", "REFERRAL_REWARD"];
 
 export function notificationCategory(type: NotificationType): NotificationCategory {
   if (TRADE_TYPES.includes(type)) return "trade";

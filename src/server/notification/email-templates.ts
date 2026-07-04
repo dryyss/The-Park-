@@ -122,6 +122,18 @@ export function buildNotificationEmail(
         html: wrap(`<p>Ta carte a été achetée${amount ? ` pour <strong>${amount} €</strong>` : ""}. Les fonds seront libérés après confirmation de réception par l'acheteur.</p>`),
       };
     }
+    case "REFERRAL_REWARD": {
+      const amount = typeof payload.amount === "string" ? payload.amount : null;
+      return {
+        subject: "Bonus de parrainage crédité 🎉",
+        html: wrap(`<p>Ton parrainage est validé${amount ? ` : <strong>${amount}</strong> de crédits ont été ajoutés à ton portefeuille` : ""}.</p>`),
+      };
+    }
+    case "TICKET_REPLY":
+      return {
+        subject: "Réponse à ton ticket de support",
+        html: wrap("<p>Le support a répondu à ton ticket. Connecte-toi pour consulter la réponse.</p>"),
+      };
     default:
       return null;
   }

@@ -5,6 +5,7 @@ import { getAccountSettings } from "@/server/user/account.service";
 import { PageHeader } from "@/components/common/page-header";
 import { SettingsForm } from "@/components/settings/settings-form";
 import { AccountSecuritySection } from "@/components/settings/account-security-section";
+import { PushToggle } from "@/components/notifications/push-toggle";
 import { PRIVATE_METADATA } from "@/lib/seo-messages";
 
 export const metadata = PRIVATE_METADATA;
@@ -27,6 +28,9 @@ export default async function ParametresPage({ params }: { params: Promise<{ loc
   return (
     <main className="mx-auto max-w-[1080px] page-pad pt-9 pb-[60px]">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="設定" />
+      <div className="mt-8 mb-6">
+        <PushToggle />
+      </div>
       <div className="mt-8">
         <SettingsForm
           initialPrefs={prefs}

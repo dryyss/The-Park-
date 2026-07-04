@@ -41,6 +41,8 @@ const TYPE_KEYS: Record<NotificationType, { title: string; body: string }> = {
   MESSAGE_RECEIVED: { title: "messageReceived", body: "messageReceivedBody" },
   FRIEND_REQUEST: { title: "friendRequest", body: "friendRequestBody" },
   FRIEND_ACCEPTED: { title: "friendAccepted", body: "friendAcceptedBody" },
+  REFERRAL_REWARD: { title: "referralReward", body: "referralRewardBody" },
+  TICKET_REPLY: { title: "ticketReply", body: "ticketReplyBody" },
 };
 
 function mapNotification(

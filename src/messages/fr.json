@@ -87,7 +87,9 @@
     "help": "Aide",
     "status": "Tous systèmes opérationnels",
     "developedBy": "Développé par",
-    "developedByAlt": "Magar Développement"
+    "developedByAlt": "Magar Développement",
+    "linkReferral": "Parrainage",
+    "linkSupport": "Support"
   },
   "home": {
     "heroKicker": "Plateforme de collection · Pocket Drifterz",
@@ -196,7 +198,12 @@
       "quantity-desc": "Quantité ↓",
       "quantity-asc": "Quantité ↑"
     },
-    "noUser": "Aucun profil disponible."
+    "noUser": "Aucun profil disponible.",
+    "exportCsv": "Export CSV",
+    "exportJson": "Export JSON",
+    "share": "Partager",
+    "shareCopied": "Lien copié ✓",
+    "shareTitle": "Ma collection The Park"
   },
   "rankings": {
     "kicker": "Saison 1 · Moteur Forgé",
@@ -844,7 +851,11 @@
       "orderUpdate": "Commande boutique",
       "orderUpdateBody": "Commande {orderNumber} : {status}.",
       "messageReceived": "Nouveau message",
-      "messageReceivedBody": "{preview}"
+      "messageReceivedBody": "{preview}",
+      "referralReward": "Bonus de parrainage 🎉",
+      "referralRewardBody": "{amount} de crédits ont été ajoutés à ton portefeuille.",
+      "ticketReply": "Réponse du support",
+      "ticketReplyBody": "Le support a répondu à ton ticket."
     }
   },
   "messages": {
@@ -2459,5 +2470,74 @@
     "findPlaceholder": "Cherche un membre par pseudo…",
     "findNoResult": "Aucun membre ne correspond.",
     "emptyHint": "Cherche un membre ci-dessus ou défie un collectionneur depuis le leaderboard."
+  },
+  "referral": {
+    "kicker": "Parrainage",
+    "title": "Invite, gagne des crédits",
+    "intro": "Partage ton code : quand ton filleul recharge son portefeuille pour la première fois, vous recevez chacun des crédits.",
+    "yourCode": "Ton code",
+    "copyLink": "Copier le lien",
+    "copied": "Copié ✓",
+    "explain": "{amount} offerts à toi et à ton filleul dès son premier dépôt.",
+    "rewarded": "Validés",
+    "pending": "En attente",
+    "earned": "Gagné",
+    "haveCode": "Tu as un code parrain ?",
+    "codePlaceholder": "Code parrain",
+    "apply": "Valider",
+    "applying": "…",
+    "alreadyReferredNote": "Un parrain est déjà associé à ton compte.",
+    "yourReferrals": "Tes filleuls",
+    "statusRewarded": "Validé",
+    "statusPending": "En attente",
+    "errorInvalid": "Code invalide.",
+    "errorSelf": "Tu ne peux pas utiliser ton propre code.",
+    "errorAlready": "Un parrain est déjà associé à ton compte.",
+    "errorGeneric": "Une erreur est survenue."
+  },
+  "push": {
+    "title": "Notifications navigateur",
+    "hint": "Sois alerté même quand l'onglet est fermé.",
+    "enabledHint": "Activées sur cet appareil.",
+    "unsupported": "Non pris en charge par ce navigateur.",
+    "denied": "Bloquées — autorise-les dans les réglages du navigateur.",
+    "enable": "Activer",
+    "disable": "Désactiver",
+    "working": "…"
+  },
+  "support": {
+    "kicker": "Support",
+    "title": "Aide & tickets",
+    "intro": "Une question, un souci ? Ouvre un ticket, l'équipe te répond ici.",
+    "newTicket": "Nouveau ticket",
+    "subjectPlaceholder": "Sujet",
+    "bodyPlaceholder": "Décris ta demande…",
+    "sending": "Envoi…",
+    "send": "Envoyer",
+    "cancel": "Annuler",
+    "errorGeneric": "Une erreur est survenue.",
+    "empty": "Aucun ticket pour l'instant.",
+    "messageCount": "{count, plural, one {# message} other {# messages}}",
+    "you": "Toi",
+    "staffLabel": "Support",
+    "closedNote": "Ce ticket est clôturé.",
+    "replyPlaceholder": "Ta réponse…",
+    "reply": "Répondre",
+    "queueTitle": "File des tickets ({count})",
+    "queueEmpty": "Aucun ticket.",
+    "category": {
+      "GENERAL": "Général",
+      "ORDER": "Commande",
+      "PAYMENT": "Paiement",
+      "MODERATION": "Modération",
+      "BUG": "Bug",
+      "OTHER": "Autre"
+    },
+    "status": {
+      "OPEN": "Ouvert",
+      "PENDING": "En attente",
+      "RESOLVED": "Résolu",
+      "CLOSED": "Clôturé"
+    }
   }
 }

@@ -315,6 +315,8 @@ enum NotificationType {
   WISHLIST_PRICE_DROP
   ORDER_UPDATE
   MESSAGE_RECEIVED
+  REFERRAL_REWARD
+  TICKET_REPLY
 }
 
 enum MarketplaceCheckoutStatus {
@@ -350,6 +352,8 @@ model User {
   /// Sous-rôle staff (null = membre simple). Vérifié côté serveur.
   staffRole   AdminRole?
   language    Language   @default(FR)
+  /// Code de parrainage personnel (partageable). Généré à la première demande.
+  referralCode String?   @unique
 
   // Cycle de vie du compte (modération + RGPD)
   status         AccountStatus @default(PENDING_VERIFICATION)
@@ -442,6 +446,15 @@ model User {
 
   friendshipsRequested Friendship[] @relation("FriendshipRequester")
   friendshipsReceived  Friendship[] @relation("FriendshipAddressee")
+
+  pushSubscriptions PushSubscription[]
+
+  referralsMade     Referral[] @relation("ReferralReferrer")
+  referralReceived  Referral?  @relation("ReferralReferee")
+
+  supportTickets    SupportTicket[]        @relation("SupportTicketUser")
+  assignedTickets   SupportTicket[]        @relation("SupportTicketAssignee")
+  supportMessages   SupportTicketMessage[] @relation("SupportTicketMessageAuthor")
 
   @@index([role])
   @@index([staffRole])
@@ -655,6 +668,7 @@ enum WalletEntryType {
   ADJUSTMENT
   CAUTION_LOCK    // Blocage de caution échange sécurisé
   CAUTION_RELEASE // Restitution de caution après échange complété/annulé
+  REFERRAL_BONUS  // Crédit promotionnel de parrainage (non retirable)
 }
 
 model WalletAccount {
@@ -1621,4 +1635,90 @@ model ProcessedWebhookEvent {
   processedAt DateTime @default(now())
 
   @@index([processedAt])
+}
+
+// ============================================================================
+//  WEB PUSH  (notifications navigateur — PWA)
+// ============================================================================
+
+/// Abonnement Web Push d'un navigateur (endpoint + clés VAPID côté client).
+model PushSubscription {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ============================================================================
+//  PARRAINAGE  (crédits promotionnels via le portefeuille)
+// ============================================================================
+
+enum ReferralStatus {
+  PENDING // filleul inscrit, récompense pas encore débloquée
+  REWARDED // crédits versés au parrain (et au filleul)
+}
+
+/// Un filleul est rattaché à un parrain une seule fois (refereeId unique).
+model Referral {
+  id          String         @id @default(cuid())
+  referrer    User           @relation("ReferralReferrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referrerId  String
+  referee     User           @relation("ReferralReferee", fields: [refereeId], references: [id], onDelete: Cascade)
+  refereeId   String         @unique
+  status      ReferralStatus @default(PENDING)
+  rewardCents Int            @default(0)
+  createdAt   DateTime       @default(now())
+  rewardedAt  DateTime?
+
+  @@index([referrerId])
+}
+
+// ============================================================================
+//  SUPPORT / TICKETING  (SAV — Module 9 admin)
+// ============================================================================
+
+enum SupportTicketStatus {
+  OPEN
+  PENDING // en attente de réponse membre
+  RESOLVED
+  CLOSED
+}
+
+model SupportTicket {
+  id            String              @id @default(cuid())
+  user          User                @relation("SupportTicketUser", fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  subject       String
+  category      String              @default("GENERAL")
+  status        SupportTicketStatus @default(OPEN)
+  assignedTo    User?               @relation("SupportTicketAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  assignedToId  String?
+  lastMessageAt DateTime            @default(now())
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  messages      SupportTicketMessage[]
+
+  @@index([status])
+  @@index([userId])
+  @@index([assignedToId])
+}
+
+model SupportTicketMessage {
+  id        String        @id @default(cuid())
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  ticketId  String
+  author    User          @relation("SupportTicketMessageAuthor", fields: [authorId], references: [id])
+  authorId  String
+  body      String
+  /// true = réponse d'un membre du staff.
+  isStaff   Boolean       @default(false)
+  createdAt DateTime      @default(now())
+
+  @@index([ticketId])
 }

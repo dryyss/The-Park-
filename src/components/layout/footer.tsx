@@ -156,6 +156,8 @@ export function Footer() {
               <FooterLink href="/profil">{t("linkProfile")}</FooterLink>
               <FooterLink href="/dashboard">{t("linkSellerDashboard")}</FooterLink>
               <FooterLink href="/wishlist">{t("linkWishlist")}</FooterLink>
+              <FooterLink href="/parrainage">{t("linkReferral")}</FooterLink>
+              <FooterLink href="/support">{t("linkSupport")}</FooterLink>
               <FooterLink href="/notifications">{t("linkNotifications")}</FooterLink>
               <FooterLink href="/parametres">{t("linkSettings")}</FooterLink>
             </div>
