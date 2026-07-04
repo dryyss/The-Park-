@@ -157,8 +157,8 @@
     "DAMAGED": "Abîmée"
   },
   "collection": {
-    "kicker": "Pocket Drifterz · Édition 2026",
-    "title": "Ma Collection",
+    "kicker": "Pocket Drifterz",
+    "title": "Garage",
     "seasonActive": "Saison 1 · Moteur Forgé",
     "seasonSoon": "Saison 2 · 🔒 À venir",
     "seasonHS": "Hors Série",
@@ -325,7 +325,7 @@
   "collector": {
     "reviews": "{count} avis",
     "contact": "Contacter",
-    "collectionPreview": "Aperçu de la collection",
+    "collectionPreview": "Showroom",
     "missing": "Manquante"
   },
   "season": {
@@ -507,7 +507,7 @@
     "availableQty": "{count} dispo."
   },
   "marketplace": {
-    "kicker": "Achète · Vends · Échange entre membres",
+    "kicker": "Achète · Vends · Enchéris entre membres",
     "title": "Marketplace",
     "jp": "市場",
     "tabSell": "On propose",

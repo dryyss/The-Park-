@@ -5,6 +5,7 @@ import { getUserCollection } from "@/server/collection/collection.service";
 import { getViewerWishlistCardIds } from "@/server/wishlist/wishlist.service";
 import { getCardsLikeMeta } from "@/server/card-like/card-like.service";
 import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/components/common/page-header";
 import { CompletionPanel, CollectionFiltersBar } from "@/components/collection/collection-filters";
 import { CollectionCardGrid } from "@/components/collection/collection-card-grid";
 import { CollectionDisplayControls } from "@/components/collection/collection-display-controls";
@@ -62,8 +63,8 @@ export default async function CollectionPage({
 
   return (
     <main className="page-section">
-      {/* Titre retiré à la demande du client — seuls les sélecteurs saison/édition restent. */}
-      <div className="flex w-full flex-wrap items-center justify-end gap-2 pb-1.5">
+      <PageHeader kicker={t("kicker")} title={t("title")} jp="駐車場">
+        <div className="flex w-full flex-wrap items-center justify-end gap-2 pb-1.5 sm:w-auto">
           {seasons.map((s) => {
             const isHS = s.code === HORS_SERIE_SEASON_CODE;
             const isActive = activeSeason === s.code;
@@ -125,7 +126,8 @@ export default async function CollectionPage({
               </Link>
             </div>
           )}
-      </div>
+        </div>
+      </PageHeader>
 
       {!isAuthenticated && <CollectionGuestBanner messageKey="loginGateCollection" />}
 

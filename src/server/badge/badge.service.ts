@@ -89,8 +89,6 @@ type BadgeMetrics = {
   uniqueOwned: boolean;
   promoOwned: boolean;
   profileComplete: boolean;
-  exchangesProposed: number;
-  exchangesCompleted: number;
   purchases: number;
   salesTotal: number;
   quickBuy: boolean;
@@ -146,7 +144,7 @@ async function updateTop3Streak(userId: string, rank: number | null): Promise<nu
 }
 
 async function loadBadgeMetrics(userId: string): Promise<BadgeMetrics> {
-  const [items, catalogCards, user, exchangesProposed, exchangesCompleted, purchases, salesAgg, buyerSales, wonAuctions, rank] =
+  const [items, catalogCards, user, purchases, salesAgg, buyerSales, wonAuctions, rank] =
     await Promise.all([
       prisma.collectionItem.findMany({
         where: { userId, quantity: { gt: 0 } },
@@ -172,10 +170,6 @@ async function loadBadgeMetrics(userId: string): Promise<BadgeMetrics> {
       prisma.user.findUnique({
         where: { id: userId },
         select: { displayName: true, avatarUrl: true, bio: true },
-      }),
-      prisma.exchange.count({ where: { initiatorId: userId } }),
-      prisma.exchange.count({
-        where: { OR: [{ initiatorId: userId }, { recipientId: userId }], status: "COMPLETED" },
       }),
       prisma.sale.count({ where: { buyerId: userId, status: { in: SUCCESSFUL_SALE_STATUSES } } }),
       prisma.sale.aggregate({
@@ -278,8 +272,6 @@ async function loadBadgeMetrics(userId: string): Promise<BadgeMetrics> {
     uniqueOwned,
     promoOwned,
     profileComplete: !!user?.displayName?.trim() && !!user?.avatarUrl?.trim() && !!user?.bio?.trim(),
-    exchangesProposed,
-    exchangesCompleted,
     purchases,
     salesTotal: Number(salesAgg._sum.price ?? 0),
     quickBuy,
@@ -305,7 +297,6 @@ function buildBadgeRules(m: BadgeMetrics): Record<string, boolean> {
     apprenti_contact_mis: m.distinctCards >= 1,
     apprenti_premier_run: m.purchases >= 1,
     apprenti_controle_technique: m.profileComplete,
-    apprenti_appel_de_phares: m.exchangesProposed >= 1,
 
     // 🔧 Le Garage Parfait
     garage_puriste_du_bloc: m.s01Complete,
@@ -316,7 +307,6 @@ function buildBadgeRules(m: BadgeMetrics): Record<string, boolean> {
 
     // 💸 Le Loup de Shibuya
     shibuya_sniper_de_l_ombre: m.sniperWin,
-    shibuya_business_de_touge: m.exchangesCompleted >= 10,
     shibuya_billet_violet: m.salesTotal >= 500,
     shibuya_gommards_neufs: m.quickBuy,
     shibuya_flambeur_de_tokyo: m.contestedWin,

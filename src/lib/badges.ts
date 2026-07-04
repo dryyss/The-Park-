@@ -52,14 +52,6 @@ export const BADGE_DEFINITIONS: BadgeDef[] = [
     icon: "✅",
     category: "apprenti",
   },
-  {
-    code: "apprenti_appel_de_phares",
-    label: "Appel de Phares",
-    description: "Propose ton premier échange à un autre membre de la communauté.",
-    icon: "💡",
-    category: "apprenti",
-  },
-
   // ── 🔧 Le Garage Parfait ──────────────────────────────────────────────────
   {
     code: "garage_puriste_du_bloc",
@@ -103,13 +95,6 @@ export const BADGE_DEFINITIONS: BadgeDef[] = [
     label: "Sniper de l'Ombre",
     description: "Remporte une enchère dans les 15 dernières secondes avant la fin du compte à rebours.",
     icon: "🎯",
-    category: "shibuya",
-  },
-  {
-    code: "shibuya_business_de_touge",
-    label: "Business de Touge",
-    description: "Conclus 10 échanges réussis avec d'autres collectionneurs.",
-    icon: "⛰️",
     category: "shibuya",
   },
   {

@@ -157,8 +157,8 @@
     "DAMAGED": "傷あり"
   },
   "collection": {
-    "kicker": "Pocket Drifterz · 2026 Edition",
-    "title": "マイコレクション",
+    "kicker": "Pocket Drifterz",
+    "title": "ガレージ",
     "seasonActive": "シーズン1 · 鍛造エンジン",
     "seasonSoon": "シーズン2 · 🔒 近日公開",
     "seasonHS": "番外編",
@@ -325,7 +325,7 @@
   "collector": {
     "reviews": "{count}件",
     "contact": "連絡",
-    "collectionPreview": "コレクション概要",
+    "collectionPreview": "ショールーム",
     "missing": "未所持"
   },
   "season": {
@@ -507,7 +507,7 @@
     "availableQty": "利用可 {count}枚"
   },
   "marketplace": {
-    "kicker": "買う · 売る · メンバー間で交換",
+    "kicker": "買う · 売る · メンバー間で入札",
     "title": "マーケット",
     "jp": "市場",
     "tabSell": "出品中",
