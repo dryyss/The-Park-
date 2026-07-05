@@ -2,8 +2,42 @@
 
 > **Document vivant** : actualiser ce fichier à chaque livraison significative (feature, fix, config prod).
 >
-> **Dernière revue** : 2026-06-16 · **Baseline** : post-vagues A→E + audit projet  
-> **Sprint actif** : Sprint 1 — Prod-ready (P0)
+> **Dernière revue** : 2026-07-05 · **Baseline** : post-vagues A→E + Lots A/B/C  
+> **Sprint actif** : Prod-ready résiduel (config Auth0/Stripe/Resend/cron)
+
+---
+
+## ⚡ Mise à jour 2026-07-05 — Lots A / B / C
+
+> ⚠️ Les tableaux détaillés plus bas datent du 16/06 et **sous-estiment** le projet.
+> Ce bloc fait foi pour les livraisons récentes.
+
+**Lot A (prod-ready & sécurité)** ✅
+- Idempotence webhook Stripe (`ProcessedWebhookEvent`), sonde `GET /api/health`, `docs/DEPLOIEMENT-PROD.md` + Action Auth0 Post-Login.
+- Rate-limiting Postgres (multi-instances, fail-open) sur endpoints sensibles ; **ConnectionLog LCEN** branché (1×/session, purge 1 an via cron).
+- **Cote & historique de prix** par carte (ventes + enchères, graphe Recharts sur la fiche).
+- **Alertes prix wishlist** (`WISHLIST_PRICE_DROP` ciblé vs disponibilité).
+- **Newsletter double opt-in** (subscribe/confirm/unsubscribe + footer fonctionnel). → §10 « Footer/Newsletter » n'est plus ❌.
+
+**Lot B (croissance & support)** ✅
+- **Export/partage collection** (CSV/JSON + lien public).
+- **Parrainage/crédits** (code, bonus 2 € parrain+filleul au 1er dépôt, idempotent).
+- **Web Push** (VAPID, service worker, toggle `/parametres`, envoi sur chaque notification).
+- **Ticketing support** (membre `/support[/id]` + file staff dans `/admin/support`) → §8 « pas de ticketing » obsolète.
+
+**Lot C (C2C non financier)** ✅
+- **`/securite/etats` dynamique** : machine à états live + échéances (J+3 / 72 h / J+5) + timeline → §7 « pas de viz dynamique » obsolète.
+- **Prolongation garantie 72 h** (state-only, quota 2×). Hook J+5 documenté (transition = couche financière Stripe, hors périmètre).
+
+**Corrections de statut (déjà livrés, doc périmée)** :
+- **Admin CRUD cartes/versions** ✅ (`catalog.actions` + `AdminCatalogManager`) → §8 `/admin/catalogue` n'est plus ⚠️.
+- **Écran d'arbitrage litige** ✅ (`resolveDisputeWithArbitration` + grille verdict/capture) → backlog P2 #17 fait.
+- **Analytics Recharts admin** ✅ (`AdminOverviewCharts` sur `/admin`) → backlog P3 #23 fait.
+- **Tests** : ~73 tests unitaires + intégration (wishlist alerte prix, parrainage) — plus « 0 % ».
+
+**Reste bloqué (décision client / juridique / API payantes)** 🔴 : Stripe Elements caution (avenant PSP/KYC), agrégateur transporteurs (comptes API), preuves vidéo in-app (XL caméra).
+
+**Maturité réévaluée** : MVP ~90 % · C2C prod-ready ~60 % · Tests : socle en place.
 
 ---
 
@@ -458,6 +492,7 @@
 |------|--------|-------------|
 | 2026-06-16 | Audit initial | Création tableau · baseline post-vagues A→E · 47 pages · 5 routes API |
 | 2026-06-16 | Plan sprints | Ajout § Plan par sprints (S0→S5+) · checklists · tableau de bord sprint |
+| 2026-07-05 | Lots A/B/C | Bloc « Mise à jour 2026-07-05 » en tête. Livré : prod-ready (health/webhook idempotent/doc/Auth0), rate-limit+LCEN, cote de prix, alertes prix, newsletter, export/partage collection, parrainage, web push, ticketing, `/securite/etats` dynamique + prolongation garantie. Corrigé (déjà livrés) : admin CRUD cartes, arbitrage litige, analytics Recharts. |
 
 <!-- Ajouter une ligne par livraison :
 | YYYY-MM-DD | Nom | Description courte + lignes tableau modifiées |
