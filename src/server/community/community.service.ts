@@ -165,7 +165,19 @@ export async function getRecentActivity(limit = 8): Promise<ActivityItem[]> {
   })();
 }
 
-export type RankingCategory = "completion" | "reputation" | "exchanges";
+export type RankingCategory = "completion" | "reputation" | "sales";
+
+/** Statuts de vente considérés comme une transaction aboutie (payée, non annulée/remboursée). */
+const COUNTABLE_SALE_STATUSES = [
+  "PAID",
+  "AWAITING_SHIPMENT",
+  "SHIPPED",
+  "DELIVERED_WINDOW",
+  "DELIVERED",
+  "COMPLETED",
+  "GUARANTEE_SUSPENDED",
+  "DISPUTED",
+] as const;
 
 export interface RankingRow {
   rank: number;
@@ -203,13 +215,23 @@ async function fetchRankingRows(category: RankingCategory): Promise<RankingRow[]
       slug: true,
       ratingAvg: true,
       reviewCount: true,
-      _count: { select: { collectionItems: true, exchangesInitiated: true, exchangesReceived: true } },
+      _count: { select: { collectionItems: true } },
     },
   });
 
+  // Nombre de ventes abouties par vendeur (uniquement pour la catégorie "ventes").
+  const salesByUser = new Map<string, number>();
+  if (category === "sales") {
+    const grouped = await prisma.sale.groupBy({
+      by: ["sellerId"],
+      where: { status: { in: [...COUNTABLE_SALE_STATUSES] } },
+      _count: { _all: true },
+    });
+    for (const g of grouped) salesByUser.set(g.sellerId, g._count._all);
+  }
+
   const withScore = members.map((m) => {
     const owned = m._count.collectionItems;
-    const exchanges = m._count.exchangesInitiated + m._count.exchangesReceived;
     let raw = 0;
     let value = "";
     let sub = "";
@@ -223,9 +245,9 @@ async function fetchRankingRows(category: RankingCategory): Promise<RankingRow[]
       value = `★ ${m.ratingAvg.toFixed(1).replace(".", ",")}`;
       sub = "note moyenne";
     } else {
-      raw = exchanges;
-      value = String(exchanges);
-      sub = "échanges";
+      raw = salesByUser.get(m.id) ?? 0;
+      value = String(raw);
+      sub = "ventes";
     }
 
     return { ...m, raw, value, sub, owned };
@@ -253,7 +275,7 @@ function getRankingRows(category: RankingCategory) {
   })();
 }
 
-/** Classements complets (complétion, réputation, échanges), paginés + marquage du viewer. */
+/** Classements complets (complétion, réputation, ventes), paginés + marquage du viewer. */
 export async function getRankings(
   category: RankingCategory,
   viewerSlug?: string,

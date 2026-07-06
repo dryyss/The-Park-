@@ -210,7 +210,7 @@
     "title": "Classements",
     "catCompletion": "Complétion",
     "catReputation": "Réputation",
-    "catExchanges": "Échanges",
+    "catSales": "Ventes",
     "yourRank": "Tu es {rank}ᵉ sur {total} collectionneurs",
     "empty": "Aucun collectionneur dans ce classement pour l’instant.",
     "pagination": "Pagination du classement",
@@ -2416,6 +2416,37 @@
       "extending": "…",
       "timeline": "Historique",
       "system": "Système"
+    },
+    "capture": {
+      "presentationSteps": [
+        "Montre la carte et son état, bien lisible",
+        "Montre la protection (sleeve, toploader)",
+        "Filme la mise sous enveloppe/colis",
+        "Colle l'étiquette et filme l'adresse, puis ferme"
+      ],
+      "unboxingSteps": [
+        "Filme le colis fermé et son étiquette",
+        "Ouvre le colis sans couper l'image",
+        "Montre la/les carte(s) reçue(s) et leur état"
+      ],
+      "introPresentation": "Filme une preuve continue de ton emballage. Le jeton du jour est incrusté dans la vidéo.",
+      "introUnboxing": "Filme l'ouverture du colis en continu, sans couper. Le jeton du jour est incrusté dans la vidéo.",
+      "tokenNotice": "Jeton du jour incrusté :",
+      "enableCamera": "Activer la caméra",
+      "cameraDenied": "Accès caméra refusé. Autorise-le ou importe un fichier vidéo.",
+      "startingCamera": "Démarrage de la caméra…",
+      "startRecording": "Démarrer l'enregistrement",
+      "stopRecording": "Arrêter",
+      "recordMin": "Filme encore {s}s",
+      "nextStep": "Étape suivante",
+      "stepOf": "Étape {n}/{total}",
+      "recordedInfo": "Vidéo continue de {s}s",
+      "uploading": "Envoi",
+      "saved": "Preuve enregistrée ✓",
+      "submitProof": "Valider la preuve",
+      "retake": "Refaire",
+      "importFile": "Importer un fichier",
+      "fallbackHint": "Ta vidéo doit montrer le jeton du jour et être filmée en une seule prise."
     }
   },
   "want": {

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx vitest *)",
+      "Bash(GIT_TERMINAL_PROMPT=0 git -c credential.interactive=false push)",
+      "Bash(git worktree *)"
+    ]
+  }
+}

@@ -210,7 +210,7 @@
     "title": "Rankings",
     "catCompletion": "Completion",
     "catReputation": "Reputation",
-    "catExchanges": "Trades",
+    "catSales": "Sales",
     "yourRank": "You are #{rank} of {total} collectors",
     "empty": "No collectors in this ranking yet.",
     "pagination": "Ranking pagination",
@@ -2416,6 +2416,37 @@
       "extending": "…",
       "timeline": "Timeline",
       "system": "System"
+    },
+    "capture": {
+      "presentationSteps": [
+        "Show the card and its condition, clearly readable",
+        "Show the protection (sleeve, toploader)",
+        "Film it going into the envelope/parcel",
+        "Stick the label, film the address, then seal it"
+      ],
+      "unboxingSteps": [
+        "Film the sealed parcel and its label",
+        "Open the parcel without cutting the shot",
+        "Show the card(s) received and their condition"
+      ],
+      "introPresentation": "Film a continuous proof of your packing. Today's token is burned into the video.",
+      "introUnboxing": "Film the parcel opening in one continuous shot, no cuts. Today's token is burned into the video.",
+      "tokenNotice": "Today's token burned in:",
+      "enableCamera": "Enable camera",
+      "cameraDenied": "Camera access denied. Allow it or import a video file.",
+      "startingCamera": "Starting camera…",
+      "startRecording": "Start recording",
+      "stopRecording": "Stop",
+      "recordMin": "Keep filming {s}s",
+      "nextStep": "Next step",
+      "stepOf": "Step {n}/{total}",
+      "recordedInfo": "Continuous {s}s video",
+      "uploading": "Uploading",
+      "saved": "Proof saved ✓",
+      "submitProof": "Submit proof",
+      "retake": "Retake",
+      "importFile": "Import a file",
+      "fallbackHint": "Your video must show today's token and be filmed in a single take."
     }
   },
   "want": {

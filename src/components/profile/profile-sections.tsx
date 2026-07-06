@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { avatarGradient } from "@/lib/avatars";
 import { formatPercent } from "@/lib/format";
 import { FEATURES } from "@/lib/features";
+import { BADGE_CATEGORIES, badgeCategory, badgeSortIndex } from "@/lib/badges";
 import { LogoutLink } from "@/components/auth/logout-link";
 import type { ViewerProfile } from "@/server/profile/profile.service";
 
@@ -143,9 +144,16 @@ export async function ProfileBadges({ profile }: { profile: ViewerProfile }) {
   const t = await getTranslations("profile");
   const unlocked = profile.badges.filter((b) => b.unlocked).length;
 
+  // Regroupe les succès par catégorie, dans l'ordre officiel de la liste client.
+  const sorted = [...profile.badges].sort((a, b) => badgeSortIndex(a.code) - badgeSortIndex(b.code));
+  const groups = BADGE_CATEGORIES.map((cat) => ({
+    cat,
+    badges: sorted.filter((b) => badgeCategory(b.code).code === cat.code),
+  })).filter((g) => g.badges.length > 0);
+
   return (
     <section>
-      <div className="mb-3.5 flex items-center gap-3">
+      <div className="mb-5 flex items-center gap-3">
         <h2 className="font-display text-[22px] tracking-[2px] -skew-x-3 uppercase text-blanc-casse [text-shadow:2px_2px_0_var(--color-carmin)]">
           {t("badges")}
         </h2>
@@ -154,25 +162,41 @@ export async function ProfileBadges({ profile }: { profile: ViewerProfile }) {
           {unlocked} / {profile.badges.length}
         </span>
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {profile.badges.map((bd) => (
-          <div
-            key={bd.code}
-            title={bd.description}
-            className={`flex items-center gap-3 rounded-[14px] border bg-charbon-800 p-3.5 ${bd.unlocked ? "border-charbon-500 opacity-100" : "border-charbon-600 opacity-45"}`}
-          >
-            <div
-              className="font-jp flex h-[42px] w-[42px] shrink-0 -rotate-3 items-center justify-center rounded-[11px] text-[19px] font-black"
-              style={{
-                background: bd.unlocked ? "rgba(216,27,96,0.15)" : "#26262B",
-                color: bd.unlocked ? "#D81B60" : "#5A5A64",
-              }}
-            >
-              {bd.icon}
+
+      <div className="flex flex-col gap-8">
+        {groups.map(({ cat, badges: catBadges }) => (
+          <div key={cat.code}>
+            <div className="mb-3 flex items-center gap-2.5">
+              <span className="text-[17px]">{cat.icon}</span>
+              <h3 className="font-display text-[15px] tracking-[1.5px] -skew-x-3 uppercase text-blanc-casse">
+                {cat.label}
+              </h3>
+              <span className="text-[11px] font-extrabold text-texte-faible">
+                {catBadges.filter((b) => b.unlocked).length}/{catBadges.length}
+              </span>
             </div>
-            <div className="min-w-0">
-              <div className={`text-[12.5px] font-extrabold ${bd.unlocked ? "text-blanc-casse" : "text-texte-faible"}`}>{bd.name}</div>
-              <div className="mt-0.5 text-[10.5px] leading-snug font-semibold text-texte-faible">{bd.description}</div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {catBadges.map((bd) => (
+                <div
+                  key={bd.code}
+                  title={bd.description}
+                  className={`flex items-center gap-3 rounded-[14px] border bg-charbon-800 p-3.5 ${bd.unlocked ? "border-charbon-500 opacity-100" : "border-charbon-600 opacity-45"}`}
+                >
+                  <div
+                    className="font-jp flex h-[42px] w-[42px] shrink-0 -rotate-3 items-center justify-center rounded-[11px] text-[19px] font-black"
+                    style={{
+                      background: bd.unlocked ? "rgba(216,27,96,0.15)" : "#26262B",
+                      color: bd.unlocked ? "#D81B60" : "#5A5A64",
+                    }}
+                  >
+                    {bd.icon}
+                  </div>
+                  <div className="min-w-0">
+                    <div className={`text-[12.5px] font-extrabold ${bd.unlocked ? "text-blanc-casse" : "text-texte-faible"}`}>{bd.name}</div>
+                    <div className="mt-0.5 text-[10.5px] leading-snug font-semibold text-texte-faible">{bd.description}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ))}

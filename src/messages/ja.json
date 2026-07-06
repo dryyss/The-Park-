@@ -210,7 +210,7 @@
     "title": "ランキング",
     "catCompletion": "コンプリート",
     "catReputation": "評価",
-    "catExchanges": "交換",
+    "catSales": "販売",
     "yourRank": "{total}人中 {rank}位",
     "empty": "このランキングにはまだコレクターがいません。",
     "pagination": "ランキングのページ送り",
@@ -2416,6 +2416,37 @@
       "extending": "…",
       "timeline": "履歴",
       "system": "システム"
+    },
+    "capture": {
+      "presentationSteps": [
+        "カードと状態がはっきり読めるように見せて",
+        "保護（スリーブ、トップローダー）を見せて",
+        "封筒・小包に入れるところを撮って",
+        "ラベルを貼って宛先を撮り、封をして"
+      ],
+      "unboxingSteps": [
+        "封をした小包とラベルを撮って",
+        "映像を止めずに小包を開けて",
+        "受け取ったカードと状態を見せて"
+      ],
+      "introPresentation": "梱包の連続した証拠を撮ってね。今日のトークンが映像に焼き込まれるよ。",
+      "introUnboxing": "小包を開けるところを止めずに一発撮りで。今日のトークンが映像に焼き込まれるよ。",
+      "tokenNotice": "今日のトークン（焼き込み）：",
+      "enableCamera": "カメラをオンにする",
+      "cameraDenied": "カメラのアクセスが拒否されたよ。許可するか、動画ファイルをインポートして。",
+      "startingCamera": "カメラを起動中…",
+      "startRecording": "録画を開始",
+      "stopRecording": "停止",
+      "recordMin": "あと{s}秒撮って",
+      "nextStep": "次のステップ",
+      "stepOf": "ステップ {n}/{total}",
+      "recordedInfo": "連続した{s}秒の動画",
+      "uploading": "アップロード中",
+      "saved": "証拠を保存したよ ✓",
+      "submitProof": "証拠を送信",
+      "retake": "撮り直す",
+      "importFile": "ファイルをインポート",
+      "fallbackHint": "動画は今日のトークンが映っていて、一発撮りである必要があるよ。"
     }
   },
   "want": {

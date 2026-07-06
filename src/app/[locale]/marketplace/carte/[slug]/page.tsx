@@ -10,7 +10,6 @@ import { UserHoverCard } from "@/components/profile/user-hover-card";
 import { getCardSellListings } from "@/server/marketplace/marketplace.service";
 import { getViewerUser } from "@/server/user/user.service";
 import { getMarketplaceCartListingIds } from "@/server/marketplace-cart/marketplace-cart.service";
-import { exchangeProposeHref } from "@/lib/exchange-links";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +31,6 @@ export default async function CardSellersPage({
   setRequestLocale(locale);
   const t = await getTranslations("marketplace");
   const tc = await getTranslations("conditions");
-  const tCard = await getTranslations("card");
 
   const [card, viewer] = await Promise.all([
     getCardSellListings(slug),
@@ -120,7 +118,7 @@ export default async function CardSellersPage({
       ) : (
         <div className="mt-8 flex flex-col gap-3">
           {/* Header colonnes (desktop) — même grille que les lignes pour rester aligné */}
-          <div className="hidden grid-cols-[minmax(0,1fr)_110px_120px_110px_minmax(230px,auto)] gap-4 rounded-xl border border-charbon-600 bg-charbon-800/60 px-5 py-3 text-[10px] font-extrabold tracking-[1.5px] text-texte-faible uppercase sm:grid">
+          <div className="hidden grid-cols-[minmax(0,1fr)_110px_120px_120px_minmax(170px,auto)] gap-4 rounded-xl border border-charbon-600 bg-charbon-800/60 px-5 py-3 text-[10px] font-extrabold tracking-[1.5px] text-texte-faible uppercase sm:grid">
             <span>{t("sellersColSeller")}</span>
             <span>{t("sellersColCondition")}</span>
             <span>{t("sellersColVersion")}</span>
@@ -131,7 +129,7 @@ export default async function CardSellersPage({
           {card.sellers.map((s, idx) => (
             <div
               key={s.listingId}
-              className="grid grid-cols-1 gap-3 rounded-2xl border border-charbon-500 bg-charbon-800 px-5 py-4 transition hover:border-charbon-400 sm:grid-cols-[minmax(0,1fr)_110px_120px_110px_minmax(230px,auto)] sm:items-center sm:gap-4"
+              className="grid grid-cols-1 gap-3 rounded-2xl border border-charbon-500 bg-charbon-800 px-5 py-4 transition hover:border-charbon-400 sm:grid-cols-[minmax(0,1fr)_110px_120px_120px_minmax(170px,auto)] sm:items-center sm:gap-4"
             >
               {/* Vendeur */}
               <div className="flex items-center gap-2.5">
@@ -155,11 +153,6 @@ export default async function CardSellersPage({
                     <span className="ml-1 text-texte-faible">({s.seller.reviews})</span>
                   </div>
                 </div>
-                {idx === 0 && s.price > 0 && (
-                  <span className="ml-auto rounded-md bg-statut-succes/15 px-2 py-0.5 text-[9px] font-extrabold tracking-[1px] text-statut-succes uppercase sm:hidden">
-                    {t("sellersLowestBadge")}
-                  </span>
-                )}
               </div>
 
               {/* État */}
@@ -189,11 +182,6 @@ export default async function CardSellersPage({
                 ) : (
                   <span className="font-display text-[22px] leading-none whitespace-nowrap text-blanc-casse">
                     {s.priceLabel}
-                    {idx === 0 && (
-                      <span className="ml-2 hidden rounded-md bg-statut-succes/15 px-2 py-0.5 text-[9px] font-extrabold tracking-[1px] text-statut-succes uppercase sm:inline">
-                        {t("sellersLowestBadge")}
-                      </span>
-                    )}
                   </span>
                 )}
               </div>
@@ -216,12 +204,6 @@ export default async function CardSellersPage({
                         inCart={cartSet.has(s.listingId)}
                       />
                     )}
-                    <Link
-                      href={exchangeProposeHref({ card: card.slug, recipient: s.seller.slug })}
-                      className="font-display -skew-x-3 rounded-lg border-[1.5px] border-charbon-400 px-4 py-2.5 text-center text-[11px] tracking-[1px] whitespace-nowrap text-texte-doux uppercase transition hover:border-carmin"
-                    >
-                      {tCard("listingProposeExchange")}
-                    </Link>
                     <ContactSellerButton
                       sellerSlug={s.seller.slug}
                       locale={locale}

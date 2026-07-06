@@ -32,7 +32,7 @@ export default async function ClassementsPage({
   const t = await getTranslations("rankings");
 
   const cat: RankingCategory =
-    sp.cat === "reputation" || sp.cat === "exchanges" ? sp.cat : "completion";
+    sp.cat === "reputation" || sp.cat === "sales" ? sp.cat : "completion";
   const requestedPage = Math.max(1, Number.parseInt(sp.page ?? "1", 10) || 1);
 
   const viewer = await getViewerUser();
@@ -41,7 +41,7 @@ export default async function ClassementsPage({
   const tabs: { k: RankingCategory; label: string }[] = [
     { k: "completion", label: t("catCompletion") },
     { k: "reputation", label: t("catReputation") },
-    { k: "exchanges", label: t("catExchanges") },
+    { k: "sales", label: t("catSales") },
   ];
 
   const onFirstPage = data.page === 1;
