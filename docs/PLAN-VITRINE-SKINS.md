@@ -1,7 +1,47 @@
-# Plan complet — Vitrine du collectionneur + Système de skins
+# Plan complet — Showroom du collectionneur + Système de skins
 
-> Statut : **plan validé, en attente de déclenchement** (option payante client).
-> Rédigé le 2026-07-02. À exécuter tel quel si le client valide l'option.
+> Statut : **plan validé, en attente de déclenchement** (option payante client, **hors cahier des charges**).
+> Rédigé le 2026-07-02. Mis à jour le 2026-07-06 avec la spec client (Discord).
+> À exécuter tel quel si le client valide l'option.
+
+## 0. Mise à jour spec client (Discord, juillet 2026)
+
+Le client a précisé sa demande. Réconciliation avec le plan existant :
+
+| Demande client | Traitement |
+|----------------|-----------|
+| **« SHOWROOM »** (nom) | = la « vitrine curatée » du plan. On adopte **« Showroom »** comme libellé UI (clé i18n), le code garde `Showcase`. |
+| Pouvoir **modifier son Showroom** | = éditeur de vitrine (§5.3). Déjà prévu. |
+| **Ajouter un contour de carte** | = skins de type `FRAME` (§5.1). Déjà prévu. |
+| Contours **néon / rainbow / spectre** | 3 skins `FRAME` de départ à seeder (§ ci-dessous). |
+| **Nuancier (choix de couleur)** | 🆕 **Nouveau** : le contour peut être teinté par l'utilisateur. Ajout d'un champ couleur + variable de rendu (§3 bis, §5.1 bis). |
+| Skins applicables **uniquement dans le Showroom** | Déjà décidé (rendu monté seulement en contexte Showroom). |
+| Skins spéciaux **vendus dans le Shop, onglet « Skins »** | 🆕 **Changement** : la boutique de skins devient un **onglet du `/boutique`** existant, pas une page `/skins` séparée (§5.4 bis). |
+
+### Skins de départ à seeder (Lot 3)
+
+| key | kind | nuancier | notes |
+|-----|------|----------|-------|
+| `frame-neon` | FRAME | ✅ | contour néon lumineux, couleur au choix |
+| `frame-rainbow` | FRAME | ❌ | dégradé arc-en-ciel animé (couleur fixe) |
+| `frame-spectre` | FRAME | ✅ | contour spectral / holographique, teinte au choix |
+
+> Le nombre final de skins et leurs prix en crédits restent à confirmer au lancement du Lot 3.
+
+### 3 bis — Impact modèle de données (nuancier)
+
+- `model Skin` : ajouter `customizableColor Boolean @default(false)` (le skin accepte-t-il une teinte utilisateur).
+- `model ShowcaseItem` : ajouter `frameColorHex String?` (couleur choisie pour le cadre, validée serveur : `^#[0-9a-fA-F]{6}$`, ignorée si le skin n'est pas `customizableColor`).
+
+### 5.1 bis — Rendu du nuancier
+
+Le moteur `ShowcaseCard` injecte `--skin-frame-color: <frameColorHex>` quand le skin `FRAME` est `customizableColor` ; `src/lib/skins.ts` référence cette variable dans le `style` du cadre (fallback = couleur par défaut du skin). L'éditeur (§5.3) affiche un **sélecteur de couleur** (`<input type="color">` + quelques presets) uniquement pour les cadres `customizableColor`.
+
+### 5.4 bis — Boutique de skins = onglet du `/boutique`
+
+Le `/boutique` a déjà un système d'onglets ([boutique/page.tsx](../src/app/[locale]/boutique/page.tsx), `ShopCategoryFilters`). On ajoute une catégorie **`skins`**. ⚠️ **Point clé** : les produits physiques du Shop se paient via commande **Stripe** (`Order`), alors que les skins se paient en **crédits** (`purchaseSkin`, §4.4). L'onglet « Skins » rend donc le **catalogue de skins avec le flux crédits** (achat instantané, pas de panier/livraison), visuellement intégré au Shop mais branché sur une mécanique distincte. À décider au lancement : onglet dans la même page (rendu conditionnel) ou sous-route `/boutique?cat=skins`.
+
+---
 
 ## 1. Objectif & décisions validées
 
