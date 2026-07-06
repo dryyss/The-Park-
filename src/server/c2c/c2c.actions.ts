@@ -25,6 +25,8 @@ const proofSchema = z.object({
   mediaUrl: z.string().url(),
   mediaHash: z.string().min(32).max(128),
   durationSec: z.number().int().min(1).max(600),
+  /** Jeton du jour affiché/incrusté dans la vidéo (anti-réutilisation). */
+  tokenShown: z.string().max(32).optional(),
 });
 
 export async function createExchangeShipmentAction(exchangeId: string): Promise<C2CActionResult> {

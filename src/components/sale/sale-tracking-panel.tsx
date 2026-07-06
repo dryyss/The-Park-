@@ -11,7 +11,8 @@ import {
   confirmSaleReceiptAction,
   openSaleDisputeAction,
 } from "@/server/sale/sale-tracking.actions";
-import { ProofVideoList, VideoUploader } from "@/components/security/proof-media";
+import { ProofVideoList } from "@/components/security/proof-media";
+import { GuidedVideoCapture } from "@/components/security/guided-video-capture";
 
 const CARRIERS = ["COLISSIMO", "LAPOSTE", "CHRONOPOST", "MONDIAL_RELAY", "OTHER"] as const;
 
@@ -229,7 +230,7 @@ export function SaleTrackingPanel({ view }: { view: SaleTrackingView }) {
                   <span className="rounded bg-charbon-900 px-2 py-0.5 font-mono text-[12px] text-or">{shipment.dropToken}</span>
                 </p>
               )}
-              <VideoUploader shipmentId={shipment.id} proofKind="PRESENTATION" onDone={() => router.refresh()} />
+              <GuidedVideoCapture shipmentId={shipment.id} proofKind="PRESENTATION" token={shipment.dropToken} onDone={() => router.refresh()} />
               <div className="mt-4 border-t border-charbon-500 pt-4">
                 <p className="text-[11px] font-extrabold tracking-wide text-texte-dim uppercase">{t("seller.shipTitle")}</p>
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -319,7 +320,7 @@ export function SaleTrackingPanel({ view }: { view: SaleTrackingView }) {
                   })}
                 </p>
               )}
-              <VideoUploader shipmentId={shipment.id} proofKind="UNBOXING" onDone={() => router.refresh()} />
+              <GuidedVideoCapture shipmentId={shipment.id} proofKind="UNBOXING" token={shipment.dropToken} onDone={() => router.refresh()} />
               <div className="mt-3">
                 <ActionButton variant="success" pending={pending} onClick={() => run(() => confirmSaleReceiptAction(view.saleId))}>
                   {t("buyer.confirmReceipt")}

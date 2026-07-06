@@ -2,11 +2,9 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { ProofKind, ShipmentType } from "@/generated/prisma/client";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
+import { todayDropToken } from "@/lib/drop-token";
 
-export function todayDropToken(): string {
-  const d = new Date();
-  return `TP-${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}`;
-}
+export { todayDropToken };
 
 /** Crée un envoi sécurisé pour un échange accepté. */
 export async function createShipmentForExchange(exchangeId: string, shipperId: string): Promise<string> {

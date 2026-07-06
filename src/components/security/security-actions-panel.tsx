@@ -12,7 +12,8 @@ import {
   markShippedAction,
   openDisputeAction,
 } from "@/server/c2c/c2c.actions";
-import { ProofVideoList, VideoUploader } from "@/components/security/proof-media";
+import { ProofVideoList } from "@/components/security/proof-media";
+import { GuidedVideoCapture } from "@/components/security/guided-video-capture";
 
 type PageKey = "garantie" | "option-envoi" | "envoi" | "deballage" | "echange" | "etats" | "litige";
 
@@ -102,9 +103,10 @@ export function SecurityActionsPanel({
       {/* Upload vidéo PRÉSENTATION (page envoi) */}
       {pageKey === "envoi" && shipment?.isShipper && (
         <>
-          <VideoUploader
+          <GuidedVideoCapture
             shipmentId={shipment.id}
             proofKind="PRESENTATION"
+            token={shipment.dropToken}
             onDone={() => router.refresh()}
           />
           <ProofVideoList proofs={shipment.proofs.filter((p) => p.kind === "PRESENTATION")} />
@@ -114,9 +116,10 @@ export function SecurityActionsPanel({
       {/* Upload vidéo DÉBALLAGE (page déballage) */}
       {pageKey === "deballage" && shipment?.isShipper && (
         <>
-          <VideoUploader
+          <GuidedVideoCapture
             shipmentId={shipment.id}
             proofKind="UNBOXING"
+            token={shipment.dropToken}
             onDone={() => router.refresh()}
           />
           <ProofVideoList proofs={shipment.proofs.filter((p) => p.kind === "UNBOXING")} />
