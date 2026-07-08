@@ -35,6 +35,17 @@ recommandés.
 
 > ⚠️ **Régénérer** toute clé exposée en clair (Resend notamment) avant la mise en ligne.
 
+### Clever Cloud — configuration du build (obligatoire)
+
+- **`CC_NODE_DEV_DEPENDENCIES=install`** — Clever installe en `--prod` par défaut, ce qui
+  saute les `devDependencies`. Sans cette variable : `postinstall` (`prisma generate`) échoue
+  avec `prisma: command not found`, et `next build` ne trouve pas `next`/`tailwindcss`/`typescript`
+  (tous en devDependencies).
+
+> Sur les petits scalers, l'`install` peut être tué par l'OOM killer (`Killed` pendant
+> `pnpm install`, `NODE_OPTIONS=--max-old-space-size` bas). Monter le flavor de build
+> (instance de build dédiée) ou le scaler le temps du déploiement.
+
 ---
 
 ## 1 bis. Stockage objet — Cellar (Clever Cloud)

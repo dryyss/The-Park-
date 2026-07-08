@@ -5,7 +5,8 @@
       "Bash(GIT_TERMINAL_PROMPT=0 git -c credential.interactive=false push)",
       "Bash(git worktree *)",
       "Bash(GIT_TERMINAL_PROMPT=0 git -c credential.interactive=false push -u origin HEAD)",
-      "Bash(cd \"c:/Users/andry/Bureau/The Park\" && printf '%s\\\\n' 'docs\\(skins\\): actualise le plan Showroom avec la spec client \\(nuancier, onglet Shop\\)' '' 'Co-Authored-By: Claude Opus 4.8 \\(1M context\\) <noreply@anthropic.com>' > /tmp/cm.txt && git commit -q --amend -F /tmp/cm.txt && git log --oneline -1)"
+      "Bash(cd \"c:/Users/andry/Bureau/The Park\" && printf '%s\\\\n' 'docs\\(skins\\): actualise le plan Showroom avec la spec client \\(nuancier, onglet Shop\\)' '' 'Co-Authored-By: Claude Opus 4.8 \\(1M context\\) <noreply@anthropic.com>' > /tmp/cm.txt && git commit -q --amend -F /tmp/cm.txt && git log --oneline -1)",
+      "Bash(pnpm install *)"
     ],
     "additionalDirectories": [
       "\\tmp"
