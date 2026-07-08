@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { upload } from "@vercel/blob/client";
+import { uploadProofToCellar } from "@/lib/proof-upload-client";
 import { recordProofAction } from "@/server/c2c/c2c.actions";
 import { todayDropToken } from "@/lib/drop-token";
 
@@ -206,18 +206,15 @@ export function GuidedVideoCapture({
     setProgress(0);
     try {
       const hash = await sha256Hex(blob);
-      const ext = blob.type.includes("mp4") ? "mp4" : "webm";
-      const blobRes = await upload(`proof-${proofKind.toLowerCase()}-${Date.now()}.${ext}`, blob, {
-        access: "public",
-        handleUploadUrl: "/api/c2c/upload-proof",
-        clientPayload: JSON.stringify({ shipmentId }),
-        onUploadProgress: (e) => setProgress(Math.round(e.percentage)),
+      const mediaUrl = await uploadProofToCellar(blob, {
+        shipmentId,
+        onProgress: (pct) => setProgress(pct),
       });
 
       const res = await recordProofAction({
         shipmentId,
         kind: proofKind,
-        mediaUrl: blobRes.url,
+        mediaUrl,
         mediaHash: hash,
         durationSec,
         tokenShown: dropToken,
@@ -393,16 +390,14 @@ function FileFallback({
     setError(null);
     try {
       const hash = await sha256Hex(file);
-      const blobRes = await upload(file.name, file, {
-        access: "public",
-        handleUploadUrl: "/api/c2c/upload-proof",
-        clientPayload: JSON.stringify({ shipmentId }),
-        onUploadProgress: (e) => setProgress(Math.round(e.percentage)),
+      const mediaUrl = await uploadProofToCellar(file, {
+        shipmentId,
+        onProgress: (pct) => setProgress(pct),
       });
       const res = await recordProofAction({
         shipmentId,
         kind: proofKind,
-        mediaUrl: blobRes.url,
+        mediaUrl,
         mediaHash: hash,
         durationSec: 30,
         tokenShown: dropToken,

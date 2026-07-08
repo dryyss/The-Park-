@@ -29,8 +29,56 @@ recommandés.
 | `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | E-mails transactionnels | ⚠️ |
 | `PUSHER_APP_ID`, `PUSHER_SECRET`, `NEXT_PUBLIC_PUSHER_KEY`, `NEXT_PUBLIC_PUSHER_CLUSTER` | Temps réel | ⚠️ |
 | `CRON_SECRET` | Auth du cron `/api/cron/maintenance` | ✅ |
+| `CELLAR_ADDON_HOST`, `CELLAR_ADDON_KEY_ID`, `CELLAR_ADDON_KEY_SECRET` | Stockage objet Cellar (injectés par Clever) | ✅ uploads |
+| `CELLAR_BUCKET` | Nom du bucket Cellar (public-read) | ✅ uploads |
+| `BLOB_READ_WRITE_TOKEN` | Alternative Vercel Blob (si déploiement Vercel) | — |
 
 > ⚠️ **Régénérer** toute clé exposée en clair (Resend notamment) avant la mise en ligne.
+
+---
+
+## 1 bis. Stockage objet — Cellar (Clever Cloud)
+
+Toutes les images (catalogue, boutique, collection, messages) et les vidéos de preuve C2C
+sont stockées via un backend objet. Priorité : **Cellar (S3)** → Vercel Blob → disque local (dev).
+Sur Clever Cloud, on utilise **Cellar**.
+
+### Provisionnement (une fois)
+
+```bash
+# 1. Créer l'addon Cellar et le lier à l'application
+clever addon create cellar-addon the-park-cellar --yes
+clever service link-addon the-park-cellar
+#    → injecte CELLAR_ADDON_HOST / CELLAR_ADDON_KEY_ID / CELLAR_ADDON_KEY_SECRET
+
+# 2. Définir le nom du bucket applicatif
+clever env set CELLAR_BUCKET the-park-media
+
+# 3. Créer le bucket + policy public-read (via l'AWS CLI pointée sur Cellar)
+export AWS_ACCESS_KEY_ID=<CELLAR_ADDON_KEY_ID>
+export AWS_SECRET_ACCESS_KEY=<CELLAR_ADDON_KEY_SECRET>
+CELLAR=https://cellar-c2.services.clever-cloud.com
+aws s3 --endpoint-url $CELLAR mb s3://the-park-media
+aws s3api --endpoint-url $CELLAR put-bucket-policy --bucket the-park-media --policy '{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Sid": "PublicRead",
+    "Effect": "Allow",
+    "Principal": "*",
+    "Action": "s3:GetObject",
+    "Resource": "arn:aws:s3:::the-park-media/*"
+  }]
+}'
+```
+
+### Vérifications
+
+- Les objets sont servis sur `https://<bucket>.<CELLAR_ADDON_HOST>/<clé>` (public-read).
+- La vidéo C2C est uploadée en **direct navigateur → Cellar** via URL présignée
+  (`POST /api/c2c/upload-proof` renvoie `{ uploadUrl, publicUrl }`), le corps ne transite
+  jamais par le serveur (jusqu'à 200 Mo).
+- Sans variables Cellar **et** sans `BLOB_READ_WRITE_TOKEN`, les uploads renvoient
+  `STORAGE_NOT_CONFIGURED` (503) — attendu en dev, bloquant en prod.
 
 ---
 

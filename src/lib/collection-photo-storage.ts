@@ -3,6 +3,7 @@ import { mkdir, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { put, del } from "@vercel/blob";
+import { isCellarReady, isCellarUrl, cellarPut, cellarDelete } from "@/lib/cellar";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const MAX_EDGE = 1600;
@@ -50,6 +51,10 @@ export async function saveCollectionPhotoFile(
   const { buffer, contentType, ext } = await prepareImageBuffer(file);
   const fileName = `${randomUUID()}.${ext}`;
 
+  if (isCellarReady()) {
+    return cellarPut(`collection/${collectionItemId}/${fileName}`, buffer, contentType);
+  }
+
   if (isBlobReady()) {
     const blob = await put(`collection/${collectionItemId}/${fileName}`, buffer, {
       access: "public",
@@ -71,6 +76,10 @@ export async function saveCollectionPhotoFile(
 }
 
 export async function deleteCollectionPhotoFile(publicUrl: string): Promise<void> {
+  if (isCellarUrl(publicUrl)) {
+    await cellarDelete(publicUrl);
+    return;
+  }
   if (isBlobReady() && publicUrl.startsWith("https://")) {
     try {
       await del(publicUrl, { token: process.env.BLOB_READ_WRITE_TOKEN });

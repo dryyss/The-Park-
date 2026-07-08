@@ -1,7 +1,8 @@
 import "server-only";
-import { mkdir, unlink } from "node:fs/promises";
+import { mkdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import { isCellarReady, isCellarUrl, cellarPut, cellarDelete } from "@/lib/cellar";
 import { MAX_MESSAGE_PHOTOS } from "@/lib/message-photos.constants";
 
 export { MAX_MESSAGE_PHOTOS };
@@ -27,24 +28,31 @@ export async function saveMessagePhotoFile(conversationId: string, file: File): 
     throw new Error("INVALID_TYPE");
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const dir = path.join(UPLOAD_ROOT, conversationId);
-  await mkdir(dir, { recursive: true });
-
+  const raw = Buffer.from(await file.arrayBuffer());
   const fileName = `${randomUUID()}.jpg`;
-  const outPath = path.join(dir, fileName);
 
   const sharp = (await import("sharp")).default;
-  await sharp(buffer)
+  const jpeg = await sharp(raw)
     .rotate()
     .resize(MAX_EDGE, MAX_EDGE, { fit: "inside", withoutEnlargement: true })
     .jpeg({ quality: 85, mozjpeg: true })
-    .toFile(outPath);
+    .toBuffer();
 
+  if (isCellarReady()) {
+    return cellarPut(`messages/${conversationId}/${fileName}`, jpeg, "image/jpeg");
+  }
+
+  const dir = path.join(UPLOAD_ROOT, conversationId);
+  await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, fileName), jpeg);
   return messagePhotoPublicPath(conversationId, fileName);
 }
 
 export async function deleteMessagePhotoFile(publicUrl: string): Promise<void> {
+  if (isCellarUrl(publicUrl)) {
+    await cellarDelete(publicUrl);
+    return;
+  }
   if (!publicUrl.startsWith("/uploads/messages/")) return;
   const full = path.join(process.cwd(), "public", publicUrl.replace(/^\//, ""));
   try {

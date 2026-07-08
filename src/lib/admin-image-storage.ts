@@ -3,6 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { put, BlobStoreNotFoundError, BlobStoreSuspendedError, BlobAccessError } from "@vercel/blob";
+import { isCellarReady, cellarPut } from "@/lib/cellar";
 import type { AdminImageUploadMode } from "@/lib/admin-image-upload.types";
 
 export type { AdminImageUploadMode };
@@ -29,10 +30,11 @@ function isBlobStorageReady(): boolean {
 }
 
 export function isAdminImageStorageReady(): boolean {
-  return isBlobStorageReady();
+  return isCellarReady() || isBlobStorageReady();
 }
 
 export function getAdminImageUploadMode(): AdminImageUploadMode {
+  if (isCellarReady()) return "blob";
   if (isBlobStorageReady()) return "blob";
   if (!process.env.VERCEL) return "local";
   return "disabled";
@@ -80,6 +82,16 @@ async function prepareImageBuffer(file: File): Promise<{ buffer: Buffer; content
 export async function saveAdminImageFile(file: File): Promise<string> {
   const { buffer, contentType, ext } = await prepareImageBuffer(file);
   const fileName = `${safeBaseName(file.name)}-${randomUUID().slice(0, 8)}.${ext}`;
+
+  if (isCellarReady()) {
+    try {
+      return await cellarPut(`admin/${fileName}`, buffer, contentType);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error(`[cellar-err] admin ${msg.slice(0, 120)}`);
+      throw new Error("UPLOAD_FAILED");
+    }
+  }
 
   if (isBlobStorageReady()) {
     try {
