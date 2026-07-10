@@ -18,6 +18,7 @@ import { avatarGradient } from "@/lib/avatars";
 import { conditionColor } from "@/lib/condition";
 import { cardPageMetadata } from "@/lib/seo";
 import { exchangeProposeHref } from "@/lib/exchange-links";
+import { FEATURES } from "@/lib/features";
 import { getCardSeoData } from "@/server/seo/seo.service";
 import { BreadcrumbJsonLd, TradingCardJsonLd } from "@/components/seo/JsonLd";
 
@@ -211,12 +212,14 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
             >
               {card.listings.length > 0 ? t("ctaListingsCount", { count: card.listings.length }) : t("ctaListings")}
             </Link>
-            <Link
-              href={exchangeHref}
-              className="font-display -skew-x-3 rounded-[10px] border-[1.5px] border-charbon-400 px-5.5 py-3.5 text-[14px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin"
-            >
-              {t("ctaExchange")}
-            </Link>
+            {FEATURES.exchange && (
+              <Link
+                href={exchangeHref}
+                className="font-display -skew-x-3 rounded-[10px] border-[1.5px] border-charbon-400 px-5.5 py-3.5 text-[14px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin"
+              >
+                {t("ctaExchange")}
+              </Link>
+            )}
           </div>
 
           <CardWantButton
@@ -324,12 +327,14 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
                       </Link>
                     ) : (
                       <div className="flex flex-wrap items-center gap-1.5">
-                        <Link
-                          href={exchangeProposeHref({ card: card.slug, recipient: l.sellerSlug })}
-                          className="font-display -skew-x-3 rounded-lg border-[1.5px] border-charbon-400 px-3 py-2 text-[10.5px] tracking-[1px] text-texte-doux uppercase transition hover:border-carmin"
-                        >
-                          {t("listingProposeExchange")}
-                        </Link>
+                        {FEATURES.exchange && (
+                          <Link
+                            href={exchangeProposeHref({ card: card.slug, recipient: l.sellerSlug })}
+                            className="font-display -skew-x-3 rounded-lg border-[1.5px] border-charbon-400 px-3 py-2 text-[10.5px] tracking-[1px] text-texte-doux uppercase transition hover:border-carmin"
+                          >
+                            {t("listingProposeExchange")}
+                          </Link>
+                        )}
                         <ContactSellerButton
                           sellerSlug={l.sellerSlug}
                           locale={locale}
