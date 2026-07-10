@@ -1492,6 +1492,8 @@
       "noVariants": "バリアントがありません。",
       "addVariant": "バリアントを追加",
       "editionLabel": "版（例：1st 版）",
+      "editionFirst": "初版",
+      "editionReedition": "再版",
       "expand": "展開",
       "collapse": "折りたたむ",
       "searchPlaceholder": "名前、番号、国…",

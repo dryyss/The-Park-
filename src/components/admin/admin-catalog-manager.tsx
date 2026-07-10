@@ -532,7 +532,10 @@ function CardVariants({ card, versionTypes }: { card: AdminCardFull; versionType
                 <option key={l} value={l} className="bg-charbon-800">{l}</option>
               ))}
             </select>
-            <input name="editionLabel" defaultValue={v.editionLabel ?? ""} placeholder={t("editionLabel")} className={`${inputCls} w-auto flex-1`} />
+            <select name="editionLabel" defaultValue={v.editionLabel ? "1ère édition" : ""} className={`${inputCls} w-auto`} title={t("editionLabel")}>
+              <option value="" className="bg-charbon-800">{t("editionReedition")}</option>
+              <option value="1ère édition" className="bg-charbon-800">{t("editionFirst")}</option>
+            </select>
             <button type="submit" disabled={pending} className="rounded-md bg-charbon-600 px-2.5 py-1.5 text-[10.5px] font-extrabold text-blanc-casse uppercase disabled:opacity-50">{t("save")}</button>
             <button
               type="button"
@@ -558,7 +561,10 @@ function CardVariants({ card, versionTypes }: { card: AdminCardFull; versionType
               <option key={l} value={l} className="bg-charbon-800">{l}</option>
             ))}
           </select>
-          <input name="editionLabel" placeholder={t("editionLabel")} className={`${inputCls} w-auto flex-1`} />
+          <select name="editionLabel" defaultValue="" className={`${inputCls} w-auto`} title={t("editionLabel")}>
+            <option value="" className="bg-charbon-800">{t("editionReedition")}</option>
+            <option value="1ère édition" className="bg-charbon-800">{t("editionFirst")}</option>
+          </select>
           <button type="submit" disabled={pending} className="rounded-md bg-or px-2.5 py-1.5 text-[10.5px] font-extrabold text-charbon uppercase disabled:opacity-50">{t("create")}</button>
           <button type="button" onClick={() => setAdding(false)} className="text-[10.5px] font-bold text-texte-dim">{t("cancel")}</button>
         </form>

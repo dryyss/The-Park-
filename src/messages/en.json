@@ -1492,6 +1492,8 @@
       "noVariants": "No variant.",
       "addVariant": "Add a variant",
       "editionLabel": "Edition (e.g. 1st edition)",
+      "editionFirst": "First edition",
+      "editionReedition": "Reprint",
       "expand": "Expand",
       "collapse": "Collapse",
       "searchPlaceholder": "Name, number, country…",
