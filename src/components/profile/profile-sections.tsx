@@ -251,6 +251,7 @@ export async function ProfileQuickLinks({ profile }: { profile: ViewerProfile })
     { href: "/collection", label: t("linkCollection"), pct: formatPercent(profile.pct / 100) },
     ...(FEATURES.exchange ? [{ href: "/echanges", label: t("linkExchanges"), pct: String(profile.exchangeCount) }] : []),
     { href: "/vendre", label: t("linkSell"), pct: String(profile.listingCount) },
+    { href: `/collectionneur/${profile.slug}/showroom`, label: t("linkShowroom"), pct: "🎴" },
     { href: `/collectionneur/${profile.slug}`, label: t("linkPublic"), pct: "→" },
   ];
 

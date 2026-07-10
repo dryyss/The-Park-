@@ -13,6 +13,7 @@ export function UserMenu({ staffDashboardHref }: { staffDashboardHref?: string |
   const pathname = usePathname();
   const tNav = useTranslations("nav");
   const tProfile = useTranslations("profile");
+  const tFooter = useTranslations("footer");
   const tAuth = useTranslations("auth");
 
   const initial = (user?.name ?? user?.email ?? "K").charAt(0).toUpperCase();
@@ -64,6 +65,22 @@ export function UserMenu({ staffDashboardHref }: { staffDashboardHref?: string |
           <Link href="/profil" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
             {tNav("profile")}
           </Link>
+          <Link href="/collection" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tNav("collection")}
+          </Link>
+          <Link href="/notifications" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tNav("notifications")}
+          </Link>
+          <Link href="/messages" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tNav("messages")}
+          </Link>
+          <Link href="/portefeuille" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tNav("wallet")}
+          </Link>
+          <Link href="/wishlist" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tFooter("linkWishlist")}
+          </Link>
+          <div className="my-1 border-t border-charbon-600" />
           {staffDashboardHref && (
             <Link
               href={staffDashboardHref}
