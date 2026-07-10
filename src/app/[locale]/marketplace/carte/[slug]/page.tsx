@@ -90,18 +90,6 @@ export default async function CardSellersPage({
             </h1>
           </div>
 
-          {/* Meilleur prix */}
-          {card.lowestPriceLabel ? (
-            <div className="flex w-fit flex-col gap-0.5 rounded-2xl border border-statut-succes/30 bg-statut-succes/8 px-5 py-3">
-              <span className="text-[10px] font-extrabold tracking-[2px] text-statut-succes uppercase">
-                {t("sellersLowestBadge")}
-              </span>
-              <span className="font-display text-[34px] leading-none text-blanc-casse">
-                {card.lowestPriceLabel}
-              </span>
-            </div>
-          ) : null}
-
           {/* Nombre d'offres */}
           <p className="text-[12.5px] font-bold text-texte-dim">
             {t("sellersCount", { count: card.sellers.length })}

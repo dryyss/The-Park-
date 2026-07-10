@@ -174,7 +174,12 @@ export function Footer() {
             <Link href="/aide" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("help")}</Link>
           </div>
 
-          <div className="flex flex-col items-center gap-1.5 rounded-lg bg-blanc-casse px-4 py-2.5 shadow-sm ring-1 ring-charbon-500/20">
+          <a
+            href="https://magar-developpement.fr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col items-center gap-1.5 rounded-lg bg-blanc-casse px-4 py-2.5 shadow-sm ring-1 ring-charbon-500/20 transition hover:ring-charbon-500/40"
+          >
             <span className="text-[10px] font-extrabold tracking-widest text-charbon-400 uppercase">{t("developedBy")}</span>
             <Image
               src="/magar-developpement-logo.svg"
@@ -183,7 +188,7 @@ export function Footer() {
               height={48}
               className="h-9 w-auto transition hover:scale-105 md:h-10"
             />
-          </div>
+          </a>
 
           <div className="flex items-center justify-center md:justify-end">
             <span className="flex items-center gap-[7px] text-[12px] font-bold text-texte-faible">

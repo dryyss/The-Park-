@@ -255,7 +255,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
           </div>
 
           <div className="flex flex-col gap-2">
-            {card.listings.map((l, idx) => {
+            {card.listings.map((l) => {
               const isOwn = viewer?.id === l.sellerId;
               const rowBase =
                 "grid grid-cols-1 gap-2 rounded-[13px] border border-charbon-500 bg-charbon-800 px-4 py-3.5 transition hover:border-carmin sm:grid-cols-[1fr_90px_100px_80px_110px_180px] sm:items-center sm:gap-3";
@@ -275,11 +275,6 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
                           {isOwn ? t("ownListingYou") : <UserHoverCard slug={l.sellerSlug}>{l.sellerName}</UserHoverCard>}
                         </span>
                         {!isOwn && <span className="text-[11px] font-bold text-or">★ {l.rating}</span>}
-                        {idx === 0 && (
-                          <span className="rounded-md bg-statut-succes/15 px-1.5 py-0.5 text-[8.5px] font-extrabold tracking-[1px] text-statut-succes uppercase">
-                            {t("listingsBestPrice")}
-                          </span>
-                        )}
                       </div>
                     </div>
                   </div>

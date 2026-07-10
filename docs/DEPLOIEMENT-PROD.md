@@ -41,6 +41,10 @@ recommandés.
   saute les `devDependencies`. Sans cette variable : `postinstall` (`prisma generate`) échoue
   avec `prisma: command not found`, et `next build` ne trouve pas `next`/`tailwindcss`/`typescript`
   (tous en devDependencies).
+- **`CC_POST_BUILD_HOOK=pnpm run build`** — Clever ne lance pas `next build` automatiquement ;
+  sans ce hook, il enchaîne `install` → `next start` et échoue avec « Could not find a production
+  build in the '.next' directory ». Le hook exécute le script `build` (migrations Prisma + `next build`)
+  après l'install.
 
 > Sur les petits scalers, l'`install` peut être tué par l'OOM killer (`Killed` pendant
 > `pnpm install`, `NODE_OPTIONS=--max-old-space-size` bas). Monter le flavor de build

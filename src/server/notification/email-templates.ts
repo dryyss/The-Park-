@@ -59,11 +59,26 @@ export function buildNotificationEmail(
         subject: "Enchère terminée",
         html: wrap("<p>Une de tes enchères vient de se terminer. Consulte le détail sur The Park.</p>"),
       };
-    case "ORDER_UPDATE":
-      return {
-        subject: "Mise à jour commande boutique",
-        html: wrap("<p>Le statut d'une de tes commandes officielles a changé.</p>"),
+    case "ORDER_UPDATE": {
+      const orderStatusPhrases: Record<string, string> = {
+        PREPARING: "est en préparation",
+        SHIPPED: "a été expédiée",
+        DELIVERED: "a été livrée",
+        CANCELLED: "a été annulée",
+        REFUNDED: "a été remboursée",
       };
+      const status = typeof payload.status === "string" ? payload.status : "";
+      const phrase = orderStatusPhrases[status] ?? "a été mise à jour";
+      const num = typeof payload.orderNumber === "string" ? ` n°${payload.orderNumber}` : "";
+      const tracking =
+        typeof payload.trackingNumber === "string" && payload.trackingNumber
+          ? `<br/>Numéro de suivi : <strong>${payload.trackingNumber}</strong>`
+          : "";
+      return {
+        subject: "Mise à jour de ta commande boutique",
+        html: wrap(`<p>Ta commande boutique${num} <strong>${phrase}</strong>.${tracking}</p>`),
+      };
+    }
     case "PAYMENT_AUTHORIZED":
       return {
         subject: "Caution autorisée",

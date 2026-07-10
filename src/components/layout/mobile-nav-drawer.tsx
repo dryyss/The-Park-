@@ -67,9 +67,11 @@ export function MobileNavDrawer({
     };
   }, [open]);
 
+  // Ferme le tiroir quand la route change (clic sur un lien).
+  // Ne PAS dépendre de `open` : sinon l'effet se rejoue à l'ouverture et referme aussitôt.
   useEffect(() => {
-    if (open) onClose();
-  }, [pathname, open, onClose]);
+    onClose();
+  }, [pathname, onClose]);
 
   if (!open) return null;
 

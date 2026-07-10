@@ -1,7 +1,8 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
-import type { Language, Prisma, ProductType } from "@/generated/prisma/client";
+import type { Language, OrderStatus, Prisma, ProductType } from "@/generated/prisma/client";
 import { slugify } from "@/lib/slug";
+import { dispatchNotification } from "@/server/notification/notification.mutations";
 
 type Tx = Prisma.TransactionClient;
 
@@ -119,7 +120,37 @@ export async function updateSeason(
   });
 }
 
-export async function updateOrderStatus(orderId: string, status: import("@/generated/prisma/client").OrderStatus): Promise<void> {
+/** Statuts de commande boutique qui déclenchent une notif + e-mail au client. */
+const ORDER_NOTIFY_STATUSES = new Set<OrderStatus>([
+  "PREPARING",
+  "SHIPPED",
+  "DELIVERED",
+  "CANCELLED",
+  "REFUNDED",
+]);
+
+/** Notifie le client (in-app + e-mail Resend) quand le statut de sa commande boutique évolue. */
+async function notifyOrderStatusChange(orderId: string, status: OrderStatus): Promise<void> {
+  if (!ORDER_NOTIFY_STATUSES.has(status)) return;
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    select: { userId: true, orderNumber: true, trackingNumber: true },
+  });
+  if (!order?.userId) return;
+  await dispatchNotification({
+    userId: order.userId,
+    type: "ORDER_UPDATE",
+    entityType: "ORDER",
+    entityId: orderId,
+    payload: {
+      status,
+      orderNumber: order.orderNumber,
+      trackingNumber: order.trackingNumber,
+    },
+  });
+}
+
+export async function updateOrderStatus(orderId: string, status: OrderStatus): Promise<void> {
   await prisma.order.update({
     where: { id: orderId },
     data: {
@@ -127,6 +158,7 @@ export async function updateOrderStatus(orderId: string, status: import("@/gener
       ...(status === "SHIPPED" ? { shippedAt: new Date() } : {}),
     },
   });
+  await notifyOrderStatusChange(orderId, status);
 }
 
 export async function updateOrderFulfillment(
@@ -134,7 +166,7 @@ export async function updateOrderFulfillment(
   data: {
     trackingNumber?: string | null;
     shippingMethod?: string | null;
-    status?: import("@/generated/prisma/client").OrderStatus;
+    status?: OrderStatus;
   },
 ): Promise<void> {
   const now = new Date();
@@ -152,6 +184,9 @@ export async function updateOrderFulfillment(
         : {}),
     },
   });
+  if (nextStatus !== undefined) {
+    await notifyOrderStatusChange(orderId, nextStatus);
+  }
 }
 
 // ============================================================================

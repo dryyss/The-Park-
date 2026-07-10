@@ -4,6 +4,7 @@ import { getViewerUser } from "@/server/user/user.service";
 import { getRankings, type RankingCategory } from "@/server/community/community.service";
 import { PageHeader } from "@/components/common/page-header";
 import { RankingsPodium, RankingsTable } from "@/components/rankings/rankings-podium";
+import { RankingsTabs } from "@/components/rankings/rankings-tabs";
 import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
@@ -38,10 +39,10 @@ export default async function ClassementsPage({
   const viewer = await getViewerUser();
   const data = await getRankings(cat, viewer?.slug, requestedPage);
 
-  const tabs: { k: RankingCategory; label: string }[] = [
-    { k: "completion", label: t("catCompletion") },
-    { k: "reputation", label: t("catReputation") },
-    { k: "sales", label: t("catSales") },
+  const tabs = [
+    { k: "completion", label: t("catCompletion"), href: rankingsHref("completion") },
+    { k: "reputation", label: t("catReputation"), href: rankingsHref("reputation") },
+    { k: "sales", label: t("catSales"), href: rankingsHref("sales") },
   ];
 
   const onFirstPage = data.page === 1;
@@ -50,21 +51,8 @@ export default async function ClassementsPage({
 
   return (
     <main className="mx-auto max-w-[1100px] page-pad pt-9 pb-[60px]">
-      <PageHeader kicker={t("kicker")} title={t("title")} jp="栄光">
-        <div className="mb-1 flex gap-1 rounded-xl border border-charbon-500 bg-charbon-800 p-1.5">
-          {tabs.map((tab) => (
-            <Link
-              key={tab.k}
-              href={rankingsHref(tab.k)}
-              className={[
-                "font-display rounded-lg px-4 py-2.5 text-[12.5px] tracking-[1.5px] uppercase transition",
-                cat === tab.k ? "bg-carmin text-white" : "text-texte-muet hover:text-blanc-casse",
-              ].join(" ")}
-            >
-              {tab.label}
-            </Link>
-          ))}
-        </div>
+      <PageHeader title={t("title")} jp="栄光">
+        <RankingsTabs tabs={tabs} current={cat} />
       </PageHeader>
 
       {onFirstPage && <RankingsPodium rows={data.podium} />}
