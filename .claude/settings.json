@@ -6,7 +6,12 @@
       "Bash(git worktree *)",
       "Bash(GIT_TERMINAL_PROMPT=0 git -c credential.interactive=false push -u origin HEAD)",
       "Bash(cd \"c:/Users/andry/Bureau/The Park\" && printf '%s\\\\n' 'docs\\(skins\\): actualise le plan Showroom avec la spec client \\(nuancier, onglet Shop\\)' '' 'Co-Authored-By: Claude Opus 4.8 \\(1M context\\) <noreply@anthropic.com>' > /tmp/cm.txt && git commit -q --amend -F /tmp/cm.txt && git log --oneline -1)",
-      "Bash(pnpm install *)"
+      "Bash(pnpm install *)",
+      "Bash(openssl rand *)",
+      "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\('deps:',Object.keys\\(p.dependencies\\).length,'| devDeps:',Object.keys\\(p.devDependencies\\).length\\)\")",
+      "Bash(curl -sS -o /dev/null -w \"magar-developpement.fr -> HTTP %{http_code} \\(redir: %{redirect_url}\\)\\\\n\" -L --max-time 15 https://magar-developpement.fr)",
+      "Bash(node -e \"['fr','en','ja'].forEach\\(l=>{const m=require\\('./src/messages/'+l+'.json'\\); console.log\\(l,'showcase keys:',Object.keys\\(m.showcase||{}\\).length\\)}\\)\")",
+      "Bash(node scripts/setup-cellar.mjs)"
     ],
     "additionalDirectories": [
       "\\tmp"
