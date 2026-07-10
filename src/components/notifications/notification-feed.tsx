@@ -17,12 +17,15 @@ import { markAllNotificationsReadAction, markNotificationReadAction } from "@/se
 import type { NotificationItem } from "@/server/notification/notification.service";
 
 const FILTER_KEYS: NotificationCategory[] = ["all", "trade", "market", "sale", "wallet", "badge"];
+const PAGE_SIZE = 20;
 
 export function NotificationFeed({ items }: { items: NotificationItem[] }) {
   const t = useTranslations("notifications");
+  const tr = useTranslations("rankings");
   const locale = useLocale();
   const router = useRouter();
   const [filter, setFilter] = useState<NotificationCategory>("all");
+  const [page, setPage] = useState(1);
   const [pending, startTransition] = useTransition();
 
   const counts = useMemo(() => {
@@ -44,6 +47,13 @@ export function NotificationFeed({ items }: { items: NotificationItem[] }) {
   const filtered = useMemo(
     () => items.filter((n) => filter === "all" || notificationCategory(n.type) === filter),
     [items, filter],
+  );
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, pageCount);
+  const paged = useMemo(
+    () => filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filtered, currentPage],
   );
 
   const unreadCount = items.filter((n) => !n.read).length;
@@ -86,7 +96,10 @@ export function NotificationFeed({ items }: { items: NotificationItem[] }) {
 
       <FilterPills
         activeKey={filter}
-        onChange={(k) => setFilter(k as NotificationCategory)}
+        onChange={(k) => {
+          setFilter(k as NotificationCategory);
+          setPage(1);
+        }}
         items={FILTER_KEYS.map((k) => ({
           key: k,
           label: t(`filters.${k}`),
@@ -98,7 +111,7 @@ export function NotificationFeed({ items }: { items: NotificationItem[] }) {
         {filtered.length === 0 ? (
           <p className="py-12 text-center text-[13px] font-bold text-texte-dim">{t("emptyFilter")}</p>
         ) : (
-          filtered.map((n) => {
+          paged.map((n) => {
             const vis = notificationVisual(n.type);
             const href = notificationHref(n.type, n.entityType, n.entityId);
             const inner = (
@@ -158,6 +171,30 @@ export function NotificationFeed({ items }: { items: NotificationItem[] }) {
           })
         )}
       </div>
+
+      {pageCount > 1 && (
+        <nav className="mt-5 flex items-center justify-between" aria-label={tr("pagination")}>
+          <button
+            type="button"
+            disabled={currentPage <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="font-display rounded-[10px] border-[1.5px] border-charbon-400 px-5 py-2.5 text-[12px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin hover:text-white disabled:opacity-40"
+          >
+            ← {tr("prev")}
+          </button>
+          <span className="font-display text-[12px] tracking-[1px] text-texte-muet uppercase">
+            {tr("pageOf", { page: currentPage, total: pageCount })}
+          </span>
+          <button
+            type="button"
+            disabled={currentPage >= pageCount}
+            onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
+            className="font-display rounded-[10px] border-[1.5px] border-charbon-400 px-5 py-2.5 text-[12px] tracking-[1.5px] text-texte-doux uppercase transition hover:border-carmin hover:text-white disabled:opacity-40"
+          >
+            {tr("next")} →
+          </button>
+        </nav>
+      )}
     </>
   );
 }

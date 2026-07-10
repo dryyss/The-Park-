@@ -1065,7 +1065,7 @@
     "timeLeft": "Temps restant",
     "winner": "Remportée par {name}",
     "followupWonTitle": "Tu as remporté cette enchère !",
-    "followupWonBody": "Contacte le vendeur pour organiser le paiement et la livraison de ta carte.",
+    "followupWonBody": "Vérifie que tes coordonnées de livraison sont bien renseignées dans ton profil, puis contacte le vendeur pour organiser l'envoi de ta carte.",
     "followupContactSeller": "Contacter le vendeur",
     "followupSoldTitle": "Carte vendue",
     "followupSoldBody": "Contacte l'acheteur pour organiser le paiement et l'envoi de la carte.",

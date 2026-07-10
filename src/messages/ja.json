@@ -1065,7 +1065,7 @@
     "timeLeft": "残り時間",
     "winner": "{name}が落札",
     "followupWonTitle": "このオークションを落札しました！",
-    "followupWonBody": "出品者に連絡して、支払いとカードの受け取りを調整しましょう。",
+    "followupWonBody": "プロフィールに配送先が入力されているか確認してから、出品者に連絡してカードの発送を手配しましょう。",
     "followupContactSeller": "出品者に連絡",
     "followupSoldTitle": "カード売却成立",
     "followupSoldBody": "落札者に連絡して、支払いとカードの発送を調整しましょう。",

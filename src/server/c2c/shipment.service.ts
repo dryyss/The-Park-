@@ -2,6 +2,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { ProofKind, ShipmentType } from "@/generated/prisma/client";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
+import { cellarDelete } from "@/lib/cellar";
 import { todayDropToken } from "@/lib/drop-token";
 
 export { todayDropToken };
@@ -92,11 +93,23 @@ export async function recordShipmentProof(
 /** Purge RGPD des preuves vidéo > 60 j après clôture (job cron). */
 export async function purgeExpiredShipmentProofs(): Promise<number> {
   const cutoff = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000);
-  const result = await prisma.shipmentProof.deleteMany({
+  const expired = await prisma.shipmentProof.findMany({
     where: {
       serverRecordedAt: { lt: cutoff },
       shipment: { status: { in: ["DELIVERED", "RETURNED", "LOST"] } },
     },
+    select: { id: true, mediaUrl: true },
+  });
+  if (expired.length === 0) return 0;
+
+  // Supprime aussi le fichier vidéo sur Cellar (best-effort) — évite les fichiers
+  // orphelins et complète la purge RGPD. cellarDelete ignore les URLs non-Cellar.
+  for (const p of expired) {
+    if (p.mediaUrl) await cellarDelete(p.mediaUrl);
+  }
+
+  const result = await prisma.shipmentProof.deleteMany({
+    where: { id: { in: expired.map((p) => p.id) } },
   });
   return result.count;
 }
