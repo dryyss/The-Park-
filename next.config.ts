@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
     "@aws-sdk/client-s3",
     "@aws-sdk/s3-request-presigner",
   ],
+  // Domaines autorisés pour next/image (images uploadées) : Cellar (S3 Clever)
+  // et Vercel Blob (ancien stockage, images historiques).
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "**.cellar-c2.services.clever-cloud.com" },
+      { protocol: "https", hostname: "**.public.blob.vercel-storage.com" },
+    ],
+  },
 };
 
 export default withNextIntl(nextConfig);

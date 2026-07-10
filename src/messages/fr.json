@@ -868,7 +868,7 @@
       "reviewReceived": "Avis reçu",
       "reviewReceivedBody": "Un membre t'a laissé un avis.",
       "badgeUnlocked": "Succès débloqué",
-      "badgeUnlockedBody": "Tu as débloqué un succès : {badge}.",
+      "badgeUnlockedBody": "Tu as débloqué un succès : {label}.",
       "toastBadgeTitle": "Succès débloqué !",
       "toastBadgeHint": "Clique pour voir tes trophées",
       "listingSold": "Annonce vendue",

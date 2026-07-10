@@ -868,7 +868,7 @@
       "reviewReceived": "Review received",
       "reviewReceivedBody": "A member left you a review.",
       "badgeUnlocked": "Achievement unlocked",
-      "badgeUnlockedBody": "You unlocked an achievement: {badge}.",
+      "badgeUnlockedBody": "You unlocked an achievement: {label}.",
       "toastBadgeTitle": "Achievement unlocked!",
       "toastBadgeHint": "Tap to view your trophies",
       "listingSold": "Listing sold",

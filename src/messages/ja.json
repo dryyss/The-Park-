@@ -868,7 +868,7 @@
       "reviewReceived": "レビュー受信",
       "reviewReceivedBody": "レビューが届きました。",
       "badgeUnlocked": "実績解除",
-      "badgeUnlockedBody": "実績解除：{badge}",
+      "badgeUnlockedBody": "実績解除：{label}",
       "toastBadgeTitle": "実績解除！",
       "toastBadgeHint": "タップしてトロフィーを確認",
       "listingSold": "出品売却",
