@@ -88,8 +88,18 @@ export async function saveAdminImageFile(file: File): Promise<string> {
       return await cellarPut(`admin/${fileName}`, buffer, contentType);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`[cellar-err] admin ${msg.slice(0, 120)}`);
-      throw new Error("UPLOAD_FAILED");
+      const status = (err as { $metadata?: { httpStatusCode?: number } })?.$metadata?.httpStatusCode ?? 0;
+      const lower = msg.toLowerCase();
+      console.error(`[cellar-err] admin status=${status} ${msg.slice(0, 160)}`);
+      // Erreurs d'authentification / config → message clair côté UI (au lieu du générique).
+      const isConfigError =
+        status === 401 ||
+        status === 403 ||
+        lower.includes("signaturedoesnotmatch") ||
+        lower.includes("invalidaccesskeyid") ||
+        lower.includes("nosuchbucket") ||
+        lower.includes("accessdenied");
+      throw new Error(isConfigError ? "STORAGE_NOT_CONFIGURED" : "UPLOAD_FAILED");
     }
   }
 

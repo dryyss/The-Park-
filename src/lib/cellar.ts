@@ -17,45 +17,56 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
  * pour que les URLs renvoyées soient accessibles publiquement.
  */
 
-const HOST = process.env.CELLAR_ADDON_HOST?.trim();
-const KEY_ID = process.env.CELLAR_ADDON_KEY_ID?.trim();
-const KEY_SECRET = process.env.CELLAR_ADDON_KEY_SECRET?.trim();
-const BUCKET = process.env.CELLAR_BUCKET?.trim();
-const REGION = process.env.CELLAR_REGION?.trim() || "us-east-1";
-
-export function isCellarReady(): boolean {
-  return Boolean(HOST && KEY_ID && KEY_SECRET && BUCKET);
+/**
+ * Config lue **paresseusement** (à chaque appel), pas au chargement du module.
+ * Sinon les valeurs seraient figées à l'import : éditer `.env` pendant que le
+ * serveur dev tourne n'aurait aucun effet, et un ordre de chargement défavorable
+ * capturerait des identifiants vides → échec d'upload silencieux (UPLOAD_FAILED).
+ */
+function cellarConfig() {
+  return {
+    host: process.env.CELLAR_ADDON_HOST?.trim(),
+    keyId: process.env.CELLAR_ADDON_KEY_ID?.trim(),
+    keySecret: process.env.CELLAR_ADDON_KEY_SECRET?.trim(),
+    bucket: process.env.CELLAR_BUCKET?.trim(),
+    region: process.env.CELLAR_REGION?.trim() || "us-east-1",
+  };
 }
 
-let cachedClient: S3Client | null = null;
+export function isCellarReady(): boolean {
+  const { host, keyId, keySecret, bucket } = cellarConfig();
+  return Boolean(host && keyId && keySecret && bucket);
+}
 
 function client(): S3Client {
-  if (!isCellarReady()) throw new Error("CELLAR_NOT_CONFIGURED");
-  if (!cachedClient) {
-    cachedClient = new S3Client({
-      endpoint: `https://${HOST}`,
-      region: REGION,
-      credentials: { accessKeyId: KEY_ID!, secretAccessKey: KEY_SECRET! },
-      // URL virtual-hosted : https://<bucket>.<host>/<key>
-      forcePathStyle: false,
-    });
-  }
-  return cachedClient;
+  const { host, keyId, keySecret, region } = cellarConfig();
+  if (!(host && keyId && keySecret)) throw new Error("CELLAR_NOT_CONFIGURED");
+  // Pas de cache module-level : le client suit la config courante (creds à jour).
+  return new S3Client({
+    endpoint: `https://${host}`,
+    region,
+    credentials: { accessKeyId: keyId, secretAccessKey: keySecret },
+    // URL virtual-hosted : https://<bucket>.<host>/<key>
+    forcePathStyle: false,
+  });
 }
 
 /** URL publique d'un objet (bucket en public-read). */
 export function cellarPublicUrl(key: string): string {
-  return `https://${BUCKET}.${HOST}/${key}`;
+  const { host, bucket } = cellarConfig();
+  return `https://${bucket}.${host}/${key}`;
 }
 
 /** Vrai si l'URL pointe vers notre bucket Cellar. */
 export function isCellarUrl(url: string): boolean {
-  return isCellarReady() && url.startsWith(`https://${BUCKET}.${HOST}/`);
+  const { host, bucket } = cellarConfig();
+  return isCellarReady() && url.startsWith(`https://${bucket}.${host}/`);
 }
 
 /** Extrait la clé objet d'une URL Cellar (ou null si ce n'en est pas une). */
 export function cellarKeyFromUrl(url: string): string | null {
-  const prefix = `https://${BUCKET}.${HOST}/`;
+  const { host, bucket } = cellarConfig();
+  const prefix = `https://${bucket}.${host}/`;
   return url.startsWith(prefix) ? url.slice(prefix.length) : null;
 }
 
@@ -67,7 +78,7 @@ export async function cellarPut(
 ): Promise<string> {
   await client().send(
     new PutObjectCommand({
-      Bucket: BUCKET,
+      Bucket: cellarConfig().bucket,
       Key: key,
       Body: body,
       ContentType: contentType,
@@ -82,7 +93,7 @@ export async function cellarDelete(url: string): Promise<void> {
   const key = cellarKeyFromUrl(url);
   if (!key) return;
   try {
-    await client().send(new DeleteObjectCommand({ Bucket: BUCKET, Key: key }));
+    await client().send(new DeleteObjectCommand({ Bucket: cellarConfig().bucket, Key: key }));
   } catch {
     // best-effort : objet déjà absent ou erreur réseau transitoire
   }
@@ -99,7 +110,7 @@ export async function cellarPresignPut(
   expiresInSeconds = 600,
 ): Promise<{ uploadUrl: string; publicUrl: string }> {
   const command = new PutObjectCommand({
-    Bucket: BUCKET,
+    Bucket: cellarConfig().bucket,
     Key: key,
     ContentType: contentType,
   });
