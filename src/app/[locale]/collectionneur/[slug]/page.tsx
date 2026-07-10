@@ -3,13 +3,14 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ContactSellerButton } from "@/components/marketplace/contact-seller-button";
 import { getCollectorProfile } from "@/server/community/community.service";
-import { getUserCollection } from "@/server/collection/collection.service";
 import { getViewerUser } from "@/server/user/user.service";
 import { getFriendshipStatus } from "@/server/friend/friend.service";
 import { avatarGradient } from "@/lib/avatars";
 import { formatPercent } from "@/lib/format";
-import { CollectionCardTile } from "@/components/collection/collection-card-tile";
 import { FriendButton } from "@/components/friend/friend-button";
+import { ShowcaseBinder } from "@/components/showcase/showcase-binder";
+import { getShowcases } from "@/server/showcase/showcase.service";
+import { Link } from "@/i18n/navigation";
 import { collectorPageMetadata } from "@/lib/seo";
 import { getCollectorSeoData } from "@/server/seo/seo.service";
 
@@ -38,9 +39,8 @@ export default async function CollectionneurPage({ params }: { params: Promise<{
   const friendshipStatus =
     viewer && !isOwnProfile ? await getFriendshipStatus(viewer.id, profile.userId) : null;
 
-  const collection = await getUserCollection(profile.userId, { segment: "owned" });
-
-  const previewCards = collection?.sections.flatMap((s) => s.cards).slice(0, 12) ?? [];
+  const showcases = await getShowcases(profile.userId);
+  const hasShowcase = showcases.some((s) => s.items.length > 0);
 
   return (
     <main className="page-section">
@@ -79,14 +79,26 @@ export default async function CollectionneurPage({ params }: { params: Promise<{
         </div>
       </div>
 
-      {previewCards.length > 0 && (
+      {(hasShowcase || isOwnProfile) && (
         <section className="mt-10">
-          <h2 className="font-display mb-4 text-[22px] tracking-[1.5px] -skew-x-3 uppercase text-blanc-casse">{t("collectionPreview")}</h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {previewCards.map((c) => (
-              <CollectionCardTile key={c.slug} card={c} missingLabel={t("missing")} />
-            ))}
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-display text-[22px] tracking-[1.5px] -skew-x-3 uppercase text-blanc-casse">{t("collectionPreview")}</h2>
+            {isOwnProfile && (
+              <Link
+                href={`/collectionneur/${slug}/showroom`}
+                className="font-display -skew-x-3 rounded-[10px] border border-charbon-500 bg-charbon-800 px-4 py-2 text-[12px] tracking-[1.5px] text-texte-doux uppercase transition hover:text-blanc-casse"
+              >
+                {t("editShowroom")}
+              </Link>
+            )}
           </div>
+          {hasShowcase ? (
+            <ShowcaseBinder showcases={showcases.filter((s) => s.items.length > 0)} />
+          ) : (
+            <p className="rounded-[16px] border border-dashed border-charbon-500 bg-charbon-800/50 p-8 text-center text-[14px] text-texte-doux">
+              {isOwnProfile ? t("emptyOwn") : t("emptyPublic")}
+            </p>
+          )}
         </section>
       )}
     </main>

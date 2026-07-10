@@ -456,6 +456,8 @@ model User {
   assignedTickets   SupportTicket[]        @relation("SupportTicketAssignee")
   supportMessages   SupportTicketMessage[] @relation("SupportTicketMessageAuthor")
 
+  showcases Showcase[]
+
   @@index([role])
   @@index([staffRole])
   @@index([status])
@@ -628,7 +630,8 @@ model CollectionItem {
   isSigned        Boolean @default(false)
   signatureAuthor String?
 
-  photos CollectionItemPhoto[]
+  photos        CollectionItemPhoto[]
+  showcaseItems ShowcaseItem[]
 
   acquiredAt DateTime @default(now())
 
@@ -653,6 +656,54 @@ model CollectionItemPhoto {
   createdAt        DateTime       @default(now())
 
   @@index([collectionItemId, sortOrder])
+}
+
+// ============================================================================
+//  SHOWROOM  (classeurs curatés du collectionneur — cf. docs/PLAN-VITRINE-SKINS.md)
+// ============================================================================
+
+/// Un classeur du collectionneur : grille configurable + pages + cartes placées.
+/// Un membre peut en avoir plusieurs (option multi-classeurs).
+model Showcase {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  /// Nom du classeur (optionnel, ex. « Mes JDM », « Chase cards »).
+  title     String?
+  /// Colonnes de la grille par page (validées côté serveur, cf. src/lib/showcase.ts).
+  cols      Int      @default(3)
+  /// Lignes de la grille par page.
+  rows      Int      @default(3)
+  /// Nombre de pages du classeur.
+  pageCount Int      @default(1)
+  /// Ordre d'affichage des classeurs sur le profil.
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items ShowcaseItem[]
+
+  @@index([userId, sortOrder])
+}
+
+/// Une carte possédée placée dans un emplacement précis (page, slot) d'un classeur.
+model ShowcaseItem {
+  id               String         @id @default(cuid())
+  showcase         Showcase       @relation(fields: [showcaseId], references: [id], onDelete: Cascade)
+  showcaseId       String
+  collectionItem   CollectionItem @relation(fields: [collectionItemId], references: [id], onDelete: Cascade)
+  collectionItemId String
+  /// Index de page (0-based).
+  page             Int            @default(0)
+  /// Index d'emplacement dans la page (0-based, ordre row-major).
+  slot             Int            @default(0)
+  createdAt        DateTime       @default(now())
+
+  /// Un seul contenu par emplacement.
+  @@unique([showcaseId, page, slot])
+  /// Une même carte n'apparaît qu'une fois par classeur.
+  @@unique([showcaseId, collectionItemId])
+  @@index([showcaseId])
 }
 
 // ============================================================================
