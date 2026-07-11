@@ -8,7 +8,7 @@ export function OrganizationJsonLd() {
     name: "The Park",
     alternateName: "The Park TCG",
     url: SITE_URL,
-    logo: `${SITE_URL}/magar-developpement-logo.svg`,
+    logo: `${SITE_URL}/icon-512.png`,
     description:
       "Plateforme de collection, d'échange et de marketplace communautaire dédiée au TCG The Park (univers drift / JDM).",
     applicationCategory: "GameApplication",

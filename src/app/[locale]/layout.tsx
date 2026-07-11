@@ -74,6 +74,16 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  // Vérification de propriété : définir GOOGLE_SITE_VERIFICATION (et/ou
+  // BING_SITE_VERIFICATION) côté Clever — la balise n'apparaît que si présente.
+  verification: {
+    ...(process.env.GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+      : {}),
+    ...(process.env.BING_SITE_VERIFICATION
+      ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } }
+      : {}),
+  },
 };
 
 export function generateStaticParams() {

@@ -1,7 +1,9 @@
 import { ImageResponse } from "next/og";
 import { SITE_NAME } from "@/lib/seo";
 
-export const runtime = "edge";
+// Node runtime : l'app est self-hostée sur Clever Cloud (`next start`), pas Vercel.
+// `edge` n'apporte rien ici et casse souvent la génération OG en self-hosted.
+export const runtime = "nodejs";
 export const alt = "The Park — Trading Card Game";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
