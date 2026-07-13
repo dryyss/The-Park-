@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { ShowcaseCard } from "@/components/showcase/showcase-card";
-import type { PlaceableCard, ShowcaseView } from "@/server/showcase/showcase.service";
+import type { PlaceableCard, ShowcaseCardView, ShowcaseView } from "@/server/showcase/showcase.service";
 import {
   SHOWCASE_GRID_PRESETS,
   SHOWCASE_MAX_BINDERS,
@@ -38,10 +38,13 @@ export function ShowcaseEditor({
   const [activeId, setActiveId] = useState(initialShowcases[0]?.id ?? "");
   const [page, setPage] = useState(0);
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
-  const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
-  // Carte « prise » au tap pour être déplacée (fonctionne au tactile ET à la souris,
-  // là où le drag natif HTML5 ne marche pas sur mobile).
+  // Carte « prise » au tap pour être déplacée (méthode d'appoint, précise/accessible).
   const [pickedItemId, setPickedItemId] = useState<string | null>(null);
+  // Drag par pointer events : fonctionne à la souris ET au tactile (le drag HTML5
+  // natif ne marche pas sur mobile). `drag` = aperçu flottant qui suit le doigt.
+  const [drag, setDrag] = useState<{ item: ShowcaseCardView; x: number; y: number } | null>(null);
+  const [dragOverSlot, setDragOverSlot] = useState<number | null>(null);
+  const dragRef = useRef<{ item: ShowcaseCardView; startX: number; startY: number; active: boolean } | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -211,6 +214,77 @@ export function ShowcaseEditor({
       };
     });
     void run(next, () => moveItemAction({ showcaseId: active.id, itemId, page, slot: targetSlot }));
+  }
+
+  // ---- Drag par pointer events (souris + tactile) ---------------------------
+
+  function slotUnderPointer(clientX: number, clientY: number): number | null {
+    const el = (document.elementFromPoint(clientX, clientY) as HTMLElement | null)?.closest("[data-slot]") as
+      | HTMLElement
+      | null;
+    if (!el) return null;
+    const s = Number(el.dataset.slot);
+    return Number.isFinite(s) ? s : null;
+  }
+
+  function onSlotPointerDown(e: React.PointerEvent, item?: ShowcaseCardView) {
+    if (pending || !item) return; // seul un emplacement occupé démarre un drag
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    dragRef.current = { item, startX: e.clientX, startY: e.clientY, active: false };
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {}
+  }
+
+  function onSlotPointerMove(e: React.PointerEvent) {
+    const d = dragRef.current;
+    if (!d) return;
+    if (!d.active) {
+      if (Math.hypot(e.clientX - d.startX, e.clientY - d.startY) < 6) return; // seuil anti-tap
+      d.active = true;
+      setPickedItemId(null);
+      setSelectedSlot(null);
+      setDrag({ item: d.item, x: e.clientX, y: e.clientY });
+    }
+    e.preventDefault();
+    setDrag((prev) => (prev ? { ...prev, x: e.clientX, y: e.clientY } : prev));
+    setDragOverSlot(slotUnderPointer(e.clientX, e.clientY));
+  }
+
+  function onSlotPointerUp(e: React.PointerEvent, slot: number, item?: ShowcaseCardView) {
+    const d = dragRef.current;
+    dragRef.current = null;
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {}
+
+    // 1) Vrai déplacement (drag terminé) → dépose sur l'emplacement survolé.
+    if (d?.active) {
+      const target = dragOverSlot;
+      setDrag(null);
+      setDragOverSlot(null);
+      if (target != null && target !== d.item.slot) moveItem(d.item.itemId, target);
+      return;
+    }
+    setDrag(null);
+    setDragOverSlot(null);
+
+    // 2) Simple tap.
+    // 2a) une carte est déjà « prise » → on la pose ici (annule si re-tap sur elle).
+    if (pickedItemId) {
+      if (pickedItemId !== item?.itemId) moveItem(pickedItemId, slot);
+      setPickedItemId(null);
+      setSelectedSlot(null);
+      return;
+    }
+    // 2b) tap sur une carte → on la « prend » pour la déplacer au tap suivant.
+    if (item) {
+      setPickedItemId(item.itemId);
+      setSelectedSlot(null);
+      return;
+    }
+    // 2c) tap sur un emplacement vide → sélection pour poser une carte du tiroir.
+    setSelectedSlot((prev) => (prev === slot ? null : slot));
   }
 
   function removeItem(itemId: string) {
@@ -401,54 +475,45 @@ export function ShowcaseEditor({
             const item = bySlot.get(slot);
             const isSelected = selectedSlot === slot;
             const isPicked = !!item && pickedItemId === item.itemId;
+            const isDragSource = !!item && drag?.item.itemId === item.itemId;
+            const isDropTarget = drag != null && dragOverSlot === slot && !isDragSource;
             return (
               <div
                 key={slot}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  if (draggedItemId) e.dataTransfer.dropEffect = "move";
+                data-slot={slot}
+                onPointerDown={(e) => onSlotPointerDown(e, item)}
+                onPointerMove={onSlotPointerMove}
+                onPointerUp={(e) => onSlotPointerUp(e, slot, item)}
+                onPointerCancel={() => {
+                  dragRef.current = null;
+                  setDrag(null);
+                  setDragOverSlot(null);
                 }}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  if (draggedItemId) moveItem(draggedItemId, slot);
-                  setDraggedItemId(null);
-                }}
-                onClick={() => {
-                  // 1) une carte est « prise » → on la déplace vers cet emplacement
-                  if (pickedItemId) {
-                    moveItem(pickedItemId, slot);
-                    setPickedItemId(null);
-                    setSelectedSlot(null);
-                    return;
-                  }
-                  // 2) on prend la carte de cet emplacement pour la déplacer
-                  if (item) {
-                    setPickedItemId(item.itemId);
-                    setSelectedSlot(null);
-                    return;
-                  }
-                  // 3) emplacement vide → on le sélectionne pour y poser une carte du tiroir
-                  setSelectedSlot(isSelected ? null : slot);
-                }}
-                className={`relative rounded-xl transition ${
-                  isSelected || isPicked ? "ring-2 ring-carmin ring-offset-2 ring-offset-charbon-900" : ""
+                // touch-action:none sur une carte → le geste devient un drag (pas un scroll).
+                style={item ? { touchAction: "none" } : undefined}
+                className={`relative rounded-xl transition-transform duration-200 ${
+                  isDropTarget
+                    ? "scale-[1.04] ring-2 ring-or ring-offset-2 ring-offset-charbon-900"
+                    : isSelected || isPicked
+                      ? "ring-2 ring-carmin ring-offset-2 ring-offset-charbon-900"
+                      : ""
                 }`}
               >
                 {item ? (
                   <div
-                    draggable={!pending}
-                    onDragStart={(e) => {
-                      // setData est requis pour que le drag démarre (Firefox notamment).
-                      e.dataTransfer.setData("text/plain", item.itemId);
-                      e.dataTransfer.effectAllowed = "move";
-                      setDraggedItemId(item.itemId);
-                    }}
-                    onDragEnd={() => setDraggedItemId(null)}
-                    className="group relative cursor-grab active:cursor-grabbing"
+                    key={item.itemId}
+                    className={`group animate-pop relative touch-none select-none transition-[transform,opacity] duration-200 ${
+                      isDragSource
+                        ? "opacity-30"
+                        : isPicked
+                          ? "scale-[1.04] cursor-grabbing"
+                          : "cursor-grab active:cursor-grabbing"
+                    }`}
                   >
                     <ShowcaseCard card={item} />
                     <button
                       type="button"
+                      onPointerDown={(e) => e.stopPropagation()}
                       onClick={(e) => {
                         e.stopPropagation();
                         removeItem(item.itemId);
@@ -465,7 +530,7 @@ export function ShowcaseEditor({
                     className={`flex aspect-5/7 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed transition ${
                       isSelected
                         ? "border-carmin bg-carmin/10"
-                        : pickedItemId
+                        : pickedItemId || drag
                           ? "border-carmin/40 bg-charbon-800/40 hover:border-carmin"
                           : "border-charbon-500/40 bg-charbon-800/40 hover:border-charbon-400"
                     }`}
@@ -478,6 +543,20 @@ export function ShowcaseEditor({
           })}
         </div>
         </div>
+
+        {/* Aperçu flottant de la carte en cours de déplacement (suit le doigt / la souris) */}
+        {drag && (
+          <div
+            className="pointer-events-none fixed z-70 w-[84px] drop-shadow-[0_18px_38px_rgba(0,0,0,0.65)]"
+            style={{
+              left: drag.x,
+              top: drag.y,
+              transform: "translate(-50%, -52%) rotate(-4deg) scale(1.06)",
+            }}
+          >
+            <ShowcaseCard card={drag.item} />
+          </div>
+        )}
 
         {/* Navigation des pages */}
         {active.pageCount > 1 && (
