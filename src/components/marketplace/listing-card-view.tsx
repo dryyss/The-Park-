@@ -125,12 +125,14 @@ export function ListingCardView({
           {/* flex-wrap : si le bouton ne tient pas à côté du prix (cartes étroites
               en mobile), il passe en pleine largeur sur la ligne du dessous. */}
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <div className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">
-                {l.isWant ? labels.budgetCaption : l.purchasable ? labels.priceFixed : labels.priceCaption}
+            {l.hasPrice && (
+              <div>
+                <div className="text-[9.5px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">
+                  {l.isWant ? labels.budgetCaption : l.purchasable ? labels.priceFixed : labels.priceCaption}
+                </div>
+                <div className="font-display text-[21px] leading-tight text-blanc-casse">{l.priceLabel}</div>
               </div>
-              <div className="font-display text-[21px] leading-tight text-blanc-casse">{l.priceLabel}</div>
-            </div>
+            )}
             {isOwnListing ? (
               <Link
                 href="/dashboard"

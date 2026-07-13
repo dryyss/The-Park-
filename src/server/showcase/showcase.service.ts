@@ -1,6 +1,8 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import type { Visibility } from "@/generated/prisma/client";
 import { rarityMeta, cardImage, cardNumberLabel } from "@/lib/rarity";
+import { getFriendUserIds } from "@/server/friend/friend.service";
 
 /** Carte résolue pour l'affichage dans un emplacement de classeur. */
 export interface ShowcaseCardView {
@@ -20,6 +22,7 @@ export interface ShowcaseCardView {
 export interface ShowcaseView {
   id: string;
   title: string | null;
+  visibility: Visibility;
   cols: number;
   rows: number;
   pageCount: number;
@@ -80,6 +83,7 @@ export async function getShowcases(userId: string): Promise<ShowcaseView[]> {
   return showcases.map((s) => ({
     id: s.id,
     title: s.title,
+    visibility: s.visibility,
     cols: s.cols,
     rows: s.rows,
     pageCount: s.pageCount,
@@ -94,6 +98,29 @@ export async function getShowcases(userId: string): Promise<ShowcaseView[]> {
         ...resolveCard(it.collectionItem.variant.imageUrl, it.collectionItem.variant.card),
       })),
   }));
+}
+
+/**
+ * Classeurs d'un membre visibles par `viewerId` (profil public).
+ * PUBLIC : tout le monde · FRIENDS : amis acceptés (ou le propriétaire) ·
+ * PRIVATE : le propriétaire uniquement.
+ */
+export async function getVisibleShowcases(
+  ownerId: string,
+  viewerId: string | null,
+): Promise<ShowcaseView[]> {
+  const all = await getShowcases(ownerId);
+  if (viewerId === ownerId) return all;
+
+  const needsFriendCheck = all.some((s) => s.visibility === "FRIENDS");
+  const friendIds = needsFriendCheck && viewerId ? new Set(await getFriendUserIds(ownerId)) : new Set<string>();
+
+  return all.filter((s) => {
+    if (s.visibility === "PUBLIC") return true;
+    if (s.visibility === "PRIVATE") return false;
+    // FRIENDS : réservé aux amis acceptés du propriétaire.
+    return viewerId != null && friendIds.has(viewerId);
+  });
 }
 
 /** Cartes possédées (exemplaires) que le membre peut placer dans un classeur. */

@@ -34,6 +34,7 @@ function revalidateFor(slug: string) {
 
 const configSchema = z.object({
   title: z.string().max(SHOWCASE_TITLE_MAX).nullish(),
+  visibility: z.enum(["PUBLIC", "PRIVATE", "FRIENDS"]).optional(),
   cols: z.number().int().min(SHOWCASE_MIN_COLS).max(SHOWCASE_MAX_COLS).optional(),
   rows: z.number().int().min(SHOWCASE_MIN_ROWS).max(SHOWCASE_MAX_ROWS).optional(),
   pageCount: z.number().int().min(SHOWCASE_MIN_PAGES).max(SHOWCASE_MAX_PAGES).optional(),

@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import type { Visibility } from "@/generated/prisma/client";
 import {
   SHOWCASE_MAX_BINDERS,
   SHOWCASE_TITLE_MAX,
@@ -37,7 +38,7 @@ async function requireOwnedShowcase(userId: string, showcaseId: string) {
 /** Crée un classeur (respecte le plafond de classeurs par membre). */
 export async function createShowcase(
   userId: string,
-  input: { title?: string | null; cols?: number; rows?: number; pageCount?: number },
+  input: { title?: string | null; visibility?: Visibility; cols?: number; rows?: number; pageCount?: number },
 ) {
   const count = await prisma.showcase.count({ where: { userId } });
   if (count >= SHOWCASE_MAX_BINDERS) throw new ShowcaseError("LIMIT_REACHED");
@@ -47,6 +48,7 @@ export async function createShowcase(
     data: {
       userId,
       title: cleanTitle(input.title),
+      ...(input.visibility ? { visibility: input.visibility } : {}),
       ...config,
       sortOrder: count,
     },
@@ -57,7 +59,7 @@ export async function createShowcase(
 export async function updateShowcaseConfig(
   userId: string,
   showcaseId: string,
-  input: { title?: string | null; cols?: number; rows?: number; pageCount?: number },
+  input: { title?: string | null; visibility?: Visibility; cols?: number; rows?: number; pageCount?: number },
 ) {
   const showcase = await requireOwnedShowcase(userId, showcaseId);
   const config = normalizeShowcaseConfig({
@@ -80,6 +82,7 @@ export async function updateShowcaseConfig(
       data: {
         ...config,
         title: input.title === undefined ? undefined : cleanTitle(input.title),
+        ...(input.visibility ? { visibility: input.visibility } : {}),
       },
     });
   });

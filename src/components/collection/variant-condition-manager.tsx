@@ -8,6 +8,7 @@ import { adjustCollectionVariantAction, updateCollectionGradingAction, updateCol
 import { listCollectionItemAction, cancelListingAction } from "@/server/marketplace/marketplace.actions";
 import { createAuctionAction } from "@/server/auction/auction.actions";
 import { AUCTION_COMMISSION_RATE } from "@/lib/platform-fees";
+import { FEATURES } from "@/lib/features";
 import { CollectionPhotoManager } from "@/components/collection/collection-photo-manager";
 import { QuantityStepper } from "@/components/collection/quantity-stepper";
 import { GRADE_COMPANIES, GRADE_SCORES, formatGradeScore, type GradeCompanyCode } from "@/lib/grading";
@@ -122,11 +123,13 @@ export function VariantConditionManager({
             {c.listings.map((l) => (
               <div key={l.id} className="flex flex-wrap items-center gap-2">
                 <span className="rounded-md bg-or/12 px-2 py-1 text-[10.5px] font-extrabold text-or">
-                  {l.type === "TRADE"
-                    ? t("listingTrade")
-                    : l.type === "SELL_OR_TRADE"
-                      ? t("listingBoth", { price: l.price ?? "—" })
-                      : t("listingSell", { price: l.price ?? "—" })}
+                  {!FEATURES.exchange
+                    ? t("listingSell", { price: l.price ?? "—" })
+                    : l.type === "TRADE"
+                      ? t("listingTrade")
+                      : l.type === "SELL_OR_TRADE"
+                        ? t("listingBoth", { price: l.price ?? "—" })
+                        : t("listingSell", { price: l.price ?? "—" })}
                 </span>
                 <button
                   type="button"
@@ -146,7 +149,7 @@ export function VariantConditionManager({
                   onClick={() => setSellFor(sellFor === c.condition ? null : c.condition)}
                   className="rounded-md border border-carmin/50 px-2.5 py-1 text-[10.5px] font-extrabold text-carmin transition hover:bg-carmin/10 disabled:opacity-50"
                 >
-                  {t("sellOrTrade")}
+                  {FEATURES.exchange ? t("sellOrTrade") : t("listingTypeSell")}
                 </button>
               ) : (
                 <span className="text-[10.5px] font-bold text-texte-faible">{t("allReserved")}</span>
@@ -497,8 +500,8 @@ function ListItemForm({
             className="rounded-md border border-charbon-500 bg-charbon px-2 py-1.5 text-[11px] font-extrabold text-blanc-casse outline-none focus:border-carmin"
           >
             <option value="SELL">{t("listingTypeSell")}</option>
-            <option value="TRADE">{t("listingTypeTrade")}</option>
-            <option value="SELL_OR_TRADE">{t("listingTypeBoth")}</option>
+            {FEATURES.exchange && <option value="TRADE">{t("listingTypeTrade")}</option>}
+            {FEATURES.exchange && <option value="SELL_OR_TRADE">{t("listingTypeBoth")}</option>}
             <option value="AUCTION">⚡ Enchère</option>
           </select>
         </label>

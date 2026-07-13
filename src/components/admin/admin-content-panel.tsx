@@ -48,7 +48,7 @@ export function AdminContentPanel({
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {[
           { key: "totalPhotos", value: stats.totalPhotos },
           { key: "uniqueItems", value: stats.uniqueItems },

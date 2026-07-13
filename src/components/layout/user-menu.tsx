@@ -54,7 +54,7 @@ export function UserMenu({ staffDashboardHref }: { staffDashboardHref?: string |
       {open && (
         <div
           role="menu"
-          className="absolute top-[calc(100%+8px)] right-0 z-50 min-w-[200px] overflow-hidden rounded-xl border border-charbon-500 bg-charbon-800 py-1 shadow-[0_16px_40px_rgba(0,0,0,0.55)]"
+          className="absolute top-[calc(100%+8px)] right-0 z-50 max-h-[min(80vh,560px)] min-w-[200px] overflow-y-auto rounded-xl border border-charbon-500 bg-charbon-800 py-1 shadow-[0_16px_40px_rgba(0,0,0,0.55)]"
         >
           {displayName && (
             <div className="border-b border-charbon-600 px-3.5 py-2.5">
@@ -68,6 +68,34 @@ export function UserMenu({ staffDashboardHref }: { staffDashboardHref?: string |
           <Link href="/collection" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
             {tNav("collection")}
           </Link>
+          <Link href="/wishlist" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tFooter("linkWishlist")}
+          </Link>
+
+          <div className="my-1 border-t border-charbon-600" />
+          <Link href="/marketplace" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tNav("marketplace")}
+          </Link>
+          <Link href="/vendre" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tNav("sell")}
+          </Link>
+          <Link href="/encheres" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tNav("auctions")}
+          </Link>
+          <Link href="/boutique" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tNav("shop")}
+          </Link>
+          <Link href="/panier" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tNav("cart")}
+          </Link>
+
+          <div className="my-1 border-t border-charbon-600" />
+          <Link href="/classements" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tNav("rankings")}
+          </Link>
+          <Link href="/rivaux" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+            {tNav("rivals")}
+          </Link>
           <Link href="/notifications" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
             {tNav("notifications")}
           </Link>
@@ -77,9 +105,7 @@ export function UserMenu({ staffDashboardHref }: { staffDashboardHref?: string |
           <Link href="/portefeuille" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
             {tNav("wallet")}
           </Link>
-          <Link href="/wishlist" role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
-            {tFooter("linkWishlist")}
-          </Link>
+
           <div className="my-1 border-t border-charbon-600" />
           {staffDashboardHref && (
             <Link

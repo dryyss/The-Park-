@@ -12,7 +12,7 @@ import { CollectionDisplayControls } from "@/components/collection/collection-di
 import { CollectionExportShare } from "@/components/collection/collection-export-share";
 import { CollectionGuestBanner } from "@/components/collection/collection-guest-banner";
 import { parseCollectionGridCols, parseCollectionSort } from "@/lib/collection-grid";
-import { Link } from "@/i18n/navigation";
+import { SeasonTabs } from "@/components/collection/season-tabs";
 import { HORS_SERIE_SEASON_CODE } from "@/lib/seasons";
 import { localePageMetadata } from "@/lib/seo-messages";
 
@@ -65,69 +65,18 @@ export default async function CollectionPage({
   return (
     <main className="page-section">
       <PageHeader kicker={t("kicker")} title={t("title")} jp="駐車場">
-        <div className="flex w-full flex-wrap items-center justify-end gap-2 pb-1.5 sm:w-auto">
-          {seasons.map((s) => {
-            const isHS = s.code === HORS_SERIE_SEASON_CODE;
-            const isActive = activeSeason === s.code;
-            const href = isActive ? "/collection" : `/collection?season=${s.code}`;
-            const sp = data.seasonPcts.find((p) => p.code === s.code);
-            return (
-              <Link
-                key={s.id}
-                href={href}
-                className={[
-                  "font-display flex flex-col items-center rounded-lg px-4.5 py-2 text-[13px] tracking-[1.5px] transition",
-                  isActive
-                    ? "bg-blanc-casse text-charbon shadow-[3px_3px_0_var(--color-carmin)]"
-                    : isHS
-                      ? "border border-dashed border-carmin/50 text-carmin hover:bg-carmin/10"
-                      : "border border-dashed border-charbon-400 text-texte-faible hover:border-charbon-300 hover:text-blanc-casse",
-                ].join(" ")}
-              >
-                <span>{isHS ? t("seasonHS") : s.name}</span>
-                {sp && (
-                  <span className={`mt-0.5 text-[9px] font-extrabold tracking-wide tabular-nums ${isActive ? "text-charbon/60" : "text-texte-faible"}`}>
-                    {sp.pct}%
-                  </span>
-                )}
-              </Link>
-            );
-          })}
-          {activeSeason && (
-            <div className="ml-2 mt-0.5 flex gap-1">
-              <Link
-                href={
-                  activeEdition === "first"
-                    ? `/collection?season=${activeSeason}`
-                    : `/collection?season=${activeSeason}&edition=first`
-                }
-                className="px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] transition"
-                style={{
-                  clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))",
-                  background: activeEdition === "first" || activeEdition === null ? "var(--color-carmin)" : "#3a3a3a",
-                  color: activeEdition === "first" || activeEdition === null ? "#fff" : "var(--color-texte-faible)",
-                }}
-              >
-                {t("editionBadge1st")}
-              </Link>
-              <Link
-                href={
-                  activeEdition === "reprint"
-                    ? `/collection?season=${activeSeason}`
-                    : `/collection?season=${activeSeason}&edition=reprint`
-                }
-                className="px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] transition"
-                style={{
-                  clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))",
-                  background: activeEdition === "reprint" ? "var(--color-carmin)" : "#3a3a3a",
-                  color: activeEdition === "reprint" ? "#fff" : "var(--color-texte-faible)",
-                }}
-              >
-                {t("editionBadgeReprint")}
-              </Link>
-            </div>
-          )}
-        </div>
+        <SeasonTabs
+          seasons={seasons}
+          seasonPcts={data.seasonPcts}
+          activeSeason={activeSeason}
+          activeEdition={activeEdition}
+          horsSerieCode={HORS_SERIE_SEASON_CODE}
+          labels={{
+            seasonHS: t("seasonHS"),
+            editionBadge1st: t("editionBadge1st"),
+            editionBadgeReprint: t("editionBadgeReprint"),
+          }}
+        />
       </PageHeader>
 
       {!isAuthenticated && <CollectionGuestBanner messageKey="loginGateCollection" />}

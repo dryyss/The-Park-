@@ -286,6 +286,7 @@ export interface CardDetail {
     id: string;
     sellerId: string;
     price: string;
+    hasPrice: boolean;
     sellerName: string;
     sellerSlug: string;
     sellerInitial: string;
@@ -496,6 +497,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
       id: l.id,
       sellerId: l.sellerId,
       price: formatPrice(l.price ?? l.budgetMax),
+      hasPrice: (l.price ?? l.budgetMax) != null && Number(l.price ?? l.budgetMax) > 0,
       sellerName: l.seller.displayName,
       sellerSlug: l.seller.slug,
       sellerInitial: l.seller.displayName.charAt(0).toUpperCase(),

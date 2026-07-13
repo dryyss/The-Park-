@@ -10,11 +10,15 @@ import { isFirstEditionLabel } from "@/lib/card-edition";
 import { RARITY_ORDER } from "@/lib/rarity";
 import { ACTIVE_SALE_STATUSES } from "@/server/sale/sale.mutations";
 import { listingNotInActiveCart } from "@/server/marketplace-cart/marketplace-cart.service";
+import { FEATURES } from "@/lib/features";
 
 /** "sell" = annonces où l'on propose une carte ; "want" = recherches. */
 export type MarketIntent = "sell" | "want";
 
-const SELL_TYPES = ["SELL", "SELL_OR_TRADE", "TRADE"] as const;
+// Échanges désactivés : on n'expose plus les annonces de troc pur au marketplace.
+const SELL_TYPES = (
+  FEATURES.exchange ? (["SELL", "SELL_OR_TRADE", "TRADE"] as const) : (["SELL", "SELL_OR_TRADE"] as const)
+) satisfies readonly string[];
 
 export interface MarketplaceFilters {
   intent: MarketIntent;
@@ -51,6 +55,8 @@ export interface MarketplaceCard {
   conditionColor: string;
   isWant: boolean;
   priceLabel: string;
+  /** Montant affichable > 0 (prix de vente ou budget). Sinon on masque le prix. */
+  hasPrice: boolean;
   purchasable: boolean;
   sellerId: string;
   sellerCity: string | null;
@@ -203,6 +209,10 @@ function toMarketplaceCard(l: FullRow): MarketplaceCard {
     conditionColor: conditionColor(l.condition),
     isWant,
     priceLabel: isWant ? formatPrice(l.budgetMax) : formatPrice(l.price),
+    hasPrice: (() => {
+      const amount = isWant ? l.budgetMax : l.price;
+      return amount != null && Number(amount) > 0;
+    })(),
     purchasable: !isWant && (l.type === "SELL" || l.type === "SELL_OR_TRADE") && l.price != null,
     sellerId: l.seller.id,
     sellerCity: l.seller.city ?? null,

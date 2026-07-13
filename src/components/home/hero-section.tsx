@@ -18,7 +18,7 @@ export async function HeroSection({ heroCards }: { heroCards: CardDisplay[] }) {
 
       <div className="animate-fade-up relative">
         <div className="mb-4 text-[12px] font-bold tracking-[4px] text-carmin uppercase">{t("heroKicker")}</div>
-        <h1 className="font-display text-[clamp(52px,6.5vw,88px)] leading-[0.95] tracking-[1px] skew-x-[-4deg] uppercase text-blanc-casse">
+        <h1 className="font-display wrap-break-word text-[clamp(40px,9vw,88px)] leading-[0.95] tracking-[1px] skew-x-[-4deg] uppercase text-blanc-casse">
           {t("heroTitleLine1")}
           <br />
           <span className="text-carmin [text-shadow:4px_4px_0_rgba(242,239,233,0.92)]">{t("heroTitleLine2")}</span>

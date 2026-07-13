@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { VariantConditionManager, type ConditionRow } from "@/components/collection/variant-condition-manager";
-import { VariantEditionEditor } from "@/components/collection/variant-edition-editor";
 import { LoginGatePrompt } from "@/components/collection/login-gate-prompt";
 import { WishlistAddForm } from "@/components/wishlist/wishlist-add-form";
 
@@ -63,20 +62,6 @@ export function CardMemberActions({
                   {v.owned ? t("versionQty", { count: v.quantity }) : t("versionMissing")}
                 </span>
               </div>
-              {isAuthenticated && (
-                <VariantEditionEditor
-                  variantId={v.variantId}
-                  owned={v.owned}
-                  userEditionLabel={v.userEditionLabel}
-                  catalogEditionLabel={v.catalogEditionLabel}
-                  editionLabel={v.editionLabel}
-                />
-              )}
-              {!isAuthenticated && (
-                <p className="mt-1 text-[10.5px] font-bold text-texte-faible">
-                  {v.catalogEditionLabel ? t("editionCatalog", { label: v.catalogEditionLabel }) : t("editionReedition")}
-                </p>
-              )}
               <VariantConditionManager
                 variantId={v.variantId}
                 conditions={v.conditions}

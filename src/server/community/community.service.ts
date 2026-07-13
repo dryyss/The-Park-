@@ -1,6 +1,7 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { FEATURES } from "@/lib/features";
 
 export interface TopCollector {
   rank: number;
@@ -110,15 +111,24 @@ async function fetchRecentActivity(limit: number): Promise<ActivityItem[]> {
     }),
   ]);
 
-  const listingItems: ActivityItem[] = listings.map((l) => ({
-    id: l.id,
-    kind: l.type === "WANT" ? "WANT" : l.type === "SELL_OR_TRADE" ? "TRADE" : "SELL",
-    actorName: l.seller.displayName,
-    cardName: l.variant.card.name,
-    price: l.type === "WANT" ? null : l.price,
-    at: l.createdAt,
-    href: `/carte/${l.variant.card.slug}`,
-  }));
+  const listingItems: ActivityItem[] = listings
+    // Échanges désactivés : on masque les trocs purs et on présente les annonces
+    // « vente ou échange » comme de simples ventes (aucune mention d'échange).
+    .filter((l) => FEATURES.exchange || l.type !== "TRADE")
+    .map((l) => ({
+      id: l.id,
+      kind:
+        l.type === "WANT"
+          ? "WANT"
+          : l.type === "SELL_OR_TRADE" && FEATURES.exchange
+            ? "TRADE"
+            : "SELL",
+      actorName: l.seller.displayName,
+      cardName: l.variant.card.name,
+      price: l.type === "WANT" ? null : l.price,
+      at: l.createdAt,
+      href: `/carte/${l.variant.card.slug}`,
+    }));
 
   const badgeItems: ActivityItem[] = badgeEvents.map((b) => ({
     id: `badge-${b.userId}-${b.badgeId}`,

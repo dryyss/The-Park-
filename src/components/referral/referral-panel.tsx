@@ -85,7 +85,7 @@ export function ReferralPanel({
       </section>
 
       {/* Stats */}
-      <section className="grid grid-cols-3 gap-3">
+      <section className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="rounded-xl border border-charbon-600 bg-charbon-800/60 px-4 py-3 text-center">
           <div className="text-[20px] font-extrabold text-blanc-casse">{overview.rewardedCount}</div>
           <div className="text-[10px] font-bold tracking-[1px] text-texte-dim uppercase">{t("rewarded")}</div>

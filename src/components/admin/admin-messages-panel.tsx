@@ -31,7 +31,7 @@ export function AdminMessagesPanel({
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {[
           { key: "total", value: stats.total },
           { key: "flagged", value: stats.flagged, alert: stats.flagged > 0 },

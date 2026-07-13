@@ -39,6 +39,9 @@ export function ShowcaseEditor({
   const [page, setPage] = useState(0);
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
+  // Carte « prise » au tap pour être déplacée (fonctionne au tactile ET à la souris,
+  // là où le drag natif HTML5 ne marche pas sur mobile).
+  const [pickedItemId, setPickedItemId] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -85,7 +88,7 @@ export function ShowcaseEditor({
     setError(null);
     const res = await createShowcaseAction({ cols: 3, rows: 3, pageCount: 1 });
     if (res.ok) {
-      const created: ShowcaseView = { id: res.data.id, title: null, cols: 3, rows: 3, pageCount: 1, items: [] };
+      const created: ShowcaseView = { id: res.data.id, title: null, visibility: "PUBLIC", cols: 3, rows: 3, pageCount: 1, items: [] };
       setShowcases((prev) => [...prev, created]);
       setActiveId(res.data.id);
       setPage(0);
@@ -106,7 +109,13 @@ export function ShowcaseEditor({
     void run(next, () => deleteShowcaseAction(id));
   }
 
-  function patchConfig(patch: { cols?: number; rows?: number; pageCount?: number; title?: string | null }) {
+  function patchConfig(patch: {
+    cols?: number;
+    rows?: number;
+    pageCount?: number;
+    title?: string | null;
+    visibility?: ShowcaseView["visibility"];
+  }) {
     if (!active) return;
     const cols = patch.cols ?? active.cols;
     const rows = patch.rows ?? active.rows;
@@ -120,6 +129,7 @@ export function ShowcaseEditor({
             rows,
             pageCount,
             title: patch.title === undefined ? s.title : patch.title,
+            visibility: patch.visibility ?? s.visibility,
             items: s.items.filter((it) => it.page < pageCount && it.slot < maxSlot),
           }
         : s,
@@ -247,6 +257,7 @@ export function ShowcaseEditor({
                 setActiveId(s.id);
                 setPage(0);
                 setSelectedSlot(null);
+                setPickedItemId(null);
               }}
               className={`font-display -skew-x-3 rounded-[10px] px-4 py-2 text-[12px] tracking-[1.5px] uppercase transition ${
                 s.id === active.id
@@ -292,6 +303,35 @@ export function ShowcaseEditor({
             >
               {t("deleteBinder")}
             </button>
+          </div>
+
+          {/* Visibilité du classeur : public / amis / privé */}
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className="text-[11px] font-bold tracking-[1px] text-texte-dim uppercase">
+              {t.has("visibilityLabel") ? t("visibilityLabel") : "Visibilité"}
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {(["PUBLIC", "FRIENDS", "PRIVATE"] as const).map((v) => {
+                const on = active.visibility === v;
+                const fallback = v === "PUBLIC" ? "Public" : v === "FRIENDS" ? "Amis" : "Privé";
+                const key = `visibility_${v}`;
+                return (
+                  <button
+                    key={v}
+                    type="button"
+                    onClick={() => patchConfig({ visibility: v })}
+                    disabled={pending}
+                    className={`rounded-[7px] px-2.5 py-1.5 text-[12px] font-bold transition disabled:opacity-50 ${
+                      on
+                        ? "bg-carmin text-white"
+                        : "border border-charbon-500 bg-charbon-900 text-texte-doux hover:text-blanc-casse"
+                    }`}
+                  >
+                    {t.has(key) ? t(key) : fallback}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
@@ -347,33 +387,62 @@ export function ShowcaseEditor({
         )}
 
         {/* Grille d'emplacements */}
-        <p className="mb-3 text-[12px] text-texte-dim">{t("selectSlotHint")}</p>
+        <p className="mb-3 text-[12px] text-texte-dim">
+          {pickedItemId && t.has("moveSlotHint") ? t("moveSlotHint") : t("selectSlotHint")}
+        </p>
+        {/* overflow-x-auto : sur mobile un classeur large (3-4 colonnes) défile
+            horizontalement au lieu d'écraser les cartes. */}
+        <div className="overflow-x-auto pb-1">
         <div
           className="grid gap-3 sm:gap-4"
-          style={{ gridTemplateColumns: `repeat(${active.cols}, minmax(0, 1fr))` }}
+          style={{ gridTemplateColumns: `repeat(${active.cols}, minmax(84px, 1fr))` }}
         >
           {Array.from({ length: total }, (_, slot) => {
             const item = bySlot.get(slot);
             const isSelected = selectedSlot === slot;
+            const isPicked = !!item && pickedItemId === item.itemId;
             return (
               <div
                 key={slot}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={() => {
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  if (draggedItemId) e.dataTransfer.dropEffect = "move";
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
                   if (draggedItemId) moveItem(draggedItemId, slot);
                   setDraggedItemId(null);
                 }}
                 onClick={() => {
-                  if (!item) setSelectedSlot(isSelected ? null : slot);
+                  // 1) une carte est « prise » → on la déplace vers cet emplacement
+                  if (pickedItemId) {
+                    moveItem(pickedItemId, slot);
+                    setPickedItemId(null);
+                    setSelectedSlot(null);
+                    return;
+                  }
+                  // 2) on prend la carte de cet emplacement pour la déplacer
+                  if (item) {
+                    setPickedItemId(item.itemId);
+                    setSelectedSlot(null);
+                    return;
+                  }
+                  // 3) emplacement vide → on le sélectionne pour y poser une carte du tiroir
+                  setSelectedSlot(isSelected ? null : slot);
                 }}
                 className={`relative rounded-xl transition ${
-                  isSelected ? "ring-2 ring-carmin ring-offset-2 ring-offset-charbon-900" : ""
+                  isSelected || isPicked ? "ring-2 ring-carmin ring-offset-2 ring-offset-charbon-900" : ""
                 }`}
               >
                 {item ? (
                   <div
                     draggable={!pending}
-                    onDragStart={() => setDraggedItemId(item.itemId)}
+                    onDragStart={(e) => {
+                      // setData est requis pour que le drag démarre (Firefox notamment).
+                      e.dataTransfer.setData("text/plain", item.itemId);
+                      e.dataTransfer.effectAllowed = "move";
+                      setDraggedItemId(item.itemId);
+                    }}
                     onDragEnd={() => setDraggedItemId(null)}
                     className="group relative cursor-grab active:cursor-grabbing"
                   >
@@ -385,7 +454,8 @@ export function ShowcaseEditor({
                         removeItem(item.itemId);
                       }}
                       title={t("removeCard")}
-                      className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/70 text-[14px] leading-none text-white opacity-0 transition group-hover:opacity-100 hover:bg-carmin"
+                      // Toujours visible au tactile (pas de survol), révélé au survol sur desktop.
+                      className="absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-[15px] leading-none text-white opacity-80 transition hover:bg-carmin sm:opacity-0 sm:group-hover:opacity-100"
                     >
                       ×
                     </button>
@@ -395,7 +465,9 @@ export function ShowcaseEditor({
                     className={`flex aspect-5/7 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed transition ${
                       isSelected
                         ? "border-carmin bg-carmin/10"
-                        : "border-charbon-500/40 bg-charbon-800/40 hover:border-charbon-400"
+                        : pickedItemId
+                          ? "border-carmin/40 bg-charbon-800/40 hover:border-carmin"
+                          : "border-charbon-500/40 bg-charbon-800/40 hover:border-charbon-400"
                     }`}
                   >
                     <span className="text-[22px] text-charbon-400">+</span>
@@ -404,6 +476,7 @@ export function ShowcaseEditor({
               </div>
             );
           })}
+        </div>
         </div>
 
         {/* Navigation des pages */}

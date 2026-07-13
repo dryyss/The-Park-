@@ -9,7 +9,7 @@ import { avatarGradient } from "@/lib/avatars";
 import { formatPercent } from "@/lib/format";
 import { FriendButton } from "@/components/friend/friend-button";
 import { ShowcaseBinder } from "@/components/showcase/showcase-binder";
-import { getShowcases } from "@/server/showcase/showcase.service";
+import { getVisibleShowcases } from "@/server/showcase/showcase.service";
 import { Link } from "@/i18n/navigation";
 import { collectorPageMetadata } from "@/lib/seo";
 import { getCollectorSeoData } from "@/server/seo/seo.service";
@@ -39,7 +39,7 @@ export default async function CollectionneurPage({ params }: { params: Promise<{
   const friendshipStatus =
     viewer && !isOwnProfile ? await getFriendshipStatus(viewer.id, profile.userId) : null;
 
-  const showcases = await getShowcases(profile.userId);
+  const showcases = await getVisibleShowcases(profile.userId, viewer?.id ?? null);
   const hasShowcase = showcases.some((s) => s.items.length > 0);
 
   return (

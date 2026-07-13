@@ -1,7 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import { HELP_FAQ, type FaqItem } from "@/data/help-faq";
+import { FEATURES } from "@/lib/features";
 
-const CATEGORIES = ["collection", "marketplace", "exchanges", "shop", "account"] as const;
+const CATEGORIES = (["collection", "marketplace", "exchanges", "shop", "account"] as const).filter(
+  (c) => FEATURES.exchange || c !== "exchanges",
+);
 
 export async function HelpFaq() {
   const t = await getTranslations("help");

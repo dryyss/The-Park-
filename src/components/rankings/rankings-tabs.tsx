@@ -16,7 +16,7 @@ export function RankingsTabs({ tabs, current }: { tabs: Tab[]; current: string }
   const [pendingKey, setPendingKey] = useState<string | null>(null);
 
   return (
-    <div className="mb-1 flex gap-1 rounded-xl border border-charbon-500 bg-charbon-800 p-1.5">
+    <div className="mb-1 flex gap-1 overflow-x-auto rounded-xl border border-charbon-500 bg-charbon-800 p-1.5">
       {tabs.map((tab) => {
         const active = current === tab.k;
         const loading = isPending && pendingKey === tab.k;

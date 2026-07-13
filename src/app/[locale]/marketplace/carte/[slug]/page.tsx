@@ -166,7 +166,7 @@ export default async function CardSellersPage({
               <div className="flex items-center gap-1.5 sm:justify-end">
                 <span className="text-[10px] font-bold text-texte-faible uppercase sm:hidden">{t("sellersColPrice")} : </span>
                 {s.price === 0 ? (
-                  <span className="text-[14px] font-bold text-texte-dim">{t("sellersTradeLabel")}</span>
+                  <span className="text-[16px] font-bold text-texte-faible">—</span>
                 ) : (
                   <span className="font-display text-[22px] leading-none whitespace-nowrap text-blanc-casse">
                     {s.priceLabel}

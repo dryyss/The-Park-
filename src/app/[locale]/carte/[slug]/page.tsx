@@ -110,7 +110,6 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
               rarityColor={card.color}
               priority
             />
-            <p className="mt-3 text-center text-[11.5px] font-bold text-texte-faible">{t("holoHint")}</p>
           </div>
           {card.communityPhotos.length > 0 && (
             <div className="min-w-0 flex-1">
@@ -174,7 +173,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
               {card.versions.map((v) => (
                 <div
-                  key={v.code}
+                  key={v.variantId}
                   className={[
                     "rounded-xl border-[1.5px] px-4 py-3",
                     v.owned ? "border-statut-succes/45 bg-statut-succes/8" : "border-charbon-500 bg-charbon-800",
@@ -317,7 +316,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
 
                   {/* Prix + actions */}
                   <div className="flex flex-wrap items-center justify-between gap-2 sm:justify-end">
-                    <span className="font-display text-[19px] leading-none text-blanc-casse">{l.price}</span>
+                    <span className="font-display text-[19px] leading-none text-blanc-casse">{l.hasPrice ? l.price : "—"}</span>
                     {isOwn ? (
                       <Link
                         href="/dashboard"

@@ -2,15 +2,8 @@ import type { SeasonCardRow } from "@/server/catalog/catalog.service";
 import { HoloCard } from "@/components/cards/holo-card";
 import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { Link } from "@/i18n/navigation";
-import { CollectionQuantityControls } from "@/components/collection/collection-quantity-controls";
 
-export function SeasonCardTile({
-  card,
-  isAuthenticated,
-}: {
-  card: SeasonCardRow;
-  isAuthenticated: boolean;
-}) {
+export function SeasonCardTile({ card }: { card: SeasonCardRow; isAuthenticated?: boolean }) {
   return (
     <div>
       <Link href={`/carte/${card.slug}`} className="block">
@@ -28,13 +21,6 @@ export function SeasonCardTile({
           <span style={{ color: card.color }}>{card.glyph}</span>
         </div>
       </Link>
-      {card.standardVariantId && (
-        <CollectionQuantityControls
-          cardNumber={card.number}
-          quantity={card.quantity}
-          isAuthenticated={isAuthenticated}
-        />
-      )}
     </div>
   );
 }

@@ -167,15 +167,20 @@ async function main() {
       create: { seasonId: season.id, number: c.num, slug, ...data },
     });
 
-    const editionLabel = catalogEditionForCard(c.num);
+    // La clé unique composite inclut désormais editionLabel. Prisma type un champ
+    // nullable de clé composite comme non-null dans le `where` d'upsert : on garde
+    // donc un libellé non-null pour le seed (toujours le cas ici). Les variantes en
+    // réédition à libellé null se créent côté admin (createCardVariant → .create()).
+    const editionLabel: string = catalogEditionForCard(c.num) ?? DEFAULT_S01_EDITION_LABEL;
 
     // Standard (toutes) + versions optionnelles du catalogue
     await prisma.cardVariant.upsert({
       where: {
-        cardId_versionTypeId_language: {
+        cardId_versionTypeId_language_editionLabel: {
           cardId: card.id,
           versionTypeId: vtByCode["standard"],
           language: "FR",
+          editionLabel,
         },
       },
       update: { editionLabel },
@@ -188,10 +193,11 @@ async function main() {
       if (!versionTypeId) continue;
       await prisma.cardVariant.upsert({
         where: {
-          cardId_versionTypeId_language: {
+          cardId_versionTypeId_language_editionLabel: {
             cardId: card.id,
             versionTypeId,
             language: "FR",
+            editionLabel,
           },
         },
         update: { editionLabel },

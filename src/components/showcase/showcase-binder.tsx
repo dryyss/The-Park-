@@ -29,7 +29,7 @@ export function ShowcaseBinder({ showcases }: { showcases: ShowcaseView[] }) {
 
   return (
     <div>
-      {showcases.length > 1 && (
+      {showcases.length > 1 ? (
         <div className="mb-5 flex flex-wrap gap-2">
           {showcases.map((s, i) => (
             <button
@@ -46,11 +46,20 @@ export function ShowcaseBinder({ showcases }: { showcases: ShowcaseView[] }) {
             </button>
           ))}
         </div>
+      ) : (
+        active.title && (
+          // Un seul classeur : on affiche quand même son nom (visible par les autres).
+          <h3 className="font-display mb-4 text-[18px] tracking-[1px] -skew-x-3 uppercase text-blanc-casse">
+            {active.title}
+          </h3>
+        )
       )}
 
+      {/* overflow-x-auto : classeur large (3-4 col.) défile au lieu d'écraser les cartes sur mobile. */}
+      <div className="overflow-x-auto pb-1">
       <div
         className="grid gap-3 sm:gap-4"
-        style={{ gridTemplateColumns: `repeat(${active.cols}, minmax(0, 1fr))` }}
+        style={{ gridTemplateColumns: `repeat(${active.cols}, minmax(84px, 1fr))` }}
       >
         {Array.from({ length: total }, (_, slot) => {
           const item = bySlot.get(slot);
@@ -68,6 +77,7 @@ export function ShowcaseBinder({ showcases }: { showcases: ShowcaseView[] }) {
             </Link>
           );
         })}
+      </div>
       </div>
 
       {active.pageCount > 1 && (
