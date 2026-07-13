@@ -43,7 +43,7 @@ export default function OgImage() {
           <span style={{ color: "#FBF4F6", fontSize: 28, fontWeight: 700, letterSpacing: 2 }}>駐車場</span>
         </div>
 
-        <div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             style={{
               fontSize: 72,
