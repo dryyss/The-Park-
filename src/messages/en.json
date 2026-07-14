@@ -81,7 +81,7 @@
     "linkAdmin": "Admin console",
     "live": "LIVE",
     "rights": "© 2026 The Park · Pocket Drifterz",
-    "terms": "Terms",
+    "terms": "Sales terms",
     "privacy": "Privacy",
     "shipping": "Shipping",
     "help": "Help",
@@ -89,7 +89,10 @@
     "developedBy": "Developed by",
     "developedByAlt": "Magar Développement",
     "linkReferral": "Referrals",
-    "linkSupport": "Support"
+    "linkSupport": "Support",
+    "termsOfUse": "Terms of use",
+    "sellers": "Seller rules",
+    "legalNotice": "Legal notice"
   },
   "home": {
     "heroKicker": "Collection platform · Pocket Drifterz",
@@ -2256,9 +2259,18 @@
     "goalTitle": "What brings you here?",
     "goalDesc": "We'll tune your shortcuts. You can do everything anyway.",
     "goals": {
-      "collect": { "title": "Complete my binder", "sub": "Hunt every Season 1 card." },
-      "trade": { "title": "Trade with the community", "sub": "Swap dupes for holos." },
-      "sell": { "title": "Buy & sell", "sub": "Bring my collection to the marketplace." }
+      "collect": {
+        "title": "Complete my binder",
+        "sub": "Hunt every Season 1 card."
+      },
+      "trade": {
+        "title": "Trade with the community",
+        "sub": "Swap dupes for holos."
+      },
+      "sell": {
+        "title": "Buy & sell",
+        "sub": "Bring my collection to the marketplace."
+      }
     },
     "boosterTitle": "Your first booster",
     "boosterDesc": "3 free cards to start your collection. Tap to open.",
@@ -2622,6 +2634,491 @@
       "PENDING": "Pending",
       "RESOLVED": "Resolved",
       "CLOSED": "Closed"
+    }
+  },
+  "legal": {
+    "kicker": "Legal information",
+    "updatedLabel": "Last updated",
+    "updatedDate": "July 14, 2026",
+    "tocLabel": "Contents",
+    "backToHelp": "Back to the help center",
+    "docs": {
+      "cgv": {
+        "title": "Terms and Conditions of Sale",
+        "metaDescription": "The Park's Terms and Conditions of Sale: official shop, member-to-member purchases, prices, payment, delivery, right of withdrawal and warranties.",
+        "intro": "These Terms and Conditions of Sale (T&C of Sale) govern all sales made on The Park, whether they concern products from the official shop or purchases made between members on the marketplace and at auctions. Any order implies full and complete acceptance of these T&C of Sale.",
+        "sections": [
+          {
+            "h": "Purpose and scope",
+            "p": [
+              "These T&C of Sale set out the rights and obligations of the parties in connection with the sale of products and collectible cards on The Park platform (the “Service”).",
+              "Two types of sales are distinguished: (i) sales made by the official shop, carried out by the publisher or its partner; (ii) sales made between members (peer-to-peer marketplace and auctions), for which The Park acts solely as a technical intermediary facilitating connection and payment collection."
+            ]
+          },
+          {
+            "h": "Identity of the professional seller",
+            "p": [
+              "Products from the official shop are sold by: [TO COMPLETE: corporate name, legal form, share capital, registered office, trade register/company number, intra-community VAT number].",
+              "For any question relating to an official shop order, customer service can be reached at [TO COMPLETE: contact e-mail]."
+            ]
+          },
+          {
+            "h": "Products and availability",
+            "p": [
+              "The essential characteristics of the products (boosters, displays, decks, merchandising and cards) are presented on the corresponding listings. Photographs and visuals are provided for illustration purposes and do not bind the publisher beyond the described characteristics.",
+              "Offers are valid while stocks last. In the event of unavailability after an order, the buyer is informed and refunded the corresponding amounts."
+            ]
+          },
+          {
+            "h": "Prices",
+            "p": [
+              "Official shop prices are shown in euros, all taxes included, excluding delivery charges, which are specified before the order is confirmed.",
+              "Prices displayed on the member-to-member marketplace are set freely by sellers. They are indications between enthusiasts and are not guaranteed by The Park: the actual value of a card depends on its condition and on the market.",
+              "The Park reserves the right to change its prices at any time; products are invoiced on the basis of the rate in force at the time the order is confirmed."
+            ]
+          },
+          {
+            "h": "Wallet and credits",
+            "p": [
+              "Member-to-member purchases can be paid via the internal wallet. Users top up their wallet by bank card through Stripe, with a minimum amount of €5 and a service fee of 5% applied to the top-up.",
+              "Topped-up amounts constitute non-refundable and non-withdrawable deposit credits: they can only be used for purchases on the Service.",
+              "Earnings received by a seller are credited to a separate balance, which can be withdrawn to their bank account under the conditions of the Sellers' Rules."
+            ]
+          },
+          {
+            "h": "Order",
+            "p": [
+              "The buyer selects the products, checks the details of their order, then confirms it. Confirmation constitutes acceptance of the price, of the product descriptions and of these T&C of Sale.",
+              "The Park confirms the order with a summary accessible in the “Orders” area. The sales contract is formed upon confirmation of the order."
+            ]
+          },
+          {
+            "h": "Payment",
+            "p": [
+              "Bank card payments are processed by the provider Stripe, in a secure environment. The Park never has access to full bank card numbers.",
+              "The order is only processed after effective confirmation of payment. In the event of an authorization refusal, the order is automatically cancelled."
+            ]
+          },
+          {
+            "h": "Delivery",
+            "p": [
+              "In-stock products from the official shop are shipped within 48 working hours. Delivery times then depend on the carrier and the destination.",
+              "Shipments between members are the seller's responsibility; the secure shipping option described in the Security pages is recommended for high-value transactions.",
+              "The risks associated with transport are transferred to the buyer at the time of physical delivery of the parcel."
+            ]
+          },
+          {
+            "h": "Right of withdrawal",
+            "p": [
+              "For purchases made from the official shop, the consumer buyer has a period of fourteen (14) days from receipt to exercise their right of withdrawal, without having to justify their decision.",
+              "The refund is made within fourteen (14) days after receipt of the returned product, in its original condition. Return costs remain the buyer's responsibility, except for non-conforming products.",
+              "The right of withdrawal does not apply to sales between individuals, which are final once the transaction has been validated by both parties."
+            ]
+          },
+          {
+            "h": "Legal warranties",
+            "p": [
+              "Products sold by the official shop benefit from the legal warranty of conformity and the warranty against hidden defects, under the conditions provided for by the Consumer Code and the Civil Code.",
+              "These warranties do not apply to normal wear and tear, nor to damage resulting from misuse or poor storage of the cards."
+            ]
+          },
+          {
+            "h": "Member-to-member purchases (marketplace and auctions)",
+            "p": [
+              "In member-to-member sales, The Park is not a party to the sales contract: it provides the connection tool, secures the payment and oversees any dispute.",
+              "The buyer undertakes to honor payment for any auction won; a bank pre-authorization may be requested to take part in auctions. The seller undertakes to ship a product that conforms to their listing.",
+              "The detailed terms (card condition, secure shipping, deposit, disputes) are set out in the Sellers' Rules."
+            ]
+          },
+          {
+            "h": "Complaints and mediation",
+            "p": [
+              "Any complaint must be sent via the Support area. In the event of an unresolved dispute, the consumer may resort free of charge to a consumer mediator.",
+              "[TO COMPLETE: name and contact details of the competent consumer mediator].",
+              "The consumer may also use the European online dispute resolution platform: https://ec.europa.eu/consumers/odr."
+            ]
+          },
+          {
+            "h": "Governing law",
+            "p": [
+              "These T&C of Sale are governed by French law. Failing an amicable resolution, the competent courts shall be those of the jurisdiction of the publisher's registered office, subject to the mandatory rules protecting the consumer."
+            ]
+          }
+        ]
+      },
+      "cgu": {
+        "title": "Terms and Conditions of Use",
+        "metaDescription": "The Park's Terms and Conditions of Use: account, community rules, protection of minors, content, intellectual property and sanctions.",
+        "intro": "These Terms and Conditions of Use (T&C of Use) define the rules for accessing and using The Park platform. By creating an account or using the Service, you accept these conditions without reservation.",
+        "sections": [
+          {
+            "h": "Purpose",
+            "p": [
+              "The purpose of the T&C of Use is to define the terms under which the Service is made available and the conditions of use by the user. They apply to all features: collection binder, shop, marketplace, auctions, trades, messaging and rankings."
+            ]
+          },
+          {
+            "h": "Acceptance of the conditions",
+            "p": [
+              "Use of the Service presupposes prior and full acceptance of these T&C of Use. Any user who does not accept these conditions must refrain from using the Service."
+            ]
+          },
+          {
+            "h": "Access and registration",
+            "p": [
+              "Access to certain features requires the creation of an account. The user undertakes to provide accurate information and to keep it up to date.",
+              "The user is solely responsible for the confidentiality of their credentials and for any activity carried out from their account."
+            ]
+          },
+          {
+            "h": "Protection of minors",
+            "p": [
+              "An age check is carried out at registration. Minors under fifteen (15) years of age must have the consent of a holder of parental authority.",
+              "Messaging features are limited to exchanges related to a transaction. Any inappropriate solicitation of a minor results in immediate suspension and a report to the competent authorities."
+            ]
+          },
+          {
+            "h": "The user account",
+            "p": [
+              "Each user may hold only one account, unless expressly authorized. The creation of multiple accounts intended to circumvent a sanction or to manipulate auctions, rankings or reviews is prohibited.",
+              "The user may delete their account at any time from their settings, subject to the proper completion of ongoing transactions."
+            ]
+          },
+          {
+            "h": "Rules of conduct",
+            "p": [
+              "The user undertakes to behave fairly and respectfully. The following are notably prohibited:"
+            ],
+            "list": [
+              "hateful, discriminatory, harassing or defamatory remarks;",
+              "the publication of illegal or misleading content or content infringing the rights of third parties;",
+              "fraud, manipulation of auctions (fictitious bids, collusive overbidding) and manipulation of rankings or reviews;",
+              "circumventing the platform's payment or connection system;",
+              "any attempt to compromise the security or proper functioning of the Service."
+            ]
+          },
+          {
+            "h": "Content published by members",
+            "p": [
+              "The user remains responsible for the content they publish (listings, photos, messages, reviews). They warrant that they hold the necessary rights and grant The Park a non-exclusive license to display this content within the scope of the Service.",
+              "The Park may moderate, hide or remove any content that is contrary to these T&C of Use or to the law."
+            ]
+          },
+          {
+            "h": "Wallet, credits and earnings",
+            "p": [
+              "The operation of the internal wallet, non-withdrawable deposit credits and the withdrawable earnings balance is described in the T&C of Sale and the Sellers' Rules, which form an integral part of the contractual framework."
+            ]
+          },
+          {
+            "h": "Community features",
+            "p": [
+              "Trades between members are based on double validation: both parties must accept, and a timestamped history is kept in the event of a dispute.",
+              "Auctions take place in real time with protection mechanisms (anti-snipe, prevention of fictitious bids). Participation may be subject to a bank pre-authorization.",
+              "Rankings and trophies reward activity and completion; any manipulation results in the withdrawal of the rewards concerned."
+            ]
+          },
+          {
+            "h": "Intellectual property",
+            "p": [
+              "The The Park brand, the Pocket Drifterz cards, the visuals, texts and elements of the platform are protected. Any unauthorized reproduction or exploitation is prohibited.",
+              "The purchase of a card or a product confers no intellectual property right over the associated works and trademarks."
+            ]
+          },
+          {
+            "h": "Availability and evolution of the Service",
+            "p": [
+              "The Park strives to ensure the availability of the Service but does not guarantee uninterrupted access. Maintenance operations or updates may cause temporary interruptions.",
+              "The publisher may develop, add or remove features at any time."
+            ]
+          },
+          {
+            "h": "Suspension and termination",
+            "p": [
+              "In the event of a breach of these T&C of Use, The Park may, depending on the severity, issue a warning, restrict access to certain features, or suspend or delete the account.",
+              "Withdrawable amounts already acquired remain owed to the user, subject to withholdings related to disputes or established fraud."
+            ]
+          },
+          {
+            "h": "Liability",
+            "p": [
+              "The Park acts as a host and technical intermediary for content and transactions between members. It cannot be held liable for the conduct of users or for the conformity of products sold between individuals.",
+              "The Park cannot be held liable for indirect damages resulting from use of the Service."
+            ]
+          },
+          {
+            "h": "Personal data",
+            "p": [
+              "The processing of personal data is described in the Privacy Policy, accessible from the footer, which specifies the purposes, retention periods and users' rights."
+            ]
+          },
+          {
+            "h": "Amendment of the T&C of Use",
+            "p": [
+              "The Park may amend these T&C of Use. Users are informed of substantial changes; continued use of the Service constitutes acceptance of the updated version."
+            ]
+          },
+          {
+            "h": "Governing law and disputes",
+            "p": [
+              "These T&C of Use are governed by French law. In the event of a dispute, an amicable solution will be sought as a priority, notably via the Support area, before any legal action."
+            ]
+          }
+        ]
+      },
+      "vendeurs": {
+        "title": "Sellers' Rules",
+        "metaDescription": "The Park's Sellers' Rules: obligations, card condition, secure shipping, deposit, disputes, commissions and sanctions for selling between members.",
+        "intro": "These Sellers' Rules govern the listing of cards and items for sale between members on the marketplace and at auctions. They supplement the T&C of Use and the T&C of Sale. Any listing constitutes acceptance of these rules.",
+        "sections": [
+          {
+            "h": "Who can sell",
+            "p": [
+              "Member-to-member selling is open to users with a verified and up-to-date account. Minors may only sell with the consent of a holder of parental authority.",
+              "The seller undertakes to offer only items they actually possess and are entitled to transfer."
+            ]
+          },
+          {
+            "h": "Principle of the honest listing",
+            "p": [
+              "Each listing must faithfully describe the item: version (Standard, Unique, Promotional, Special, Collaboration, Signed), actual condition and any defects. A misleading description constitutes a serious breach."
+            ]
+          },
+          {
+            "h": "Card condition",
+            "p": [
+              "The condition must be entered according to the official grid: New, Excellent, Very good, Good, Fair, Damaged. The seller chooses the condition closest to reality and reports any visible defect.",
+              "In case of doubt, it is recommended to underrate rather than overrate the condition in order to avoid disputes."
+            ]
+          },
+          {
+            "h": "Photos and descriptions",
+            "p": [
+              "Photos must be real, sharp and represent the item actually being sold — the use of generic or misleading photos is prohibited.",
+              "Defects (scratches, creases, edge whitening, marks) must be photographed and mentioned."
+            ]
+          },
+          {
+            "h": "Setting the price",
+            "p": [
+              "The seller sets their price freely. Displayed prices are indications between members and are not guaranteed by The Park.",
+              "Manifestly abusive prices, as well as any collusion aimed at distorting prices or auctions, are prohibited."
+            ]
+          },
+          {
+            "h": "Prohibited products and practices",
+            "p": [
+              "The following are notably prohibited from sale:"
+            ],
+            "list": [
+              "counterfeits, unofficial reproductions and falsified cards;",
+              "stolen items or items the seller does not own;",
+              "items outside the scope authorized by the platform;",
+              "sales coupled with an unlawful consideration or circumvention of the platform's fees;",
+              "any practice aimed at deceiving the buyer as to the nature, condition or authenticity of the item."
+            ]
+          },
+          {
+            "h": "Commission and fees",
+            "p": [
+              "The Park charges a commission on member-to-member sales and/or service fees; the applicable amount is indicated at the time of listing or transaction.",
+              "[TO COMPLETE: applicable commission rate and fees]. Wallet top-up fees (5%) are separate from the sales commission."
+            ]
+          },
+          {
+            "h": "Collection and payout of earnings",
+            "p": [
+              "The proceeds of a sale are credited to the seller's earnings balance, separate from deposit credits. This balance can be withdrawn to a bank account via Stripe, after identity verification (KYC) where required.",
+              "The payout may be deferred for the duration of the warranty window or the resolution of any dispute."
+            ]
+          },
+          {
+            "h": "Shipping and secure shipping",
+            "p": [
+              "The seller undertakes to ship the item in conformity with the listing within the announced timeframes, with suitable protective packaging.",
+              "The secure shipping option, with a deposit blocked via Stripe and enhanced tracking, is recommended for high-value transactions. The deposit is returned upon proper completion of the transaction."
+            ]
+          },
+          {
+            "h": "Video evidence and warranty window",
+            "p": [
+              "For secure shipments, guided video evidence of the packing and unpacking may be required. This evidence serves as a reference in the event of a dispute.",
+              "The buyer has a warranty window of seventy-two (72) hours after receipt to report a non-conformity. After this period without a complaint, the transaction is deemed conforming."
+            ]
+          },
+          {
+            "h": "Dispute management",
+            "p": [
+              "In the event of a dispute, the buyer opens a case via the Support or Security area. The funds concerned may be blocked while the matter is examined.",
+              "The decision relies on the descriptions, photos, video evidence and timestamped history. A seller acting in bad faith is liable to refund the buyer and to sanctions."
+            ]
+          },
+          {
+            "h": "Seller's tax obligations",
+            "p": [
+              "The seller is solely responsible for their reporting and tax obligations related to their selling activity. The Park may be required to transmit certain information to the competent authorities in accordance with applicable regulations."
+            ]
+          },
+          {
+            "h": "Sanctions and suspension",
+            "p": [
+              "Any breach of these rules may result, depending on its severity, in: the removal of listings, the withholding of earnings related to a dispute, the restriction of the right to sell, or the suspension or deletion of the account.",
+              "Serious or repeated breaches (counterfeiting, fraud, non-shipment) may give rise to a report to the authorities."
+            ]
+          }
+        ]
+      },
+      "confidentialite": {
+        "title": "Privacy Policy",
+        "metaDescription": "The Park's Privacy Policy: data collected, purposes, legal bases, processors, retention periods and your rights (GDPR).",
+        "intro": "This policy explains what personal data The Park collects, why, with whom it is shared and what your rights are. It applies to the entire Service and complies with the General Data Protection Regulation (GDPR).",
+        "sections": [
+          {
+            "h": "Data controller",
+            "p": [
+              "The controller of the personal data is: [TO COMPLETE: corporate name, address, contact e-mail and, where applicable, contact details of the data protection officer]."
+            ]
+          },
+          {
+            "h": "Data we collect",
+            "p": [
+              "Depending on your use of the Service, we may collect:"
+            ],
+            "list": [
+              "identification and account data (username, e-mail, date of birth for age verification);",
+              "transaction data (orders, sales, wallet, withdrawals);",
+              "payment data processed by Stripe (we do not store card numbers);",
+              "content you publish (listings, photos, messages, reviews);",
+              "technical data (connection logs, IP address, device) and browsing data."
+            ]
+          },
+          {
+            "h": "Purposes and legal bases",
+            "p": [
+              "We process this data to:"
+            ],
+            "list": [
+              "provide and manage the Service and your account (performance of the contract);",
+              "secure payments, prevent fraud and protect minors (legal obligation and legitimate interest);",
+              "process transactions, disputes and support requests (performance of the contract);",
+              "send you communications and the newsletter (consent, revocable at any time);",
+              "improve the Service and produce statistics (legitimate interest)."
+            ]
+          },
+          {
+            "h": "Recipients and processors",
+            "p": [
+              "Your data may be shared with processors acting on our behalf, notably:"
+            ],
+            "list": [
+              "Stripe, for processing payments and withdrawals;",
+              "our provider of transactional e-mails and newsletters;",
+              "our real-time notifications provider;",
+              "our host and file storage provider."
+            ]
+          },
+          {
+            "h": "Transfers outside the European Union",
+            "p": [
+              "When data is transferred outside the European Union, such transfers are governed by appropriate safeguards (standard contractual clauses of the European Commission or an equivalent mechanism)."
+            ]
+          },
+          {
+            "h": "Retention periods",
+            "p": [
+              "Account data is kept for as long as the account is active, then archived or deleted in accordance with legal obligations.",
+              "Transaction and invoicing data is kept for the applicable legal period in accounting and tax matters. Security logs are kept for a limited period for fraud prevention purposes."
+            ]
+          },
+          {
+            "h": "Your rights",
+            "p": [
+              "In accordance with the GDPR, you have a right of access, rectification, erasure, restriction, objection and portability, as well as the right to withdraw your consent at any time.",
+              "You can exercise these rights by contacting us at [TO COMPLETE: GDPR contact e-mail]. You may also lodge a complaint with the CNIL (www.cnil.fr)."
+            ]
+          },
+          {
+            "h": "Cookies and trackers",
+            "p": [
+              "The Service uses cookies necessary for its operation (session, security) and, subject to your consent, audience measurement cookies. You can manage your preferences via your browser."
+            ]
+          },
+          {
+            "h": "Security",
+            "p": [
+              "We implement technical and organizational measures to protect your data against unauthorized access, loss or alteration. As no system is infallible, we invite you to protect your credentials."
+            ]
+          },
+          {
+            "h": "Protection of minors",
+            "p": [
+              "The Service applies an age check and requires parental consent for minors under fifteen (15) years of age. The data of minors is subject to particular vigilance."
+            ]
+          },
+          {
+            "h": "Contact",
+            "p": [
+              "For any question relating to this policy or to your personal data: [TO COMPLETE: contact e-mail]."
+            ]
+          }
+        ]
+      },
+      "mentions": {
+        "title": "Legal Notice",
+        "metaDescription": "The Park's Legal Notice: publisher, publication director, hosting, intellectual property and consumer mediation.",
+        "intro": "In accordance with the law on confidence in the digital economy (LCEN), the following information is brought to the attention of users of The Park website.",
+        "sections": [
+          {
+            "h": "Website publisher",
+            "p": [
+              "The The Park website is published by: [TO COMPLETE: corporate name, legal form, share capital, registered office address, trade register/company number, intra-community VAT number, contact e-mail and telephone]."
+            ]
+          },
+          {
+            "h": "Publication director",
+            "p": [
+              "The publication director is: [TO COMPLETE: name of the legal representative]."
+            ]
+          },
+          {
+            "h": "Hosting",
+            "p": [
+              "The website is hosted by Clever Cloud SAS, 3 rue de l'Allier, 44000 Nantes, France — https://www.clever-cloud.com.",
+              "[TO COMPLETE: confirm or adapt the host's information if necessary]."
+            ]
+          },
+          {
+            "h": "Intellectual property",
+            "p": [
+              "All elements of the website (The Park brand, Pocket Drifterz cards, visuals, texts, logos, database) are protected by intellectual property law. Any reproduction or representation, in whole or in part, without authorization, is prohibited."
+            ]
+          },
+          {
+            "h": "Liability",
+            "p": [
+              "The publisher strives to ensure the accuracy of the information published but cannot be held liable for errors, omissions or unavailability. Content published by members is their sole responsibility."
+            ]
+          },
+          {
+            "h": "Hyperlinks",
+            "p": [
+              "The website may contain links to third-party sites whose content the publisher does not control and for which it cannot be held liable."
+            ]
+          },
+          {
+            "h": "Consumer mediation",
+            "p": [
+              "In accordance with the Consumer Code, the consumer may resort to a mediator: [TO COMPLETE: name and contact details of the mediator]. The European online dispute resolution platform is accessible at https://ec.europa.eu/consumers/odr."
+            ]
+          },
+          {
+            "h": "Contact",
+            "p": [
+              "For any question: [TO COMPLETE: contact e-mail]."
+            ]
+          }
+        ]
+      }
     }
   }
 }

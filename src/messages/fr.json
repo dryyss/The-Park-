@@ -81,7 +81,7 @@
     "linkAdmin": "Console admin",
     "live": "LIVE",
     "rights": "© 2026 The Park · Pocket Drifterz",
-    "terms": "Conditions",
+    "terms": "Conditions de vente",
     "privacy": "Confidentialité",
     "shipping": "Livraison",
     "help": "Aide",
@@ -89,7 +89,10 @@
     "developedBy": "Développé par",
     "developedByAlt": "Magar Développement",
     "linkReferral": "Parrainage",
-    "linkSupport": "Support"
+    "linkSupport": "Support",
+    "termsOfUse": "Conditions d'utilisation",
+    "sellers": "Règlement vendeurs",
+    "legalNotice": "Mentions légales"
   },
   "home": {
     "heroKicker": "Plateforme de collection · Pocket Drifterz",
@@ -2256,9 +2259,18 @@
     "goalTitle": "Qu'est-ce qui t'amène ?",
     "goalDesc": "On adapte tes raccourcis. Tu pourras tout faire de toute façon.",
     "goals": {
-      "collect": { "title": "Compléter mon classeur", "sub": "Chasser chaque carte de la Saison 1." },
-      "trade": { "title": "Échanger avec la communauté", "sub": "Troquer mes doubles contre des holos." },
-      "sell": { "title": "Acheter & vendre", "sub": "Faire vivre ma collection sur le marketplace." }
+      "collect": {
+        "title": "Compléter mon classeur",
+        "sub": "Chasser chaque carte de la Saison 1."
+      },
+      "trade": {
+        "title": "Échanger avec la communauté",
+        "sub": "Troquer mes doubles contre des holos."
+      },
+      "sell": {
+        "title": "Acheter & vendre",
+        "sub": "Faire vivre ma collection sur le marketplace."
+      }
     },
     "boosterTitle": "Ton premier booster",
     "boosterDesc": "3 cartes offertes pour lancer ta collection. Tape pour ouvrir.",
@@ -2622,6 +2634,491 @@
       "PENDING": "En attente",
       "RESOLVED": "Résolu",
       "CLOSED": "Clôturé"
+    }
+  },
+  "legal": {
+    "kicker": "Informations légales",
+    "updatedLabel": "Dernière mise à jour",
+    "updatedDate": "14 juillet 2026",
+    "tocLabel": "Sommaire",
+    "backToHelp": "Retour au centre d'aide",
+    "docs": {
+      "cgv": {
+        "title": "Conditions Générales de Vente",
+        "metaDescription": "Conditions Générales de Vente de The Park : boutique officielle, achats entre membres, prix, paiement, livraison, rétractation et garanties.",
+        "intro": "Les présentes Conditions Générales de Vente (CGV) encadrent toutes les ventes réalisées sur The Park, qu'il s'agisse des produits de la boutique officielle ou des achats effectués entre membres sur la marketplace et aux enchères. Toute commande implique l'acceptation pleine et entière des présentes CGV.",
+        "sections": [
+          {
+            "h": "Objet et champ d'application",
+            "p": [
+              "Les présentes CGV définissent les droits et obligations des parties dans le cadre de la vente de produits et de cartes à collectionner sur la plateforme The Park (le « Service »).",
+              "On distingue deux types de ventes : (i) les ventes réalisées par la boutique officielle, effectuées par l'éditeur ou son partenaire ; (ii) les ventes réalisées entre membres (marketplace de particulier à particulier et enchères), pour lesquelles The Park agit uniquement comme intermédiaire technique de mise en relation et d'encaissement."
+            ]
+          },
+          {
+            "h": "Identité du vendeur professionnel",
+            "p": [
+              "Les produits de la boutique officielle sont vendus par : [À COMPLÉTER : raison sociale, forme juridique, capital, siège social, RCS/SIREN, numéro de TVA intracommunautaire].",
+              "Pour toute question relative à une commande de la boutique officielle, le service client est joignable à l'adresse [À COMPLÉTER : e-mail de contact]."
+            ]
+          },
+          {
+            "h": "Produits et disponibilité",
+            "p": [
+              "Les caractéristiques essentielles des produits (boosters, displays, decks, merchandising et cartes) sont présentées sur les fiches correspondantes. Les photographies et visuels sont fournis à titre illustratif et n'engagent pas l'éditeur au-delà des caractéristiques décrites.",
+              "Les offres sont valables dans la limite des stocks disponibles. En cas d'indisponibilité après commande, l'acheteur en est informé et remboursé des sommes correspondantes."
+            ]
+          },
+          {
+            "h": "Prix",
+            "p": [
+              "Les prix de la boutique officielle sont indiqués en euros, toutes taxes comprises (TTC), hors frais de livraison précisés avant validation de la commande.",
+              "Les prix affichés sur la marketplace entre membres sont fixés librement par les vendeurs. Ils constituent des indications entre passionnés et ne sont pas garantis par The Park : la valeur réelle d'une carte dépend de son état et du marché.",
+              "The Park se réserve le droit de modifier ses prix à tout moment ; les produits sont facturés sur la base du tarif en vigueur au moment de la validation de la commande."
+            ]
+          },
+          {
+            "h": "Portefeuille et crédits",
+            "p": [
+              "Les achats entre membres peuvent être réglés via le portefeuille interne. L'utilisateur recharge son portefeuille par carte bancaire via Stripe, avec un montant minimum de 5 € et des frais de service de 5 % appliqués à la recharge.",
+              "Les sommes rechargées constituent des crédits de dépôt non remboursables et non retirables : elles ne peuvent servir qu'à des achats sur le Service.",
+              "Les gains perçus par un vendeur sont crédités sur un solde distinct, retirable vers son compte bancaire selon les conditions du Règlement des vendeurs."
+            ]
+          },
+          {
+            "h": "Commande",
+            "p": [
+              "L'acheteur sélectionne les produits, vérifie le détail de sa commande, puis la valide. La validation vaut acceptation du prix, de la description des produits et des présentes CGV.",
+              "The Park confirme la commande par un récapitulatif accessible dans l'espace « Commandes ». Le contrat de vente est formé à la confirmation de la commande."
+            ]
+          },
+          {
+            "h": "Paiement",
+            "p": [
+              "Les paiements par carte bancaire sont traités par le prestataire Stripe, dans un environnement sécurisé. The Park n'a jamais accès aux numéros complets de carte bancaire.",
+              "La commande n'est traitée qu'après confirmation effective du paiement. En cas de refus d'autorisation, la commande est automatiquement annulée."
+            ]
+          },
+          {
+            "h": "Livraison",
+            "p": [
+              "Les produits de la boutique officielle en stock sont expédiés sous 48 heures ouvrées. Les délais de livraison dépendent ensuite du transporteur et de la destination.",
+              "Les envois entre membres relèvent de la responsabilité du vendeur ; l'option d'envoi sécurisé décrite dans les pages Sécurité est recommandée pour les transactions à forte valeur.",
+              "Les risques liés au transport sont transférés à l'acheteur au moment de la remise physique du colis."
+            ]
+          },
+          {
+            "h": "Droit de rétractation",
+            "p": [
+              "Pour les achats effectués auprès de la boutique officielle, l'acheteur consommateur dispose d'un délai de quatorze (14) jours à compter de la réception pour exercer son droit de rétractation, sans avoir à motiver sa décision.",
+              "Le remboursement intervient sous quatorze (14) jours après réception du produit retourné, dans son état d'origine. Les frais de retour restent à la charge de l'acheteur, sauf produit non conforme.",
+              "Le droit de rétractation ne s'applique pas aux ventes entre particuliers, qui sont définitives une fois la transaction validée par les deux parties."
+            ]
+          },
+          {
+            "h": "Garanties légales",
+            "p": [
+              "Les produits vendus par la boutique officielle bénéficient de la garantie légale de conformité et de la garantie contre les vices cachés, dans les conditions prévues par le Code de la consommation et le Code civil.",
+              "Ces garanties ne s'appliquent pas à l'usure normale, ni aux dommages résultant d'un mauvais usage ou d'une mauvaise conservation des cartes."
+            ]
+          },
+          {
+            "h": "Achats entre membres (marketplace et enchères)",
+            "p": [
+              "Dans les ventes entre membres, The Park n'est pas partie au contrat de vente : il fournit l'outil de mise en relation, sécurise le paiement et encadre le litige éventuel.",
+              "L'acheteur s'engage à honorer le paiement de toute enchère remportée ; une préautorisation bancaire peut être demandée pour participer aux enchères. Le vendeur s'engage à expédier un produit conforme à son annonce.",
+              "Les modalités détaillées (état des cartes, envoi sécurisé, caution, litiges) figurent dans le Règlement des vendeurs."
+            ]
+          },
+          {
+            "h": "Réclamations et médiation",
+            "p": [
+              "Toute réclamation doit être adressée via l'espace Support. En cas de litige non résolu, le consommateur peut recourir gratuitement à un médiateur de la consommation.",
+              "[À COMPLÉTER : nom et coordonnées du médiateur de la consommation compétent].",
+              "Le consommateur peut également utiliser la plateforme européenne de règlement en ligne des litiges : https://ec.europa.eu/consumers/odr."
+            ]
+          },
+          {
+            "h": "Droit applicable",
+            "p": [
+              "Les présentes CGV sont soumises au droit français. À défaut de résolution amiable, les tribunaux compétents seront ceux du ressort du siège de l'éditeur, sous réserve des règles impératives protégeant le consommateur."
+            ]
+          }
+        ]
+      },
+      "cgu": {
+        "title": "Conditions Générales d'Utilisation",
+        "metaDescription": "Conditions Générales d'Utilisation de The Park : compte, règles de la communauté, protection des mineurs, contenus, propriété intellectuelle et sanctions.",
+        "intro": "Les présentes Conditions Générales d'Utilisation (CGU) définissent les règles d'accès et d'usage de la plateforme The Park. En créant un compte ou en utilisant le Service, vous acceptez ces conditions sans réserve.",
+        "sections": [
+          {
+            "h": "Objet",
+            "p": [
+              "Les CGU ont pour objet de définir les modalités de mise à disposition du Service et les conditions d'utilisation par l'utilisateur. Elles s'appliquent à l'ensemble des fonctionnalités : classeur de collection, boutique, marketplace, enchères, échanges, messagerie et classements."
+            ]
+          },
+          {
+            "h": "Acceptation des conditions",
+            "p": [
+              "L'utilisation du Service suppose l'acceptation préalable et intégrale des présentes CGU. L'utilisateur qui n'accepte pas ces conditions doit renoncer à utiliser le Service."
+            ]
+          },
+          {
+            "h": "Accès et inscription",
+            "p": [
+              "L'accès à certaines fonctionnalités nécessite la création d'un compte. L'utilisateur s'engage à fournir des informations exactes et à les maintenir à jour.",
+              "L'utilisateur est seul responsable de la confidentialité de ses identifiants et de toute activité réalisée depuis son compte."
+            ]
+          },
+          {
+            "h": "Protection des mineurs",
+            "p": [
+              "Un contrôle d'âge est effectué à l'inscription. Les mineurs de moins de quinze (15) ans doivent disposer du consentement d'un titulaire de l'autorité parentale.",
+              "Les fonctionnalités de messagerie sont limitées aux échanges liés à une transaction. Toute sollicitation inappropriée d'un mineur entraîne une suspension immédiate et un signalement aux autorités compétentes."
+            ]
+          },
+          {
+            "h": "Le compte utilisateur",
+            "p": [
+              "Chaque utilisateur ne peut détenir qu'un seul compte, sauf autorisation expresse. La création de comptes multiples destinés à contourner une sanction ou à manipuler les enchères, classements ou avis est interdite.",
+              "L'utilisateur peut supprimer son compte à tout moment depuis ses paramètres, sous réserve de la bonne fin des transactions en cours."
+            ]
+          },
+          {
+            "h": "Règles de conduite",
+            "p": [
+              "L'utilisateur s'engage à adopter un comportement loyal et respectueux. Sont notamment interdits :"
+            ],
+            "list": [
+              "les propos haineux, discriminatoires, harcelants ou diffamatoires ;",
+              "la publication de contenus illicites, trompeurs ou portant atteinte aux droits de tiers ;",
+              "la fraude, la manipulation des enchères (enchères fictives, surenchère complice) et la manipulation des classements ou des avis ;",
+              "le contournement du système de paiement ou de mise en relation de la plateforme ;",
+              "toute tentative d'atteinte à la sécurité ou au bon fonctionnement du Service."
+            ]
+          },
+          {
+            "h": "Contenus publiés par les membres",
+            "p": [
+              "L'utilisateur reste responsable des contenus qu'il publie (annonces, photos, messages, avis). Il garantit disposer des droits nécessaires et concède à The Park une licence non exclusive d'affichage de ces contenus dans le cadre du Service.",
+              "The Park peut modérer, masquer ou retirer tout contenu contraire aux présentes CGU ou à la loi."
+            ]
+          },
+          {
+            "h": "Portefeuille, crédits et gains",
+            "p": [
+              "Le fonctionnement du portefeuille interne, des crédits de dépôt non retirables et du solde de gains retirable est décrit dans les CGV et le Règlement des vendeurs, qui font partie intégrante du cadre contractuel."
+            ]
+          },
+          {
+            "h": "Fonctionnalités communautaires",
+            "p": [
+              "Les échanges entre membres reposent sur une double validation : les deux parties doivent accepter, et un historique horodaté est conservé en cas de litige.",
+              "Les enchères se déroulent en temps réel avec des mécanismes de protection (anti-snipe, lutte contre les enchères fictives). La participation peut être conditionnée à une préautorisation bancaire.",
+              "Les classements et trophées récompensent l'activité et la complétion ; toute manipulation entraîne le retrait des récompenses concernées."
+            ]
+          },
+          {
+            "h": "Propriété intellectuelle",
+            "p": [
+              "La marque The Park, les cartes Pocket Drifterz, les visuels, textes et éléments de la plateforme sont protégés. Toute reproduction ou exploitation non autorisée est interdite.",
+              "L'achat d'une carte ou d'un produit ne confère aucun droit de propriété intellectuelle sur les œuvres et marques associées."
+            ]
+          },
+          {
+            "h": "Disponibilité et évolution du Service",
+            "p": [
+              "The Park s'efforce d'assurer la disponibilité du Service mais ne garantit pas un accès ininterrompu. Des opérations de maintenance ou des évolutions peuvent entraîner des interruptions temporaires.",
+              "L'éditeur peut faire évoluer, ajouter ou supprimer des fonctionnalités à tout moment."
+            ]
+          },
+          {
+            "h": "Suspension et résiliation",
+            "p": [
+              "En cas de manquement aux présentes CGU, The Park peut, selon la gravité, adresser un avertissement, restreindre l'accès à certaines fonctionnalités, suspendre ou supprimer le compte.",
+              "Les sommes retirables acquises restent dues à l'utilisateur, sous réserve des retenues liées à des litiges ou à des fraudes constatées."
+            ]
+          },
+          {
+            "h": "Responsabilité",
+            "p": [
+              "The Park agit comme hébergeur et intermédiaire technique pour les contenus et transactions entre membres. Sa responsabilité ne saurait être engagée du fait des comportements des utilisateurs ou de la conformité des produits vendus entre particuliers.",
+              "The Park ne peut être tenu responsable des dommages indirects résultant de l'utilisation du Service."
+            ]
+          },
+          {
+            "h": "Données personnelles",
+            "p": [
+              "Le traitement des données personnelles est décrit dans la Politique de confidentialité, accessible depuis le pied de page, qui précise les finalités, les durées de conservation et les droits des utilisateurs."
+            ]
+          },
+          {
+            "h": "Modification des CGU",
+            "p": [
+              "The Park peut modifier les présentes CGU. Les utilisateurs sont informés des modifications substantielles ; la poursuite de l'utilisation du Service vaut acceptation de la version mise à jour."
+            ]
+          },
+          {
+            "h": "Droit applicable et litiges",
+            "p": [
+              "Les présentes CGU sont régies par le droit français. En cas de litige, une solution amiable sera recherchée en priorité, notamment via l'espace Support, avant toute action judiciaire."
+            ]
+          }
+        ]
+      },
+      "vendeurs": {
+        "title": "Règlement des vendeurs",
+        "metaDescription": "Règlement des vendeurs The Park : obligations, état des cartes, envoi sécurisé, caution, litiges, commissions et sanctions pour vendre entre membres.",
+        "intro": "Ce Règlement des vendeurs encadre la mise en vente de cartes et d'objets entre membres sur la marketplace et aux enchères. Il complète les CGU et les CGV. Toute mise en vente vaut acceptation de ce règlement.",
+        "sections": [
+          {
+            "h": "Qui peut vendre",
+            "p": [
+              "La vente entre membres est ouverte aux utilisateurs disposant d'un compte vérifié et à jour. Les mineurs ne peuvent vendre qu'avec le consentement d'un titulaire de l'autorité parentale.",
+              "Le vendeur s'engage à ne proposer que des articles qu'il détient réellement et qu'il est en droit de céder."
+            ]
+          },
+          {
+            "h": "Principe de l'annonce honnête",
+            "p": [
+              "Chaque annonce doit décrire fidèlement l'article : version (Standard, Unique, Promotionnelle, Spécial, Collaboration, Signé), état réel et éventuels défauts. Une description trompeuse constitue un manquement grave."
+            ]
+          },
+          {
+            "h": "État des cartes",
+            "p": [
+              "L'état doit être renseigné selon la grille officielle : Neuve, Excellent, Très bon, Bon, Moyen, Abîmée. Le vendeur choisit l'état le plus proche de la réalité et signale tout défaut visible.",
+              "En cas de doute, il est recommandé de sous-évaluer plutôt que de surévaluer l'état afin d'éviter les litiges."
+            ]
+          },
+          {
+            "h": "Photos et descriptions",
+            "p": [
+              "Les photos doivent être réelles, nettes et représenter l'article effectivement vendu — l'usage de photos génériques ou trompeuses est interdit.",
+              "Les défauts (rayures, plis, blanchiments de bords, marques) doivent être photographiés et mentionnés."
+            ]
+          },
+          {
+            "h": "Fixation du prix",
+            "p": [
+              "Le vendeur fixe librement son prix. Les prix affichés sont des indications entre membres et ne sont pas garantis par The Park.",
+              "Les prix manifestement abusifs, ainsi que toute entente visant à fausser les prix ou les enchères, sont interdits."
+            ]
+          },
+          {
+            "h": "Produits et pratiques interdits",
+            "p": [
+              "Sont notamment interdits à la vente :"
+            ],
+            "list": [
+              "les contrefaçons, reproductions non officielles et cartes falsifiées ;",
+              "les articles volés ou dont le vendeur n'est pas propriétaire ;",
+              "les articles hors du périmètre autorisé par la plateforme ;",
+              "la vente couplée à une contrepartie illicite ou le contournement des frais de la plateforme ;",
+              "toute pratique visant à tromper l'acheteur sur la nature, l'état ou l'authenticité de l'article."
+            ]
+          },
+          {
+            "h": "Commission et frais",
+            "p": [
+              "The Park prélève une commission sur les ventes entre membres et/ou des frais de service ; le montant applicable est indiqué au moment de la mise en vente ou de la transaction.",
+              "[À COMPLÉTER : taux de commission et frais applicables]. Les frais de recharge du portefeuille (5 %) sont distincts de la commission de vente."
+            ]
+          },
+          {
+            "h": "Encaissement et reversement des gains",
+            "p": [
+              "Le produit d'une vente est crédité sur le solde de gains du vendeur, distinct des crédits de dépôt. Ce solde est retirable vers un compte bancaire via Stripe, après vérification d'identité (KYC) lorsque requise.",
+              "Le reversement peut être différé le temps de la fenêtre de garantie ou de la résolution d'un litige éventuel."
+            ]
+          },
+          {
+            "h": "Envoi et envoi sécurisé",
+            "p": [
+              "Le vendeur s'engage à expédier l'article conforme à l'annonce dans les délais annoncés, avec un emballage protecteur adapté.",
+              "L'option d'envoi sécurisé, avec caution bloquée via Stripe et suivi renforcé, est recommandée pour les transactions à forte valeur. La caution est restituée à la bonne fin de la transaction."
+            ]
+          },
+          {
+            "h": "Preuves vidéo et fenêtre de garantie",
+            "p": [
+              "Pour les envois sécurisés, une preuve vidéo guidée de l'emballage et du déballage peut être exigée. Ces preuves servent de référence en cas de litige.",
+              "L'acheteur dispose d'une fenêtre de garantie de soixante-douze (72) heures après réception pour signaler une non-conformité. Passé ce délai sans réclamation, la transaction est réputée conforme."
+            ]
+          },
+          {
+            "h": "Gestion des litiges",
+            "p": [
+              "En cas de litige, l'acheteur ouvre un dossier via l'espace Support ou Sécurité. Les fonds concernés peuvent être bloqués le temps de l'examen.",
+              "La décision s'appuie sur les descriptions, les photos, les preuves vidéo et l'historique horodaté. Le vendeur de mauvaise foi s'expose au remboursement de l'acheteur et à des sanctions."
+            ]
+          },
+          {
+            "h": "Obligations fiscales du vendeur",
+            "p": [
+              "Le vendeur est seul responsable de ses obligations déclaratives et fiscales liées à son activité de vente. The Park peut être tenu de transmettre certaines informations aux administrations compétentes conformément à la réglementation applicable."
+            ]
+          },
+          {
+            "h": "Sanctions et suspension",
+            "p": [
+              "Tout manquement au présent règlement peut entraîner, selon sa gravité : le retrait des annonces, la retenue des gains liés à un litige, la restriction du droit de vendre, la suspension ou la suppression du compte.",
+              "Les manquements graves ou répétés (contrefaçon, fraude, non-envoi) peuvent donner lieu à un signalement aux autorités."
+            ]
+          }
+        ]
+      },
+      "confidentialite": {
+        "title": "Politique de confidentialité",
+        "metaDescription": "Politique de confidentialité de The Park : données collectées, finalités, bases légales, sous-traitants, durées de conservation et vos droits (RGPD).",
+        "intro": "Cette politique explique quelles données personnelles The Park collecte, pourquoi, avec qui elles sont partagées et quels sont vos droits. Elle s'applique à l'ensemble du Service et respecte le Règlement général sur la protection des données (RGPD).",
+        "sections": [
+          {
+            "h": "Responsable du traitement",
+            "p": [
+              "Le responsable du traitement des données personnelles est : [À COMPLÉTER : raison sociale, adresse, e-mail de contact et, le cas échéant, coordonnées du délégué à la protection des données]."
+            ]
+          },
+          {
+            "h": "Données que nous collectons",
+            "p": [
+              "Selon votre usage du Service, nous pouvons collecter :"
+            ],
+            "list": [
+              "des données d'identification et de compte (pseudonyme, e-mail, date de naissance pour le contrôle d'âge) ;",
+              "des données de transaction (commandes, ventes, portefeuille, retraits) ;",
+              "des données de paiement traitées par Stripe (nous ne stockons pas les numéros de carte) ;",
+              "des contenus que vous publiez (annonces, photos, messages, avis) ;",
+              "des données techniques (journaux de connexion, adresse IP, appareil) et de navigation."
+            ]
+          },
+          {
+            "h": "Finalités et bases légales",
+            "p": [
+              "Nous traitons ces données pour :"
+            ],
+            "list": [
+              "fournir et gérer le Service et votre compte (exécution du contrat) ;",
+              "sécuriser les paiements, prévenir la fraude et protéger les mineurs (obligation légale et intérêt légitime) ;",
+              "traiter les transactions, litiges et demandes de support (exécution du contrat) ;",
+              "vous adresser des communications et la newsletter (consentement, révocable à tout moment) ;",
+              "améliorer le Service et établir des statistiques (intérêt légitime)."
+            ]
+          },
+          {
+            "h": "Destinataires et sous-traitants",
+            "p": [
+              "Vos données peuvent être partagées avec des sous-traitants agissant pour notre compte, notamment :"
+            ],
+            "list": [
+              "Stripe, pour le traitement des paiements et des retraits ;",
+              "notre prestataire d'e-mails transactionnels et de newsletter ;",
+              "notre prestataire de notifications en temps réel ;",
+              "notre hébergeur et prestataire de stockage des fichiers."
+            ]
+          },
+          {
+            "h": "Transferts hors Union européenne",
+            "p": [
+              "Lorsque des données sont transférées hors de l'Union européenne, ces transferts sont encadrés par des garanties appropriées (clauses contractuelles types de la Commission européenne ou mécanisme équivalent)."
+            ]
+          },
+          {
+            "h": "Durées de conservation",
+            "p": [
+              "Les données de compte sont conservées tant que le compte est actif, puis archivées ou supprimées selon les obligations légales.",
+              "Les données de transaction et de facturation sont conservées pendant la durée légale applicable en matière comptable et fiscale. Les journaux de sécurité sont conservés pour une durée limitée à des fins de prévention de la fraude."
+            ]
+          },
+          {
+            "h": "Vos droits",
+            "p": [
+              "Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité, ainsi que du droit de retirer votre consentement à tout moment.",
+              "Vous pouvez exercer ces droits en nous contactant à [À COMPLÉTER : e-mail de contact RGPD]. Vous pouvez également introduire une réclamation auprès de la CNIL (www.cnil.fr)."
+            ]
+          },
+          {
+            "h": "Cookies et traceurs",
+            "p": [
+              "Le Service utilise des cookies nécessaires à son fonctionnement (session, sécurité) et, sous réserve de votre consentement, des cookies de mesure d'audience. Vous pouvez gérer vos préférences via votre navigateur."
+            ]
+          },
+          {
+            "h": "Sécurité",
+            "p": [
+              "Nous mettons en œuvre des mesures techniques et organisationnelles pour protéger vos données contre l'accès non autorisé, la perte ou l'altération. Aucun système n'étant infaillible, nous vous invitons à protéger vos identifiants."
+            ]
+          },
+          {
+            "h": "Protection des mineurs",
+            "p": [
+              "Le Service applique un contrôle d'âge et requiert le consentement parental pour les mineurs de moins de quinze (15) ans. Les données des mineurs font l'objet d'une vigilance particulière."
+            ]
+          },
+          {
+            "h": "Contact",
+            "p": [
+              "Pour toute question relative à cette politique ou à vos données personnelles : [À COMPLÉTER : e-mail de contact]."
+            ]
+          }
+        ]
+      },
+      "mentions": {
+        "title": "Mentions légales",
+        "metaDescription": "Mentions légales de The Park : éditeur, directeur de la publication, hébergement, propriété intellectuelle et médiation de la consommation.",
+        "intro": "Conformément à la loi pour la confiance dans l'économie numérique (LCEN), les informations suivantes sont portées à la connaissance des utilisateurs du site The Park.",
+        "sections": [
+          {
+            "h": "Éditeur du site",
+            "p": [
+              "Le site The Park est édité par : [À COMPLÉTER : raison sociale, forme juridique, capital social, adresse du siège, numéro RCS/SIREN, numéro de TVA intracommunautaire, e-mail et téléphone de contact]."
+            ]
+          },
+          {
+            "h": "Directeur de la publication",
+            "p": [
+              "Le directeur de la publication est : [À COMPLÉTER : nom du représentant légal]."
+            ]
+          },
+          {
+            "h": "Hébergement",
+            "p": [
+              "Le site est hébergé par Clever Cloud SAS, 3 rue de l'Allier, 44000 Nantes, France — https://www.clever-cloud.com.",
+              "[À COMPLÉTER : confirmer ou adapter les informations de l'hébergeur si nécessaire]."
+            ]
+          },
+          {
+            "h": "Propriété intellectuelle",
+            "p": [
+              "L'ensemble des éléments du site (marque The Park, cartes Pocket Drifterz, visuels, textes, logos, base de données) est protégé par le droit de la propriété intellectuelle. Toute reproduction ou représentation, totale ou partielle, sans autorisation, est interdite."
+            ]
+          },
+          {
+            "h": "Responsabilité",
+            "p": [
+              "L'éditeur s'efforce d'assurer l'exactitude des informations diffusées mais ne saurait être tenu responsable des erreurs, omissions ou indisponibilités. Les contenus publiés par les membres relèvent de leur seule responsabilité."
+            ]
+          },
+          {
+            "h": "Liens hypertextes",
+            "p": [
+              "Le site peut contenir des liens vers des sites tiers dont l'éditeur ne maîtrise pas le contenu et ne saurait être tenu responsable."
+            ]
+          },
+          {
+            "h": "Médiation de la consommation",
+            "p": [
+              "Conformément au Code de la consommation, le consommateur peut recourir à un médiateur : [À COMPLÉTER : nom et coordonnées du médiateur]. La plateforme européenne de règlement en ligne des litiges est accessible à l'adresse https://ec.europa.eu/consumers/odr."
+            ]
+          },
+          {
+            "h": "Contact",
+            "p": [
+              "Pour toute question : [À COMPLÉTER : e-mail de contact]."
+            ]
+          }
+        ]
+      }
     }
   }
 }

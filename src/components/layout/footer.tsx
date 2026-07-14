@@ -166,11 +166,13 @@ export function Footer() {
 
         {/* Barre légale */}
         <div className="grid grid-cols-1 items-center gap-4 border-t border-charbon-600 py-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:py-[18px] sm:pb-[30px] md:grid-cols-[1fr_auto_1fr] md:gap-4 md:pb-[30px]">
-          <div className="flex flex-wrap items-center justify-center gap-[18px] md:justify-start">
+          <div className="flex flex-wrap items-center justify-center gap-x-[18px] gap-y-2 md:justify-start">
             <span className="text-[12px] font-bold text-texte-faible">{t("rights")}</span>
-            <Link href="/aide" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("terms")}</Link>
-            <Link href="/aide" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("privacy")}</Link>
-            <Link href="/aide" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("shipping")}</Link>
+            <Link href="/legal/cgv" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("terms")}</Link>
+            <Link href="/legal/cgu" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("termsOfUse")}</Link>
+            <Link href="/legal/vendeurs" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("sellers")}</Link>
+            <Link href="/legal/confidentialite" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("privacy")}</Link>
+            <Link href="/legal/mentions" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("legalNotice")}</Link>
             <Link href="/aide" className="text-[12px] font-bold text-texte-faible transition hover:text-texte-doux">{t("help")}</Link>
           </div>
 
