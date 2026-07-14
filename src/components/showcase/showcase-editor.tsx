@@ -24,6 +24,16 @@ import {
 
 type Draft = ShowcaseView[];
 
+/** Numéro d'emplacement (data-slot) sous un point écran, ou null. */
+function slotUnderPointer(clientX: number, clientY: number): number | null {
+  const el = (document.elementFromPoint(clientX, clientY) as HTMLElement | null)?.closest("[data-slot]") as
+    | HTMLElement
+    | null;
+  if (!el) return null;
+  const s = Number(el.dataset.slot);
+  return Number.isFinite(s) ? s : null;
+}
+
 export function ShowcaseEditor({
   initialShowcases,
   placeable,
@@ -44,7 +54,15 @@ export function ShowcaseEditor({
   // natif ne marche pas sur mobile). `drag` = aperçu flottant qui suit le doigt.
   const [drag, setDrag] = useState<{ item: ShowcaseCardView; x: number; y: number } | null>(null);
   const [dragOverSlot, setDragOverSlot] = useState<number | null>(null);
-  const dragRef = useRef<{ item: ShowcaseCardView; startX: number; startY: number; active: boolean } | null>(null);
+  const [dragArmed, setDragArmed] = useState(false);
+  const dragRef = useRef<{
+    item: ShowcaseCardView | null;
+    slot: number;
+    startX: number;
+    startY: number;
+    pointerId: number;
+    active: boolean;
+  } | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -216,76 +234,106 @@ export function ShowcaseEditor({
     void run(next, () => moveItemAction({ showcaseId: active.id, itemId, page, slot: targetSlot }));
   }
 
-  // ---- Drag par pointer events (souris + tactile) ---------------------------
+  // ---- Drag & drop (souris + tactile) via écouteurs globaux -----------------
+  // On « arme » au pointerdown puis on écoute pointermove/up sur `window`
+  // (aucun setPointerCapture : source de bugs tactiles). Au-delà d'un petit
+  // seuil c'est un vrai déplacement ; en deçà, un simple tap (prendre / poser).
 
-  function slotUnderPointer(clientX: number, clientY: number): number | null {
-    const el = (document.elementFromPoint(clientX, clientY) as HTMLElement | null)?.closest("[data-slot]") as
-      | HTMLElement
-      | null;
-    if (!el) return null;
-    const s = Number(el.dataset.slot);
-    return Number.isFinite(s) ? s : null;
-  }
+  // Refs pour éviter les closures périmées dans les écouteurs globaux.
+  const moveItemRef = useRef(moveItem);
+  moveItemRef.current = moveItem;
+  const dragStateRef = useRef<{ pickedItemId: string | null; page: number; items: ShowcaseCardView[] }>({
+    pickedItemId,
+    page,
+    items: active?.items ?? [],
+  });
+  dragStateRef.current = { pickedItemId, page, items: active?.items ?? [] };
 
-  function onSlotPointerDown(e: React.PointerEvent, item?: ShowcaseCardView) {
-    if (pending || !item) return; // seul un emplacement occupé démarre un drag
+  function onSlotPointerDown(e: React.PointerEvent, slot: number, item?: ShowcaseCardView) {
+    if (pending) return;
     if (e.pointerType === "mouse" && e.button !== 0) return;
-    dragRef.current = { item, startX: e.clientX, startY: e.clientY, active: false };
-    try {
-      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    } catch {}
+    dragRef.current = {
+      item: item ?? null,
+      slot,
+      startX: e.clientX,
+      startY: e.clientY,
+      pointerId: e.pointerId,
+      active: false,
+    };
+    setDragArmed(true);
   }
 
-  function onSlotPointerMove(e: React.PointerEvent) {
-    const d = dragRef.current;
-    if (!d) return;
-    if (!d.active) {
-      if (Math.hypot(e.clientX - d.startX, e.clientY - d.startY) < 6) return; // seuil anti-tap
-      d.active = true;
-      setPickedItemId(null);
-      setSelectedSlot(null);
-      setDrag({ item: d.item, x: e.clientX, y: e.clientY });
+  useEffect(() => {
+    if (!dragArmed) return;
+
+    function onMove(e: PointerEvent) {
+      const d = dragRef.current;
+      if (!d || e.pointerId !== d.pointerId || !d.item) return; // emplacement vide → scroll normal
+      if (!d.active) {
+        if (Math.hypot(e.clientX - d.startX, e.clientY - d.startY) < 6) return; // seuil anti-tap
+        d.active = true;
+        setPickedItemId(null);
+        setSelectedSlot(null);
+        setDrag({ item: d.item, x: e.clientX, y: e.clientY });
+      }
+      e.preventDefault(); // empêche le scroll pendant qu'on tient la carte
+      setDrag((prev) => (prev ? { ...prev, x: e.clientX, y: e.clientY } : prev));
+      setDragOverSlot(slotUnderPointer(e.clientX, e.clientY));
     }
-    e.preventDefault();
-    setDrag((prev) => (prev ? { ...prev, x: e.clientX, y: e.clientY } : prev));
-    setDragOverSlot(slotUnderPointer(e.clientX, e.clientY));
-  }
 
-  function onSlotPointerUp(e: React.PointerEvent, slot: number, item?: ShowcaseCardView) {
-    const d = dragRef.current;
-    dragRef.current = null;
-    try {
-      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-    } catch {}
+    function onUp(e: PointerEvent) {
+      const d = dragRef.current;
+      if (!d || e.pointerId !== d.pointerId) return;
+      dragRef.current = null;
+      setDragArmed(false);
 
-    // 1) Vrai déplacement (drag terminé) → dépose sur l'emplacement survolé.
-    if (d?.active) {
-      const target = dragOverSlot;
+      // 1) Vrai déplacement terminé → dépose sur l'emplacement survolé.
+      if (d.active && d.item) {
+        const target = slotUnderPointer(e.clientX, e.clientY);
+        setDrag(null);
+        setDragOverSlot(null);
+        if (target != null && target !== d.slot) moveItemRef.current(d.item.itemId, target);
+        return;
+      }
       setDrag(null);
       setDragOverSlot(null);
-      if (target != null && target !== d.item.slot) moveItem(d.item.itemId, target);
-      return;
-    }
-    setDrag(null);
-    setDragOverSlot(null);
 
-    // 2) Simple tap.
-    // 2a) une carte est déjà « prise » → on la pose ici (annule si re-tap sur elle).
-    if (pickedItemId) {
-      if (pickedItemId !== item?.itemId) moveItem(pickedItemId, slot);
-      setPickedItemId(null);
-      setSelectedSlot(null);
-      return;
+      // 2) Simple tap : prendre / poser (méthode d'appoint, précise et accessible).
+      const { pickedItemId: picked, page: pg, items } = dragStateRef.current;
+      const slot = slotUnderPointer(e.clientX, e.clientY);
+      const overItem = slot == null ? undefined : items.find((it) => it.page === pg && it.slot === slot);
+      if (picked) {
+        if (slot != null && picked !== overItem?.itemId) moveItemRef.current(picked, slot);
+        setPickedItemId(null);
+        setSelectedSlot(null);
+        return;
+      }
+      if (overItem) {
+        setPickedItemId(overItem.itemId);
+        setSelectedSlot(null);
+        return;
+      }
+      if (slot != null) setSelectedSlot((prev) => (prev === slot ? null : slot));
     }
-    // 2b) tap sur une carte → on la « prend » pour la déplacer au tap suivant.
-    if (item) {
-      setPickedItemId(item.itemId);
-      setSelectedSlot(null);
-      return;
+
+    function onCancel(e: PointerEvent) {
+      const d = dragRef.current;
+      if (d && e.pointerId !== d.pointerId) return;
+      dragRef.current = null;
+      setDragArmed(false);
+      setDrag(null);
+      setDragOverSlot(null);
     }
-    // 2c) tap sur un emplacement vide → sélection pour poser une carte du tiroir.
-    setSelectedSlot((prev) => (prev === slot ? null : slot));
-  }
+
+    window.addEventListener("pointermove", onMove, { passive: false });
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onCancel);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onCancel);
+    };
+  }, [dragArmed]);
 
   function removeItem(itemId: string) {
     if (!active || pending) return;
@@ -481,14 +529,7 @@ export function ShowcaseEditor({
               <div
                 key={slot}
                 data-slot={slot}
-                onPointerDown={(e) => onSlotPointerDown(e, item)}
-                onPointerMove={onSlotPointerMove}
-                onPointerUp={(e) => onSlotPointerUp(e, slot, item)}
-                onPointerCancel={() => {
-                  dragRef.current = null;
-                  setDrag(null);
-                  setDragOverSlot(null);
-                }}
+                onPointerDown={(e) => onSlotPointerDown(e, slot, item)}
                 // touch-action:none sur une carte → le geste devient un drag (pas un scroll).
                 style={item ? { touchAction: "none" } : undefined}
                 className={`relative rounded-xl transition-transform duration-200 ${
