@@ -28,11 +28,12 @@ export function CollectionCardGrid({
       items={cards}
       columnConfig={columnConfig}
       getItemKey={(card) => card.slug}
-      estimateExtraHeight={72}
+      estimateExtraHeight={isAuthenticated ? 118 : 72}
       renderItem={(card) => (
         <CollectionCardTile
           card={card}
           missingLabel={missingLabel}
+          showControls
           isAuthenticated={isAuthenticated}
           inWishlist={wishlistCardIds.has(card.cardId)}
           likeCount={likeMeta[card.cardId]?.count ?? 0}

@@ -4,6 +4,7 @@ import type { CollectionCard as Card } from "@/server/collection/collection.serv
 import { HoloCard } from "@/components/cards/holo-card";
 import { CatalogCardFrame } from "@/components/cards/catalog-card-frame";
 import { Link } from "@/i18n/navigation";
+import { CollectionQuantityControls } from "@/components/collection/collection-quantity-controls";
 import { WishlistQuickAddButton } from "@/components/wishlist/wishlist-quick-add-button";
 import { CardLikeButton } from "@/components/cards/card-like-button";
 import { versionTypeLabel } from "@/lib/card-versions";
@@ -11,6 +12,7 @@ import { versionTypeLabel } from "@/lib/card-versions";
 export function CollectionCardTile({
   card,
   missingLabel,
+  showControls = false,
   isAuthenticated = false,
   inWishlist = false,
   likeCount = 0,
@@ -18,6 +20,7 @@ export function CollectionCardTile({
 }: {
   card: Card;
   missingLabel: string;
+  showControls?: boolean;
   isAuthenticated?: boolean;
   inWishlist?: boolean;
   likeCount?: number;
@@ -72,6 +75,15 @@ export function CollectionCardTile({
           overlay
         />
       </div>
+      {showControls && card.standardVariantId && (
+        <div className={`mt-2 ${missing ? "opacity-70" : ""}`}>
+          <CollectionQuantityControls
+            cardNumber={card.number}
+            quantity={card.quantity}
+            isAuthenticated={isAuthenticated}
+          />
+        </div>
+      )}
       <Link href={`/carte/${card.slug}`} className="mt-1.5 block px-0.5">
         <p className={`truncate text-[11.5px] font-extrabold leading-tight ${missing ? "text-texte-faible" : "text-blanc-casse"}`}>
           {card.name}
