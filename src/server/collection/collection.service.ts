@@ -102,25 +102,38 @@ export async function getUserCollection(userId: string | null, filters: Collecti
   const cardById = new Map(cards.map((c) => [c.id, c]));
   const ownedByCard = new Map<
     string,
-    { qty: number; versions: Set<string>; hasFirstEdition: boolean; hasReprint: boolean }
+    { qty: number; firstQty: number; reprintQty: number; versions: Set<string>; hasFirstEdition: boolean; hasReprint: boolean }
   >();
 
   for (const item of items) {
     const cardId = item.variant.cardId;
-    const cur = ownedByCard.get(cardId) ?? { qty: 0, versions: new Set<string>(), hasFirstEdition: false, hasReprint: false };
+    const cur = ownedByCard.get(cardId) ?? { qty: 0, firstQty: 0, reprintQty: 0, versions: new Set<string>(), hasFirstEdition: false, hasReprint: false };
     cur.qty += item.quantity;
     const code = vtCodes.get(item.variant.versionTypeId);
     if (code) cur.versions.add(code);
     const effective = resolveEditionLabel(item.editionLabel, item.variant.editionLabel);
-    if (isFirstEditionLabel(effective)) cur.hasFirstEdition = true;
-    else if (effective != null) cur.hasReprint = true;
+    if (isFirstEditionLabel(effective)) {
+      cur.hasFirstEdition = true;
+      cur.firstQty += item.quantity;
+    } else {
+      // Toute possession qui n'est pas une « 1ère édition » (libellé vide inclus) est une réédition.
+      cur.hasReprint = true;
+      cur.reprintQty += item.quantity;
+    }
     ownedByCard.set(cardId, cur);
   }
 
   const enriched: CollectionCard[] = cards.map((card) => {
     const meta = rarityMeta(card.rarity.code);
     const own = ownedByCard.get(card.id);
-    const owned = !!own && own.qty > 0;
+    // Quantité/possession affichées selon le filtre d'édition actif (sinon total toutes éditions).
+    const editionQty =
+      filters.edition === "first"
+        ? (own?.firstQty ?? 0)
+        : filters.edition === "reprint"
+          ? (own?.reprintQty ?? 0)
+          : (own?.qty ?? 0);
+    const owned = editionQty > 0;
     const standardVariant = card.variants.find((v) => v.versionType.code === "standard");
     const imageFile =
       card.imageUrl ??
@@ -139,7 +152,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
       tilt: meta.tilt,
       holo: meta.holo,
       owned,
-      quantity: own?.qty ?? 0,
+      quantity: editionQty,
       standardVariantId: standardVariant?.id ?? card.variants[0]?.id ?? "",
       isPromo: isPromoRarity(card.rarity.code),
       hasFirstEdition: own?.hasFirstEdition ?? false,
@@ -163,7 +176,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     if (filters.rarity && card.rarity.code !== filters.rarity) return false;
     if (filters.season && card.season.code !== filters.season) return false;
     if (filters.edition === "first" && !card.variants.some((v) => isFirstEditionLabel(v.editionLabel))) return false;
-    if (filters.edition === "reprint" && !card.variants.some((v) => v.editionLabel != null && !isFirstEditionLabel(v.editionLabel))) return false;
+    if (filters.edition === "reprint" && !card.variants.some((v) => !isFirstEditionLabel(v.editionLabel))) return false;
     if (q) {
       const nameMatch = c.name.toLowerCase().includes(q);
       const numPadded = String(c.number).padStart(2, "0");
@@ -181,6 +194,8 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     const card = cardById.get(c.cardId);
     if (!card || isExcludedFromCompletion(card.rarity.code)) return false;
     if (filters.season && card.season.code !== filters.season) return false;
+    if (filters.edition === "first" && !card.variants.some((v) => isFirstEditionLabel(v.editionLabel))) return false;
+    if (filters.edition === "reprint" && !card.variants.some((v) => !isFirstEditionLabel(v.editionLabel))) return false;
     return true;
   });
   const ownedCards = contextBase.filter((c) => c.owned).length;
@@ -243,7 +258,7 @@ export async function getUserCollection(userId: string | null, filters: Collecti
         firstTotal++;
         if (c.hasFirstEdition) firstOwned++;
       }
-      if (card.variants.some((v) => v.editionLabel != null && !isFirstEditionLabel(v.editionLabel))) {
+      if (card.variants.some((v) => !isFirstEditionLabel(v.editionLabel))) {
         reprintTotal++;
         if (c.hasReprint) reprintOwned++;
       }
