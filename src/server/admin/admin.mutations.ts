@@ -361,6 +361,7 @@ export async function createCard(input: CreateCardInput): Promise<string> {
 }
 
 export interface UpdateCardInput {
+  seasonId?: string;
   number?: number;
   name?: string;
   rarityId?: string;
@@ -374,22 +375,63 @@ export interface UpdateCardInput {
   isUnique?: boolean;
 }
 
+// Numéro tampon (hors plage valide) le temps d'un échange, pour ne pas violer
+// la contrainte d'unicité [seasonId, number] pendant la transaction.
+const SWAP_TEMP_NUMBER = -1_000_000;
+
 export async function updateCard(cardId: string, data: UpdateCardInput): Promise<void> {
+  const current = await prisma.card.findUnique({
+    where: { id: cardId },
+    select: { seasonId: true, number: true },
+  });
+  if (!current) throw new Error("NOT_FOUND");
+
+  const targetSeasonId = data.seasonId ?? current.seasonId;
+  const targetNumber = data.number ?? current.number;
+  const seasonChanged = data.seasonId !== undefined && data.seasonId !== current.seasonId;
+  const numberChanged = data.number !== undefined && data.number !== current.number;
+
+  const scalarData = {
+    ...(data.name !== undefined ? { name: data.name } : {}),
+    ...(data.rarityId !== undefined ? { rarityId: data.rarityId } : {}),
+    ...(data.quoteValue !== undefined ? { quoteValue: data.quoteValue } : {}),
+    ...(data.imageUrl !== undefined ? { imageUrl: data.imageUrl } : {}),
+    ...(data.powerCh !== undefined ? { powerCh: data.powerCh } : {}),
+    ...(data.weightKg !== undefined ? { weightKg: data.weightKg } : {}),
+    ...(data.country !== undefined ? { country: data.country } : {}),
+    ...(data.brand !== undefined ? { brand: data.brand } : {}),
+    ...(data.description !== undefined ? { description: data.description } : {}),
+    ...(data.isUnique !== undefined ? { isUnique: data.isUnique } : {}),
+  };
+
+  // Collision possible sur (saison cible, numéro cible) : contrainte @@unique([seasonId, number]).
+  if (seasonChanged || numberChanged) {
+    const clash = await prisma.card.findFirst({
+      where: { seasonId: targetSeasonId, number: targetNumber, id: { not: cardId } },
+      select: { id: true },
+    });
+    if (clash) {
+      // Réordonnancement dans la même saison → on échange les numéros de façon atomique.
+      if (!seasonChanged) {
+        await prisma.$transaction([
+          prisma.card.update({ where: { id: clash.id }, data: { number: SWAP_TEMP_NUMBER } }),
+          prisma.card.update({ where: { id: cardId }, data: { ...scalarData, number: targetNumber } }),
+          prisma.card.update({ where: { id: clash.id }, data: { number: current.number } }),
+        ]);
+        return;
+      }
+      // Déplacement vers une autre saison où le numéro est déjà pris → refus explicite.
+      throw new Error("NUMBER_TAKEN");
+    }
+  }
+
   try {
     await prisma.card.update({
       where: { id: cardId },
       data: {
-        ...(data.number !== undefined ? { number: data.number } : {}),
-        ...(data.name !== undefined ? { name: data.name } : {}),
-        ...(data.rarityId !== undefined ? { rarityId: data.rarityId } : {}),
-        ...(data.quoteValue !== undefined ? { quoteValue: data.quoteValue } : {}),
-        ...(data.imageUrl !== undefined ? { imageUrl: data.imageUrl } : {}),
-        ...(data.powerCh !== undefined ? { powerCh: data.powerCh } : {}),
-        ...(data.weightKg !== undefined ? { weightKg: data.weightKg } : {}),
-        ...(data.country !== undefined ? { country: data.country } : {}),
-        ...(data.brand !== undefined ? { brand: data.brand } : {}),
-        ...(data.description !== undefined ? { description: data.description } : {}),
-        ...(data.isUnique !== undefined ? { isUnique: data.isUnique } : {}),
+        ...scalarData,
+        ...(seasonChanged ? { seasonId: targetSeasonId } : {}),
+        ...(numberChanged ? { number: targetNumber } : {}),
       },
     });
   } catch (err) {

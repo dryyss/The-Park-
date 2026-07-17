@@ -37,6 +37,7 @@ const createCardSchema = z.object({
 
 const updateCardSchema = z.object({
   cardId: z.string().min(1),
+  seasonId: z.string().min(1).optional(),
   number: z.number().int().min(0).max(9999).optional(),
   name: z.string().trim().min(1).max(120).optional(),
   rarityId: z.string().min(1).optional(),

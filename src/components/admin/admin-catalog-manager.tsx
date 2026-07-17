@@ -148,7 +148,7 @@ export function AdminCatalogManager({
                 <p className="text-[12px] font-bold text-texte-faible">{t("noCards")}</p>
               ) : (
                 s.cards.map((c) => (
-                  <CardEditor key={c.id} card={c} seasonCode={s.code} rarities={rarities} versionTypes={versionTypes} uploadMode={uploadMode} />
+                  <CardEditor key={c.id} card={c} currentSeasonId={s.id} seasonCode={s.code} seasons={seasons} rarities={rarities} versionTypes={versionTypes} uploadMode={uploadMode} />
                 ))
               )}
             </div>
@@ -393,13 +393,17 @@ function NewCardForm({
 
 function CardEditor({
   card,
+  currentSeasonId,
   seasonCode,
+  seasons,
   rarities,
   versionTypes,
   uploadMode,
 }: {
   card: AdminCardFull;
+  currentSeasonId: string;
   seasonCode: string;
+  seasons: AdminCatalogSeason[];
   rarities: AdminRarityOption[];
   versionTypes: AdminVersionTypeOption[];
   uploadMode: AdminImageUploadMode;
@@ -413,6 +417,7 @@ function CardEditor({
     run(() =>
       updateCardAction({
         cardId: card.id,
+        seasonId: str(fd, "seasonId"),
         number: num(fd, "number"),
         name: str(fd, "name"),
         rarityId: str(fd, "rarityId"),
@@ -440,6 +445,15 @@ function CardEditor({
           <input name="number" type="number" min={0} defaultValue={card.number} className={inputCls} />
         </Field>
         <Field label={t("name")}><input name="name" defaultValue={card.name} className={inputCls} /></Field>
+        <Field label={t("filterSeason")}>
+          <select name="seasonId" defaultValue={currentSeasonId} className={inputCls}>
+            {seasons.map((s) => (
+              <option key={s.id} value={s.id} className="bg-charbon-800">
+                {isHorsSerieSeasonCode(s.code) ? t("horsSerieLabel") : `${s.code} · ${s.name}`}
+              </option>
+            ))}
+          </select>
+        </Field>
         <Field label={t("rarity")}>
           <select name="rarityId" defaultValue={card.rarityId} className={inputCls}>
             {rarities.map((r) => (
