@@ -22,12 +22,10 @@ export function columnConfigFromCollectionCols(cols: CollectionGridCols): Column
   switch (cols) {
     case 3:
       return { base: 2, sm: 3 };
-    case 4:
-      return { base: 2, sm: 3, md: 4 };
     case 5:
       return { base: 2, sm: 3, md: 4, lg: 5 };
     default:
-      return { base: 2, sm: 3, md: 4, lg: 5, xl: 6 };
+      return { base: 2, sm: 3, md: 4 };
   }
 }
 

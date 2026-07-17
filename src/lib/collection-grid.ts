@@ -5,15 +5,15 @@ import {
 } from "@/lib/collection-sort";
 
 /** Nombre de cartes par ligne (classeur). */
-export const COLLECTION_GRID_COLS = [3, 4, 5, 6] as const;
+export const COLLECTION_GRID_COLS = [3, 4, 5] as const;
 
 export type CollectionGridCols = (typeof COLLECTION_GRID_COLS)[number];
 
-export const DEFAULT_COLLECTION_GRID_COLS: CollectionGridCols = 6;
+export const DEFAULT_COLLECTION_GRID_COLS: CollectionGridCols = 4;
 
 export function parseCollectionGridCols(value?: string): CollectionGridCols {
   const n = parseInt(value ?? "", 10);
-  if (n === 3 || n === 4 || n === 5 || n === 6) return n;
+  if (n === 3 || n === 4 || n === 5) return n;
   return DEFAULT_COLLECTION_GRID_COLS;
 }
 
@@ -22,12 +22,10 @@ export function collectionGridClassName(cols: CollectionGridCols): string {
   switch (cols) {
     case 3:
       return `${base} grid-cols-2 sm:grid-cols-3`;
-    case 4:
-      return `${base} grid-cols-2 sm:grid-cols-3 md:grid-cols-4`;
     case 5:
       return `${base} grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`;
     default:
-      return `${base} grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6`;
+      return `${base} grid-cols-2 sm:grid-cols-3 md:grid-cols-4`;
   }
 }
 
