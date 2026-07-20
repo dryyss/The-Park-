@@ -43,10 +43,10 @@ function Chip({
     <Link
       href={href}
       className={[
-        "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11.5px] font-bold whitespace-nowrap transition hover:-translate-y-0.5",
+        "flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[11.5px] font-bold whitespace-nowrap transition-colors",
         active
           ? "border-carmin bg-carmin/12 text-blanc-casse"
-          : "border-charbon-500 bg-charbon-800 text-texte-muet hover:text-blanc-casse",
+          : "border-charbon-500 bg-charbon-800 text-texte-muet hover:border-charbon-400 hover:text-blanc-casse",
       ].join(" ")}
     >
       {glyph && <span style={{ color: glyphColor }}>{glyph}</span>}
