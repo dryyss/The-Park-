@@ -530,6 +530,11 @@ export function ShowcaseEditor({
                 key={slot}
                 data-slot={slot}
                 onPointerDown={(e) => onSlotPointerDown(e, slot, item)}
+                // Neutralise le drag natif d'image (souris) : sans ça le navigateur
+                // démarre son propre glisser d'image, émet dragstart → pointercancel
+                // et casse le déplacement. dragstart bulle depuis l'<img> jusqu'ici.
+                onDragStart={(e) => e.preventDefault()}
+                draggable={false}
                 // touch-action:none sur une carte → le geste devient un drag (pas un scroll).
                 style={item ? { touchAction: "none" } : undefined}
                 className={`relative rounded-xl transition-transform duration-200 ${
