@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
 import { createCheckoutFromCart } from "@/server/checkout/checkout.service";
+import { BOUTIQUE_SHIPPING_MODES, DEFAULT_BOUTIQUE_SHIPPING_MODE } from "@/lib/shipping";
 
 const shippingSchema = z.object({
   locale: z.string().min(2).max(5),
@@ -12,6 +13,9 @@ const shippingSchema = z.object({
   zip: z.string().trim().min(3).max(12),
   city: z.string().trim().min(2).max(80),
   country: z.string().trim().length(2).optional(),
+  shippingMode: z
+    .enum(BOUTIQUE_SHIPPING_MODES.map((m) => m.code) as [string, ...string[]])
+    .default(DEFAULT_BOUTIQUE_SHIPPING_MODE),
 });
 
 export type CheckoutActionResult =

@@ -27,6 +27,20 @@ export const SELECTABLE_SHIPPING_MODES = SHIPPING_MODE_DEFS.filter((d) => d.sele
   (a, b) => a.sortOrder - b.sortOrder,
 );
 
+/**
+ * Modes proposés sur la boutique officielle (expédiée par The Park) : transporteurs
+ * uniquement, pas de remise en main propre ni d'envoi sécurisé C2C.
+ */
+export const BOUTIQUE_SHIPPING_MODES = SHIPPING_MODE_DEFS.filter(
+  (d) => d.selectable && (d.code === "LETTER_TRACKED" || d.code === "PICKUP_POINT" || d.code === "COLISSIMO"),
+).sort((a, b) => a.sortOrder - b.sortOrder);
+
+export const DEFAULT_BOUTIQUE_SHIPPING_MODE: ShippingMode = "LETTER_TRACKED";
+
+export function isBoutiqueShippingMode(code: string): code is ShippingMode {
+  return BOUTIQUE_SHIPPING_MODES.some((d) => d.code === code);
+}
+
 export function isSelectableShippingMode(code: string): code is ShippingMode {
   return SELECTABLE_SHIPPING_MODES.some((d) => d.code === code);
 }
@@ -39,4 +53,15 @@ export function shippingFeeEur(code: ShippingMode): number {
 /** La remise en main propre n'a ni transporteur ni numéro de suivi. */
 export function isHandDelivery(code: ShippingMode): boolean {
   return code === "HAND_DELIVERY";
+}
+
+/** Libellé transporteur (FR) stocké sur la commande boutique — lisible côté admin. */
+const BOUTIQUE_CARRIER_FR: Partial<Record<ShippingMode, string>> = {
+  LETTER_TRACKED: "Lettre suivie",
+  PICKUP_POINT: "Point relais",
+  COLISSIMO: "Colissimo",
+};
+
+export function boutiqueCarrierLabel(code: ShippingMode): string {
+  return BOUTIQUE_CARRIER_FR[code] ?? "Colissimo";
 }

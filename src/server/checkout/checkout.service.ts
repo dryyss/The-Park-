@@ -3,7 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { getAppBaseUrl, isStripeConfigured } from "@/lib/env";
 import { getStripe } from "@/lib/stripe";
 import { getViewerCart } from "@/server/cart/cart.service";
-import { computeShopShipping, getShopShippingConfig } from "@/server/platform/platform.service";
+import { getShopShippingConfig } from "@/server/platform/platform.service";
+import type { ShippingMode } from "@/generated/prisma/client";
+import {
+  boutiqueCarrierLabel,
+  DEFAULT_BOUTIQUE_SHIPPING_MODE,
+  isBoutiqueShippingMode,
+  shippingFeeEur,
+} from "@/lib/shipping";
 
 export interface ShippingInput {
   fullName: string;
@@ -12,11 +19,21 @@ export interface ShippingInput {
   zip: string;
   city: string;
   country?: string;
+  shippingMode?: string;
 }
 
-async function resolveShipping(subtotalRaw: number): Promise<{ cost: number; carrier: string }> {
-  const [cost, cfg] = await Promise.all([computeShopShipping(subtotalRaw), getShopShippingConfig()]);
-  return { cost, carrier: cfg.defaultCarrier };
+/**
+ * Coût de livraison boutique : le mode choisi par l'acheteur détermine les frais,
+ * mais la franchise « offert dès X€ » de la config reste prioritaire.
+ * Le coût est toujours recalculé ici (jamais transmis par le client).
+ */
+async function resolveShipping(
+  subtotalRaw: number,
+  mode: ShippingMode,
+): Promise<{ cost: number; carrier: string }> {
+  const cfg = await getShopShippingConfig();
+  const cost = subtotalRaw > 0 && subtotalRaw < cfg.freeShippingMin ? shippingFeeEur(mode) : 0;
+  return { cost, carrier: boutiqueCarrierLabel(mode) };
 }
 
 async function generateOrderNumber(): Promise<string> {
@@ -43,7 +60,11 @@ export async function createCheckoutFromCart(userId: string, locale: string, shi
     throw new Error("OUT_OF_STOCK");
   }
 
-  const { cost: shippingCost, carrier } = await resolveShipping(cart.subtotalRaw);
+  const mode: ShippingMode =
+    shipping.shippingMode && isBoutiqueShippingMode(shipping.shippingMode)
+      ? shipping.shippingMode
+      : DEFAULT_BOUTIQUE_SHIPPING_MODE;
+  const { cost: shippingCost, carrier } = await resolveShipping(cart.subtotalRaw, mode);
   const totalRaw = cart.subtotalRaw + shippingCost;
   const orderNumber = await generateOrderNumber();
   const country = shipping.country?.trim() || "FR";
@@ -107,7 +128,7 @@ export async function createCheckoutFromCart(userId: string, locale: string, shi
       price_data: {
         currency: "eur",
         unit_amount: Math.round(shippingCost * 100),
-        product_data: { name: "Livraison Colissimo" },
+        product_data: { name: `Livraison — ${carrier}` },
       },
       quantity: 1,
     });

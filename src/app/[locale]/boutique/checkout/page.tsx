@@ -1,6 +1,7 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { requireAuthViewer } from "@/server/user/user.service";
 import { getViewerCart } from "@/server/cart/cart.service";
+import { getShopShippingConfig } from "@/server/platform/platform.service";
 import { PageHeader } from "@/components/common/page-header";
 import { ShopOfficialBanner } from "@/components/shop/shop-sections";
 import { CheckoutForm } from "@/components/cart/checkout-form";
@@ -20,7 +21,10 @@ export default async function BoutiqueCheckoutPage({
   const t = await getTranslations("checkout");
 
   const authenticated = await requireAuthViewer(`/${locale}/boutique/checkout`);
-  const cart = await getViewerCart(authenticated.id);
+  const [cart, shippingCfg] = await Promise.all([
+    getViewerCart(authenticated.id),
+    getShopShippingConfig(),
+  ]);
 
   return (
     <main className="mx-auto max-w-[1000px] page-pad pt-9 pb-[60px]">
@@ -39,6 +43,7 @@ export default async function BoutiqueCheckoutPage({
           locale={locale}
           isAuthenticated
           defaultName={authenticated.displayName}
+          freeShippingMin={shippingCfg.freeShippingMin}
         />
       </div>
     </main>
