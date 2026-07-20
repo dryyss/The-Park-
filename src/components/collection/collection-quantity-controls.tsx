@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { adjustCollectionCardAction } from "@/server/collection/collection.actions";
@@ -24,17 +24,28 @@ export function CollectionQuantityControls({
   const [error, setError] = useState<string | null>(null);
   const [showLoginGate, setShowLoginGate] = useState(false);
   const [condition, setCondition] = useState<ConditionCode>("EXCELLENT");
+  // Quantité optimiste : le compteur bouge dès le clic sans attendre le serveur
+  // (sinon rien ne change à l'écran tant qu'on ne recharge pas la page).
+  const [optimisticQty, setOptimisticQty] = useState(quantity);
+  useEffect(() => {
+    setOptimisticQty(quantity);
+  }, [quantity]);
 
   function adjust(delta: 1 | -1) {
     if (!isAuthenticated) {
       setShowLoginGate(true);
       return;
     }
+    const prev = optimisticQty;
+    const next = Math.max(0, Math.min(99, prev + delta));
+    if (next === prev) return;
     setError(null);
     setShowLoginGate(false);
+    setOptimisticQty(next);
     startTransition(async () => {
       const res = await adjustCollectionCardAction({ cardNumber, delta, condition });
       if (!res.ok) {
+        setOptimisticQty(prev);
         if (res.error === "UNAUTHORIZED") setShowLoginGate(true);
         else if (res.error === "RESERVED" || res.error === "BELOW_RESERVED") setError(t("qtyReserved"));
         else setError(t("qtyError"));
@@ -49,7 +60,7 @@ export function CollectionQuantityControls({
       {showLoginGate && <LoginGatePrompt compact messageKey="loginGateCollection" />}
       <ConditionPicker value={condition} onChange={setCondition} disabled={pending} compact />
       <QuantityStepper
-        quantity={quantity}
+        quantity={optimisticQty}
         min={0}
         max={99}
         pending={pending}
