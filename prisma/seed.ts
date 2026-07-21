@@ -52,8 +52,8 @@ async function main() {
   console.log("→ Saison");
   const season = await prisma.season.upsert({
     where: { code: "S01" },
-    update: { name: "Moteur Forgé" },
-    create: { code: "S01", name: "Moteur Forgé", sortOrder: 1 },
+    update: { name: "Moteur Forgé", seriesCode: "MF" },
+    create: { code: "S01", name: "Moteur Forgé", sortOrder: 1, seriesCode: "MF" },
   });
 
   console.log("→ Saison 2 (teaser verrouillée)");

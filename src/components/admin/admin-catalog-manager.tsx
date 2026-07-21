@@ -245,6 +245,7 @@ function SeasonHeader({
         seasonId: season.id,
         name: str(fd, "name"),
         releaseDate: releaseRaw ? new Date(releaseRaw).toISOString() : null,
+        seriesCode: str(fd, "seriesCode"),
       }),
     );
   }
@@ -272,6 +273,17 @@ function SeasonHeader({
         <div className="min-w-0 flex-1 sm:min-w-[160px]">
           <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("name")}</label>
           <input name="name" defaultValue={season.name} className="mt-1 w-full rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse" />
+        </div>
+        <div className="w-full sm:w-[110px]">
+          <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("seriesCode")}</label>
+          <input
+            name="seriesCode"
+            defaultValue={season.seriesCode ?? ""}
+            maxLength={4}
+            placeholder="MF"
+            title={t("seriesCodeHint")}
+            className="mt-1 w-full rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 font-mono tracking-wide text-blanc-casse uppercase"
+          />
         </div>
         <div>
           <label className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("cards")}</label>

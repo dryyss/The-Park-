@@ -157,7 +157,10 @@ export async function getUserCollection(userId: string | null, filters: Collecti
       isPromo: isPromoRarity(card.rarity.code),
       hasFirstEdition: own?.hasFirstEdition ?? false,
       hasReprint: own?.hasReprint ?? false,
-      numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code),
+      numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code, {
+        seriesCode: card.season.seriesCode,
+        edition: filters.edition ?? null,
+      }),
       dots: card.variants
         .filter((v) => isActiveVersionCode(v.versionType.code))
         .map((v) => ({
@@ -183,7 +186,19 @@ export async function getUserCollection(userId: string | null, filters: Collecti
       const numMatch = numPadded.includes(q);
       const promoMatch = q.includes("promo") && isPromoRarity(card.rarity.code);
       const hsMatch = q.includes("hs") && card.season.code === "HS";
-      if (!nameMatch && !numMatch && !promoMatch && !hsMatch) return false;
+      // Recherche par code série : "mf" (toute la série), "mf1"/"mf2" (édition),
+      // "mf-03" / "mf2-03" (édition + numéro).
+      let seriesMatch = false;
+      const series = card.season.seriesCode?.toLowerCase();
+      if (series) {
+        const tokens = [series, `${series}-${numPadded}`];
+        if (card.variants.some((v) => isFirstEditionLabel(v.editionLabel)))
+          tokens.push(`${series}1`, `${series}1-${numPadded}`);
+        if (card.variants.some((v) => !isFirstEditionLabel(v.editionLabel)))
+          tokens.push(`${series}2`, `${series}2-${numPadded}`);
+        seriesMatch = tokens.some((tok) => tok.includes(q));
+      }
+      if (!nameMatch && !numMatch && !promoMatch && !hsMatch && !seriesMatch) return false;
     }
     return true;
   });

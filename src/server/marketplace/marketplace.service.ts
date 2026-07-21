@@ -191,7 +191,9 @@ function toMarketplaceCard(l: FullRow): MarketplaceCard {
     seasonId: card.seasonId,
     seasonLabel: card.season.name,
     number: card.number,
-    numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code),
+    numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code, {
+      seriesCode: card.season.seriesCode,
+    }),
     name: card.name,
     slug: card.slug,
     image: cardImage(card.imageUrl),
@@ -415,7 +417,9 @@ async function fetchCardSellListings(slug: string): Promise<CardWithSellers | nu
     tilt: meta.tilt,
     holo: meta.holo,
     variant: meta.variant,
-    numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code),
+    numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code, {
+      seriesCode: card.season.seriesCode,
+    }),
     rarityLabel: card.rarity.label,
     seasonLabel: card.season.name,
     sellers,

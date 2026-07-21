@@ -1466,6 +1466,8 @@
       "kicker": "Catalog · seasons",
       "title": "Catalog management",
       "code": "Code",
+      "seriesCode": "Series code",
+      "seriesCodeHint": "Series initials (e.g. MF) shown on cards: MF1 = first edition, MF2 = reprint.",
       "name": "Name",
       "namePlaceholder": "e.g. Toyota AE86 Trueno",
       "cards": "Cards",

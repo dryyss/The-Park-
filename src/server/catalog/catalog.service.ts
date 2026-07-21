@@ -425,7 +425,9 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     id: card.id,
     slug: card.slug,
     number: card.number,
-    numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code),
+    numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code, {
+      seriesCode: card.season.seriesCode,
+    }),
     name: card.name,
     image: cardImage(card.imageUrl),
     description: card.description,

@@ -1466,6 +1466,8 @@
       "kicker": "カタログ · シーズン",
       "title": "カタログ管理",
       "code": "コード",
+      "seriesCode": "シリーズコード",
+      "seriesCodeHint": "カードに表示されるシリーズの略号（例: MF）。MF1 = 初版、MF2 = 再版。",
       "name": "名称",
       "namePlaceholder": "例: Toyota AE86 Trueno",
       "cards": "カード",

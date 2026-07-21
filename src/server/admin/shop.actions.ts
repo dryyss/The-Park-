@@ -36,6 +36,13 @@ const updateSeasonSchema = z.object({
   seasonId: z.string().min(1),
   name: z.string().min(1).max(80).optional(),
   releaseDate: z.string().datetime().nullable().optional(),
+  // Code série (initiales, ex: "MF"). Vide → effacé, sinon mis en majuscules.
+  seriesCode: z
+    .string()
+    .trim()
+    .max(4)
+    .nullish()
+    .transform((v) => (v == null ? undefined : v ? v.toUpperCase() : null)),
 });
 
 const orderStatusSchema = z.object({
@@ -109,6 +116,7 @@ export async function updateSeasonAction(input: unknown): Promise<AdminActionRes
     await updateSeason(parsed.data.seasonId, {
       name: parsed.data.name,
       releaseDate: parsed.data.releaseDate === undefined ? undefined : parsed.data.releaseDate ? new Date(parsed.data.releaseDate) : null,
+      seriesCode: parsed.data.seriesCode,
     });
     revalidatePath("/admin/catalogue");
     revalidatePath("/saison-1");

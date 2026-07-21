@@ -524,6 +524,7 @@ model Address {
 model Season {
   id          String    @id @default(cuid())
   code        String    @unique // ex: "S01"
+  seriesCode  String? // initiales de série affichées sur les cartes, ex: "MF" (Moteur Forgé) → MF1/MF2
   name        String // ex: "Moteur Forgé"
   releaseDate DateTime?
   sortOrder   Int       @default(0)

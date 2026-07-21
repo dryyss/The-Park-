@@ -51,7 +51,7 @@ interface CardForView {
   number: number;
   imageUrl: string | null;
   rarity: { code: string; color: string | null; symbol: string | null };
-  season: { code: string };
+  season: { code: string; seriesCode: string | null };
 }
 
 function resolveCard(variantImage: string | null, card: CardForView) {
@@ -63,7 +63,9 @@ function resolveCard(variantImage: string | null, card: CardForView) {
     image: imageFile ? cardImage(imageFile) : null,
     color: card.rarity.color ?? meta.color,
     glyph: card.rarity.symbol ?? meta.glyph,
-    numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code),
+    numberLabel: cardNumberLabel(card.number, card.rarity.code, card.season.code, {
+      seriesCode: card.season.seriesCode,
+    }),
   };
 }
 

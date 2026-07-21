@@ -109,13 +109,14 @@ export async function createProduct(data: {
 
 export async function updateSeason(
   seasonId: string,
-  data: { name?: string; releaseDate?: Date | null },
+  data: { name?: string; releaseDate?: Date | null; seriesCode?: string | null },
 ): Promise<void> {
   await prisma.season.update({
     where: { id: seasonId },
     data: {
       ...(data.name !== undefined ? { name: data.name } : {}),
       ...(data.releaseDate !== undefined ? { releaseDate: data.releaseDate } : {}),
+      ...(data.seriesCode !== undefined ? { seriesCode: data.seriesCode } : {}),
     },
   });
 }
@@ -234,6 +235,7 @@ export interface AdminCardFull {
 export interface AdminCatalogSeason {
   id: string;
   code: string;
+  seriesCode: string | null;
   name: string;
   releaseDate: Date | null;
   cards: AdminCardFull[];
@@ -268,6 +270,7 @@ export async function getAdminCatalog(): Promise<AdminCatalogSeason[]> {
   return seasons.map((s) => ({
     id: s.id,
     code: s.code,
+    seriesCode: s.seriesCode,
     name: s.name,
     releaseDate: s.releaseDate,
     cards: s.cards.map((c) => ({
