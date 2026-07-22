@@ -11,7 +11,16 @@
       "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\('deps:',Object.keys\\(p.dependencies\\).length,'| devDeps:',Object.keys\\(p.devDependencies\\).length\\)\")",
       "Bash(curl -sS -o /dev/null -w \"magar-developpement.fr -> HTTP %{http_code} \\(redir: %{redirect_url}\\)\\\\n\" -L --max-time 15 https://magar-developpement.fr)",
       "Bash(node -e \"['fr','en','ja'].forEach\\(l=>{const m=require\\('./src/messages/'+l+'.json'\\); console.log\\(l,'showcase keys:',Object.keys\\(m.showcase||{}\\).length\\)}\\)\")",
-      "Bash(node scripts/setup-cellar.mjs)"
+      "Bash(node scripts/setup-cellar.mjs)",
+      "Bash(git merge *)",
+      "Bash(grep -iv \"import\\\\|//\")",
+      "Bash(node -e \"const sharp=require\\('sharp'\\);\\(async\\(\\)=>{const m=await sharp\\('public/uploads/pasted-1781200672492-0.png'\\).metadata\\(\\);console.log\\(m.width+'x'+m.height,m.hasAlpha?'alpha':'no-alpha'\\);const s=await sharp\\('public/uploads/pasted-1781200672492-0.png'\\).stats\\(\\);console.log\\('isOpaque',s.isOpaque\\);}\\)\\(\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(pnpm exec *)",
+      "Bash(git log *)",
+      "Bash(cp src/app/favicon.ico __TRACKED_VAR__/fav.png)",
+      "Bash(python -c ' *)",
+      "Bash(timeout 120 npx vitest run)"
     ],
     "additionalDirectories": [
       "\\tmp"
