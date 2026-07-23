@@ -2,7 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
-import { OwnedVariantStack } from "@/components/cards/owned-variant-stack";
+import { CardEditionViewer } from "@/components/cards/card-edition-viewer";
 import { CardCommunityPhotos } from "@/components/collection/card-community-photos";
 import { CardPriceHistory } from "@/components/cards/card-price-history";
 import { getCardDetail } from "@/server/catalog/catalog.service";
@@ -58,16 +58,13 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
     card: card.slug,
     recipient: primarySeller?.sellerSlug,
   });
-  // Exemplaires possédés (variante + édition) empilés sur le hero, 1ère édition devant.
-  const ownedVariantCards = card.versions
-    .filter((v) => v.owned)
-    .map((v) => ({
-      variantId: v.variantId,
-      image: v.image,
-      label: v.label,
-      editionLabel: v.editionLabel,
-      isFirstEdition: v.isFirstEdition,
-    }));
+  // Éditions de la carte (1ère édition / réédition) affichées sous le visuel, 1ère édition devant.
+  const editionViews = card.editions.map((e) => ({
+    edition: e.edition,
+    label: e.edition === "first" ? (e.catalogLabel ?? t("editionFirst")) : t("editionReedition"),
+    image: e.image,
+    owned: e.owned,
+  }));
   return (
     <main className="mx-auto max-w-[1240px] page-pad pt-5 pb-[60px]">
       <TradingCardJsonLd
@@ -100,8 +97,8 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
       <div className="mt-6 grid items-start gap-6 lg:grid-cols-2 lg:gap-4 xl:grid-cols-[380px_1fr]">
         <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
           <div className="relative min-w-0 flex-1 lg:sticky lg:top-[90px]">
-            <OwnedVariantStack
-              cards={ownedVariantCards}
+            <CardEditionViewer
+              editions={editionViews}
               fallbackImage={card.image}
               alt={card.name}
               tilt={card.tilt}
@@ -109,6 +106,10 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
               variant={card.variant}
               rarityColor={card.color}
               priority
+              title={t("editionsTitle")}
+              hint={t("editionsHint")}
+              ownedLabel={t("statOwned")}
+              missingLabel={t("versionMissing")}
             />
           </div>
           {card.communityPhotos.length > 0 && (

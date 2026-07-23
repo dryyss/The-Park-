@@ -265,6 +265,8 @@
     "editionLabel": "Edition",
     "editionFirst": "1st edition",
     "editionReedition": "Reprint",
+    "editionsTitle": "Editions of this card",
+    "editionsHint": "Tap an edition to show it",
     "editionCatalog": "Catalog: {label}",
     "editionActive": "Edition: {label}",
     "editionActiveFirst": "Edition: 1st edition",

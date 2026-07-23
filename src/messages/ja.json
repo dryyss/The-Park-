@@ -265,6 +265,8 @@
     "editionLabel": "版",
     "editionFirst": "1st 版",
     "editionReedition": "再版",
+    "editionsTitle": "このカードの版",
+    "editionsHint": "版をタップして表示",
     "editionCatalog": "カタログ：{label}",
     "editionActive": "版：{label}",
     "editionActiveFirst": "版：1st",

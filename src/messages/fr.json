@@ -265,6 +265,8 @@
     "editionLabel": "Édition",
     "editionFirst": "1ère édition",
     "editionReedition": "Réédition",
+    "editionsTitle": "Éditions de cette carte",
+    "editionsHint": "Clique une édition pour l’afficher",
     "editionCatalog": "Catalogue : {label}",
     "editionActive": "Édition : {label}",
     "editionActiveFirst": "Édition : 1ère édition",

@@ -281,6 +281,13 @@ export interface CardDetail {
       photos: CollectionItemPhotoView[];
     }[];
   }[];
+  /** Éditions distinctes de la carte (1ère édition / réédition) présentes au catalogue. */
+  editions: {
+    edition: "first" | "reprint";
+    catalogLabel: string | null;
+    image: string;
+    owned: boolean;
+  }[];
   communityPhotos: CommunityPhotoView[];
   listings: {
     id: string;
@@ -405,6 +412,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
 
   const idx = neighbors.findIndex((n) => n.slug === slug);
   const meta = rarityMeta(card.rarity.code);
+
   const variantStats = new Map<
     string,
     { quantity: number; reservedQuantity: number; userEditionLabel: string | null }
@@ -419,6 +427,32 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     cur.reservedQuantity += o.reservedQuantity;
     if (o.editionLabel?.trim()) cur.userEditionLabel = o.editionLabel.trim();
     variantStats.set(o.variantId, cur);
+  }
+
+  // Éditions distinctes (1ère édition / réédition) construites à partir des variantes actives.
+  const activeVariants = card.variants.filter((v) => isActiveVersionCode(v.versionType.code));
+  const editionOwned = (group: typeof activeVariants) =>
+    group.some((v) => (variantStats.get(v.id)?.quantity ?? 0) > 0);
+  const editionImage = (group: typeof activeVariants) =>
+    cardImage((group.find((v) => v.imageUrl)?.imageUrl ?? group[0]?.imageUrl) ?? card.imageUrl);
+  const firstVariants = activeVariants.filter((v) => isFirstEditionLabel(v.editionLabel));
+  const reprintVariants = activeVariants.filter((v) => !isFirstEditionLabel(v.editionLabel));
+  const editions: CardDetail["editions"] = [];
+  if (firstVariants.length > 0) {
+    editions.push({
+      edition: "first",
+      catalogLabel: firstVariants.find((v) => v.editionLabel?.trim())?.editionLabel?.trim() ?? null,
+      image: editionImage(firstVariants),
+      owned: editionOwned(firstVariants),
+    });
+  }
+  if (reprintVariants.length > 0) {
+    editions.push({
+      edition: "reprint",
+      catalogLabel: reprintVariants.find((v) => v.editionLabel?.trim())?.editionLabel?.trim() ?? null,
+      image: editionImage(reprintVariants),
+      owned: editionOwned(reprintVariants),
+    });
   }
 
   return {
@@ -494,6 +528,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
         conditions,
       };
     }),
+    editions,
     communityPhotos,
     listings: listings.map((l) => ({
       id: l.id,
