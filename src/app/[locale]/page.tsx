@@ -1,14 +1,11 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { getCatalogSummary, getFeaturedCards, getHeroCards } from "@/server/catalog/catalog.service";
+import { getFeaturedCards, getHeroCards } from "@/server/catalog/catalog.service";
 import { getCardsLikeMeta } from "@/server/card-like/card-like.service";
 import { getRecentListings, getMostWantedForSale } from "@/server/marketplace/marketplace.service";
 import { getActiveAuctions } from "@/server/auction/auction.service";
 import { getTopCollectors, getRecentActivity } from "@/server/community/community.service";
 import { getViewerUser } from "@/server/user/user.service";
-import { RARITY_DEFINITIONS } from "@/lib/rarities";
 import { HeroSection } from "@/components/home/hero-section";
-import { type RarityStripItem } from "@/components/home/rarity-strip";
-import { RarityCarousel } from "@/components/home/rarity-carousel";
 import { HowToDominate } from "@/components/home/how-to-dominate";
 import { FeaturedCards } from "@/components/home/featured-cards";
 import { SeasonBanner } from "@/components/home/season-banner";
@@ -39,8 +36,7 @@ export default async function Home({
   const tAuth = authError ? await getTranslations("auth") : null;
   const t = await getTranslations("home");
 
-  const [summary, heroCards, featured, listings, auctions, collectors, activity, viewer, wantedCards] = await Promise.all([
-    getCatalogSummary(),
+  const [heroCards, featured, listings, auctions, collectors, activity, viewer, wantedCards] = await Promise.all([
     getHeroCards(),
     getFeaturedCards(8),
     getRecentListings(6),
@@ -59,14 +55,6 @@ export default async function Home({
     ),
   );
 
-  const countByCode = new Map(summary.byRarity.map((r) => [r.code, r.count]));
-  const rarities: RarityStripItem[] = RARITY_DEFINITIONS.map((def) => ({
-    glyph: def.symbol,
-    label: def.label,
-    count: countByCode.get(def.code) ?? 0,
-    color: def.color,
-  }));
-
   return (
     <main className="overflow-x-hidden">
       {authError && tAuth && (
@@ -78,7 +66,6 @@ export default async function Home({
 
       <div className="page-container pb-[60px]">
         <PromoBannerStrip className="mt-6" />
-        <RarityCarousel rarities={rarities} />
         <HowToDominate />
         <FeaturedCards cards={featuredSlice} likeMeta={likeMeta} isAuthenticated={!!viewer} />
         <SeasonBanner />
