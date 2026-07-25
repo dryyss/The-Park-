@@ -24,7 +24,7 @@ export async function proposeExchangeAction(input: unknown): Promise<ExchangeAct
   try {
     const slug = parsed.data.recipientSlug.replace(/^\/+|\/+$/g, "").split("/").pop() ?? parsed.data.recipientSlug;
     const exchangeId = await proposeExchange(viewer.id, { ...parsed.data, recipientSlug: slug });
-    revalidatePath("/echanges");
+    revalidatePath("/[locale]/echanges", "page");
     return { ok: true, exchangeId };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -41,8 +41,8 @@ export async function acceptExchangeAction(exchangeId: string, giveVariantIds?: 
     } else {
       await acceptExchange(viewer.id, exchangeId);
     }
-    revalidatePath("/echanges");
-    revalidatePath("/securite", "layout");
+    revalidatePath("/[locale]/echanges", "page");
+    revalidatePath("/[locale]/securite", "layout");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -55,7 +55,7 @@ export async function confirmExchangeAction(exchangeId: string): Promise<Exchang
 
   try {
     await markExchangeAwaitingShipment(exchangeId, viewer.id);
-    revalidatePath("/echanges");
+    revalidatePath("/[locale]/echanges", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -68,7 +68,7 @@ export async function completeExchangeAction(exchangeId: string): Promise<Exchan
 
   try {
     await completeExchange(exchangeId);
-    revalidatePath("/echanges");
+    revalidatePath("/[locale]/echanges", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -81,7 +81,7 @@ export async function cancelExchangeAction(exchangeId: string): Promise<Exchange
 
   try {
     await cancelExchange(viewer.id, exchangeId);
-    revalidatePath("/echanges");
+    revalidatePath("/[locale]/echanges", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

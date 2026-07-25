@@ -21,7 +21,7 @@ const banSchema = z.object({
 });
 
 function revalidateUsers() {
-  revalidatePath("/admin/utilisateurs");
+  revalidatePath("/[locale]/admin/utilisateurs", "page");
 }
 
 export async function suspendUserAction(input: unknown): Promise<UserActionResult> {

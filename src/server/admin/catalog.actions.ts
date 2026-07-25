@@ -72,9 +72,9 @@ const updateVariantSchema = z.object({
 
 /** Invalide les caches catalogue (admin + pages publiques taggées). */
 function revalidateCatalog() {
-  revalidatePath("/admin/catalogue");
-  revalidatePath("/saison-1");
-  revalidatePath("/hors-serie");
+  revalidatePath("/[locale]/admin/catalogue", "page");
+  revalidatePath("/[locale]/saison-1", "page");
+  revalidatePath("/[locale]/hors-serie", "page");
   revalidateTag("catalog");
 }
 

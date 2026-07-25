@@ -1,4 +1,5 @@
 import "server-only";
+import { after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { SaleStatus } from "@/generated/prisma/client";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
@@ -17,6 +18,13 @@ const QUICK_BUY_WINDOW_MS = 5 * 60 * 1000;
 const CONTESTED_BID_COUNT = 10;
 /** « Roi de la Glisse » : jours consécutifs au top 3. */
 const TOP3_STREAK_DAYS = 7;
+
+/**
+ * Le catalogue de succès ne change qu'au déploiement : le resynchroniser à chaque
+ * évaluation coûtait une trentaine de requêtes Neon par clic « + » dans le Garage.
+ */
+const CATALOG_SYNC_TTL_MS = 10 * 60 * 1000;
+let catalogSyncedAt = 0;
 
 /**
  * Aligne la table Badge sur le catalogue client (src/lib/badges.ts) :
@@ -51,6 +59,9 @@ export async function syncBadgeCatalog(): Promise<void> {
     await prisma.userBadge.deleteMany({ where: { badgeId: { in: obsoleteIds } } });
     await prisma.badge.deleteMany({ where: { id: { in: obsoleteIds } } });
   }
+
+  // Marqué seulement en cas de succès : un échec doit être retenté au prochain appel.
+  catalogSyncedAt = Date.now();
 }
 
 /** Compat : ancien nom utilisé par le seed / d'éventuels appels externes. */
@@ -344,7 +355,9 @@ export async function evaluateUserBadges(userId: string): Promise<string[]> {
   const unlocked: string[] = [];
 
   // S'assure que le catalogue de succès est à jour avant d'évaluer.
-  await syncBadgeCatalog();
+  if (Date.now() - catalogSyncedAt > CATALOG_SYNC_TTL_MS) {
+    await syncBadgeCatalog();
+  }
 
   const [metrics, userBadges, allBadges] = await Promise.all([
     loadBadgeMetrics(userId),
@@ -379,6 +392,20 @@ export async function evaluateUserBadgesSafe(userId: string): Promise<void> {
     await evaluateUserBadges(userId);
   } catch (err) {
     console.error("[badge:evaluate]", err);
+  }
+}
+
+/**
+ * Évalue les succès après avoir répondu au client. L'évaluation coûte une
+ * quinzaine de requêtes (dont un balayage complet de `CollectionItem`) : la
+ * garder dans le chemin critique rendait chaque ajout de carte très lent.
+ */
+export function scheduleBadgeEvaluation(userId: string): void {
+  try {
+    after(() => evaluateUserBadgesSafe(userId));
+  } catch {
+    // Hors contexte de requête (seed, script, test) : on évalue en direct.
+    void evaluateUserBadgesSafe(userId);
   }
 }
 

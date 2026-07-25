@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { routing } from "@/i18n/routing";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
 import {
   sendFriendRequest,
@@ -23,7 +24,10 @@ export async function sendFriendRequestAction(addresseeSlug: string): Promise<Fr
 
   try {
     await sendFriendRequest(viewer.id, addressee.id);
-    revalidatePath(`/collectionneur/${addresseeSlug}`);
+    // Chemin concret : le préfixe de locale est indispensable pour qu'il matche.
+    for (const locale of routing.locales) {
+      revalidatePath(`/${locale}/collectionneur/${addresseeSlug}`);
+    }
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -36,7 +40,7 @@ export async function acceptFriendRequestAction(friendshipId: string): Promise<F
 
   try {
     await acceptFriendRequest(viewer.id, friendshipId);
-    revalidatePath("/dashboard");
+    revalidatePath("/[locale]/dashboard", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -49,7 +53,7 @@ export async function removeFriendshipAction(friendshipId: string): Promise<Frie
 
   try {
     await removeFriendship(viewer.id, friendshipId);
-    revalidatePath("/dashboard");
+    revalidatePath("/[locale]/dashboard", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

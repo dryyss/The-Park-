@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { transferOwnedCopies } from "@/server/collection/collection.mutations";
 import type { CardCondition } from "@/generated/prisma/client";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
 import { lockExchangeCautions, releaseExchangeCautions } from "@/server/exchange/exchange-escrow.service";
@@ -273,16 +274,11 @@ export async function completeExchange(exchangeId: string): Promise<void> {
       const fromId = item.fromInitiator ? ex.initiatorId : ex.recipientId;
       const toId = item.fromInitiator ? ex.recipientId : ex.initiatorId;
 
-      await tx.collectionItem.updateMany({
-        where: { userId: fromId, variantId: item.variantId, condition: item.condition },
-        data: { quantity: { decrement: 1 }, reservedQuantity: { decrement: 1 } },
-      });
-      await tx.collectionItem.upsert({
-        where: {
-          userId_variantId_condition: { userId: toId, variantId: item.variantId, condition: item.condition },
-        },
-        create: { userId: toId, variantId: item.variantId, condition: item.condition, quantity: 1 },
-        update: { quantity: { increment: 1 } },
+      await transferOwnedCopies(tx, {
+        fromUserId: fromId,
+        toUserId: toId,
+        variantId: item.variantId,
+        condition: item.condition,
       });
     }
 

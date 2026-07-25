@@ -49,11 +49,11 @@ export async function listCollectionItemAction(input: unknown): Promise<Marketpl
       price: parsed.data.price,
     });
     revalidateTag("listings");
-    revalidatePath("/marketplace");
-    revalidatePath("/carte", "layout");
-    revalidatePath("/dashboard");
-    revalidatePath("/echanges");
-    revalidatePath("/profil");
+    revalidatePath("/[locale]/marketplace", "page");
+    revalidatePath("/[locale]/carte", "layout");
+    revalidatePath("/[locale]/dashboard", "page");
+    revalidatePath("/[locale]/echanges", "page");
+    revalidatePath("/[locale]/profil", "page");
     return { ok: true, listingId };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -83,10 +83,10 @@ export async function publishListingAction(input: unknown): Promise<MarketplaceA
       description: parsed.data.description,
     });
     revalidateTag("listings");
-    revalidatePath("/marketplace");
-    revalidatePath("/vendre");
-    revalidatePath("/dashboard");
-    revalidatePath("/profil");
+    revalidatePath("/[locale]/marketplace", "page");
+    revalidatePath("/[locale]/vendre", "page");
+    revalidatePath("/[locale]/dashboard", "page");
+    revalidatePath("/[locale]/profil", "page");
     return { ok: true, listingId };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -103,8 +103,8 @@ export async function publishWantListingAction(input: unknown): Promise<Marketpl
   try {
     const listingId = await publishWantListing(viewer.id, parsed.data);
     revalidateTag("listings");
-    revalidatePath("/marketplace");
-    revalidatePath("/dashboard");
+    revalidatePath("/[locale]/marketplace", "page");
+    revalidatePath("/[locale]/dashboard", "page");
     return { ok: true, listingId };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -119,8 +119,8 @@ export async function pauseListingAction(input: unknown): Promise<MarketplaceAct
   try {
     await pauseListing(viewer.id, parsed.data.listingId);
     revalidateTag("listings");
-    revalidatePath("/marketplace");
-    revalidatePath("/dashboard");
+    revalidatePath("/[locale]/marketplace", "page");
+    revalidatePath("/[locale]/dashboard", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -135,8 +135,8 @@ export async function resumeListingAction(input: unknown): Promise<MarketplaceAc
   try {
     await resumeListing(viewer.id, parsed.data.listingId);
     revalidateTag("listings");
-    revalidatePath("/marketplace");
-    revalidatePath("/dashboard");
+    revalidatePath("/[locale]/marketplace", "page");
+    revalidatePath("/[locale]/dashboard", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -151,8 +151,8 @@ export async function cancelListingAction(input: unknown): Promise<MarketplaceAc
   try {
     await cancelListing(viewer.id, parsed.data.listingId);
     revalidateTag("listings");
-    revalidatePath("/dashboard");
-    revalidatePath("/marketplace");
+    revalidatePath("/[locale]/dashboard", "page");
+    revalidatePath("/[locale]/marketplace", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

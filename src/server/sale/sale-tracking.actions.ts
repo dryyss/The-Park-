@@ -21,8 +21,8 @@ const shipSchema = z.object({
 });
 
 function revalidateSalePages() {
-  revalidatePath("/marketplace", "layout");
-  revalidatePath("/dashboard", "layout");
+  revalidatePath("/[locale]/marketplace", "layout");
+  revalidatePath("/[locale]/dashboard", "layout");
 }
 
 /** Le vendeur ouvre l'envoi (PAID → AWAITING_SHIPMENT, jeton du jour, délai J+3). */
@@ -87,7 +87,7 @@ export async function confirmSaleReceiptAction(saleId: string): Promise<SaleTrac
   try {
     await confirmSaleReceipt(saleId, viewer.id);
     revalidateSalePages();
-    revalidatePath("/portefeuille");
+    revalidatePath("/[locale]/portefeuille", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

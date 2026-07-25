@@ -71,7 +71,7 @@ export async function startWalletTopUpAction(
 export async function confirmWalletTopUpAction(sessionId: string): Promise<{ ok: boolean }> {
   try {
     await fulfillWalletTopUpFromStripeSession(sessionId);
-    revalidatePath("/portefeuille");
+    revalidatePath("/[locale]/portefeuille", "page");
     return { ok: true };
   } catch (err) {
     console.error("[wallet:confirmTopUp]", err);
@@ -126,8 +126,8 @@ export async function syncConnectStatusAction(): Promise<{ ok: boolean }> {
 
   try {
     await syncConnectAccountForUser(viewer.id);
-    revalidatePath("/portefeuille");
-    revalidatePath("/vendre");
+    revalidatePath("/[locale]/portefeuille", "page");
+    revalidatePath("/[locale]/vendre", "page");
     return { ok: true };
   } catch (err) {
     console.error("[wallet:syncConnect]", err);
@@ -146,7 +146,7 @@ export async function withdrawEarnedAction(
 
   try {
     await withdrawEarnedToBank(viewer.id, parsed.data.amountEur);
-    revalidatePath("/portefeuille");
+    revalidatePath("/[locale]/portefeuille", "page");
     return { ok: true };
   } catch (err) {
     const msg = err instanceof Error ? err.message : "UNKNOWN";

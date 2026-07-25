@@ -281,7 +281,7 @@ async function main() {
     for (const v of owned) {
       await prisma.collectionItem.upsert({
         where: {
-          userId_variantId_condition: { userId: user.id, variantId: v.id, condition: "EXCELLENT" },
+          userId_variantId_condition_editionPreset: { userId: user.id, variantId: v.id, condition: "EXCELLENT", editionPreset: "unlimited" },
         },
         update: {},
         create: { userId: user.id, variantId: v.id, condition: "EXCELLENT", quantity: 1 },
@@ -300,7 +300,7 @@ async function main() {
       if (!extras.includes(v.versionType.code)) continue;
       await prisma.collectionItem.upsert({
         where: {
-          userId_variantId_condition: { userId: lightonId, variantId: v.id, condition: "EXCELLENT" },
+          userId_variantId_condition_editionPreset: { userId: lightonId, variantId: v.id, condition: "EXCELLENT", editionPreset: "unlimited" },
         },
         update: {},
         create: { userId: lightonId, variantId: v.id, condition: "EXCELLENT", quantity: 1 },

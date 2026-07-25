@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { routing } from "@/i18n/routing";
 import { z } from "zod";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
 import {
@@ -27,9 +28,13 @@ export type ShowcaseActionResult<T = undefined> =
   | ({ ok: true } & (T extends undefined ? object : { data: T }))
   | { ok: false; error: string };
 
+// Chemins concrets : ils doivent porter le préfixe de locale, sinon
+// `revalidatePath` ne correspond à aucune route et n'invalide rien.
 function revalidateFor(slug: string) {
-  revalidatePath(`/collectionneur/${slug}`);
-  revalidatePath(`/collectionneur/${slug}/showroom`);
+  for (const locale of routing.locales) {
+    revalidatePath(`/${locale}/collectionneur/${slug}`);
+    revalidatePath(`/${locale}/collectionneur/${slug}/showroom`);
+  }
 }
 
 const configSchema = z.object({

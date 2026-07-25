@@ -29,7 +29,7 @@ export async function sendMessageAction(input: unknown): Promise<MessagingAction
 
   try {
     const messageId = await sendConversationMessage(viewer.id, parsed.data.conversationId, parsed.data.body);
-    revalidatePath("/messages");
+    revalidatePath("/[locale]/messages", "page");
     revalidatePath(`/messages/${parsed.data.conversationId}`);
     return { ok: true, messageId };
   } catch (err) {
@@ -72,7 +72,7 @@ export async function markConversationReadAction(conversationId: string): Promis
   if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
 
   await markConversationRead(viewer.id, conversationId);
-  revalidatePath("/messages");
+  revalidatePath("/[locale]/messages", "page");
   return { ok: true };
 }
 
@@ -110,7 +110,7 @@ export async function reportMessageAction(input: unknown): Promise<MessagingActi
       reason: parsed.data.reason,
       involvesMinor,
     });
-    revalidatePath("/admin/moderation");
+    revalidatePath("/[locale]/admin/moderation", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

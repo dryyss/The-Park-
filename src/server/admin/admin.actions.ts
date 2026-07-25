@@ -25,8 +25,8 @@ export async function adminModerateListingAction(input: unknown): Promise<AdminA
 
   try {
     await adminModerateListing(access.user.id, parsed.data.listingId, parsed.data.action);
-    revalidatePath("/admin/marketplace");
-    revalidatePath("/admin");
+    revalidatePath("/[locale]/admin/marketplace", "page");
+    revalidatePath("/[locale]/admin", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -39,8 +39,8 @@ export async function adminCancelAuctionAction(auctionId: string): Promise<Admin
 
   try {
     await adminCancelAuction(access.user.id, auctionId);
-    revalidatePath("/admin/encheres");
-    revalidatePath("/admin");
+    revalidatePath("/[locale]/admin/encheres", "page");
+    revalidatePath("/[locale]/admin", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -67,7 +67,7 @@ export async function adminAdjustWalletAction(input: unknown): Promise<AdminActi
       moderatorId: access.user.id,
       ...parsed.data,
     });
-    revalidatePath("/admin/finances");
+    revalidatePath("/[locale]/admin/finances", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -80,7 +80,7 @@ export async function adminDeletePhotoAction(photoId: string): Promise<AdminActi
 
   try {
     await adminDeletePhoto(access.user.id, photoId);
-    revalidatePath("/admin/contenu");
+    revalidatePath("/[locale]/admin/contenu", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -108,9 +108,9 @@ export async function resolveDisputeArbitrationAction(input: unknown): Promise<A
       moderatorId: access.user.id,
       ...parsed.data,
     });
-    revalidatePath("/admin/moderation");
+    revalidatePath("/[locale]/admin/moderation", "page");
     revalidatePath(`/admin/moderation/litiges/${parsed.data.disputeId}`);
-    revalidatePath("/admin");
+    revalidatePath("/[locale]/admin", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { transferOwnedCopies } from "@/server/collection/collection.mutations";
 import { evaluateUserBadgesForUsers } from "@/server/badge/badge.service";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
 
@@ -79,25 +80,12 @@ export async function confirmExchangeReceipt(exchangeId: string, userId: string)
     for (const item of ex.items) {
       const ownerId = item.fromInitiator ? ex.initiatorId : ex.recipientId;
       const targetId = item.fromInitiator ? ex.recipientId : ex.initiatorId;
-      await tx.collectionItem.updateMany({
-        where: { userId: ownerId, variantId: item.variantId, condition: item.condition },
-        data: { reservedQuantity: { decrement: 1 }, quantity: { decrement: 1 } },
-      });
-      await tx.collectionItem.upsert({
-        where: {
-          userId_variantId_condition: {
-            userId: targetId,
-            variantId: item.variantId,
-            condition: item.condition,
-          },
-        },
-        create: {
-          userId: targetId,
-          variantId: item.variantId,
-          condition: item.condition,
-          quantity: item.quantity,
-        },
-        update: { quantity: { increment: item.quantity } },
+      await transferOwnedCopies(tx, {
+        fromUserId: ownerId,
+        toUserId: targetId,
+        variantId: item.variantId,
+        condition: item.condition,
+        quantity: item.quantity,
       });
     }
 

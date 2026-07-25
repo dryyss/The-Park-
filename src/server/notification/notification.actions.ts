@@ -11,7 +11,7 @@ export async function markNotificationReadAction(notificationId: string): Promis
   if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
 
   await markNotificationRead(viewer.id, notificationId);
-  revalidatePath("/notifications");
+  revalidatePath("/[locale]/notifications", "page");
   return { ok: true };
 }
 
@@ -20,6 +20,6 @@ export async function markAllNotificationsReadAction(): Promise<NotificationActi
   if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
 
   await markAllNotificationsRead(viewer.id);
-  revalidatePath("/notifications");
+  revalidatePath("/[locale]/notifications", "page");
   return { ok: true };
 }

@@ -26,7 +26,7 @@ export async function createReportAction(input: unknown): Promise<ModerationActi
 
   try {
     await createReport(viewer.id, parsed.data);
-    revalidatePath("/admin/moderation");
+    revalidatePath("/[locale]/admin/moderation", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -39,7 +39,7 @@ export async function resolveReportAction(reportId: string, status: "RESOLVED" |
 
   try {
     await resolveReport(access.user.id, reportId, status);
-    revalidatePath("/admin/moderation");
+    revalidatePath("/[locale]/admin/moderation", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -55,7 +55,7 @@ export async function updateDisputeStatusAction(
 
   try {
     await updateDisputeStatus(access.user.id, disputeId, status);
-    revalidatePath("/admin/moderation");
+    revalidatePath("/[locale]/admin/moderation", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -68,8 +68,8 @@ export async function createExchangeShipmentAction(exchangeId: string): Promise<
 
   try {
     const shipmentId = await createShipmentForExchange(exchangeId, viewer.id);
-    revalidatePath("/securite", "layout");
-    revalidatePath("/echanges");
+    revalidatePath("/[locale]/securite", "layout");
+    revalidatePath("/[locale]/echanges", "page");
     return { ok: true, shipmentId };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -85,7 +85,7 @@ export async function markShipmentShippedAction(
 
   try {
     await markShipmentShipped(shipmentId, viewer.id, trackingNumber);
-    revalidatePath("/securite", "layout");
+    revalidatePath("/[locale]/securite", "layout");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -104,7 +104,7 @@ export async function recordProofAction(input: {
 
   try {
     await recordShipmentProof(input.shipmentId, viewer.id, input);
-    revalidatePath("/securite", "layout");
+    revalidatePath("/[locale]/securite", "layout");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

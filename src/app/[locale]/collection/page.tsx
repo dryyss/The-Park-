@@ -5,15 +5,12 @@ import { getUserCollection } from "@/server/collection/collection.service";
 import { getViewerWishlistCardIds } from "@/server/wishlist/wishlist.service";
 import { getCardsLikeMeta } from "@/server/card-like/card-like.service";
 import { prisma } from "@/lib/prisma";
-import { PageHeader } from "@/components/common/page-header";
 import { CompletionPanel, CollectionFiltersBar } from "@/components/collection/collection-filters";
 import { CollectionCardGrid } from "@/components/collection/collection-card-grid";
 import { CollectionDisplayControls } from "@/components/collection/collection-display-controls";
 import { CollectionExportShare } from "@/components/collection/collection-export-share";
 import { CollectionGuestBanner } from "@/components/collection/collection-guest-banner";
 import { parseCollectionGridCols, parseCollectionSort } from "@/lib/collection-grid";
-import { SeasonTabs } from "@/components/collection/season-tabs";
-import { HORS_SERIE_SEASON_CODE } from "@/lib/seasons";
 import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
@@ -56,29 +53,18 @@ export default async function CollectionPage({
   const [data, wishlistCardIds, seasons] = await Promise.all([
     getUserCollection(viewer?.id ?? null, collParams),
     viewer ? getViewerWishlistCardIds(viewer.id) : Promise.resolve([]),
-    prisma.season.findMany({ orderBy: { sortOrder: "asc" }, select: { id: true, code: true, name: true } }),
+    activeSeason
+      ? prisma.season.findMany({ where: { code: activeSeason }, select: { code: true, name: true } })
+      : Promise.resolve([]),
   ]);
   const wishlistCardIdSet = new Set(wishlistCardIds);
   const allCardIds = data.sections.flatMap((sec) => sec.cards.map((c) => c.cardId));
   const likeMeta = Object.fromEntries(await getCardsLikeMeta(allCardIds, viewer?.id));
 
+  // L'en-tête et les onglets sont rendus par le layout du segment, pour qu'ils
+  // restent montés et cliquables pendant le rechargement de cette page.
   return (
-    <main className="page-section">
-      <PageHeader kicker={t("kicker")} title={t("title")} jp="駐車場">
-        <SeasonTabs
-          seasons={seasons}
-          seasonPcts={data.seasonPcts}
-          activeSeason={activeSeason}
-          activeEdition={activeEdition}
-          horsSerieCode={HORS_SERIE_SEASON_CODE}
-          labels={{
-            seasonHS: t("seasonHS"),
-            editionBadge1st: t("editionBadge1st"),
-            editionBadgeReprint: t("editionBadgeReprint"),
-          }}
-        />
-      </PageHeader>
-
+    <>
       {!isAuthenticated && <CollectionGuestBanner messageKey="loginGateCollection" />}
 
       <CompletionPanel
@@ -123,9 +109,10 @@ export default async function CollectionPage({
             isAuthenticated={isAuthenticated}
             wishlistCardIds={wishlistCardIdSet}
             likeMeta={likeMeta}
+            edition={activeEdition}
           />
         </section>
       ))}
-    </main>
+    </>
   );
 }

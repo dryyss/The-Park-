@@ -17,6 +17,7 @@ export function CollectionCardTile({
   inWishlist = false,
   likeCount = 0,
   liked = false,
+  edition = null,
 }: {
   card: Card;
   missingLabel: string;
@@ -25,6 +26,7 @@ export function CollectionCardTile({
   inWishlist?: boolean;
   likeCount?: number;
   liked?: boolean;
+  edition?: "first" | "reprint" | null;
 }) {
   const missing = !card.owned;
 
@@ -78,8 +80,10 @@ export function CollectionCardTile({
       {showControls && card.standardVariantId && (
         <div className={`mt-2 ${missing ? "opacity-70" : ""}`}>
           <CollectionQuantityControls
+            cardId={card.cardId}
             cardNumber={card.number}
             quantity={card.quantity}
+            edition={edition}
             isAuthenticated={isAuthenticated}
           />
         </div>

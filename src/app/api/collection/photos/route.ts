@@ -7,8 +7,8 @@ import { deleteCollectionPhoto, uploadCollectionPhoto } from "@/server/collectio
 const conditionEnum = z.enum(["MINT", "EXCELLENT", "VERY_GOOD", "GOOD", "FAIR", "DAMAGED"]);
 
 function revalidatePhotoPaths() {
-  revalidatePath("/collection");
-  revalidatePath("/carte", "layout");
+  revalidatePath("/[locale]/collection", "page");
+  revalidatePath("/[locale]/carte", "layout");
 }
 
 export async function POST(request: Request) {

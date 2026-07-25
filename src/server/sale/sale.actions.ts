@@ -78,8 +78,8 @@ export async function buyListingAction(
       await markSalePaid(saleId);
     }
 
-    revalidatePath("/marketplace");
-    revalidatePath("/portefeuille");
+    revalidatePath("/[locale]/marketplace", "page");
+    revalidatePath("/[locale]/portefeuille", "page");
 
     const conversationId = await getSaleConversationId(saleId);
     if (conversationId) {
@@ -108,7 +108,7 @@ export async function confirmSaleCheckoutAction(sessionId: string): Promise<{ ok
   const { fulfillSaleFromStripeSession } = await import("@/server/sale/sale-checkout.service");
   try {
     await fulfillSaleFromStripeSession(sessionId);
-    revalidatePath("/marketplace");
+    revalidatePath("/[locale]/marketplace", "page");
     return { ok: true };
   } catch (err) {
     console.error("[sale:confirmCheckout]", err);

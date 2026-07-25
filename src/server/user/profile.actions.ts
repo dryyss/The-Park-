@@ -39,9 +39,9 @@ export async function saveAddressAction(input: unknown): Promise<ProfileActionRe
 
   try {
     const addressId = await upsertUserAddress(viewer.id, parsed.data);
-    revalidatePath("/profil");
-    revalidatePath("/parametres");
-    revalidatePath("/vendre");
+    revalidatePath("/[locale]/profil", "page");
+    revalidatePath("/[locale]/parametres", "page");
+    revalidatePath("/[locale]/vendre", "page");
     return { ok: true, addressId };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -54,9 +54,9 @@ export async function deleteAddressAction(addressId: string): Promise<ProfileAct
 
   try {
     await deleteUserAddress(viewer.id, addressId);
-    revalidatePath("/profil");
-    revalidatePath("/parametres");
-    revalidatePath("/vendre");
+    revalidatePath("/[locale]/profil", "page");
+    revalidatePath("/[locale]/parametres", "page");
+    revalidatePath("/[locale]/vendre", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -74,10 +74,10 @@ export async function updateProfileAction(input: unknown): Promise<ProfileAction
     await updateUserProfile(viewer.id, parsed.data);
     // Succès « Contrôle Technique Validé » (profil complété).
     await evaluateUserBadgesSafe(viewer.id);
-    revalidatePath("/profil");
-    revalidatePath("/parametres");
-    revalidatePath("/vendre");
-    revalidatePath("/collectionneur/[slug]", "page");
+    revalidatePath("/[locale]/profil", "page");
+    revalidatePath("/[locale]/parametres", "page");
+    revalidatePath("/[locale]/vendre", "page");
+    revalidatePath("/[locale]/collectionneur/[slug]", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

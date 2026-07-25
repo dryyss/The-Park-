@@ -2,9 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getViewerUser } from "@/server/user/user.service";
 import { getRankings, type RankingCategory } from "@/server/community/community.service";
-import { PageHeader } from "@/components/common/page-header";
 import { RankingsPodium, RankingsTable } from "@/components/rankings/rankings-podium";
-import { RankingsTabs } from "@/components/rankings/rankings-tabs";
 import { localePageMetadata } from "@/lib/seo-messages";
 
 export const dynamic = "force-dynamic";
@@ -39,22 +37,13 @@ export default async function ClassementsPage({
   const viewer = await getViewerUser();
   const data = await getRankings(cat, viewer?.slug, requestedPage);
 
-  const tabs = [
-    { k: "completion", label: t("catCompletion"), href: rankingsHref("completion") },
-    { k: "reputation", label: t("catReputation"), href: rankingsHref("reputation") },
-    { k: "sales", label: t("catSales"), href: rankingsHref("sales") },
-  ];
-
   const onFirstPage = data.page === 1;
   const hasPrev = data.page > 1;
   const hasNext = data.page < data.pageCount;
 
+  // En-tête et onglets : rendus par le layout du segment (cf. layout.tsx).
   return (
-    <main className="mx-auto max-w-[1100px] page-pad pt-9 pb-[60px]">
-      <PageHeader title={t("title")} jp="栄光">
-        <RankingsTabs tabs={tabs} current={cat} />
-      </PageHeader>
-
+    <>
       {onFirstPage && <RankingsPodium rows={data.podium} />}
 
       {data.viewerRank !== null && (
@@ -104,6 +93,6 @@ export default async function ClassementsPage({
           )}
         </nav>
       )}
-    </main>
+    </>
   );
 }

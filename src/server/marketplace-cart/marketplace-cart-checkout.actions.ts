@@ -80,9 +80,9 @@ export async function startMarketplaceStripeCheckoutAction(
       },
     });
 
-    revalidatePath("/marketplace");
-    revalidatePath("/marketplace/panier");
-    revalidatePath("/panier");
+    revalidatePath("/[locale]/marketplace", "page");
+    revalidatePath("/[locale]/marketplace/panier", "page");
+    revalidatePath("/[locale]/panier", "page");
     revalidateTag("listings");
 
     return { ok: true, url };
@@ -104,10 +104,10 @@ export async function confirmMarketplaceCheckoutAction(
 ): Promise<{ ok: boolean }> {
   try {
     await fulfillMarketplaceCheckoutFromStripeSession(sessionId);
-    revalidatePath("/marketplace");
-    revalidatePath("/marketplace/panier");
-    revalidatePath("/panier");
-    revalidatePath("/portefeuille");
+    revalidatePath("/[locale]/marketplace", "page");
+    revalidatePath("/[locale]/marketplace/panier", "page");
+    revalidatePath("/[locale]/panier", "page");
+    revalidatePath("/[locale]/portefeuille", "page");
     revalidateTag("listings");
     return { ok: true };
   } catch (err) {
@@ -156,10 +156,10 @@ export async function payMarketplaceWithWalletAction(
       },
     });
 
-    revalidatePath("/marketplace");
-    revalidatePath("/marketplace/panier");
-    revalidatePath("/panier");
-    revalidatePath("/portefeuille");
+    revalidatePath("/[locale]/marketplace", "page");
+    revalidatePath("/[locale]/marketplace/panier", "page");
+    revalidatePath("/[locale]/panier", "page");
+    revalidatePath("/[locale]/portefeuille", "page");
     revalidateTag("listings");
 
     return { ok: true, checkoutId, locale: parsed.data.locale };

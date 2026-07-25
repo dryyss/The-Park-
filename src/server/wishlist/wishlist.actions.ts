@@ -39,10 +39,10 @@ export async function addToWishlistAction(input: unknown): Promise<WishlistActio
       editionPreset: parsed.data.editionPreset,
       note: parsed.data.note,
     });
-    revalidatePath("/wishlist");
-    revalidatePath("/collection");
-    revalidatePath("/marketplace");
-    revalidatePath("/carte", "layout");
+    revalidatePath("/[locale]/wishlist", "page");
+    revalidatePath("/[locale]/collection", "page");
+    revalidatePath("/[locale]/marketplace", "page");
+    revalidatePath("/[locale]/carte", "layout");
     return { ok: true };
   } catch (err) {
     console.error("[wishlist] add failed:", err);
@@ -65,7 +65,7 @@ export async function setWishlistAlertPriceAction(input: unknown): Promise<Wishl
 
   try {
     await setWishlistItemAlertPrice(viewer.id, parsed.data.wishlistItemId, parsed.data.alertPrice);
-    revalidatePath("/wishlist");
+    revalidatePath("/[locale]/wishlist", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: mapWishlistError(err) };
@@ -78,7 +78,7 @@ export async function removeFromWishlistAction(wishlistItemId: string): Promise<
 
   try {
     await removeWishlistItem(viewer.id, wishlistItemId);
-    revalidatePath("/wishlist");
+    revalidatePath("/[locale]/wishlist", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

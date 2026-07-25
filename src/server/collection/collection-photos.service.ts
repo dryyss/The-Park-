@@ -9,9 +9,13 @@ import type { CollectionItemPhotoView, CommunityPhotoView, CollectionPhotoKind }
 export { MAX_PHOTOS_PER_ITEM, MAX_GRADED_PHOTOS_PER_KIND };
 export type { CollectionItemPhotoView, CommunityPhotoView, CollectionPhotoKind };
 
+// L'édition fait partie de la clé d'unicité : un même couple (variante, état)
+// peut porter une 1ère édition et une réédition. L'écran photos ne distingue pas
+// encore les deux, on rattache donc à la pile la plus fournie.
 async function getOwnedItem(userId: string, variantId: string, condition: CardCondition) {
-  return prisma.collectionItem.findUnique({
-    where: { userId_variantId_condition: { userId, variantId, condition } },
+  return prisma.collectionItem.findFirst({
+    where: { userId, variantId, condition },
+    orderBy: [{ quantity: "desc" }, { acquiredAt: "asc" }],
     select: { id: true, quantity: true, isGraded: true },
   });
 }

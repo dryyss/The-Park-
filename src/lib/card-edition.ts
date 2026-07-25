@@ -37,3 +37,30 @@ export function editionPresetToLabel(preset: EditionPresetCode): string | null {
   if (preset === "first") return DEFAULT_FIRST_EDITION_LABEL;
   return null;
 }
+
+/** Filtre d'édition tel qu'exposé par le classeur (`?edition=`). */
+export type CollectionEdition = "first" | "reprint";
+
+/** Traduit le filtre du classeur vers le preset stocké sur l'exemplaire. */
+export function collectionEditionToPreset(edition: CollectionEdition | null): EditionPresetCode | null {
+  if (edition === "first") return "first";
+  if (edition === "reprint") return "unlimited";
+  return null;
+}
+
+/**
+ * Édition réelle d'un exemplaire possédé.
+ *
+ * Le preset posé sur la ligne fait foi ; à défaut, on retombe sur les libellés
+ * (possession puis catalogue) — indispensable pour les exemplaires enregistrés
+ * avant l'introduction de `editionPreset`, et pour les variantes dont le
+ * catalogue porte déjà « 1ère édition ».
+ */
+export function effectiveEditionPreset(
+  itemPreset: string | null | undefined,
+  itemLabel: string | null | undefined,
+  variantLabel: string | null | undefined,
+): EditionPresetCode {
+  if (itemPreset === "first") return "first";
+  return isFirstEditionLabel(resolveEditionLabel(itemLabel, variantLabel)) ? "first" : "unlimited";
+}

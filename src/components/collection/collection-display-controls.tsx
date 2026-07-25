@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
@@ -42,11 +43,20 @@ export function CollectionDisplayControls() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const cols = parseCollectionGridCols(searchParams.get("cols") ?? undefined);
+  const [pending, startTransition] = useTransition();
+  const serverCols = parseCollectionGridCols(searchParams.get("cols") ?? undefined);
   const sort = parseCollectionSort(searchParams.get("sort") ?? undefined);
+  // La page est `force-dynamic` : sans retour immédiat, la sélection ne bougeait
+  // pas pendant plusieurs secondes et l'utilisateur recliquait dans le vide.
+  const [targetCols, setTargetCols] = useState<CollectionGridCols | null>(null);
+  const cols = targetCols ?? serverCols;
+
+  useEffect(() => {
+    setTargetCols(null);
+  }, [serverCols]);
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className={`flex flex-wrap items-center gap-3 transition-opacity ${pending ? "opacity-70" : ""}`}>
       <div className="flex items-center gap-2">
         <label htmlFor="collection-sort" className="text-[10.5px] font-extrabold tracking-[2px] text-texte-dim uppercase">
           {t("sortLabel")}
@@ -54,7 +64,10 @@ export function CollectionDisplayControls() {
         <select
           id="collection-sort"
           value={sort}
-          onChange={(e) => router.push(pushParams(pathname, searchParams, { sort: parseCollectionSort(e.target.value) }))}
+          onChange={(e) => {
+            const next = parseCollectionSort(e.target.value);
+            startTransition(() => router.push(pushParams(pathname, searchParams, { sort: next })));
+          }}
           className="cursor-pointer rounded-[10px] border border-charbon-500 bg-charbon-800 px-3 py-2 text-[12px] font-bold text-blanc-casse outline-none focus:border-carmin"
         >
           {COLLECTION_SORT_OPTIONS.map((key) => (
@@ -72,11 +85,14 @@ export function CollectionDisplayControls() {
             <button
               key={n}
               type="button"
-              onClick={() => router.push(pushParams(pathname, searchParams, { cols: n }))}
+              onClick={() => {
+                setTargetCols(n);
+                startTransition(() => router.push(pushParams(pathname, searchParams, { cols: n })));
+              }}
               aria-label={t("gridColsPerRow", { count: n })}
               aria-pressed={cols === n}
               className={[
-                "min-w-9 rounded-lg px-2.5 py-1.5 text-[12px] font-extrabold tabular-nums transition",
+                "min-w-9 rounded-lg px-2.5 py-1.5 text-[12px] font-extrabold tabular-nums transition-colors",
                 cols === n ? "bg-charbon-600 text-blanc-casse" : "text-texte-muet hover:text-blanc-casse",
               ].join(" ")}
             >

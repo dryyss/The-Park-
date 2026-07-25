@@ -27,8 +27,8 @@ export async function adjustStockAction(input: unknown): Promise<AdminActionResu
       ...parsed.data,
       performedBy: access.user.displayName ?? access.user.email ?? access.user.id,
     });
-    revalidatePath("/admin/stocks");
-    revalidatePath("/boutique");
+    revalidatePath("/[locale]/admin/stocks", "page");
+    revalidatePath("/[locale]/boutique", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

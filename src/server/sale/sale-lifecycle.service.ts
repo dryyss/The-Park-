@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { transferOwnedCopies } from "@/server/collection/collection.mutations";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
 import { evaluateUserBadgesForUsers } from "@/server/badge/badge.service";
 import { releaseToSeller, refundPurchase } from "@/server/sale/sale-payment.service";
@@ -106,14 +107,11 @@ async function reallocateCollection(
   variantId: string,
   condition: "MINT" | "EXCELLENT" | "VERY_GOOD" | "GOOD" | "FAIR" | "DAMAGED",
 ): Promise<void> {
-  await tx.collectionItem.updateMany({
-    where: { userId: sellerId, variantId, condition },
-    data: { quantity: { decrement: 1 }, reservedQuantity: { decrement: 1 } },
-  });
-  await tx.collectionItem.upsert({
-    where: { userId_variantId_condition: { userId: buyerId, variantId, condition } },
-    create: { userId: buyerId, variantId, condition, quantity: 1 },
-    update: { quantity: { increment: 1 } },
+  await transferOwnedCopies(tx, {
+    fromUserId: sellerId,
+    toUserId: buyerId,
+    variantId,
+    condition,
   });
 }
 

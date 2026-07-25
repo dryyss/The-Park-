@@ -66,7 +66,7 @@ export async function requestWithdrawalAction(input: unknown): Promise<Withdrawa
       throw err;
     }
 
-    revalidatePath("/portefeuille");
+    revalidatePath("/[locale]/portefeuille", "page");
     return { ok: true, id: request.id };
   } catch (err) {
     console.error("[wallet:withdrawal-request]", err);
@@ -120,8 +120,8 @@ export async function processWithdrawalAction(
       },
     });
 
-    revalidatePath("/admin/retraits");
-    revalidatePath("/portefeuille");
+    revalidatePath("/[locale]/admin/retraits", "page");
+    revalidatePath("/[locale]/portefeuille", "page");
     return { ok: true };
   } catch (err) {
     console.error("[wallet:withdrawal-process]", err);

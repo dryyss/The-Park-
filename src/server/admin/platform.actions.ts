@@ -25,9 +25,9 @@ export async function updatePlatformConfigAction(input: unknown): Promise<AdminA
 
   try {
     await updatePlatformConfig(parsed.data);
-    revalidatePath("/admin/reglages");
-    revalidatePath("/boutique/panier");
-    revalidatePath("/panier");
+    revalidatePath("/[locale]/admin/reglages", "page");
+    revalidatePath("/[locale]/boutique/panier", "page");
+    revalidatePath("/[locale]/panier", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -62,7 +62,7 @@ export async function updateSeasonAdminAction(input: unknown): Promise<AdminActi
             ? new Date(parsed.data.releaseDate)
             : null,
     });
-    revalidatePath("/admin/catalogue");
+    revalidatePath("/[locale]/admin/catalogue", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

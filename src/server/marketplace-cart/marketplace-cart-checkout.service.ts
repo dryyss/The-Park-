@@ -49,7 +49,9 @@ export async function getMarketplaceRecap(
 ): Promise<MarketplaceRecapSummary> {
   const cart = await getViewerMarketplaceCart(userId);
   const idSet = cartItemIds?.length ? new Set(cartItemIds) : null;
-  const lines = cart.lines.filter((line) => !idSet || idSet.has(line.id));
+  // Les lignes expirées restent visibles dans le panier mais ne sont pas payables :
+  // elles doivent être renouvelées avant de partir au récapitulatif.
+  const lines = cart.lines.filter((line) => !line.expired && (!idSet || idSet.has(line.id)));
 
   const listingIds = lines.map((l) => l.listingId);
   const listings =

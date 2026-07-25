@@ -33,9 +33,9 @@ export async function submitReviewAction(input: {
       comment: input.comment,
     });
 
-    if (input.exchangeId) revalidatePath("/echanges");
-    if (input.saleId) revalidatePath("/dashboard");
-    revalidatePath("/profil");
+    if (input.exchangeId) revalidatePath("/[locale]/echanges", "page");
+    if (input.saleId) revalidatePath("/[locale]/dashboard", "page");
+    revalidatePath("/[locale]/profil", "page");
 
     return { ok: true };
   } catch (err) {

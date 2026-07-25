@@ -26,7 +26,7 @@ export async function UnifiedCartView({ locale }: { locale: string }) {
 
   const mktCart = viewer
     ? await getViewerMarketplaceCart(viewer.id)
-    : { lines: [], itemCount: 0, subtotal: "0,00 €", subtotalRaw: 0 };
+    : { lines: [], itemCount: 0, activeCount: 0, expiredCount: 0, subtotal: "0,00 €", subtotalRaw: 0 };
 
   const hasShop = shopCart.lines.length > 0;
   const hasMkt = mktCart.lines.length > 0;

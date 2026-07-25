@@ -35,8 +35,8 @@ export async function createExchangeShipmentAction(exchangeId: string): Promise<
 
   try {
     const id = await createShipmentForExchange(exchangeId, viewer.id);
-    revalidatePath("/securite", "layout");
-    revalidatePath("/echanges");
+    revalidatePath("/[locale]/securite", "layout");
+    revalidatePath("/[locale]/echanges", "page");
     return { ok: true, id };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -51,7 +51,7 @@ export async function markShippedAction(input: unknown): Promise<C2CActionResult
 
   try {
     await markShipmentShipped(parsed.data.shipmentId, viewer.id, parsed.data.trackingNumber);
-    revalidatePath("/securite", "layout");
+    revalidatePath("/[locale]/securite", "layout");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -66,7 +66,7 @@ export async function recordProofAction(input: unknown): Promise<C2CActionResult
 
   try {
     const id = await recordShipmentProof(parsed.data.shipmentId, viewer.id, parsed.data);
-    revalidatePath("/securite", "layout");
+    revalidatePath("/[locale]/securite", "layout");
     return { ok: true, id };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -104,7 +104,7 @@ export async function openDisputeAction(exchangeId: string, reason: string): Pro
     await tx.exchange.update({ where: { id: exchangeId }, data: { status: "DISPUTED" } });
   });
 
-  revalidatePath("/securite", "layout");
+  revalidatePath("/[locale]/securite", "layout");
   return { ok: true };
 }
 
@@ -118,7 +118,7 @@ export async function authorizeCautionAction(exchangeId: string): Promise<C2CAct
       select: { id: true },
     });
     const { paymentId } = await authorizeExchangeCaution(exchangeId, viewer.id, shipment?.id);
-    revalidatePath("/securite", "layout");
+    revalidatePath("/[locale]/securite", "layout");
     return { ok: true, id: paymentId };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -131,7 +131,7 @@ export async function markDeliveredAction(shipmentId: string): Promise<C2CAction
 
   try {
     await markShipmentDelivered(shipmentId, viewer.id);
-    revalidatePath("/securite", "layout");
+    revalidatePath("/[locale]/securite", "layout");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -144,8 +144,8 @@ export async function confirmReceiptAction(exchangeId: string): Promise<C2CActio
 
   try {
     await confirmExchangeReceipt(exchangeId, viewer.id);
-    revalidatePath("/securite", "layout");
-    revalidatePath("/echanges");
+    revalidatePath("/[locale]/securite", "layout");
+    revalidatePath("/[locale]/echanges", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

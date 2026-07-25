@@ -32,10 +32,11 @@ describe(`collection [${TAG}]`, () => {
 
     const item = await prisma.collectionItem.findUniqueOrThrow({
       where: {
-        userId_variantId_condition: {
+        userId_variantId_condition_editionPreset: {
           userId: user.id,
           variantId: variants[0].id,
           condition: "EXCELLENT",
+          editionPreset: "unlimited",
         },
       },
     });
@@ -74,10 +75,11 @@ describe(`collection [${TAG}]`, () => {
 
     const item = await prisma.collectionItem.findUnique({
       where: {
-        userId_variantId_condition: {
+        userId_variantId_condition_editionPreset: {
           userId: user.id,
           variantId: variants[0].id,
           condition: "EXCELLENT",
+          editionPreset: "unlimited",
         },
       },
     });

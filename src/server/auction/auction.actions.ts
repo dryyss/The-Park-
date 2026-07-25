@@ -30,9 +30,9 @@ export async function createAuctionAction(input: unknown): Promise<AuctionAction
 
   try {
     const auctionId = await createAuction(viewer.id, parsed.data);
-    revalidatePath("/encheres");
-    revalidatePath("/vendre");
-    revalidatePath("/dashboard");
+    revalidatePath("/[locale]/encheres", "page");
+    revalidatePath("/[locale]/vendre", "page");
+    revalidatePath("/[locale]/dashboard", "page");
     return { ok: true, auctionId };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -48,7 +48,7 @@ export async function placeBidAction(input: unknown): Promise<AuctionActionResul
 
   try {
     const bidId = await placeBid(viewer.id, parsed.data.auctionId, parsed.data.amount);
-    revalidatePath("/encheres");
+    revalidatePath("/[locale]/encheres", "page");
     revalidatePath(`/encheres/${parsed.data.auctionId}`);
     return { ok: true, bidId };
   } catch (err) {

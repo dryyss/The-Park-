@@ -8,7 +8,7 @@ import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 import { prisma } from "@/lib/prisma";
 
 function revalidateMessaging(conversationId: string) {
-  revalidatePath("/messages");
+  revalidatePath("/[locale]/messages", "page");
   revalidatePath(`/messages/${conversationId}`);
 }
 

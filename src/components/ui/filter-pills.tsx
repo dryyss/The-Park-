@@ -25,10 +25,12 @@ export function FilterPills({
             type="button"
             onClick={() => onChange(f.key)}
             className={[
-              "flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[12.5px] font-bold transition hover:-translate-y-0.5",
+              // Pas de `hover:-translate-y` : la pastille se dérobait sous le
+              // curseur entre le mousedown et le mouseup, annulant le clic.
+              "flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[12.5px] font-bold transition-colors",
               active
                 ? "border-carmin bg-carmin/12 text-blanc-casse"
-                : "border-charbon-500 bg-charbon-800 text-texte-muet hover:border-charbon-400",
+                : "border-charbon-500 bg-charbon-800 text-texte-muet hover:border-charbon-400 hover:text-blanc-casse",
             ].join(" ")}
           >
             {f.label}

@@ -29,7 +29,7 @@ export async function savePrivacySettingsAction(input: unknown): Promise<Setting
 
   try {
     await savePrivacySettings(viewer.id, parsed.data);
-    revalidatePath("/parametres");
+    revalidatePath("/[locale]/parametres", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -45,7 +45,7 @@ export async function saveNotificationPrefsAction(input: unknown): Promise<Setti
 
   try {
     await saveUserNotificationPrefs(viewer.id, parsed.data as NotificationPrefs);
-    revalidatePath("/parametres");
+    revalidatePath("/[locale]/parametres", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

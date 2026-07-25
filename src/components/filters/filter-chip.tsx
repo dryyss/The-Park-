@@ -20,10 +20,13 @@ export function FilterChip({
     <Link
       href={href}
       className={[
-        "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11.5px] font-bold whitespace-nowrap transition hover:-translate-y-0.5",
+        // Pas de `hover:-translate-y` : sur une cible aussi basse, le chip se
+        // dérobait sous le curseur entre le mousedown et le mouseup, et le
+        // navigateur n'émettait alors aucun clic.
+        "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11.5px] font-bold whitespace-nowrap transition-colors",
         active
           ? "border-carmin bg-carmin/12 text-blanc-casse"
-          : "border-charbon-500 bg-charbon-800 text-texte-muet hover:text-blanc-casse",
+          : "border-charbon-500 bg-charbon-800 text-texte-muet hover:border-charbon-400 hover:text-blanc-casse",
       ].join(" ")}
     >
       {glyph && <span style={{ color: glyphColor }}>{glyph}</span>}

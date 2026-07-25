@@ -99,10 +99,10 @@ describe(`collection [${TAG}] — ajout & quantités`, () => {
       useStandardVersion: true,
     });
 
-    await adjustCollectionCardQuantity(user.id, cards[0].number, 1);
+    await adjustCollectionCardQuantity(user.id, { cardId: cards[0].id, cardNumber: cards[0].number }, 1);
     expect((await getItem(user.id, v[0].id, "EXCELLENT"))!.quantity).toBe(1);
 
-    await adjustCollectionCardQuantity(user.id, cards[0].number, -1);
+    await adjustCollectionCardQuantity(user.id, { cardId: cards[0].id, cardNumber: cards[0].number }, -1);
     expect(await getItem(user.id, v[0].id, "EXCELLENT")).toBeNull();
   });
 
@@ -118,12 +118,34 @@ describe(`collection [${TAG}] — édition, gradation, signature`, () => {
     await addCollectionItem(user.id, variants[2].id, "EXCELLENT", 1);
   });
 
-  it("updateCollectionEdition pose puis efface le libellé d'édition", async () => {
-    await updateCollectionEdition(user.id, variants[2].id, "1ère édition", "EXCELLENT");
-    expect((await getItem(user.id, variants[2].id, "EXCELLENT"))!.editionLabel).toBe("1ère édition");
+  it("updateCollectionEdition reclasse l'exemplaire d'une édition à l'autre", async () => {
+    await updateCollectionEdition(user.id, variants[2].id, "first", "EXCELLENT", "unlimited");
+    const asFirst = (await getItem(user.id, variants[2].id, "EXCELLENT"))!;
+    expect(asFirst.editionPreset).toBe("first");
+    expect(asFirst.editionLabel).toBe("1ère édition");
 
-    await updateCollectionEdition(user.id, variants[2].id, null, "EXCELLENT");
-    expect((await getItem(user.id, variants[2].id, "EXCELLENT"))!.editionLabel).toBeNull();
+    await updateCollectionEdition(user.id, variants[2].id, "unlimited", "EXCELLENT", "first");
+    const asReprint = (await getItem(user.id, variants[2].id, "EXCELLENT"))!;
+    expect(asReprint.editionPreset).toBe("unlimited");
+    expect(asReprint.editionLabel).toBeNull();
+  });
+
+  it("updateCollectionEdition fusionne les quantités quand l'édition cible existe déjà", async () => {
+    // Deux piles distinctes sur la même variante et le même état.
+    await addCollectionItem(user.id, variants[5].id, "EXCELLENT", 2, "unlimited");
+    await addCollectionItem(user.id, variants[5].id, "EXCELLENT", 3, "first");
+    expect(
+      await prisma.collectionItem.count({ where: { userId: user.id, variantId: variants[5].id } }),
+    ).toBe(2);
+
+    await updateCollectionEdition(user.id, variants[5].id, "first", "EXCELLENT", "unlimited");
+
+    const merged = await prisma.collectionItem.findMany({
+      where: { userId: user.id, variantId: variants[5].id },
+    });
+    expect(merged).toHaveLength(1);
+    expect(merged[0].editionPreset).toBe("first");
+    expect(merged[0].quantity).toBe(5);
   });
 
   it("updateCollectionGrading active la gradation (société + note) puis la retire en purgeant les champs", async () => {
@@ -251,7 +273,7 @@ describe(`collection [${TAG}] — gestion d'erreurs`, () => {
 
     await expect(removeCollectionItem(intruder.id, variants[4].id, "EXCELLENT")).rejects.toThrow("NOT_FOUND");
     await expect(
-      updateCollectionEdition(intruder.id, variants[4].id, "1ère édition", "EXCELLENT"),
+      updateCollectionEdition(intruder.id, variants[4].id, "first", "EXCELLENT", "unlimited"),
     ).rejects.toThrow("NOT_FOUND");
     await expect(
       updateCollectionGrading(intruder.id, variants[4].id, "EXCELLENT", { isGraded: true }),
@@ -269,7 +291,7 @@ describe(`collection [${TAG}] — gestion d'erreurs`, () => {
   });
 
   it("adjustCollectionCardQuantity sur numéro inconnu → CARD_NOT_FOUND", async () => {
-    await expect(adjustCollectionCardQuantity(user.id, 999_999_000, 1)).rejects.toThrow("CARD_NOT_FOUND");
+    await expect(adjustCollectionCardQuantity(user.id, { cardNumber: 999_999_000 }, 1)).rejects.toThrow("CARD_NOT_FOUND");
   });
 
   it("adjustCollectionVariantQuantity sur variante inexistante → VARIANT_NOT_FOUND", async () => {

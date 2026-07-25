@@ -7,7 +7,17 @@ import {
   addListingToMarketplaceCart,
   getMarketplaceCartItemCount,
   removeMarketplaceCartItem,
+  renewExpiredMarketplaceCartItems,
 } from "@/server/marketplace-cart/marketplace-cart.service";
+
+// Routes préfixées par la locale (next-intl) : sans le segment `[locale]`,
+// `revalidatePath` ne correspondait à aucune route et n'invalidait rien.
+function revalidateCartPaths() {
+  revalidatePath("/[locale]/marketplace", "page");
+  revalidatePath("/[locale]/panier", "page");
+  revalidatePath("/[locale]/marketplace/panier", "page");
+  revalidateTag("listings");
+}
 
 export type MarketplaceCartActionError =
   | "UNAUTHORIZED"
@@ -16,6 +26,7 @@ export type MarketplaceCartActionError =
   | "SELF_PURCHASE"
   | "ALREADY_SOLD"
   | "IN_OTHER_CART"
+  | "CART_COOLDOWN"
   | "VALIDATION"
   | "UNKNOWN";
 
@@ -34,6 +45,7 @@ function toCartError(code: string): MarketplaceCartActionError {
     "SELF_PURCHASE",
     "ALREADY_SOLD",
     "IN_OTHER_CART",
+    "CART_COOLDOWN",
     "VALIDATION",
     "INSUFFICIENT_CREDIT",
     "STRIPE_NOT_CONFIGURED",
@@ -51,10 +63,7 @@ export async function addToMarketplaceCartAction(input: unknown): Promise<Market
 
   try {
     await addListingToMarketplaceCart(viewer.id, parsed.data.listingId);
-    revalidatePath("/marketplace");
-    revalidatePath("/marketplace/panier");
-    revalidatePath("/panier");
-    revalidateTag("listings");
+    revalidateCartPaths();
     return { ok: true, itemCount: await getMarketplaceCartItemCount(viewer.id) };
   } catch (err) {
     const code = err instanceof Error ? err.message : "UNKNOWN";
@@ -71,13 +80,29 @@ export async function removeFromMarketplaceCartAction(input: unknown): Promise<M
 
   try {
     await removeMarketplaceCartItem(viewer.id, parsed.data.itemId);
-    revalidatePath("/marketplace");
-    revalidatePath("/marketplace/panier");
-    revalidatePath("/panier");
-    revalidateTag("listings");
+    revalidateCartPaths();
     return { ok: true, itemCount: await getMarketplaceCartItemCount(viewer.id) };
   } catch (err) {
     console.error("[marketplace-cart:remove]", err);
+    return { ok: false, error: "UNKNOWN" };
+  }
+}
+
+export type MarketplaceCartRenewResult =
+  | { ok: true; renewed: number; dropped: number }
+  | { ok: false; error: MarketplaceCartActionError };
+
+/** Relance les réservations expirées du panier (bouton « renouveler »). */
+export async function renewMarketplaceCartAction(): Promise<MarketplaceCartRenewResult> {
+  const viewer = await getAuthenticatedViewer();
+  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
+
+  try {
+    const result = await renewExpiredMarketplaceCartItems(viewer.id);
+    revalidateCartPaths();
+    return { ok: true, ...result };
+  } catch (err) {
+    console.error("[marketplace-cart:renew]", err);
     return { ok: false, error: "UNKNOWN" };
   }
 }

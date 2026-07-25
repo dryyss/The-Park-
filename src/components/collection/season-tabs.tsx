@@ -1,7 +1,8 @@
 "use client";
 
-import { useTransition } from "react";
-import { useRouter } from "@/i18n/navigation";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Link } from "@/i18n/navigation";
 
 type SeasonTab = { id: string; code: string; name: string };
 type SeasonPct = { code: string; pct: number };
@@ -9,52 +10,67 @@ type SeasonPct = { code: string; pct: number };
 /**
  * Onglets de saison (garage). La page collection est `force-dynamic` : un clic
  * déclenche un aller-retour serveur complet, ce qui donnait une impression de
- * clic « pas pris en compte ». On applique donc l'état actif de façon optimiste
- * (surbrillance immédiate) + un état de chargement pendant la navigation.
+ * clic « pas pris en compte ».
+ *
+ * Ce sont de vrais liens : le clic fonctionne avant même l'hydratation, pendant
+ * une navigation déjà en cours, et au clic milieu. On n'y ajoute aucun `disabled`
+ * — désactiver les onglets le temps du chargement faisait purement disparaître
+ * les clics émis pendant ce délai. Le seul retour visuel est la surbrillance
+ * optimiste de la cible cliquée.
  */
 export function SeasonTabs({
   seasons,
   seasonPcts,
-  activeSeason,
-  activeEdition,
   horsSerieCode,
   labels,
 }: {
   seasons: SeasonTab[];
   seasonPcts: SeasonPct[];
-  activeSeason: string | null;
-  activeEdition: "first" | "reprint" | null;
   horsSerieCode: string;
   labels: { seasonHS: string; editionBadge1st: string; editionBadgeReprint: string };
 }) {
-  const router = useRouter();
-  const [pending, startTransition] = useTransition();
+  // Les onglets vivent dans le layout du segment : ils survivent au rechargement
+  // de la page et lisent donc l'état actif directement dans l'URL.
+  const searchParams = useSearchParams();
+  const activeSeason = searchParams.get("season");
+  const rawEdition = searchParams.get("edition");
+  const activeEdition = rawEdition === "first" || rawEdition === "reprint" ? rawEdition : null;
 
-  // Cible de navigation optimiste : ce que l'utilisateur vient de cliquer.
-  // `null` = « toutes les saisons » (désélection). `undefined` = rien en attente.
-  const go = (href: string) => {
-    startTransition(() => router.push(href));
-  };
+  // Href visé par le dernier clic, pour surligner immédiatement la bonne cible.
+  const [target, setTarget] = useState<string | null>(null);
+
+  // La navigation a abouti : on repasse la main aux props serveur.
+  useEffect(() => {
+    setTarget(null);
+  }, [activeSeason, activeEdition]);
+
+  const seasonHref = (code: string) =>
+    activeSeason === code ? "/collection" : `/collection?season=${code}`;
+
+  const editionHref = (edition: "first" | "reprint") =>
+    activeEdition === edition
+      ? `/collection?season=${activeSeason}`
+      : `/collection?season=${activeSeason}&edition=${edition}`;
+
+  /** Actif = cible cliquée si une navigation est en cours, sinon l'état serveur. */
+  const isTargeted = (href: string, fallback: boolean) =>
+    target === null ? fallback : target === href;
 
   return (
-    <div
-      className={`flex w-full flex-wrap items-center justify-end gap-2 pb-1.5 transition-opacity sm:w-auto ${
-        pending ? "opacity-60" : ""
-      }`}
-    >
+    <div className="flex w-full flex-wrap items-center justify-end gap-2 pb-1.5 sm:w-auto">
       {seasons.map((s) => {
         const isHS = s.code === horsSerieCode;
-        const isActive = activeSeason === s.code;
-        const href = isActive ? "/collection" : `/collection?season=${s.code}`;
+        const href = seasonHref(s.code);
+        const isActive = isTargeted(href, activeSeason === s.code);
         const sp = seasonPcts.find((p) => p.code === s.code);
         return (
-          <button
+          <Link
             key={s.id}
-            type="button"
-            onClick={() => go(href)}
-            disabled={pending}
+            href={href}
+            onClick={() => setTarget(href)}
+            aria-current={isActive ? "page" : undefined}
             className={[
-              "font-display flex flex-col items-center rounded-lg px-4.5 py-2 text-[13px] tracking-[1.5px] transition",
+              "font-display flex flex-col items-center rounded-lg px-4.5 py-2 text-[13px] tracking-[1.5px] transition-colors",
               isActive
                 ? "bg-blanc-casse text-charbon shadow-[3px_3px_0_var(--color-carmin)]"
                 : isHS
@@ -72,49 +88,35 @@ export function SeasonTabs({
                 {sp.pct}%
               </span>
             )}
-          </button>
+          </Link>
         );
       })}
       {activeSeason && (
         <div className="ml-2 mt-0.5 flex gap-1">
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() =>
-              go(
-                activeEdition === "first"
-                  ? `/collection?season=${activeSeason}`
-                  : `/collection?season=${activeSeason}&edition=first`,
-              )
-            }
-            className="px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] transition"
-            style={{
-              clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))",
-              background: activeEdition === "first" || activeEdition === null ? "var(--color-carmin)" : "#3a3a3a",
-              color: activeEdition === "first" || activeEdition === null ? "#fff" : "var(--color-texte-faible)",
-            }}
-          >
-            {labels.editionBadge1st}
-          </button>
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() =>
-              go(
-                activeEdition === "reprint"
-                  ? `/collection?season=${activeSeason}`
-                  : `/collection?season=${activeSeason}&edition=reprint`,
-              )
-            }
-            className="px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] transition"
-            style={{
-              clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))",
-              background: activeEdition === "reprint" ? "var(--color-carmin)" : "#3a3a3a",
-              color: activeEdition === "reprint" ? "#fff" : "var(--color-texte-faible)",
-            }}
-          >
-            {labels.editionBadgeReprint}
-          </button>
+          {(["first", "reprint"] as const).map((edition) => {
+            const href = editionHref(edition);
+            // Aucune pastille active tant qu'aucun filtre n'est posé : sans
+            // `?edition=`, le serveur affiche les deux éditions confondues.
+            // Surligner « 1ère édition » par défaut laissait croire qu'on
+            // ajoutait dans ce compartiment alors qu'aucun filtre ne s'appliquait.
+            const on = isTargeted(href, activeEdition === edition);
+            return (
+              <Link
+                key={edition}
+                href={href}
+                onClick={() => setTarget(href)}
+                aria-current={on ? "page" : undefined}
+                className="px-2.5 pt-1 pb-2.5 text-[9px] font-extrabold tracking-[1.5px] transition-colors"
+                style={{
+                  clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 5px), 50% 100%, 0 calc(100% - 5px))",
+                  background: on ? "var(--color-carmin)" : "#3a3a3a",
+                  color: on ? "#fff" : "var(--color-texte-faible)",
+                }}
+              >
+                {edition === "first" ? labels.editionBadge1st : labels.editionBadgeReprint}
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

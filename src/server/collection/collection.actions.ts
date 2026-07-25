@@ -37,9 +37,11 @@ const qtySchema = z.object({
 const conditionEnum = z.enum(["MINT", "EXCELLENT", "VERY_GOOD", "GOOD", "FAIR", "DAMAGED"]);
 
 const adjustSchema = z.object({
+  cardId: z.string().min(1).nullish(),
   cardNumber: z.number().int().min(1).max(999),
   delta: z.union([z.literal(1), z.literal(-1)]),
   condition: conditionEnum.default("EXCELLENT"),
+  edition: z.enum(["first", "reprint"]).nullish(),
 });
 
 const adjustVariantSchema = z.object({
@@ -78,20 +80,26 @@ const signatureSchema = z.object({
   signatureAuthor: z.string().trim().max(120).nullish(),
 });
 
+// Les routes sont préfixées par la locale (next-intl, `localePrefix: always`) :
+// sans le segment `[locale]`, le chemin ne correspondait à aucune route et
+// n'invalidait donc rien — c'est ce qui obligeait à recharger la page à la main.
+const COLLECTION_ROUTES = [
+  "/[locale]/collection",
+  "/[locale]/profil",
+  "/[locale]/trophees",
+  "/[locale]/vendre",
+  "/[locale]/saison-1",
+  "/[locale]/saison-2",
+  "/[locale]/hors-serie",
+  "/[locale]/echanges",
+  "/[locale]/echanges/proposer",
+] as const;
+
 function revalidateCollection() {
-  revalidatePath("/collection");
-  revalidatePath("/carte", "layout");
-  revalidatePath("/profil");
-  revalidatePath("/trophees");
-  revalidatePath("/vendre");
-  revalidatePath("/saison-1");
-  revalidatePath("/hors-serie");
-  revalidatePath("/echanges");
-  revalidatePath("/echanges/proposer");
+  for (const route of COLLECTION_ROUTES) revalidatePath(route, "page");
+  revalidatePath("/[locale]/carte/[slug]", "page");
   // Carousel accueil : comptes possédés par rareté (lecture Neon live).
-  for (const locale of ["fr", "en", "ja"] as const) {
-    revalidatePath(`/${locale}`);
-  }
+  revalidatePath("/[locale]", "page");
 }
 
 export async function addToCollectionAction(input: unknown): Promise<CollectionActionResult> {
@@ -134,7 +142,13 @@ export async function adjustCollectionCardAction(input: unknown): Promise<Collec
   if (!parsed.success) return { ok: false, error: "VALIDATION" };
 
   try {
-    await adjustCollectionCardQuantity(viewer.id, parsed.data.cardNumber, parsed.data.delta, parsed.data.condition);
+    await adjustCollectionCardQuantity(
+      viewer.id,
+      { cardId: parsed.data.cardId, cardNumber: parsed.data.cardNumber },
+      parsed.data.delta,
+      parsed.data.condition,
+      parsed.data.edition ?? null,
+    );
     revalidateCollection();
     return { ok: true };
   } catch (err) {
@@ -165,10 +179,18 @@ export async function updateCollectionEditionAction(input: unknown): Promise<Col
   const parsed = editionSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "VALIDATION" };
 
-  const editionLabel = editionPresetToLabel(parsed.data.preset as EditionPresetCode);
+  const targetPreset = parsed.data.preset as EditionPresetCode;
+  // L'édition d'origine est l'autre compartiment : c'est la ligne à reclasser.
+  const fromPreset: EditionPresetCode = targetPreset === "first" ? "unlimited" : "first";
 
   try {
-    await updateCollectionEdition(viewer.id, parsed.data.variantId, editionLabel, parsed.data.condition);
+    await updateCollectionEdition(
+      viewer.id,
+      parsed.data.variantId,
+      targetPreset,
+      parsed.data.condition,
+      fromPreset,
+    );
     revalidateCollection();
     return { ok: true };
   } catch (err) {

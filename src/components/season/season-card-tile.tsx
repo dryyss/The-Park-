@@ -30,6 +30,7 @@ export function SeasonCardTile({
       </Link>
       {card.standardVariantId && (
         <CollectionQuantityControls
+          cardId={card.cardId}
           cardNumber={card.number}
           quantity={card.quantity}
           isAuthenticated={isAuthenticated}

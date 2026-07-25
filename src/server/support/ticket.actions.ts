@@ -26,7 +26,7 @@ export async function createTicketAction(input: unknown): Promise<TicketActionRe
 
   try {
     const id = await createTicket(viewer.id, parsed.data);
-    revalidatePath("/support");
+    revalidatePath("/[locale]/support", "page");
     return { ok: true, id };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -48,8 +48,8 @@ export async function replyTicketAction(input: unknown): Promise<TicketActionRes
       parsed.data.body,
     );
     revalidatePath(`/support/${parsed.data.ticketId}`);
-    revalidatePath("/support");
-    revalidatePath("/admin/support");
+    revalidatePath("/[locale]/support", "page");
+    revalidatePath("/[locale]/admin/support", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -67,7 +67,7 @@ export async function setTicketStatusAction(ticketId: string, status: string): P
   try {
     await setTicketStatus(ticketId, status as SupportTicketStatus);
     revalidatePath(`/support/${ticketId}`);
-    revalidatePath("/admin/support");
+    revalidatePath("/[locale]/admin/support", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

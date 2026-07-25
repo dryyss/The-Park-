@@ -14,7 +14,7 @@ export async function extendGuaranteeAction(exchangeId: string): Promise<StateMa
   const res = await extendGuaranteeWindow(exchangeId, viewer.id);
   if (!res.ok) return { ok: false, error: res.error };
 
-  revalidatePath("/securite/etats");
-  revalidatePath("/securite/garantie");
+  revalidatePath("/[locale]/securite/etats", "page");
+  revalidatePath("/[locale]/securite/garantie", "page");
   return { ok: true };
 }

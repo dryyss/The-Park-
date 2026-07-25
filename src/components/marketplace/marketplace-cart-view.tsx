@@ -10,7 +10,7 @@ export async function MarketplaceCartView({ locale }: { locale: string }) {
   const viewer = await getViewerUser();
   const cart = viewer
     ? await getViewerMarketplaceCart(viewer.id)
-    : { lines: [], itemCount: 0, subtotal: "0,00 €", subtotalRaw: 0 };
+    : { lines: [], itemCount: 0, activeCount: 0, expiredCount: 0, subtotal: "0,00 €", subtotalRaw: 0 };
 
   return (
     <div>

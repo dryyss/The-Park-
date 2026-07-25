@@ -114,12 +114,14 @@ export function TopBar() {
                 href={item.href}
                 prefetch={true}
                 className={[
-                  "font-display rounded-[7px] px-3 py-2 text-[12.5px] tracking-[1.4px] transition",
+                  // Pas de `hover:-translate-y` : l'onglet se dérobait sous le
+                  // curseur au mousedown, ce qui annulait le clic.
+                  "font-display rounded-[7px] px-3 py-2 text-[12.5px] tracking-[1.4px] transition-colors",
                   active
                     ? "-rotate-[1.5deg] bg-carmin text-white shadow-[3px_3px_0_rgba(0,0,0,0.45)]"
                     : item.official
-                      ? "text-or hover:-translate-y-0.5 hover:bg-charbon-700 hover:text-or-clair"
-                      : "text-texte-muet hover:-translate-y-0.5 hover:bg-charbon-700 hover:text-blanc-casse",
+                      ? "text-or hover:bg-charbon-700 hover:text-or-clair"
+                      : "text-texte-muet hover:bg-charbon-700 hover:text-blanc-casse",
                 ].join(" ")}
               >
                 {t(item.key).toUpperCase()}

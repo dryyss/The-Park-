@@ -624,6 +624,10 @@ model CollectionItem {
   note             String?
   /// Édition de l'exemplaire possédé (ex. « 1ère édition », « Illimitée »). Null = illimitée.
   editionLabel     String?
+  /// "first" | "unlimited" — édition normalisée (aligné WishlistItem). Fait partie
+  /// de l'identité de l'exemplaire : une 1ère édition et une réédition de la même
+  /// carte dans le même état sont deux lignes distinctes.
+  editionPreset    String        @default("unlimited")
 
   // Gradation optionnelle (PSA, PCA…)
   isGraded     Boolean @default(false)
@@ -639,7 +643,7 @@ model CollectionItem {
 
   acquiredAt DateTime @default(now())
 
-  @@unique([userId, variantId, condition])
+  @@unique([userId, variantId, condition, editionPreset])
   @@index([userId])
 }
 

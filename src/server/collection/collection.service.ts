@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { rarityMeta, cardImage, cardNumberLabel, isPromoRarity, RARITY_ORDER, rarityTitle, rarityJp } from "@/lib/rarity";
 import { isExcludedFromCompletion } from "@/lib/rarities";
 import { isActiveVersionCode } from "@/lib/card-versions";
-import { isFirstEditionLabel, resolveEditionLabel } from "@/lib/card-edition";
+import { effectiveEditionPreset, isFirstEditionLabel } from "@/lib/card-edition";
 import { sortCollectionCards, type CollectionSort } from "@/lib/collection-sort";
 
 export type CollectionSegment = "all" | "owned" | "missing";
@@ -81,6 +81,57 @@ export interface CollectionView {
   seasonPcts: SeasonCompletion[];
 }
 
+/**
+ * Taux de complétion par saison, sans monter tout le classeur.
+ *
+ * Sert à la barre d'onglets, rendue dans le layout du segment : elle reste ainsi
+ * montée (et cliquable) pendant que la page se recharge. Deux requêtes légères,
+ * là où `getUserCollection` charge tout le catalogue avec ses variantes.
+ */
+export async function getSeasonCompletion(userId: string | null): Promise<SeasonCompletion[]> {
+  const [cards, items] = await Promise.all([
+    prisma.card.findMany({
+      select: {
+        id: true,
+        rarity: { select: { code: true } },
+        season: { select: { code: true, name: true, sortOrder: true } },
+      },
+    }),
+    userId
+      ? prisma.collectionItem.findMany({
+          where: { userId, quantity: { gt: 0 } },
+          select: { variant: { select: { cardId: true } } },
+        })
+      : Promise.resolve([]),
+  ]);
+
+  const ownedCardIds = new Set(items.map((i) => i.variant.cardId));
+  const bySeason = new Map<string, { name: string; sortOrder: number; total: number; owned: number }>();
+
+  for (const card of cards) {
+    if (isExcludedFromCompletion(card.rarity.code)) continue;
+    const entry = bySeason.get(card.season.code) ?? {
+      name: card.season.name,
+      sortOrder: card.season.sortOrder,
+      total: 0,
+      owned: 0,
+    };
+    entry.total += 1;
+    if (ownedCardIds.has(card.id)) entry.owned += 1;
+    bySeason.set(card.season.code, entry);
+  }
+
+  return Array.from(bySeason.entries())
+    .sort((a, b) => a[1].sortOrder - b[1].sortOrder)
+    .map(([code, e]) => ({
+      code,
+      name: e.name,
+      total: e.total,
+      owned: e.owned,
+      pct: e.total > 0 ? Math.round((e.owned / e.total) * 100) : 0,
+    }));
+}
+
 /** Classeur complet (possÃ©dÃ© / manquant par carte). userId null = visiteur (tout en manquant). */
 export async function getUserCollection(userId: string | null, filters: CollectionFilters): Promise<CollectionView> {
   const [cards, items, versionTypes, totalVariants] = await Promise.all([
@@ -111,8 +162,14 @@ export async function getUserCollection(userId: string | null, filters: Collecti
     cur.qty += item.quantity;
     const code = vtCodes.get(item.variant.versionTypeId);
     if (code) cur.versions.add(code);
-    const effective = resolveEditionLabel(item.editionLabel, item.variant.editionLabel);
-    if (isFirstEditionLabel(effective)) {
+    // Le preset porté par la ligne fait foi ; à défaut on retombe sur les
+    // libellés, pour les exemplaires antérieurs à l'introduction du champ.
+    const preset = effectiveEditionPreset(
+      item.editionPreset,
+      item.editionLabel,
+      item.variant.editionLabel,
+    );
+    if (preset === "first") {
       cur.hasFirstEdition = true;
       cur.firstQty += item.quantity;
     } else {

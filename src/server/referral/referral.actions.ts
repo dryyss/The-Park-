@@ -20,6 +20,6 @@ export async function applyReferralCodeAction(input: unknown): Promise<ReferralA
   const result = await attachReferralByCode(viewer.id, parsed.data.code);
   if (result !== "OK") return { ok: false, error: result };
 
-  revalidatePath("/parrainage");
+  revalidatePath("/[locale]/parrainage", "page");
   return { ok: true };
 }

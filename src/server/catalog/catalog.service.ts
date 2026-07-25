@@ -155,6 +155,7 @@ export async function getCatalogSummary(seasonCode = "S01") {
 }
 
 export interface SeasonCardRow {
+  cardId: string;
   slug: string;
   name: string;
   number: number;
@@ -183,6 +184,7 @@ async function fetchSeasonCardBase(seasonCode: string): Promise<Omit<SeasonCardR
     const meta = rarityMeta(c.rarity.code);
     const standardVariant = c.variants.find((v) => v.versionType.code === "standard");
     return {
+      cardId: c.id,
       slug: c.slug,
       name: c.name,
       number: c.number,

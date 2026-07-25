@@ -72,8 +72,8 @@ export async function updateProductAction(input: unknown): Promise<AdminActionRe
         ? { releaseDate: releaseDate ? new Date(releaseDate) : null }
         : {}),
     });
-    revalidatePath("/admin/boutique");
-    revalidatePath("/boutique");
+    revalidatePath("/[locale]/admin/boutique", "page");
+    revalidatePath("/[locale]/boutique", "page");
     revalidateTag("shop");
     return { ok: true };
   } catch (err) {
@@ -96,8 +96,8 @@ export async function createProductAction(input: unknown): Promise<AdminActionRe
       images: rest.images ?? [],
       releaseDate: releaseDate ? new Date(releaseDate) : null,
     });
-    revalidatePath("/admin/boutique");
-    revalidatePath("/boutique");
+    revalidatePath("/[locale]/admin/boutique", "page");
+    revalidatePath("/[locale]/boutique", "page");
     revalidateTag("shop");
     return { ok: true };
   } catch (err) {
@@ -118,8 +118,8 @@ export async function updateSeasonAction(input: unknown): Promise<AdminActionRes
       releaseDate: parsed.data.releaseDate === undefined ? undefined : parsed.data.releaseDate ? new Date(parsed.data.releaseDate) : null,
       seriesCode: parsed.data.seriesCode,
     });
-    revalidatePath("/admin/catalogue");
-    revalidatePath("/saison-1");
+    revalidatePath("/[locale]/admin/catalogue", "page");
+    revalidatePath("/[locale]/saison-1", "page");
     revalidateTag("catalog");
     return { ok: true };
   } catch (err) {
@@ -136,9 +136,9 @@ export async function updateOrderStatusAction(input: unknown): Promise<AdminActi
 
   try {
     await updateOrderStatus(parsed.data.orderId, parsed.data.status);
-    revalidatePath("/admin/commandes");
+    revalidatePath("/[locale]/admin/commandes", "page");
     revalidatePath(`/admin/commandes/${parsed.data.orderId}`);
-    revalidatePath("/commandes");
+    revalidatePath("/[locale]/commandes", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
@@ -158,9 +158,9 @@ export async function updateOrderFulfillmentAction(input: unknown): Promise<Admi
       trackingNumber: parsed.data.trackingNumber,
       shippingMethod: parsed.data.shippingMethod,
     });
-    revalidatePath("/admin/commandes");
+    revalidatePath("/[locale]/admin/commandes", "page");
     revalidatePath(`/admin/commandes/${parsed.data.orderId}`);
-    revalidatePath("/commandes");
+    revalidatePath("/[locale]/commandes", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
