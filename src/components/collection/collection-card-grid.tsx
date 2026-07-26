@@ -13,7 +13,7 @@ export function CollectionCardGrid({
   isAuthenticated,
   wishlistCardIds,
   likeMeta,
-  edition = null,
+  setId = null,
 }: {
   cards: Card[];
   cols: CollectionGridCols;
@@ -21,7 +21,8 @@ export function CollectionCardGrid({
   isAuthenticated: boolean;
   wishlistCardIds: Set<string>;
   likeMeta: Record<string, { count: number; liked: boolean }>;
-  edition?: "first" | "reprint" | null;
+  /** Collection affichée : les ajouts visent sa déclinaison. */
+  setId?: string | null;
 }) {
   const columnConfig: ColumnBreakpointConfig = columnConfigFromCollectionCols(cols);
 
@@ -40,7 +41,7 @@ export function CollectionCardGrid({
           inWishlist={wishlistCardIds.has(card.cardId)}
           likeCount={likeMeta[card.cardId]?.count ?? 0}
           liked={likeMeta[card.cardId]?.liked ?? false}
-          edition={edition}
+          setId={setId}
         />
       )}
     />

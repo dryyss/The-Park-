@@ -57,7 +57,6 @@ export function WishlistQuickAddButton({
         variantId,
         seasonId,
         condition: "EXCELLENT",
-        editionPreset: "unlimited",
       });
       if (res.ok) {
         setAdded(true);

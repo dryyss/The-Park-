@@ -9,7 +9,6 @@ import {
   setWishlistItemAlertPrice,
   mapWishlistError,
 } from "@/server/wishlist/wishlist.mutations";
-import { EDITION_PRESET_CODES } from "@/lib/card-edition";
 import { CONDITION_ORDER } from "@/lib/condition";
 
 export type WishlistActionResult = { ok: true } | { ok: false; error: string };
@@ -19,7 +18,6 @@ const addSchema = z.object({
   variantId: z.string().min(1),
   seasonId: z.string().min(1),
   condition: z.enum(CONDITION_ORDER as [string, ...string[]]),
-  editionPreset: z.enum(EDITION_PRESET_CODES),
   note: z.string().max(200).optional(),
 });
 
@@ -36,7 +34,6 @@ export async function addToWishlistAction(input: unknown): Promise<WishlistActio
       variantId: parsed.data.variantId,
       seasonId: parsed.data.seasonId,
       condition: parsed.data.condition as import("@/generated/prisma/client").CardCondition,
-      editionPreset: parsed.data.editionPreset,
       note: parsed.data.note,
     });
     revalidatePath("/[locale]/wishlist", "page");

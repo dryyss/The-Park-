@@ -17,7 +17,7 @@ export function CollectionCardTile({
   inWishlist = false,
   likeCount = 0,
   liked = false,
-  edition = null,
+  setId = null,
 }: {
   card: Card;
   missingLabel: string;
@@ -26,7 +26,8 @@ export function CollectionCardTile({
   inWishlist?: boolean;
   likeCount?: number;
   liked?: boolean;
-  edition?: "first" | "reprint" | null;
+  /** Collection affichée : les ajouts visent sa déclinaison. */
+  setId?: string | null;
 }) {
   const missing = !card.owned;
 
@@ -83,7 +84,7 @@ export function CollectionCardTile({
             cardId={card.cardId}
             cardNumber={card.number}
             quantity={card.quantity}
-            edition={edition}
+            setId={setId}
             isAuthenticated={isAuthenticated}
           />
         </div>

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/common/page-header";
 import { SeasonTabs } from "@/components/collection/season-tabs";
 import { getViewerUser } from "@/server/user/user.service";
-import { getSeasonCompletion } from "@/server/collection/collection.service";
+import { getSeasonCompletion, getSetCompletion } from "@/server/collection/collection.service";
 import { HORS_SERIE_SEASON_CODE } from "@/lib/seasons";
 
 /**
@@ -28,9 +28,10 @@ export default async function CollectionLayout({
   const t = await getTranslations("collection");
 
   const viewer = await getViewerUser();
-  const [seasons, seasonPcts] = await Promise.all([
+  const [seasons, seasonPcts, setPcts] = await Promise.all([
     prisma.season.findMany({ orderBy: { sortOrder: "asc" }, select: { id: true, code: true, name: true } }),
     getSeasonCompletion(viewer?.id ?? null),
+    getSetCompletion(viewer?.id ?? null),
   ]);
 
   return (
@@ -40,12 +41,9 @@ export default async function CollectionLayout({
           <SeasonTabs
             seasons={seasons}
             seasonPcts={seasonPcts}
+            sets={setPcts.map((s) => ({ code: s.code, name: s.name, pct: s.pct }))}
             horsSerieCode={HORS_SERIE_SEASON_CODE}
-            labels={{
-              seasonHS: t("seasonHS"),
-              editionBadge1st: t("editionBadge1st"),
-              editionBadgeReprint: t("editionBadgeReprint"),
-            }}
+            labels={{ seasonHS: t("seasonHS") }}
           />
         </Suspense>
       </PageHeader>

@@ -10,7 +10,7 @@ export interface CollectionExportRow {
   version: string;
   language: string;
   condition: string;
-  edition: string;
+  set: string;
   quantity: number;
   graded: string;
   signed: string;
@@ -24,7 +24,6 @@ export async function getCollectionExportRows(userId: string): Promise<Collectio
     select: {
       condition: true,
       quantity: true,
-      editionLabel: true,
       isGraded: true,
       gradeCompany: true,
       gradeScore: true,
@@ -33,6 +32,7 @@ export async function getCollectionExportRows(userId: string): Promise<Collectio
         select: {
           language: true,
           versionType: { select: { label: true } },
+          set: { select: { name: true } },
           card: {
             select: {
               number: true,
@@ -59,7 +59,7 @@ export async function getCollectionExportRows(userId: string): Promise<Collectio
         version: it.variant.versionType.label,
         language: it.variant.language,
         condition: it.condition,
-        edition: it.editionLabel?.trim() || "Illimitée",
+        set: it.variant.set?.name ?? "",
         quantity: it.quantity,
         graded: it.isGraded ? `${it.gradeCompany ?? ""} ${it.gradeScore ?? ""}`.trim() || "Oui" : "",
         signed: it.isSigned ? "Oui" : "",
@@ -77,7 +77,7 @@ const CSV_COLUMNS: { key: keyof CollectionExportRow; header: string }[] = [
   { key: "version", header: "Version" },
   { key: "language", header: "Langue" },
   { key: "condition", header: "État" },
-  { key: "edition", header: "Édition" },
+  { key: "set", header: "Collection" },
   { key: "quantity", header: "Quantité" },
   { key: "graded", header: "Gradée" },
   { key: "signed", header: "Signée" },

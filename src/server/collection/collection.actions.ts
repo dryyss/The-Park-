@@ -9,11 +9,9 @@ import {
   updateCollectionQuantity,
   adjustCollectionCardQuantity,
   adjustCollectionVariantQuantity,
-  updateCollectionEdition,
   updateCollectionGrading,
   updateCollectionSignature,
 } from "@/server/collection/collection.mutations";
-import { editionPresetToLabel, type EditionPresetCode } from "@/lib/card-edition";
 
 export type CollectionActionResult = { ok: true } | { ok: false; error: string };
 
@@ -41,19 +39,14 @@ const adjustSchema = z.object({
   cardNumber: z.number().int().min(1).max(999),
   delta: z.union([z.literal(1), z.literal(-1)]),
   condition: conditionEnum.default("EXCELLENT"),
-  edition: z.enum(["first", "reprint"]).nullish(),
+  /// Collection affichée : l'ajout/retrait vise la déclinaison de cette collection.
+  setId: z.string().min(1).nullish(),
 });
 
 const adjustVariantSchema = z.object({
   variantId: z.string().min(1),
   delta: z.union([z.literal(1), z.literal(-1)]),
   condition: conditionEnum.default("EXCELLENT"),
-});
-
-const editionSchema = z.object({
-  variantId: z.string().min(1),
-  preset: z.enum(["first", "unlimited"]),
-  condition: z.enum(["MINT", "EXCELLENT", "VERY_GOOD", "GOOD", "FAIR", "DAMAGED"]).default("EXCELLENT"),
 });
 
 import { GRADE_COMPANIES, GRADE_SCORES, isValidGradeCompany } from "@/lib/grading";
@@ -147,7 +140,7 @@ export async function adjustCollectionCardAction(input: unknown): Promise<Collec
       { cardId: parsed.data.cardId, cardNumber: parsed.data.cardNumber },
       parsed.data.delta,
       parsed.data.condition,
-      parsed.data.edition ?? null,
+      parsed.data.setId ?? null,
     );
     revalidateCollection();
     return { ok: true };
@@ -165,32 +158,6 @@ export async function adjustCollectionVariantAction(input: unknown): Promise<Col
 
   try {
     await adjustCollectionVariantQuantity(viewer.id, parsed.data.variantId, parsed.data.delta, parsed.data.condition);
-    revalidateCollection();
-    return { ok: true };
-  } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
-  }
-}
-
-export async function updateCollectionEditionAction(input: unknown): Promise<CollectionActionResult> {
-  const viewer = await getAuthenticatedViewer();
-  if (!viewer) return { ok: false, error: "UNAUTHORIZED" };
-
-  const parsed = editionSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, error: "VALIDATION" };
-
-  const targetPreset = parsed.data.preset as EditionPresetCode;
-  // L'édition d'origine est l'autre compartiment : c'est la ligne à reclasser.
-  const fromPreset: EditionPresetCode = targetPreset === "first" ? "unlimited" : "first";
-
-  try {
-    await updateCollectionEdition(
-      viewer.id,
-      parsed.data.variantId,
-      targetPreset,
-      parsed.data.condition,
-      fromPreset,
-    );
     revalidateCollection();
     return { ok: true };
   } catch (err) {

@@ -29,14 +29,15 @@ afterAll(async () => {
 
 describe(`wishlist [${TAG}] — ajout & retrait`, () => {
   let firstItemId: string;
+  /** Déclinaison de la carte 1 rattachée à une collection. */
+  let setVariantId: string;
 
-  it("ajoute une entrée (carte + variante + saison + état + édition)", async () => {
+  it("ajoute une entrée (carte + variante + saison + état)", async () => {
     firstItemId = await addWishlistItem(wisher.id, {
       cardId: catalog.cards[0].id,
       variantId: catalog.variants[0].id,
       seasonId: catalog.season.id,
       condition: "EXCELLENT",
-      editionPreset: "unlimited",
     });
 
     const row = await prisma.wishlistItem.findUniqueOrThrow({ where: { id: firstItemId } });
@@ -45,7 +46,6 @@ describe(`wishlist [${TAG}] — ajout & retrait`, () => {
     expect(row.variantId).toBe(catalog.variants[0].id);
     expect(row.seasonId).toBe(catalog.season.id);
     expect(row.condition).toBe("EXCELLENT");
-    expect(row.editionPreset).toBe("unlimited");
     expect(row.note).toBeNull();
   });
 
@@ -55,7 +55,6 @@ describe(`wishlist [${TAG}] — ajout & retrait`, () => {
       variantId: catalog.variants[0].id,
       seasonId: catalog.season.id,
       condition: "EXCELLENT",
-      editionPreset: "unlimited",
       note: "graal",
     });
 
@@ -65,23 +64,36 @@ describe(`wishlist [${TAG}] — ajout & retrait`, () => {
     expect(row.note).toBe("graal");
   });
 
-  it("un état ou une édition différents créent des lignes distinctes", async () => {
+  it("un état ou une collection différents créent des lignes distinctes", async () => {
+    const set = await prisma.cardSet.create({
+      data: { code: `QA-${TAG}-set`, name: `QA Set ${TAG}` },
+    });
+    // Même carte, même version, mais rattachée à une collection : c'est une
+    // déclinaison à part entière, donc une recherche distincte.
+    const setVariant = await prisma.cardVariant.create({
+      data: {
+        cardId: catalog.cards[0].id,
+        versionTypeId: catalog.variants[0].versionTypeId,
+        language: "FR",
+        setId: set.id,
+      },
+    });
+    setVariantId = setVariant.id;
+
     const idMint = await addWishlistItem(wisher.id, {
       cardId: catalog.cards[0].id,
       variantId: catalog.variants[0].id,
       seasonId: catalog.season.id,
       condition: "MINT",
-      editionPreset: "unlimited",
     });
-    const idFirst = await addWishlistItem(wisher.id, {
+    const idSet = await addWishlistItem(wisher.id, {
       cardId: catalog.cards[0].id,
-      variantId: catalog.variants[0].id,
+      variantId: setVariantId,
       seasonId: catalog.season.id,
       condition: "EXCELLENT",
-      editionPreset: "first",
     });
 
-    expect(new Set([firstItemId, idMint, idFirst]).size).toBe(3);
+    expect(new Set([firstItemId, idMint, idSet]).size).toBe(3);
     expect(await countWishlist(wisher.id)).toBe(3);
   });
 
@@ -98,13 +110,12 @@ describe(`wishlist [${TAG}] — ajout & retrait`, () => {
       expect(w.seasonName).toBe(catalog.season.name);
     }
 
-    const first = view.find((w) => w.isFirstEdition);
-    expect(first).toBeDefined();
-    expect(first!.editionLabel).toBe("1ère édition");
+    const inSet = view.filter((w) => w.setName !== null);
+    expect(inSet).toHaveLength(1);
+    expect(inSet[0].setName).toBe(`QA Set ${TAG}`);
 
-    const unlimited = view.filter((w) => !w.isFirstEdition);
-    expect(unlimited).toHaveLength(2);
-    for (const w of unlimited) expect(w.editionLabel).toBeNull();
+    const base = view.filter((w) => w.setName === null);
+    expect(base).toHaveLength(2);
   });
 
   it("getViewerWishlistCardIds déduplique par carte", async () => {
@@ -129,7 +140,6 @@ describe(`wishlist [${TAG}] — gestion d'erreurs`, () => {
         variantId: "variant-inexistant",
         seasonId: catalog.season.id,
         condition: "EXCELLENT",
-        editionPreset: "unlimited",
       }),
     ).rejects.toThrow("VARIANT_NOT_FOUND");
     expect(await countWishlist(wisher.id)).toBe(before);
@@ -143,7 +153,6 @@ describe(`wishlist [${TAG}] — gestion d'erreurs`, () => {
         variantId: catalog.variants[1].id, // variante de la carte 2
         seasonId: catalog.season.id,
         condition: "EXCELLENT",
-        editionPreset: "unlimited",
       }),
     ).rejects.toThrow("VARIANT_NOT_FOUND");
     expect(await countWishlist(wisher.id)).toBe(before);
@@ -160,7 +169,6 @@ describe(`wishlist [${TAG}] — gestion d'erreurs`, () => {
         variantId: catalog.variants[0].id,
         seasonId: otherSeason.id,
         condition: "EXCELLENT",
-        editionPreset: "unlimited",
       }),
     ).rejects.toThrow("SEASON_MISMATCH");
     expect(await countWishlist(wisher.id)).toBe(before);
@@ -172,7 +180,6 @@ describe(`wishlist [${TAG}] — gestion d'erreurs`, () => {
       variantId: catalog.variants[1].id,
       seasonId: catalog.season.id,
       condition: "GOOD",
-      editionPreset: "unlimited",
     });
 
     await expect(removeWishlistItem(seller.id, foreign)).rejects.toThrow("NOT_FOUND");
@@ -194,7 +201,6 @@ describe(`wishlist [${TAG}] — notification à la mise en vente`, () => {
       variantId: catalog.variants[0].id,
       seasonId: catalog.season.id,
       condition: "EXCELLENT",
-      editionPreset: "unlimited",
     });
     // Le vendeur recherche aussi sa propre carte : il ne doit pas s'auto-notifier.
     await addWishlistItem(seller.id, {
@@ -202,7 +208,6 @@ describe(`wishlist [${TAG}] — notification à la mise en vente`, () => {
       variantId: catalog.variants[0].id,
       seasonId: catalog.season.id,
       condition: "EXCELLENT",
-      editionPreset: "unlimited",
     });
 
     await addCollectionItem(seller.id, catalog.variants[0].id, "EXCELLENT", 1);

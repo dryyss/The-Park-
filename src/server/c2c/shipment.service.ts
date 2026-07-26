@@ -4,6 +4,7 @@ import type { ProofKind, ShipmentType } from "@/generated/prisma/client";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
 import { cellarDelete } from "@/lib/cellar";
 import { todayDropToken } from "@/lib/drop-token";
+import { NOT_SHIP_MS } from "@/lib/c2c-delays";
 
 export { todayDropToken };
 
@@ -16,7 +17,7 @@ export async function createShipmentForExchange(exchangeId: string, shipperId: s
   if (!ex) throw new Error("EXCHANGE_NOT_FOUND");
 
   const recipientId = ex.initiatorId === shipperId ? ex.recipientId : ex.initiatorId;
-  const notShipDeadline = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+  const notShipDeadline = new Date(Date.now() + NOT_SHIP_MS);
 
   const shipment = await prisma.shipment.create({
     data: {
@@ -175,7 +176,7 @@ export async function markShipmentShipped(
       actorId: shipperId,
       entityType: "SHIPMENT",
       entityId: shipmentId,
-      payload: { trackingNumber },
+      payload: { trackingNumber, ...(carrier ? { carrier } : {}) },
     });
   }
 }

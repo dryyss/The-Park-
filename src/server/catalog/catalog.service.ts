@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma";
 import { rarityMeta, cardImage, cardNumberLabel, isPromoRarity, type HoloVariant } from "@/lib/rarity";
 import { formatPrice } from "@/lib/format";
 import { isActiveVersionCode } from "@/lib/card-versions";
-import { isFirstEditionLabel, resolveEditionLabel } from "@/lib/card-edition";
 import { CONDITION_ORDER } from "@/lib/condition";
 import type { CommunityPhotoView, CollectionItemPhotoView } from "@/server/collection/collection-photos.types";
 
@@ -264,10 +263,9 @@ export interface CardDetail {
     quantity: number;
     reservedQuantity: number;
     availableQuantity: number;
-    catalogEditionLabel: string | null;
-    userEditionLabel: string | null;
-    editionLabel: string | null;
-    isFirstEdition: boolean;
+    /** Collection de la déclinaison. Null = carte de base de sa saison. */
+    setId: string | null;
+    setName: string | null;
     // Détail par état possédé + annonces actives du viewer pour cet état.
     conditions: {
       condition: string;
@@ -283,10 +281,11 @@ export interface CardDetail {
       photos: CollectionItemPhotoView[];
     }[];
   }[];
-  /** Éditions distinctes de la carte (1ère édition / réédition) présentes au catalogue. */
-  editions: {
-    edition: "first" | "reprint";
-    catalogLabel: string | null;
+  /** Déclinaisons visuelles : carte de base, puis une entrée par collection. */
+  variantSets: {
+    key: string;
+    /** Nom de la collection. Null = carte de base. */
+    label: string | null;
     image: string;
     owned: boolean;
   }[];
@@ -314,7 +313,7 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
     include: {
       rarity: true,
       season: true,
-      variants: { include: { versionType: true } },
+      variants: { include: { versionType: true, set: true } },
     },
   });
   if (!card) return null;
@@ -345,7 +344,6 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
             condition: true,
             quantity: true,
             reservedQuantity: true,
-            editionLabel: true,
             isGraded: true,
             gradeCompany: true,
             gradeScore: true,
@@ -415,45 +413,35 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
   const idx = neighbors.findIndex((n) => n.slug === slug);
   const meta = rarityMeta(card.rarity.code);
 
-  const variantStats = new Map<
-    string,
-    { quantity: number; reservedQuantity: number; userEditionLabel: string | null }
-  >();
+  const variantStats = new Map<string, { quantity: number; reservedQuantity: number }>();
   for (const o of ownedVariants) {
-    const cur = variantStats.get(o.variantId) ?? {
-      quantity: 0,
-      reservedQuantity: 0,
-      userEditionLabel: null,
-    };
+    const cur = variantStats.get(o.variantId) ?? { quantity: 0, reservedQuantity: 0 };
     cur.quantity += o.quantity;
     cur.reservedQuantity += o.reservedQuantity;
-    if (o.editionLabel?.trim()) cur.userEditionLabel = o.editionLabel.trim();
     variantStats.set(o.variantId, cur);
   }
 
-  // Éditions distinctes (1ère édition / réédition) construites à partir des variantes actives.
+  // Déclinaisons visuelles : la carte de base, puis une entrée par collection à
+  // laquelle une variante est rattachée. Alimente le sélecteur sous le visuel.
   const activeVariants = card.variants.filter((v) => isActiveVersionCode(v.versionType.code));
-  const editionOwned = (group: typeof activeVariants) =>
+  const groupOwned = (group: typeof activeVariants) =>
     group.some((v) => (variantStats.get(v.id)?.quantity ?? 0) > 0);
-  const editionImage = (group: typeof activeVariants) =>
+  const groupImage = (group: typeof activeVariants) =>
     cardImage((group.find((v) => v.imageUrl)?.imageUrl ?? group[0]?.imageUrl) ?? card.imageUrl);
-  const firstVariants = activeVariants.filter((v) => isFirstEditionLabel(v.editionLabel));
-  const reprintVariants = activeVariants.filter((v) => !isFirstEditionLabel(v.editionLabel));
-  const editions: CardDetail["editions"] = [];
-  if (firstVariants.length > 0) {
-    editions.push({
-      edition: "first",
-      catalogLabel: firstVariants.find((v) => v.editionLabel?.trim())?.editionLabel?.trim() ?? null,
-      image: editionImage(firstVariants),
-      owned: editionOwned(firstVariants),
-    });
+
+  const variantSets: CardDetail["variantSets"] = [];
+  const baseVariants = activeVariants.filter((v) => v.setId == null);
+  if (baseVariants.length > 0) {
+    variantSets.push({ key: "base", label: null, image: groupImage(baseVariants), owned: groupOwned(baseVariants) });
   }
-  if (reprintVariants.length > 0) {
-    editions.push({
-      edition: "reprint",
-      catalogLabel: reprintVariants.find((v) => v.editionLabel?.trim())?.editionLabel?.trim() ?? null,
-      image: editionImage(reprintVariants),
-      owned: editionOwned(reprintVariants),
+  const setIds = [...new Set(activeVariants.map((v) => v.setId).filter(Boolean) as string[])];
+  for (const setId of setIds) {
+    const group = activeVariants.filter((v) => v.setId === setId);
+    variantSets.push({
+      key: setId,
+      label: group[0]?.set?.name ?? null,
+      image: groupImage(group),
+      owned: groupOwned(group),
     });
   }
 
@@ -492,9 +480,6 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
       const stats = variantStats.get(v.id);
       const quantity = stats?.quantity ?? 0;
       const reservedQuantity = stats?.reservedQuantity ?? 0;
-      const catalogEditionLabel = v.editionLabel?.trim() || null;
-      const userEditionLabel = stats?.userEditionLabel ?? null;
-      const editionLabel = resolveEditionLabel(userEditionLabel, catalogEditionLabel);
       const conditions = (conditionsByVariant.get(v.id) ?? [])
         .slice()
         .sort((a, b) => CONDITION_SORT.indexOf(a.condition) - CONDITION_SORT.indexOf(b.condition))
@@ -523,14 +508,12 @@ export async function getCardDetail(slug: string, viewerUserId?: string): Promis
         quantity,
         reservedQuantity,
         availableQuantity: quantity - reservedQuantity,
-        catalogEditionLabel,
-        userEditionLabel,
-        editionLabel,
-        isFirstEdition: isFirstEditionLabel(editionLabel),
+        setId: v.setId,
+        setName: v.set?.name ?? null,
         conditions,
       };
     }),
-    editions,
+    variantSets,
     communityPhotos,
     listings: listings.map((l) => ({
       id: l.id,

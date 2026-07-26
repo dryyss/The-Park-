@@ -11,13 +11,14 @@ import {
 import { markShipmentShipped } from "@/server/c2c/shipment.service";
 import { markShipmentDelivered } from "@/server/c2c/exchange-lifecycle.service";
 import { prisma } from "@/lib/prisma";
+import { CARRIERS } from "@/lib/carriers";
 
 export type SaleTrackingActionResult = { ok: true; id?: string } | { ok: false; error: string };
 
 const shipSchema = z.object({
   shipmentId: z.string().min(1),
   trackingNumber: z.string().min(3).max(64),
-  carrier: z.enum(["LAPOSTE", "COLISSIMO", "CHRONOPOST", "MONDIAL_RELAY", "OTHER"]).optional(),
+  carrier: z.enum(CARRIERS).optional(),
 });
 
 function revalidateSalePages() {
@@ -25,7 +26,7 @@ function revalidateSalePages() {
   revalidatePath("/[locale]/dashboard", "layout");
 }
 
-/** Le vendeur ouvre l'envoi (PAID → AWAITING_SHIPMENT, jeton du jour, délai J+3). */
+/** Le vendeur ouvre l'envoi (PAID → AWAITING_SHIPMENT, jeton du jour, délai J+7). */
 export async function createSaleShipmentAction(saleId: string): Promise<SaleTrackingActionResult> {
   const viewer = await getAuthenticatedViewer();
   if (!viewer) return { ok: false, error: "UNAUTHORIZED" };

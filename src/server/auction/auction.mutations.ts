@@ -63,7 +63,11 @@ export async function createAuction(
 export async function placeBid(bidderId: string, auctionId: string, amount: number): Promise<string> {
   const auction = await prisma.auction.findFirst({
     where: { id: auctionId, status: "ACTIVE", endsAt: { gt: new Date() } },
-    include: { bids: { orderBy: { amount: "desc" }, take: 1 } },
+    include: {
+      bids: { orderBy: { amount: "desc" }, take: 1 },
+      // Nom + visuel de la carte : alimentent la notification et l'e-mail.
+      variant: { select: { imageUrl: true, card: { select: { name: true } } } },
+    },
   });
   if (!auction) throw new Error("AUCTION_NOT_FOUND");
   if (auction.sellerId === bidderId) throw new Error("SELF_BID");
@@ -97,7 +101,11 @@ export async function placeBid(bidderId: string, auctionId: string, amount: numb
       actorId: bidderId,
       entityType: "AUCTION",
       entityId: auctionId,
-      payload: { amount: formatPrice(amount) },
+      payload: {
+        amount: formatPrice(amount),
+        cardName: auction.variant.card.name,
+        cardImage: auction.variant.imageUrl,
+      },
     });
   }
 
@@ -113,7 +121,10 @@ export async function placeBid(bidderId: string, auctionId: string, amount: numb
 export async function settleDueAuctions(): Promise<number> {
   const due = await prisma.auction.findMany({
     where: { status: "ACTIVE", endsAt: { lte: new Date() } },
-    include: { bids: { orderBy: { amount: "desc" }, take: 1 } },
+    include: {
+      bids: { orderBy: { amount: "desc" }, take: 1 },
+      variant: { select: { imageUrl: true, card: { select: { name: true } } } },
+    },
   });
 
   for (const a of due) {
@@ -157,7 +168,11 @@ export async function settleDueAuctions(): Promise<number> {
         actorId: a.sellerId,
         entityType: "AUCTION",
         entityId: a.id,
-        payload: { amount: formatPrice(top.amount) },
+        payload: {
+          amount: formatPrice(top.amount),
+          cardName: a.variant.card.name,
+          cardImage: a.variant.imageUrl,
+        },
       });
       // Succès liés aux enchères remportées (Sniper de l'Ombre, Flambeur de Tokyo).
       await evaluateUserBadgesSafe(top.bidderId);
@@ -167,7 +182,12 @@ export async function settleDueAuctions(): Promise<number> {
       type: "AUCTION_ENDED",
       entityType: "AUCTION",
       entityId: a.id,
-      payload: { amount: top ? formatPrice(top.amount) : formatPrice(a.startPrice), sold: String(sold) },
+      payload: {
+        amount: top ? formatPrice(top.amount) : formatPrice(a.startPrice),
+        sold: String(sold),
+        cardName: a.variant.card.name,
+        cardImage: a.variant.imageUrl,
+      },
     });
   }
 

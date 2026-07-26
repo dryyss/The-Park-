@@ -38,6 +38,7 @@ const TYPE_KEYS: Record<NotificationType, { title: string; body: string }> = {
   WISHLIST_LISTING: { title: "wishlistListing", body: "wishlistListingBody" },
   WISHLIST_PRICE_DROP: { title: "wishlistPriceDrop", body: "wishlistPriceDropBody" },
   ORDER_UPDATE: { title: "orderUpdate", body: "orderUpdateBody" },
+  SHOP_ORDER_PLACED: { title: "shopOrderPlaced", body: "shopOrderPlacedBody" },
   MESSAGE_RECEIVED: { title: "messageReceived", body: "messageReceivedBody" },
   FRIEND_REQUEST: { title: "friendRequest", body: "friendRequestBody" },
   FRIEND_ACCEPTED: { title: "friendAccepted", body: "friendAcceptedBody" },

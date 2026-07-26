@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return localePageMetadata("collection", locale, "/collection");
 }
 
-type SP = { segment?: string; rarity?: string; q?: string; cols?: string; sort?: string; season?: string; edition?: string };
+type SP = { segment?: string; rarity?: string; q?: string; cols?: string; sort?: string; season?: string; set?: string };
 
 export default async function CollectionPage({
   params,
@@ -38,7 +38,7 @@ export default async function CollectionPage({
   const isAuthenticated = !!viewer;
 
   const activeSeason = sp.season ?? null;
-  const activeEdition = (sp.edition === "first" || sp.edition === "reprint" ? sp.edition : null) as "first" | "reprint" | null;
+  const activeSet = sp.set?.trim() || null;
 
   const collParams = {
     segment: (sp.segment === "owned" || sp.segment === "missing" ? sp.segment : "all") as "all" | "owned" | "missing",
@@ -47,7 +47,7 @@ export default async function CollectionPage({
     cols: parseCollectionGridCols(sp.cols),
     sort: parseCollectionSort(sp.sort),
     season: activeSeason ?? undefined,
-    edition: activeEdition ?? undefined,
+    set: activeSet ?? undefined,
   };
 
   const [data, wishlistCardIds, seasons] = await Promise.all([
@@ -57,6 +57,9 @@ export default async function CollectionPage({
       ? prisma.season.findMany({ where: { code: activeSeason }, select: { code: true, name: true } })
       : Promise.resolve([]),
   ]);
+  // Le « + » du classeur vise la déclinaison de la collection affichée : les
+  // contrôles ont besoin de son identifiant, l'URL ne portant que son code.
+  const activeSetId = activeSet ? (data.setPcts.find((s) => s.code === activeSet)?.id ?? null) : null;
   const wishlistCardIdSet = new Set(wishlistCardIds);
   const allCardIds = data.sections.flatMap((sec) => sec.cards.map((c) => c.cardId));
   const likeMeta = Object.fromEntries(await getCardsLikeMeta(allCardIds, viewer?.id));
@@ -69,7 +72,7 @@ export default async function CollectionPage({
 
       <CompletionPanel
         data={data}
-        activeEdition={activeEdition}
+        activeSet={activeSet}
         seasonLabel={activeSeason ? (seasons.find((s) => s.code === activeSeason)?.name ?? null) : null}
       />
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3.5">
@@ -109,7 +112,7 @@ export default async function CollectionPage({
             isAuthenticated={isAuthenticated}
             wishlistCardIds={wishlistCardIdSet}
             likeMeta={likeMeta}
-            edition={activeEdition}
+            setId={activeSetId}
           />
         </section>
       ))}

@@ -286,6 +286,8 @@ export async function cleanupTag(tag: string): Promise<void> {
     () => prisma.user.deleteMany({ where: { id: { in: userIds } } }),
     () => prisma.cardVariant.deleteMany({ where: { id: { in: variantIds } } }),
     () => prisma.card.deleteMany({ where: { id: { in: cardIds } } }),
+    // Après les variantes : la collection en est la cible de clé étrangère.
+    () => prisma.cardSet.deleteMany({ where: { code: { startsWith: `QA-${tag}` } } }),
     () => prisma.season.deleteMany({ where: { id: { in: seasonIds } } }),
     () => prisma.rarity.deleteMany({ where: { code: { startsWith: `QA-${tag}` } } }),
     () => prisma.versionType.deleteMany({ where: { code: { startsWith: `QA-${tag}` } } }),

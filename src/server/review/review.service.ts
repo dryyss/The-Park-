@@ -49,6 +49,7 @@ export async function createReview(input: ReviewInput): Promise<void> {
     type: "REVIEW_RECEIVED",
     actorId: input.authorId,
     entityType: "REVIEW",
+    payload: { rating: String(input.rating), comment: input.comment?.trim() || null },
   });
 }
 

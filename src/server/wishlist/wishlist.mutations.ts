@@ -2,7 +2,6 @@ import "server-only";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { CardCondition } from "@/generated/prisma/client";
-import { editionPresetToLabel, isFirstEditionLabel, type EditionPresetCode } from "@/lib/card-edition";
 
 export function mapWishlistError(err: unknown): string {
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
@@ -26,7 +25,6 @@ export async function addWishlistItem(
     variantId: string;
     seasonId: string;
     condition: CardCondition;
-    editionPreset: EditionPresetCode;
     note?: string;
   },
 ): Promise<string> {
@@ -37,15 +35,12 @@ export async function addWishlistItem(
   if (!variant) throw new Error("VARIANT_NOT_FOUND");
   if (variant.card.seasonId !== input.seasonId) throw new Error("SEASON_MISMATCH");
 
-  const editionPreset = input.editionPreset === "first" ? "first" : "unlimited";
-
   const item = await prisma.wishlistItem.upsert({
     where: {
-      userId_variantId_condition_editionPreset: {
+      userId_variantId_condition: {
         userId,
         variantId: input.variantId,
         condition: input.condition,
-        editionPreset,
       },
     },
     create: {
@@ -54,7 +49,6 @@ export async function addWishlistItem(
       variantId: input.variantId,
       seasonId: input.seasonId,
       condition: input.condition,
-      editionPreset,
       note: input.note ?? null,
     },
     update: { note: input.note ?? null },
@@ -83,15 +77,4 @@ export async function removeWishlistItem(userId: string, wishlistItemId: string)
     where: { id: wishlistItemId, userId },
   });
   if (deleted.count === 0) throw new Error("NOT_FOUND");
-}
-
-/** Libellé d'édition pour affichage wishlist. */
-export function wishlistEditionDisplayLabel(editionPreset: string, catalogEditionLabel: string | null): string | null {
-  if (editionPreset === "first") return editionPresetToLabel("first");
-  return catalogEditionLabel?.trim() || null;
-}
-
-export function wishlistIsFirstEdition(editionPreset: string, catalogEditionLabel: string | null): boolean {
-  if (editionPreset === "first") return true;
-  return isFirstEditionLabel(catalogEditionLabel);
 }

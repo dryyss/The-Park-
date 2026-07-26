@@ -76,7 +76,7 @@ export function WishlistGridClient({
                 <span style={{ color: conditionColor(card.conditionCode) }}>{tCond(card.conditionCode)}</span>
               </p>
               <p className="text-[10.5px] font-bold text-texte-faible">
-                {card.isFirstEdition ? tCard("editionFirst") : tCard("editionReedition")}
+                {card.setName ? tCard("setBelongs", { name: card.setName }) : tCard("setBase")}
               </p>
               <p className="text-[11px] font-bold text-texte-dim">{card.quoteValue}</p>
             </Link>

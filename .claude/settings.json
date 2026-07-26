@@ -24,7 +24,11 @@
       "Bash(sed -n '/model MarketplaceCartItem/,/^}/p' prisma/schema.prisma)",
       "Bash(sed -n '/model CartItem/,/^}/p' prisma/schema.prisma)",
       "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\(JSON.stringify\\({next:p.dependencies.next,react:p.dependencies.react,'next-intl':p.dependencies['next-intl'],prisma:p.devDependencies&&p.devDependencies.prisma},null,1\\)\\)\")",
-      "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\(JSON.stringify\\(p.scripts,null,2\\)\\)\")"
+      "Bash(node -e \"const p=require\\('./package.json'\\);console.log\\(JSON.stringify\\(p.scripts,null,2\\)\\)\")",
+      "Bash(xargs -I{} sh -c 'echo \"=== {} : $\\(grep -c \"editionLabel\\\\|editionPreset\\\\|isFirstEdition\\\\|EditionLabel\\\\|EDITION_PRESET\\\\|CollectionEdition\\\\|reprint\\\\|firstEdition\" {}\\)\"')",
+      "Bash(node -e \"const m=require\\('./src/messages/fr.json'\\);console.log\\(JSON.stringify\\(m.admin.catalog,null,2\\)\\);console.log\\('--filters--'\\);console.log\\(JSON.stringify\\(m.admin.filters,null,2\\)\\)\")",
+      "PowerShell(npx tsc --noEmit -p tsconfig.json)",
+      "Bash(echo \"EXIT_TSC=$?\")"
     ],
     "additionalDirectories": [
       "\\tmp"

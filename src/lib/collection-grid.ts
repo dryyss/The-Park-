@@ -36,6 +36,8 @@ export interface CollectionUrlParams {
   cols?: CollectionGridCols;
   sort?: CollectionSort;
   season?: string;
+  /** Code de collection (`?set=`). Conservé au changement de segment ou de tri. */
+  set?: string;
 }
 
 export function buildCollectionHref(params: CollectionUrlParams, patch: Partial<CollectionUrlParams> = {}): string {
@@ -47,6 +49,7 @@ export function buildCollectionHref(params: CollectionUrlParams, patch: Partial<
   if (merged.cols && merged.cols !== DEFAULT_COLLECTION_GRID_COLS) sp.set("cols", String(merged.cols));
   if (merged.sort && merged.sort !== DEFAULT_COLLECTION_SORT) sp.set("sort", merged.sort);
   if (merged.season) sp.set("season", merged.season);
+  if (merged.set) sp.set("set", merged.set);
   const qs = sp.toString();
   return `/collection${qs ? `?${qs}` : ""}`;
 }

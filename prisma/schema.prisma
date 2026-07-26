@@ -114,6 +114,14 @@ enum Carrier {
   COLISSIMO
   CHRONOPOST
   MONDIAL_RELAY
+  SHOP2SHOP
+  RELAIS_COLIS
+  UPS
+  DHL
+  DPD
+  GLS
+  FEDEX
+  TNT
   OTHER
 }
 
@@ -315,6 +323,7 @@ enum NotificationType {
   WISHLIST_LISTING
   WISHLIST_PRICE_DROP
   ORDER_UPDATE
+  SHOP_ORDER_PLACED
   MESSAGE_RECEIVED
   REFERRAL_REWARD
   TICKET_REPLY
@@ -583,6 +592,26 @@ model Card {
   @@index([rarityId])
 }
 
+/// Collection éditoriale (« set ») regroupant des variantes.
+///
+/// Une collection est transverse aux saisons : une sortie « Chrome 2026 » peut
+/// piocher des cartes de la S01, de la S02 et du hors-série. Le rattachement se
+/// fait donc sur la variante, pas sur la carte — la carte reste dans sa saison
+/// d'origine, seule sa déclinaison rejoint la collection.
+model CardSet {
+  id          String    @id @default(cuid())
+  code        String    @unique // ex: "CHROME26"
+  name        String // ex: "Chrome 2026"
+  description String?
+  /// Initiales affichées sur les variantes de la collection (ex. "CHR").
+  seriesCode  String?
+  releaseDate DateTime?
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+
+  variants CardVariant[]
+}
+
 /// Déclinaison concrète et collectionnable d'une carte (carte × version × langue).
 model CardVariant {
   id            String      @id @default(cuid())
@@ -591,7 +620,9 @@ model CardVariant {
   versionType   VersionType @relation(fields: [versionTypeId], references: [id])
   versionTypeId String
   language      Language    @default(FR)
-  editionLabel  String? // ex: "1ère édition"
+  /// Collection à laquelle appartient cette déclinaison. Null = carte de base de sa saison.
+  set           CardSet?    @relation(fields: [setId], references: [id])
+  setId         String?
   imageUrl      String? // override visuel (reverse/alt art) sinon Card.imageUrl
 
   collectionItems CollectionItem[]
@@ -600,9 +631,12 @@ model CardVariant {
   exchangeItems   ExchangeItem[]
   wishlistItems   WishlistItem[]
 
-  // L'édition fait partie de la clé : une même version/langue peut exister en
-  // « 1ère édition » ET en réédition (même numéro de série, édition différente).
-  @@unique([cardId, versionTypeId, language, editionLabel])
+  // La collection fait partie de la clé : une même carte peut recevoir la même
+  // version dans deux collections successives (Chrome 2026 puis Chrome 2027).
+  // Le cas `setId = null` (carte de base) est verrouillé côté application, la
+  // contrainte Postgres ne dédupliquant pas les NULL.
+  @@unique([cardId, versionTypeId, language, setId])
+  @@index([setId])
 }
 
 // ============================================================================
@@ -622,12 +656,6 @@ model CollectionItem {
   forTrade         Boolean       @default(false)
   forSale          Boolean       @default(false)
   note             String?
-  /// Édition de l'exemplaire possédé (ex. « 1ère édition », « Illimitée »). Null = illimitée.
-  editionLabel     String?
-  /// "first" | "unlimited" — édition normalisée (aligné WishlistItem). Fait partie
-  /// de l'identité de l'exemplaire : une 1ère édition et une réédition de la même
-  /// carte dans le même état sont deux lignes distinctes.
-  editionPreset    String        @default("unlimited")
 
   // Gradation optionnelle (PSA, PCA…)
   isGraded     Boolean @default(false)
@@ -643,7 +671,7 @@ model CollectionItem {
 
   acquiredAt DateTime @default(now())
 
-  @@unique([userId, variantId, condition, editionPreset])
+  @@unique([userId, variantId, condition])
   @@index([userId])
 }
 
@@ -777,14 +805,12 @@ model WishlistItem {
   season        Season        @relation(fields: [seasonId], references: [id])
   seasonId      String
   condition     CardCondition @default(EXCELLENT)
-  /// "first" | "unlimited" — édition recherchée (aligné collection / vente).
-  editionPreset String        @default("unlimited")
   note          String?
   /// Alerte prix : notifier quand une annonce de cette carte descend à ce prix (€) ou moins. Null = alerte disponibilité simple.
   alertPrice    Decimal?      @db.Decimal(10, 2)
   createdAt     DateTime      @default(now())
 
-  @@unique([userId, variantId, condition, editionPreset])
+  @@unique([userId, variantId, condition])
   @@index([userId])
   @@index([cardId])
 }

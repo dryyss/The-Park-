@@ -181,13 +181,21 @@ export function MobileNavDrawer({
           )}
 
           {user && (
-            <Link
-              href="/vendre"
-              className="font-display mb-4 flex items-center justify-center gap-1.5 rounded-lg bg-carmin px-4 py-3 text-[12px] tracking-[1px] text-white"
-            >
-              <span className="text-base leading-none">+</span>
-              {t("sell").toUpperCase()}
-            </Link>
+            <div className="mb-4 grid grid-cols-2 gap-2">
+              <Link
+                href="/vendre"
+                className="font-display flex items-center justify-center gap-1.5 rounded-lg bg-carmin px-3 py-3 text-[12px] tracking-[1px] text-white"
+              >
+                <span className="text-base leading-none">+</span>
+                {t("sell").toUpperCase()}
+              </Link>
+              <Link
+                href="/dashboard/ventes"
+                className="font-display flex items-center justify-center rounded-lg border border-charbon-500 bg-charbon-800 px-3 py-3 text-center text-[12px] tracking-[1px] text-blanc-casse transition hover:border-carmin hover:text-white"
+              >
+                {t("mySales").toUpperCase()}
+              </Link>
+            </div>
           )}
         </nav>
 

@@ -928,14 +928,20 @@ export const CARD_EXTRA_VERSIONS = {
   79: ["unique"],
 };
 
-/** Libellé d'édition catalogue par défaut (Saison 1). */
-export const DEFAULT_S01_EDITION_LABEL = "1ère édition";
-
 /**
- * Surcharge d'édition par numéro de carte (null = illimitée).
- * Absent = DEFAULT_S01_EDITION_LABEL pour toute la saison.
+ * Collections éditoriales du catalogue de démarrage.
+ *
+ * Une collection regroupe des DÉCLINAISONS de cartes, sans lien avec leur
+ * saison : `cards` peut piocher dans plusieurs séries. `versionType` désigne la
+ * version portée par la déclinaison au sein de la collection.
  */
-export const CARD_EDITION_LABELS = {
-  78: "Pocket Drifter Edition 2023",
-  79: "Moteur Forge édition 2024",
-};
+export const CARD_SETS = [
+  {
+    code: "PD23",
+    name: "Pocket Drifter Edition 2023",
+    seriesCode: "PD23",
+    sortOrder: 0,
+    versionType: "special",
+    cards: [78, 79],
+  },
+];

@@ -2,7 +2,12 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { requireModule } from "@/server/auth/admin-guard";
-import { getAdminCatalog, getAdminRarities, getAdminVersionTypes } from "@/server/admin/admin.mutations";
+import {
+  getAdminCatalog,
+  getAdminCardSets,
+  getAdminRarities,
+  getAdminVersionTypes,
+} from "@/server/admin/admin.mutations";
 import { PageHeader } from "@/components/common/page-header";
 import { AdminCatalogManager } from "@/components/admin/admin-catalog-manager";
 import { AdminStorageBanner } from "@/components/admin/admin-storage-banner";
@@ -10,27 +15,33 @@ import { getAdminImageUploadMode } from "@/lib/admin-image-storage";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminCataloguePage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function AdminCataloguePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("admin");
 
   const access = await requireModule("catalog");
   if (!access.ok) {
-    if (access.reason === "UNAUTHORIZED") redirect(`/auth/login?returnTo=${encodeURIComponent(`/${locale}/admin/catalogue`)}`);
+    if (access.reason === "UNAUTHORIZED")
+      redirect(`/auth/login?returnTo=${encodeURIComponent(`/${locale}/admin/catalogue`)}`);
     notFound();
   }
 
-  const [seasons, rarities, versionTypes] = await Promise.all([
+  const [seasons, rarities, versionTypes, cardSets] = await Promise.all([
     getAdminCatalog(),
     getAdminRarities(),
     getAdminVersionTypes(),
+    getAdminCardSets(),
   ]);
   const uploadMode = getAdminImageUploadMode();
 
   return (
     <main className="page-section">
-      <Link href="/admin" className="text-[12px] font-extrabold text-carmin hover:underline">
+      <Link href="/admin" className="text-carmin text-[12px] font-extrabold hover:underline">
         ← {t("back")}
       </Link>
       <div className="mt-4">
@@ -38,7 +49,13 @@ export default async function AdminCataloguePage({ params }: { params: Promise<{
       </div>
       <AdminStorageBanner uploadMode={uploadMode} />
       <div className="mt-8">
-        <AdminCatalogManager seasons={seasons} rarities={rarities} versionTypes={versionTypes} uploadMode={uploadMode} />
+        <AdminCatalogManager
+          seasons={seasons}
+          rarities={rarities}
+          versionTypes={versionTypes}
+          cardSets={cardSets}
+          uploadMode={uploadMode}
+        />
       </div>
     </main>
   );

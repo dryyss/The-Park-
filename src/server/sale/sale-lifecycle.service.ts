@@ -6,12 +6,17 @@ import { evaluateUserBadgesForUsers } from "@/server/badge/badge.service";
 import { releaseToSeller, refundPurchase } from "@/server/sale/sale-payment.service";
 import { todayDropToken } from "@/server/c2c/shipment.service";
 
-const GUARANTEE_MS = 72 * 60 * 60 * 1000;
-const NOT_SHIP_MS = 3 * 24 * 60 * 60 * 1000;
+import { GUARANTEE_MS, NOT_SHIP_MS } from "@/lib/c2c-delays";
 
 /** Pré-autorisation acquise → la vente passe en PAID (annonce vendue). Idempotent. */
 export async function markSalePaid(saleId: string): Promise<void> {
-  const sale = await prisma.sale.findUnique({ where: { id: saleId } });
+  const sale = await prisma.sale.findUnique({
+    where: { id: saleId },
+    include: {
+      buyer: { select: { displayName: true } },
+      listing: { include: { variant: { select: { imageUrl: true, card: { select: { name: true } } } } } },
+    },
+  });
   if (!sale) throw new Error("SALE_NOT_FOUND");
   if (sale.status !== "PENDING_PAYMENT") return; // idempotent (webhook rejouable)
 
@@ -41,7 +46,12 @@ export async function markSalePaid(saleId: string): Promise<void> {
     actorId: sale.buyerId,
     entityType: "SALE",
     entityId: saleId,
-    payload: { amount: Number(sale.price).toFixed(2) },
+    payload: {
+      amount: Number(sale.price).toFixed(2),
+      actorName: sale.buyer.displayName,
+      cardName: sale.listing.variant.card.name,
+      cardImage: sale.listing.variant.imageUrl,
+    },
   });
 
   await evaluateUserBadgesForUsers([sale.sellerId, sale.buyerId]);
@@ -127,7 +137,10 @@ export async function confirmSaleReceipt(saleId: string, buyerId: string): Promi
         { shippingMode: "HAND_DELIVERY", status: { in: ["PAID", "AWAITING_SHIPMENT", "SHIPPED"] } },
       ],
     },
-    include: { listing: true },
+    include: {
+      buyer: { select: { displayName: true } },
+      listing: { include: { variant: { select: { imageUrl: true, card: { select: { name: true } } } } } },
+    },
   });
   if (!sale) throw new Error("NOT_FOUND");
 
@@ -148,7 +161,12 @@ export async function confirmSaleReceipt(saleId: string, buyerId: string): Promi
     actorId: sale.buyerId,
     entityType: "SALE",
     entityId: saleId,
-    payload: { amount: Number(sale.price).toFixed(2) },
+    payload: {
+      amount: Number(sale.price).toFixed(2),
+      actorName: sale.buyer.displayName,
+      cardName: sale.listing.variant.card.name,
+      cardImage: sale.listing.variant.imageUrl,
+    },
   });
 
   await evaluateUserBadgesForUsers([sale.sellerId, sale.buyerId]);
@@ -181,13 +199,13 @@ export async function openSaleDispute(saleId: string, userId: string, reason: st
   });
 }
 
-/** Timeouts cron : J+3 non-expédié → annulé/remboursé ; fin garantie 72 h → clôture auto. */
+/** Timeouts cron : délai d'expédition dépassé → annulé/remboursé ; fin garantie 72 h → clôture auto. */
 export async function processSaleTimeouts(): Promise<{ notShipped: number; completed: number }> {
   const now = new Date();
   let notShipped = 0;
   let completed = 0;
 
-  // J+3 : envoi jamais créé/expédié → annulation + remboursement.
+  // Délai dépassé : envoi jamais créé/expédié → annulation + remboursement.
   const overdue = await prisma.shipment.findMany({
     where: { status: "PENDING", notShipDeadline: { lte: now }, saleId: { not: null } },
     select: { id: true, saleId: true },

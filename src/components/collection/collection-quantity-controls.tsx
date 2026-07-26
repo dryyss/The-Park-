@@ -16,13 +16,14 @@ export function CollectionQuantityControls({
   cardId,
   cardNumber,
   quantity,
-  edition,
+  setId,
   isAuthenticated,
 }: {
   cardId: string;
   cardNumber: number;
   quantity: number;
-  edition?: "first" | "reprint" | null;
+  /** Collection affichée : l'ajout vise sa déclinaison, pas la carte de base. */
+  setId?: string | null;
   isAuthenticated: boolean;
 }) {
   const t = useTranslations("collection");
@@ -71,7 +72,7 @@ export function CollectionQuantityControls({
     // Volontairement hors `useTransition` : chaque clic part immédiatement et les
     // boutons restent actifs, la resynchronisation de la page vient après coup.
     inFlight.current += 1;
-    void adjustCollectionCardAction({ cardId, cardNumber, delta, condition, edition })
+    void adjustCollectionCardAction({ cardId, cardNumber, delta, condition, setId })
       .then((res) => {
         if (!res.ok) {
           setOptimisticQty((q) => Math.max(0, Math.min(99, q - delta)));

@@ -14,7 +14,7 @@ import {
 import { ProofVideoList } from "@/components/security/proof-media";
 import { GuidedVideoCapture } from "@/components/security/guided-video-capture";
 
-const CARRIERS = ["COLISSIMO", "LAPOSTE", "CHRONOPOST", "MONDIAL_RELAY", "OTHER"] as const;
+import { CARRIERS } from "@/lib/carriers";
 
 export interface SaleTrackingView {
   saleId: string;

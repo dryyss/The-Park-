@@ -6,7 +6,6 @@ import { useRouter } from "@/i18n/navigation";
 import { addToWishlistAction } from "@/server/wishlist/wishlist.actions";
 import { CONDITION_ORDER, conditionColor } from "@/lib/condition";
 import type { ConditionCode } from "@/lib/condition";
-import type { EditionPresetCode } from "@/lib/card-edition";
 
 function wishlistErrorMessage(code: string, t: (key: string) => string): string {
   switch (code) {
@@ -29,7 +28,8 @@ function wishlistErrorMessage(code: string, t: (key: string) => string): string 
 export type WishlistVersionOption = {
   variantId: string;
   label: string;
-  catalogEditionLabel: string | null;
+  /** Collection de la déclinaison, affichée en complément du type de version. */
+  setName: string | null;
 };
 
 export function WishlistAddForm({
@@ -46,13 +46,11 @@ export function WishlistAddForm({
   onClose?: () => void;
 }) {
   const t = useTranslations("wishlist");
-  const tCard = useTranslations("card");
   const tCond = useTranslations("conditions");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [variantId, setVariantId] = useState(versions[0]?.variantId ?? "");
   const [condition, setCondition] = useState<ConditionCode>("EXCELLENT");
-  const [editionPreset, setEditionPreset] = useState<EditionPresetCode>("unlimited");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -66,7 +64,6 @@ export function WishlistAddForm({
         variantId,
         seasonId,
         condition,
-        editionPreset,
       });
       if (res.ok) {
         setSuccess(true);
@@ -112,31 +109,10 @@ export function WishlistAddForm({
           >
             {versions.map((v) => (
               <option key={v.variantId} value={v.variantId}>
-                {v.label}
+                {v.setName ? `${v.label} · ${v.setName}` : v.label}
               </option>
             ))}
           </select>
-        </div>
-
-        <div className="flex flex-col gap-1.5 sm:col-span-2">
-          <span className="text-[10px] font-extrabold tracking-[1.5px] text-texte-dim uppercase">{tCard("editionLabel")}</span>
-          <div className="flex flex-wrap gap-1.5">
-            {(["first", "unlimited"] as const).map((key) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setEditionPreset(key)}
-                className={[
-                  "rounded-md border px-2.5 py-1.5 text-[11px] font-extrabold transition",
-                  editionPreset === key
-                    ? "border-carmin bg-carmin/15 text-blanc-casse"
-                    : "border-charbon-500 text-texte-dim hover:border-charbon-400",
-                ].join(" ")}
-              >
-                {key === "first" ? tCard("editionFirst") : tCard("editionReedition")}
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="flex flex-col gap-1.5 sm:col-span-2">

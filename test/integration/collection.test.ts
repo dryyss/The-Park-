@@ -32,11 +32,10 @@ describe(`collection [${TAG}]`, () => {
 
     const item = await prisma.collectionItem.findUniqueOrThrow({
       where: {
-        userId_variantId_condition_editionPreset: {
+        userId_variantId_condition: {
           userId: user.id,
           variantId: variants[0].id,
           condition: "EXCELLENT",
-          editionPreset: "unlimited",
         },
       },
     });
@@ -75,11 +74,10 @@ describe(`collection [${TAG}]`, () => {
 
     const item = await prisma.collectionItem.findUnique({
       where: {
-        userId_variantId_condition_editionPreset: {
+        userId_variantId_condition: {
           userId: user.id,
           variantId: variants[0].id,
           condition: "EXCELLENT",
-          editionPreset: "unlimited",
         },
       },
     });
@@ -97,7 +95,6 @@ describe(`wishlist [${TAG}]`, () => {
       variantId: variants[0].id,
       seasonId: season.id,
       condition: "EXCELLENT",
-      editionPreset: "unlimited",
     });
     expect(wishId).toBeTruthy();
 
@@ -115,7 +112,6 @@ describe(`wishlist [${TAG}]`, () => {
         variantId: variants[0].id,
         seasonId: "wrong-season",
         condition: "EXCELLENT",
-        editionPreset: "unlimited",
       }),
     ).rejects.toThrow("SEASON_MISMATCH");
   });
@@ -129,7 +125,6 @@ describe(`wishlist [${TAG}]`, () => {
       variantId: variants[0].id,
       seasonId: season.id,
       condition: "EXCELLENT",
-      editionPreset: "unlimited",
     });
     await expect(removeWishlistItem(attacker.id, wishId)).rejects.toThrow("NOT_FOUND");
     // L'item de la victime existe toujours.

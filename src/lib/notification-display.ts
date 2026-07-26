@@ -44,6 +44,9 @@ export function notificationHref(
     case "DISPUTE_RESOLVED":
     case "ORDER_UPDATE":
       return "/dashboard";
+    case "SHOP_ORDER_PLACED":
+      // Staff boutique : la commande à préparer, dans le back-office.
+      return entityId ? `/admin/commandes/${entityId}` : "/admin/commandes";
     case "REFERRAL_REWARD":
       return "/parrainage";
     case "TICKET_REPLY":
@@ -82,6 +85,7 @@ const MARKET_TYPES: NotificationType[] = [
 
 const SALE_TYPES: NotificationType[] = [
   "SALE_CREATED",
+  "SHOP_ORDER_PLACED",
   "LISTING_SOLD",
   "SHIPMENT_SHIPPED",
   "SHIPMENT_DELIVERED",

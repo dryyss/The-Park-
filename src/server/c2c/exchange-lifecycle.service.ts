@@ -3,8 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { transferOwnedCopies } from "@/server/collection/collection.mutations";
 import { evaluateUserBadgesForUsers } from "@/server/badge/badge.service";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
-
-const GUARANTEE_MS = 72 * 60 * 60 * 1000;
+import { GUARANTEE_MS } from "@/lib/c2c-delays";
 
 /** Marque un colis comme livré et ouvre la fenêtre garantie 72 h. */
 export async function markShipmentDelivered(shipmentId: string, recipientId: string): Promise<void> {
@@ -113,7 +112,7 @@ export async function confirmExchangeReceipt(exchangeId: string, userId: string)
   await evaluateUserBadgesForUsers([ex.initiatorId, ex.recipientId]);
 }
 
-/** Timeouts J+3 non-expédition + fin fenêtre garantie — job cron. */
+/** Timeouts non-expédition (J+7) + fin fenêtre garantie — job cron. */
 export async function processExchangeTimeouts(): Promise<{ notShipped: number; completed: number }> {
   const now = new Date();
   let notShipped = 0;

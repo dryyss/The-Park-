@@ -45,8 +45,8 @@ export interface CustomCatalogOptions {
   useStandardVersion?: boolean;
   /** Premier numéro de carte (uniques globalement pour éviter les collisions inter-agents). */
   baseNumber?: number;
-  /** editionLabel appliqué à chaque variante (ex. "1ère édition"). */
-  editionLabel?: string | null;
+  /** Collection (CardSet) rattachée à chaque variante. Null = carte de base. */
+  setId?: string | null;
 }
 
 /** Numéro de carte improbable pour éviter les collisions entre agents (adjust par numéro). */
@@ -92,7 +92,7 @@ export async function createCustomCatalog(tag: string, suffix: string, opts: Cus
         cardId: card.id,
         versionTypeId: versionType.id,
         language: "FR",
-        editionLabel: opts.editionLabel ?? null,
+        setId: opts.setId ?? null,
       },
     });
     cards.push(card);

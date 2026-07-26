@@ -1,5 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { sendTransactionalEmail } from "@/lib/resend";
+import { buildWelcomeEmail } from "@/server/notification/transactional-emails";
 
 export interface Auth0Profile {
   sub: string;
@@ -89,7 +91,7 @@ export async function syncAuth0User(profile: Auth0Profile) {
   const slugBase = slugify(displayName) || slugify(email?.split("@")[0] ?? "membre");
   const slug = await uniqueSlug(slugBase);
 
-  return prisma.user.create({
+  const created = await prisma.user.create({
     data: {
       auth0Id: profile.sub,
       email: email ?? `${slug}@auth.thepark.local`,
@@ -101,4 +103,14 @@ export async function syncAuth0User(profile: Auth0Profile) {
     },
     select: viewerSelect,
   });
+
+  // Bienvenue — best-effort, jamais bloquant pour la connexion.
+  if (email) {
+    const { subject, html } = buildWelcomeEmail({ displayName });
+    void sendTransactionalEmail({ to: email, subject, html }).catch((err) =>
+      console.error("[auth-sync] welcome email failed", err),
+    );
+  }
+
+  return created;
 }

@@ -6,7 +6,6 @@ import { rarityMeta, cardImage, cardNumberLabel, type HoloVariant } from "@/lib/
 import { conditionColor } from "@/lib/condition";
 import { formatPrice } from "@/lib/format";
 import { VERSION_TYPE_DEFINITIONS } from "@/lib/card-versions";
-import { isFirstEditionLabel } from "@/lib/card-edition";
 import { RARITY_ORDER } from "@/lib/rarity";
 import { ACTIVE_SALE_STATUSES } from "@/server/sale/sale.mutations";
 import { listingNotInActiveCart } from "@/server/marketplace-cart/marketplace-cart.service";
@@ -173,7 +172,7 @@ function buildWhere(f: MarketplaceFilters): Prisma.ListingWhereInput {
 const fullInclude = {
   seller: { select: { id: true, displayName: true, slug: true, ratingAvg: true, reviewCount: true, city: true } },
   variant: {
-    include: { versionType: true, card: { include: { rarity: true, season: true } } },
+    include: { versionType: true, set: true, card: { include: { rarity: true, season: true } } },
   },
 } as const;
 
@@ -202,11 +201,9 @@ function toMarketplaceCard(l: FullRow): MarketplaceCard {
     tilt: meta.tilt,
     holo: meta.holo,
     variant: meta.variant,
-    versionLabel: isFirstEditionLabel(l.variant.editionLabel)
-      ? "1ère édition"
-      : l.variant.editionLabel
-        ? "Réédition"
-        : l.variant.versionType.label,
+    // La collection prime sur le type de version : c'est elle qui distingue deux
+    // exemplaires de la même carte aux yeux de l'acheteur.
+    versionLabel: l.variant.set?.name ?? l.variant.versionType.label,
     conditionCode: l.condition,
     conditionColor: conditionColor(l.condition),
     isWant,
@@ -357,7 +354,7 @@ async function fetchCardSellListings(slug: string): Promise<CardWithSellers | nu
     orderBy: { price: "asc" },
     include: {
       seller: { select: { id: true, displayName: true, slug: true, ratingAvg: true, reviewCount: true } },
-      variant: { include: { versionType: true } },
+      variant: { include: { versionType: true, set: true } },
     },
   });
 
@@ -371,11 +368,7 @@ async function fetchCardSellListings(slug: string): Promise<CardWithSellers | nu
       priceLabel: formatPrice(l.price),
       conditionCode: l.condition,
       conditionColor: conditionColor(l.condition),
-      versionLabel: isFirstEditionLabel(l.variant.editionLabel)
-        ? "1ère édition"
-        : l.variant.editionLabel
-          ? "Réédition"
-          : l.variant.versionType.label,
+      versionLabel: l.variant.set?.name ?? l.variant.versionType.label,
       purchasable: l.type === "SELL" || l.type === "SELL_OR_TRADE",
       sellerId: l.seller.id,
       quantity: 1,

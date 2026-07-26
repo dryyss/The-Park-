@@ -2,7 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
-import { CardEditionViewer } from "@/components/cards/card-edition-viewer";
+import { CardSetViewer } from "@/components/cards/card-set-viewer";
 import { CardCommunityPhotos } from "@/components/collection/card-community-photos";
 import { CardPriceHistory } from "@/components/cards/card-price-history";
 import { getCardDetail } from "@/server/catalog/catalog.service";
@@ -58,12 +58,12 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
     card: card.slug,
     recipient: primarySeller?.sellerSlug,
   });
-  // Éditions de la carte (1ère édition / réédition) affichées sous le visuel, 1ère édition devant.
-  const editionViews = card.editions.map((e) => ({
-    edition: e.edition,
-    label: e.edition === "first" ? (e.catalogLabel ?? t("editionFirst")) : t("editionReedition"),
-    image: e.image,
-    owned: e.owned,
+  // Déclinaisons de la carte affichées sous le visuel : carte de base, puis collections.
+  const setViews = card.variantSets.map((s) => ({
+    key: s.key,
+    label: s.label ?? t("setBase"),
+    image: s.image,
+    owned: s.owned,
   }));
   return (
     <main className="mx-auto max-w-[1240px] page-pad pt-5 pb-[60px]">
@@ -97,8 +97,8 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
       <div className="mt-6 grid items-start gap-6 lg:grid-cols-2 lg:gap-4 xl:grid-cols-[380px_1fr]">
         <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
           <div className="relative min-w-0 flex-1 lg:sticky lg:top-[90px]">
-            <CardEditionViewer
-              editions={editionViews}
+            <CardSetViewer
+              sets={setViews}
               fallbackImage={card.image}
               alt={card.name}
               tilt={card.tilt}
@@ -106,8 +106,8 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
               variant={card.variant}
               rarityColor={card.color}
               priority
-              title={t("editionsTitle")}
-              hint={t("editionsHint")}
+              title={t("setsTitle")}
+              hint={t("setsHint")}
               ownedLabel={t("statOwned")}
               missingLabel={t("versionMissing")}
             />
@@ -189,7 +189,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
                       : t("versionMissing")}
                   </div>
                   <div className="mt-1 text-[10.5px] font-bold text-texte-dim">
-                    {v.editionLabel ? t("editionActive", { label: v.editionLabel }) : t("editionReedition")}
+                    {v.setName ? t("setBelongs", { name: v.setName }) : t("setBase")}
                   </div>
                 </div>
               ))}

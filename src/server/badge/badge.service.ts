@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import type { SaleStatus } from "@/generated/prisma/client";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
 import { BADGE_DEFINITIONS } from "@/lib/badges";
-import { isFirstEditionLabel, resolveEditionLabel } from "@/lib/card-edition";
 import { RARITY_DEFINITIONS } from "@/lib/rarities";
 
 /** Code de la saison « Moteur Forgé » (Saison 1). */
@@ -107,15 +106,16 @@ type BadgeMetrics = {
   contestedWin: boolean;
   rank: number | null;
   top3StreakDays: number;
-  // 1ère édition / réédition (sets de cardIds possédés par édition)
-  feS01Any: boolean;
-  feCommonCount: number;
-  feLegendaryAny: boolean;
-  feGoldAny: boolean;
-  reS01Count: number;
-  reRaresComplete: boolean;
-  reS01Complete: boolean;
-  editionPairs: number;
+  // Collections (CardSet) : possessions rattachées à une sortie éditoriale.
+  setAnyOwned: boolean;
+  setCommonCount: number;
+  setLegendaryAny: boolean;
+  setGoldAny: boolean;
+  setCardCount: number;
+  setRaresComplete: boolean;
+  setsCompleted: number;
+  /** Cartes possédées dans au moins deux déclinaisons (base et/ou collections). */
+  mirrorCards: number;
   ultraDoubleComplete: boolean;
 };
 
@@ -175,7 +175,7 @@ async function loadBadgeMetrics(userId: string): Promise<BadgeMetrics> {
           isUnique: true,
           rarity: { select: { code: true } },
           season: { select: { code: true } },
-          variants: { select: { id: true } },
+          variants: { select: { id: true, setId: true } },
         },
       }),
       prisma.user.findUnique({
@@ -205,8 +205,11 @@ async function loadBadgeMetrics(userId: string): Promise<BadgeMetrics> {
   // ── Possessions ────────────────────────────────────────────────────────────
   const ownedCardIds = new Set<string>();
   const ownedVariantIds = new Set<string>();
-  const feCards = new Set<string>(); // cardIds possédés en 1ère édition
-  const reCards = new Set<string>(); // cardIds possédés en réédition
+  const setCards = new Set<string>(); // cartes possédées via une collection
+  const ownedSetCardKeys = new Set<string>(); // `${setId}:${cardId}`
+  // Déclinaisons possédées par carte : "base" pour la carte de saison, l'id de
+  // collection sinon. Deux entrées = la carte est en double « miroir ».
+  const declinationsByCard = new Map<string, Set<string>>();
   let uniqueOwned = false;
   let promoOwned = false;
 
@@ -218,16 +221,25 @@ async function loadBadgeMetrics(userId: string): Promise<BadgeMetrics> {
     if (card.rarity.code === "unique" || card.isUnique || item.variant.versionType.code === "unique") uniqueOwned = true;
     if (card.rarity.code === "promotional" || item.variant.versionType.code === "promotional") promoOwned = true;
 
-    const edition = resolveEditionLabel(item.editionLabel, item.variant.editionLabel);
-    if (isFirstEditionLabel(edition)) feCards.add(card.id);
-    else if (edition != null) reCards.add(card.id);
+    const setId = item.variant.setId;
+    const declinations = declinationsByCard.get(card.id) ?? new Set<string>();
+    declinations.add(setId ?? "base");
+    declinationsByCard.set(card.id, declinations);
+
+    if (setId) {
+      setCards.add(card.id);
+      ownedSetCardKeys.add(`${setId}:${card.id}`);
+    }
   }
 
   // ── Catalogue ─────────────────────────────────────────────────────────────
   const s01Ids: string[] = [];
-  const s01RareIds: string[] = [];
   const ultraIds: string[] = [];
   const rarityByCard = new Map<string, string>();
+  // Composition des collections : cartes qui y ont une déclinaison, toutes
+  // saisons confondues — une collection peut piocher dans plusieurs séries.
+  const cardsBySet = new Map<string, Set<string>>();
+  const raresBySet = new Map<string, Set<string>>();
   let bestTruenoId: string | null = null;
   let bestTruenoRank = -1;
   const skylineCards: { id: string; variantIds: string[] }[] = [];
@@ -235,11 +247,20 @@ async function loadBadgeMetrics(userId: string): Promise<BadgeMetrics> {
 
   for (const c of catalogCards) {
     rarityByCard.set(c.id, c.rarity.code);
-    if (c.season.code === S01) {
-      s01Ids.push(c.id);
-      if (c.rarity.code === "r") s01RareIds.push(c.id);
-    }
+    if (c.season.code === S01) s01Ids.push(c.id);
     if (c.rarity.code === "u") ultraIds.push(c.id);
+
+    for (const v of c.variants) {
+      if (!v.setId) continue;
+      const inSet = cardsBySet.get(v.setId) ?? new Set<string>();
+      inSet.add(c.id);
+      cardsBySet.set(v.setId, inSet);
+      if (c.rarity.code === "r") {
+        const rares = raresBySet.get(v.setId) ?? new Set<string>();
+        rares.add(c.id);
+        raresBySet.set(v.setId, rares);
+      }
+    }
 
     const name = normalizeName(c.name);
     if (name.includes("AE86 TRUENO")) {
@@ -269,7 +290,14 @@ async function loadBadgeMetrics(userId: string): Promise<BadgeMetrics> {
 
   const top3StreakDays = await updateTop3Streak(userId, rank);
 
-  const editionPairs = [...feCards].filter((id) => reCards.has(id)).length;
+  // Une collection est acquise quand chacune de ses cartes est possédée DANS
+  // cette collection : détenir la carte de base ne la complète pas.
+  const ownsWholeSet = (setId: string, ids: Set<string>) =>
+    ids.size > 0 && [...ids].every((cardId) => ownedSetCardKeys.has(`${setId}:${cardId}`));
+
+  const setsCompleted = [...cardsBySet].filter(([setId, ids]) => ownsWholeSet(setId, ids)).length;
+  const setRaresComplete = [...raresBySet].some(([setId, ids]) => ownsWholeSet(setId, ids));
+  const mirrorCards = [...declinationsByCard.values()].filter((d) => d.size >= 2).length;
 
   return {
     distinctCards: ownedCardIds.size,
@@ -290,15 +318,16 @@ async function loadBadgeMetrics(userId: string): Promise<BadgeMetrics> {
     contestedWin,
     rank,
     top3StreakDays,
-    feS01Any: [...feCards].some((id) => s01Ids.includes(id)),
-    feCommonCount: [...feCards].filter((id) => rarityByCard.get(id) === "c").length,
-    feLegendaryAny: [...feCards].some((id) => rarityByCard.get(id) === "l"),
-    feGoldAny: [...feCards].some((id) => rarityByCard.get(id) === "g"),
-    reS01Count: [...reCards].filter((id) => s01Ids.includes(id)).length,
-    reRaresComplete: complete(s01RareIds, reCards),
-    reS01Complete: complete(s01Ids, reCards),
-    editionPairs,
-    ultraDoubleComplete: complete(ultraIds, feCards) && complete(ultraIds, reCards),
+    setAnyOwned: setCards.size > 0,
+    setCommonCount: [...setCards].filter((id) => rarityByCard.get(id) === "c").length,
+    setLegendaryAny: [...setCards].some((id) => rarityByCard.get(id) === "l"),
+    setGoldAny: [...setCards].some((id) => rarityByCard.get(id) === "g"),
+    setCardCount: setCards.size,
+    setRaresComplete,
+    setsCompleted,
+    mirrorCards,
+    ultraDoubleComplete:
+      ultraIds.length > 0 && ultraIds.every((id) => (declinationsByCard.get(id)?.size ?? 0) >= 2),
   };
 }
 
@@ -328,20 +357,20 @@ function buildBadgeRules(m: BadgeMetrics): Record<string, boolean> {
     roi_saint_graal: m.uniqueOwned,
     roi_de_la_glisse: m.top3StreakDays >= TOP3_STREAK_DAYS,
 
-    // 🥇 L'Héritage de la 1ère Édition
-    heritage_pionnier_du_park: m.feS01Any,
-    heritage_archeologue_du_bitume: m.feCommonCount >= 10,
-    heritage_saint_graal_forge: m.feLegendaryAny,
-    heritage_age_d_or_du_drift: m.feGoldAny,
+    // 🥇 L'Héritage du Park
+    heritage_pionnier_du_park: m.setAnyOwned,
+    heritage_archeologue_du_bitume: m.setCommonCount >= 10,
+    heritage_saint_graal_forge: m.setLegendaryAny,
+    heritage_age_d_or_du_drift: m.setGoldAny,
 
-    // 🔄 Maître de la Réédition
-    reedition_moteur_echange_standard: m.reS01Count >= 50,
-    reedition_flotte_complete: m.reRaresComplete,
-    reedition_seconde_jeunesse: m.reS01Complete,
+    // 🔄 Maître des Collections
+    reedition_moteur_echange_standard: m.setCardCount >= 50,
+    reedition_flotte_complete: m.setRaresComplete,
+    reedition_seconde_jeunesse: m.setsCompleted >= 1,
 
     // 🪞 Double Turbo
-    turbo_miroir_jdm: m.editionPairs >= 1,
-    turbo_garage_bipolaire: m.editionPairs >= 15,
+    turbo_miroir_jdm: m.mirrorCards >= 1,
+    turbo_garage_bipolaire: m.mirrorCards >= 15,
     turbo_vision_peripherique: m.ultraDoubleComplete,
 
     // 🏁 Les Succès Spéciaux du Set

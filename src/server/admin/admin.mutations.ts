@@ -49,7 +49,9 @@ export async function getAdminSeasonCards(seasonId: string): Promise<AdminCardRo
     name: c.name,
     slug: c.slug,
     rarityLabel: c.rarity.label,
-    quoteValue: new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(Number(c.quoteValue)),
+    quoteValue: new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(
+      Number(c.quoteValue),
+    ),
   }));
 }
 
@@ -130,12 +132,15 @@ const ORDER_NOTIFY_STATUSES = new Set<OrderStatus>([
   "REFUNDED",
 ]);
 
-/** Notifie le client (in-app + e-mail Resend) quand le statut de sa commande boutique évolue. */
-async function notifyOrderStatusChange(orderId: string, status: OrderStatus): Promise<void> {
-  if (!ORDER_NOTIFY_STATUSES.has(status)) return;
+/** Notifie le client (in-app + e-mail Resend) d'une évolution de sa commande boutique. */
+async function notifyOrderUpdate(
+  orderId: string,
+  status: OrderStatus,
+  extra: Record<string, unknown> = {},
+): Promise<void> {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
-    select: { userId: true, orderNumber: true, trackingNumber: true },
+    select: { userId: true, orderNumber: true, trackingNumber: true, shippingMethod: true },
   });
   if (!order?.userId) return;
   await dispatchNotification({
@@ -147,8 +152,16 @@ async function notifyOrderStatusChange(orderId: string, status: OrderStatus): Pr
       status,
       orderNumber: order.orderNumber,
       trackingNumber: order.trackingNumber,
+      shippingMethod: order.shippingMethod,
+      ...extra,
     },
   });
+}
+
+/** Notifie le client quand le statut de sa commande boutique évolue. */
+async function notifyOrderStatusChange(orderId: string, status: OrderStatus): Promise<void> {
+  if (!ORDER_NOTIFY_STATUSES.has(status)) return;
+  await notifyOrderUpdate(orderId, status);
 }
 
 export async function updateOrderStatus(orderId: string, status: OrderStatus): Promise<void> {
@@ -170,6 +183,12 @@ export async function updateOrderFulfillment(
     status?: OrderStatus;
   },
 ): Promise<void> {
+  const before = await prisma.order.findUnique({
+    where: { id: orderId },
+    select: { status: true, trackingNumber: true },
+  });
+  if (!before) throw new Error("ORDER_NOT_FOUND");
+
   const now = new Date();
   const nextStatus = data.status;
   await prisma.order.update({
@@ -185,8 +204,17 @@ export async function updateOrderFulfillment(
         : {}),
     },
   });
-  if (nextStatus !== undefined) {
-    await notifyOrderStatusChange(orderId, nextStatus);
+
+  const statusChanged = nextStatus !== undefined && nextStatus !== before.status;
+  const nextTracking =
+    data.trackingNumber !== undefined ? data.trackingNumber || null : before.trackingNumber;
+  const trackingAdded = Boolean(nextTracking) && nextTracking !== before.trackingNumber;
+
+  // Un changement de statut notifiable porte déjà le n° de suivi à jour : un seul e-mail.
+  if (statusChanged && ORDER_NOTIFY_STATUSES.has(nextStatus!)) {
+    await notifyOrderStatusChange(orderId, nextStatus!);
+  } else if (trackingAdded) {
+    await notifyOrderUpdate(orderId, nextStatus ?? before.status, { trackingAdded: true });
   }
 }
 
@@ -211,12 +239,100 @@ export interface AdminVariantRow {
   versionTypeId: string;
   versionTypeLabel: string;
   language: Language;
-  editionLabel: string | null;
+  /** Collection (CardSet) portant la variante. `null` = carte de base de sa saison. */
+  setId: string | null;
+  setLabel: string | null;
   imageUrl: string | null;
+}
+
+export interface AdminCardSetOption {
+  id: string;
+  code: string;
+  name: string;
+  seriesCode: string | null;
+  sortOrder: number;
+  /** Nombre de déclinaisons rattachées — sert de garde-fou à la suppression. */
+  variantCount: number;
+}
+
+export async function getAdminCardSets(): Promise<AdminCardSetOption[]> {
+  const sets = await prisma.cardSet.findMany({
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    include: { _count: { select: { variants: true } } },
+  });
+  return sets.map((s) => ({
+    id: s.id,
+    code: s.code,
+    name: s.name,
+    seriesCode: s.seriesCode,
+    sortOrder: s.sortOrder,
+    variantCount: s._count.variants,
+  }));
+}
+
+export interface CardSetInput {
+  code: string;
+  name: string;
+  seriesCode?: string | null;
+  sortOrder?: number;
+}
+
+export async function createCardSet(input: CardSetInput): Promise<string> {
+  try {
+    const set = await prisma.cardSet.create({
+      data: {
+        code: input.code,
+        name: input.name,
+        seriesCode: input.seriesCode ?? null,
+        sortOrder: input.sortOrder ?? 0,
+      },
+    });
+    return set.id;
+  } catch (err) {
+    if (isPrismaErr(err, "P2002")) throw new Error("SET_EXISTS");
+    throw err;
+  }
+}
+
+export async function updateCardSet(setId: string, data: Partial<CardSetInput>): Promise<void> {
+  try {
+    await prisma.cardSet.update({
+      where: { id: setId },
+      data: {
+        ...(data.code !== undefined ? { code: data.code } : {}),
+        ...(data.name !== undefined ? { name: data.name } : {}),
+        ...(data.seriesCode !== undefined ? { seriesCode: data.seriesCode } : {}),
+        ...(data.sortOrder !== undefined ? { sortOrder: data.sortOrder } : {}),
+      },
+    });
+  } catch (err) {
+    if (isPrismaErr(err, "P2002")) throw new Error("SET_EXISTS");
+    if (isPrismaErr(err, "P2025")) throw new Error("NOT_FOUND");
+    throw err;
+  }
+}
+
+/**
+ * Supprime une collection vide.
+ *
+ * Le refus sur collection peuplée est délibéré : la relation est en `SET NULL`,
+ * une suppression silencieuse reverserait toutes ses déclinaisons parmi les
+ * cartes de base — et pourrait y créer des doublons de clé.
+ */
+export async function deleteCardSet(setId: string): Promise<void> {
+  const count = await prisma.cardVariant.count({ where: { setId } });
+  if (count > 0) throw new Error("SET_NOT_EMPTY");
+  try {
+    await prisma.cardSet.delete({ where: { id: setId } });
+  } catch (err) {
+    if (isPrismaErr(err, "P2025")) throw new Error("NOT_FOUND");
+    throw err;
+  }
 }
 
 export interface AdminCardFull {
   id: string;
+  seasonId: string;
   number: number;
   name: string;
   slug: string;
@@ -232,17 +348,38 @@ export interface AdminCardFull {
   variants: AdminVariantRow[];
 }
 
+/**
+ * Ligne de liste du catalogue admin : juste ce qu'il faut pour afficher et filtrer
+ * un tableau de cartes. Le détail complet (description, stats, variantes) est chargé
+ * à la demande via {@link getAdminCardDetail} quand on ouvre l'éditeur.
+ */
+export interface AdminCardListItem {
+  id: string;
+  number: number;
+  name: string;
+  slug: string;
+  rarityId: string;
+  quoteValue: number;
+  imageUrl: string | null;
+  country: string | null;
+  brand: string | null;
+  isUnique: boolean;
+  variantCount: number;
+}
+
 export interface AdminCatalogSeason {
   id: string;
   code: string;
   seriesCode: string | null;
   name: string;
   releaseDate: Date | null;
-  cards: AdminCardFull[];
+  cards: AdminCardListItem[];
 }
 
 function isPrismaErr(err: unknown, code: string): boolean {
-  return !!err && typeof err === "object" && "code" in err && (err as { code?: string }).code === code;
+  return (
+    !!err && typeof err === "object" && "code" in err && (err as { code?: string }).code === code
+  );
 }
 
 export async function getAdminRarities(): Promise<AdminRarityOption[]> {
@@ -255,14 +392,36 @@ export async function getAdminVersionTypes(): Promise<AdminVersionTypeOption[]> 
   return versions.map((v) => ({ id: v.id, code: v.code, label: v.label }));
 }
 
-/** Catalogue complet pour l'admin : saisons → cartes → variantes. */
+/**
+ * Index du catalogue admin : saisons → lignes de cartes allégées.
+ * On ne descend volontairement pas jusqu'aux variantes ni aux descriptions :
+ * sur un catalogue de plusieurs centaines de cartes, la charge utile envoyée au
+ * client et le coût de sérialisation sont dominés par ces deux champs.
+ */
 export async function getAdminCatalog(): Promise<AdminCatalogSeason[]> {
   const seasons = await prisma.season.findMany({
     orderBy: { sortOrder: "asc" },
-    include: {
+    select: {
+      id: true,
+      code: true,
+      seriesCode: true,
+      name: true,
+      releaseDate: true,
       cards: {
         orderBy: { number: "asc" },
-        include: { variants: { include: { versionType: true } } },
+        select: {
+          id: true,
+          number: true,
+          name: true,
+          slug: true,
+          rarityId: true,
+          quoteValue: true,
+          imageUrl: true,
+          country: true,
+          brand: true,
+          isUnique: true,
+          _count: { select: { variants: true } },
+        },
       },
     },
   });
@@ -281,25 +440,67 @@ export async function getAdminCatalog(): Promise<AdminCatalogSeason[]> {
       rarityId: c.rarityId,
       quoteValue: Number(c.quoteValue),
       imageUrl: c.imageUrl,
-      powerCh: c.powerCh,
-      weightKg: c.weightKg,
       country: c.country,
       brand: c.brand,
-      description: c.description,
       isUnique: c.isUnique,
-      variants: c.variants
-        .slice()
-        .sort((a, b) => a.versionType.sortOrder - b.versionType.sortOrder)
-        .map((v) => ({
-          id: v.id,
-          versionTypeId: v.versionTypeId,
-          versionTypeLabel: v.versionType.label,
-          language: v.language,
-          editionLabel: v.editionLabel,
-          imageUrl: v.imageUrl,
-        })),
+      variantCount: c._count.variants,
     })),
   }));
+}
+
+/** Détail complet d'une carte (champs longs + variantes), chargé à l'ouverture de l'éditeur. */
+export async function getAdminCardDetail(cardId: string): Promise<AdminCardFull | null> {
+  const c = await prisma.card.findUnique({
+    where: { id: cardId },
+    include: { variants: { include: { versionType: true, set: { select: { name: true } } } } },
+  });
+  if (!c) return null;
+
+  return {
+    id: c.id,
+    seasonId: c.seasonId,
+    number: c.number,
+    name: c.name,
+    slug: c.slug,
+    rarityId: c.rarityId,
+    quoteValue: Number(c.quoteValue),
+    imageUrl: c.imageUrl,
+    powerCh: c.powerCh,
+    weightKg: c.weightKg,
+    country: c.country,
+    brand: c.brand,
+    description: c.description,
+    isUnique: c.isUnique,
+    variants: c.variants
+      .slice()
+      .sort((a, b) => a.versionType.sortOrder - b.versionType.sortOrder)
+      .map((v) => ({
+        id: v.id,
+        versionTypeId: v.versionTypeId,
+        versionTypeLabel: v.versionType.label,
+        language: v.language,
+        setId: v.setId,
+        setLabel: v.set?.name ?? null,
+        imageUrl: v.imageUrl,
+      })),
+  };
+}
+
+/** Projection « ligne de liste » d'une carte, pour patcher l'état client après mutation. */
+export function toCardListItem(card: AdminCardFull): AdminCardListItem {
+  return {
+    id: card.id,
+    number: card.number,
+    name: card.name,
+    slug: card.slug,
+    rarityId: card.rarityId,
+    quoteValue: card.quoteValue,
+    imageUrl: card.imageUrl,
+    country: card.country,
+    brand: card.brand,
+    isUnique: card.isUnique,
+    variantCount: card.variants.length,
+  };
 }
 
 async function uniqueCardSlug(seasonCode: string, number: number, name: string): Promise<string> {
@@ -335,7 +536,10 @@ export async function createCard(input: CreateCardInput): Promise<string> {
   });
   if (clash) throw new Error("NUMBER_TAKEN");
 
-  const season = await prisma.season.findUnique({ where: { id: input.seasonId }, select: { code: true } });
+  const season = await prisma.season.findUnique({
+    where: { id: input.seasonId },
+    select: { code: true },
+  });
   const seasonCode = season?.code ?? "s";
   const slug = await uniqueCardSlug(seasonCode, input.number, input.name);
   try {
@@ -418,7 +622,10 @@ export async function updateCard(cardId: string, data: UpdateCardInput): Promise
       if (!seasonChanged) {
         await prisma.$transaction([
           prisma.card.update({ where: { id: clash.id }, data: { number: SWAP_TEMP_NUMBER } }),
-          prisma.card.update({ where: { id: cardId }, data: { ...scalarData, number: targetNumber } }),
+          prisma.card.update({
+            where: { id: cardId },
+            data: { ...scalarData, number: targetNumber },
+          }),
           prisma.card.update({ where: { id: clash.id }, data: { number: current.number } }),
         ]);
         return;
@@ -456,18 +663,46 @@ export interface CreateVariantInput {
   cardId: string;
   versionTypeId: string;
   language: Language;
-  editionLabel?: string | null;
+  setId?: string | null;
   imageUrl?: string | null;
 }
 
+/**
+ * Postgres ne déduplique pas les NULL : la contrainte `@@unique([cardId,
+ * versionTypeId, language, setId])` laisse passer plusieurs cartes de base
+ * (`setId = null`). On verrouille ce cas ici.
+ */
+async function assertVariantFree(
+  cardId: string,
+  versionTypeId: string,
+  language: Language,
+  setId: string | null,
+  excludeVariantId?: string,
+): Promise<void> {
+  if (setId !== null) return;
+  const clash = await prisma.cardVariant.findFirst({
+    where: {
+      cardId,
+      versionTypeId,
+      language,
+      setId: null,
+      ...(excludeVariantId ? { id: { not: excludeVariantId } } : {}),
+    },
+    select: { id: true },
+  });
+  if (clash) throw new Error("VARIANT_EXISTS");
+}
+
 export async function createCardVariant(input: CreateVariantInput): Promise<string> {
+  const setId = input.setId ?? null;
+  await assertVariantFree(input.cardId, input.versionTypeId, input.language, setId);
   try {
     const variant = await prisma.cardVariant.create({
       data: {
         cardId: input.cardId,
         versionTypeId: input.versionTypeId,
         language: input.language,
-        editionLabel: input.editionLabel ?? null,
+        setId,
         imageUrl: input.imageUrl ?? null,
       },
     });
@@ -481,23 +716,44 @@ export async function createCardVariant(input: CreateVariantInput): Promise<stri
 export interface UpdateVariantInput {
   versionTypeId?: string;
   language?: Language;
-  editionLabel?: string | null;
+  setId?: string | null;
   imageUrl?: string | null;
 }
 
-export async function updateCardVariant(variantId: string, data: UpdateVariantInput): Promise<void> {
+/** @returns l'id de la carte parente, pour rafraîchir la liste côté client. */
+export async function updateCardVariant(
+  variantId: string,
+  data: UpdateVariantInput,
+): Promise<string> {
+  const current = await prisma.cardVariant.findUnique({
+    where: { id: variantId },
+    select: { cardId: true, versionTypeId: true, language: true, setId: true },
+  });
+  if (!current) throw new Error("NOT_FOUND");
+
+  await assertVariantFree(
+    current.cardId,
+    data.versionTypeId ?? current.versionTypeId,
+    data.language ?? current.language,
+    data.setId !== undefined ? data.setId : current.setId,
+    variantId,
+  );
+
   try {
-    await prisma.cardVariant.update({
+    const variant = await prisma.cardVariant.update({
       where: { id: variantId },
       data: {
         ...(data.versionTypeId !== undefined ? { versionTypeId: data.versionTypeId } : {}),
         ...(data.language !== undefined ? { language: data.language } : {}),
-        ...(data.editionLabel !== undefined ? { editionLabel: data.editionLabel } : {}),
+        ...(data.setId !== undefined ? { setId: data.setId } : {}),
         ...(data.imageUrl !== undefined ? { imageUrl: data.imageUrl } : {}),
       },
+      select: { cardId: true },
     });
+    return variant.cardId;
   } catch (err) {
     if (isPrismaErr(err, "P2002")) throw new Error("VARIANT_EXISTS");
+    if (isPrismaErr(err, "P2025")) throw new Error("NOT_FOUND");
     throw err;
   }
 }
@@ -572,10 +828,12 @@ async function purgeCardVariantGraph(tx: Tx, variantId: string): Promise<void> {
   await tx.cardVariant.delete({ where: { id: variantId } });
 }
 
-export async function deleteCardVariant(variantId: string): Promise<void> {
+/** @returns l'id de la carte parente, pour rafraîchir la liste côté client. */
+export async function deleteCardVariant(variantId: string): Promise<string> {
   const variant = await prisma.cardVariant.findUnique({
     where: { id: variantId },
     select: {
+      cardId: true,
       card: { select: { _count: { select: { variants: true } } } },
     },
   });
@@ -588,4 +846,5 @@ export async function deleteCardVariant(variantId: string): Promise<void> {
     if (isPrismaErr(err, "P2003") || isPrismaErr(err, "P2014")) throw new Error("VARIANT_IN_USE");
     throw err;
   }
+  return variant.cardId;
 }

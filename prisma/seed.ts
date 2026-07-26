@@ -2,7 +2,7 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 // Module de données JS sans types (catalogue fourni par le client).
-import { CARDS, CARD_EXTRA_VERSIONS, DEFAULT_S01_EDITION_LABEL, CARD_EDITION_LABELS } from "./cards-data.mjs";
+import { CARDS, CARD_EXTRA_VERSIONS, CARD_SETS } from "./cards-data.mjs";
 import { VERSION_TYPE_DEFINITIONS } from "../src/lib/card-versions";
 import { RARITY_DEFINITIONS, isSpecialRarity } from "../src/lib/rarities";
 import { BADGE_DEFINITIONS } from "../src/lib/badges";
@@ -139,13 +139,23 @@ async function main() {
 
   console.log(`→ Cartes (${(CARDS as RawCard[]).length})`);
   const extraVersionsByNumber = CARD_EXTRA_VERSIONS as Record<number, readonly string[]>;
-  const editionOverrides = CARD_EDITION_LABELS as Record<number, string | null | undefined>;
 
-  function catalogEditionForCard(num: number): string | null {
-    if (Object.prototype.hasOwnProperty.call(editionOverrides, num)) {
-      return editionOverrides[num] ?? null;
-    }
-    return DEFAULT_S01_EDITION_LABEL;
+  /**
+   * Garantit l'existence d'une déclinaison.
+   *
+   * Pas d'`upsert` : `setId` étant nullable, Prisma le type non-null dans le
+   * `where` de la clé composite — impossible d'y viser la carte de base.
+   */
+  async function ensureVariant(cardId: string, versionTypeId: string, setId: string | null) {
+    const existing = await prisma.cardVariant.findFirst({
+      where: { cardId, versionTypeId, language: "FR", setId },
+      select: { id: true },
+    });
+    if (existing) return existing.id;
+    const created = await prisma.cardVariant.create({
+      data: { cardId, versionTypeId, language: "FR", setId },
+    });
+    return created.id;
   }
 
   for (const c of CARDS as RawCard[]) {
@@ -167,50 +177,24 @@ async function main() {
       create: { seasonId: season.id, number: c.num, slug, ...data },
     });
 
-    // La clé unique composite inclut désormais editionLabel. Prisma type un champ
-    // nullable de clé composite comme non-null dans le `where` d'upsert : on garde
-    // donc un libellé non-null pour le seed (toujours le cas ici). Les variantes en
-    // réédition à libellé null se créent côté admin (createCardVariant → .create()).
-    const editionLabel: string = catalogEditionForCard(c.num) ?? DEFAULT_S01_EDITION_LABEL;
-
     // Standard (toutes) + versions optionnelles du catalogue
-    await prisma.cardVariant.upsert({
-      where: {
-        cardId_versionTypeId_language_editionLabel: {
-          cardId: card.id,
-          versionTypeId: vtByCode["standard"],
-          language: "FR",
-          editionLabel,
-        },
-      },
-      update: { editionLabel },
-      create: { cardId: card.id, versionTypeId: vtByCode["standard"], language: "FR", editionLabel },
-    });
+    await ensureVariant(card.id, vtByCode["standard"], null);
 
     const extras = extraVersionsByNumber[c.num] ?? [];
     for (const code of extras) {
       const versionTypeId = vtByCode[code];
       if (!versionTypeId) continue;
-      await prisma.cardVariant.upsert({
-        where: {
-          cardId_versionTypeId_language_editionLabel: {
-            cardId: card.id,
-            versionTypeId,
-            language: "FR",
-            editionLabel,
-          },
-        },
-        update: { editionLabel },
-        create: { cardId: card.id, versionTypeId, language: "FR", editionLabel },
-      });
+      await ensureVariant(card.id, versionTypeId, null);
     }
 
     const allowedTypeIds = new Set([
       vtByCode["standard"],
       ...extras.map((code) => vtByCode[code]).filter(Boolean),
     ]);
+    // Le ménage ne vise que les cartes de base : les déclinaisons rattachées à une
+    // collection ont leur propre cycle de vie (admin), et ne sont pas décrites ici.
     const staleVariants = await prisma.cardVariant.findMany({
-      where: { cardId: card.id, versionTypeId: { notIn: [...allowedTypeIds] } },
+      where: { cardId: card.id, setId: null, versionTypeId: { notIn: [...allowedTypeIds] } },
       select: { id: true },
     });
     if (staleVariants.length > 0) {
@@ -220,6 +204,23 @@ async function main() {
       await prisma.listing.deleteMany({ where: { variantId: { in: staleIds } } });
       await prisma.collectionItem.deleteMany({ where: { variantId: { in: staleIds } } });
       await prisma.cardVariant.deleteMany({ where: { id: { in: staleIds } } });
+    }
+  }
+
+  console.log(`→ Collections (${CARD_SETS.length})`);
+  for (const s of CARD_SETS) {
+    const data = { name: s.name, seriesCode: s.seriesCode, sortOrder: s.sortOrder };
+    const set = await prisma.cardSet.upsert({
+      where: { code: s.code },
+      update: data,
+      create: { code: s.code, ...data },
+    });
+    const versionTypeId = vtByCode[s.versionType];
+    if (!versionTypeId) continue;
+    for (const num of s.cards) {
+      const card = await prisma.card.findFirst({ where: { number: num, seasonId: season.id } });
+      if (!card) continue;
+      await ensureVariant(card.id, versionTypeId, set.id);
     }
   }
 
@@ -281,7 +282,7 @@ async function main() {
     for (const v of owned) {
       await prisma.collectionItem.upsert({
         where: {
-          userId_variantId_condition_editionPreset: { userId: user.id, variantId: v.id, condition: "EXCELLENT", editionPreset: "unlimited" },
+          userId_variantId_condition: { userId: user.id, variantId: v.id, condition: "EXCELLENT" },
         },
         update: {},
         create: { userId: user.id, variantId: v.id, condition: "EXCELLENT", quantity: 1 },
@@ -300,7 +301,7 @@ async function main() {
       if (!extras.includes(v.versionType.code)) continue;
       await prisma.collectionItem.upsert({
         where: {
-          userId_variantId_condition_editionPreset: { userId: lightonId, variantId: v.id, condition: "EXCELLENT", editionPreset: "unlimited" },
+          userId_variantId_condition: { userId: lightonId, variantId: v.id, condition: "EXCELLENT" },
         },
         update: {},
         create: { userId: lightonId, variantId: v.id, condition: "EXCELLENT", quantity: 1 },
@@ -645,11 +646,10 @@ async function main() {
       if (!variant) continue;
       await prisma.wishlistItem.upsert({
         where: {
-          userId_variantId_condition_editionPreset: {
+          userId_variantId_condition: {
             userId: factoryId,
             variantId: variant.id,
             condition: "EXCELLENT",
-            editionPreset: "unlimited",
           },
         },
         update: {},
@@ -659,7 +659,6 @@ async function main() {
           variantId: variant.id,
           seasonId: season.id,
           condition: "EXCELLENT",
-          editionPreset: "unlimited",
         },
       });
     }

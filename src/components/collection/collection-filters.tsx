@@ -5,37 +5,25 @@ import { buildCollectionHref, type CollectionUrlParams } from "@/lib/collection-
 
 export async function CompletionPanel({
   data,
-  activeEdition,
+  activeSet,
   seasonLabel,
 }: {
   data: CollectionView;
-  activeEdition?: "first" | "reprint" | null;
+  /** Code de la collection affichée, s'il y en a une. */
+  activeSet?: string | null;
   seasonLabel?: string | null;
 }) {
   const t = await getTranslations("collection");
 
-  const es = data.editionStats;
+  // Sur une collection, le chiffre de tête décrit CETTE collection ; sinon le
+  // périmètre courant (saison ou catalogue entier).
+  const current = activeSet ? data.setPcts.find((s) => s.code === activeSet) : null;
+  const mainPct = current?.pct ?? data.overallPct;
+  const mainOwned = current?.owned ?? data.overallOwned;
+  const mainHint = current?.name ?? seasonLabel ?? t("overallHint");
 
-  // Main left-panel stat depends on context
-  const mainPct = activeEdition === "first" && es
-    ? es.firstPct
-    : activeEdition === "reprint" && es
-      ? es.reprintPct
-      : data.overallPct;
-
-  const mainOwned = activeEdition === "first" && es
-    ? es.firstOwned
-    : activeEdition === "reprint" && es
-      ? es.reprintOwned
-      : data.overallOwned;
-
-  const mainHint = activeEdition === "first"
-    ? t("editionBadge1st")
-    : activeEdition === "reprint"
-      ? t("editionBadgeReprint")
-      : seasonLabel
-        ? seasonLabel
-        : t("overallHint");
+  // Mini-barres par collection — hors d'une collection déjà filtrée.
+  const setBars = activeSet ? [] : data.setPcts.filter((s) => s.total > 0);
 
   return (
     <div className="mt-7 grid overflow-hidden rounded-[18px] border border-charbon-500 bg-charbon-800 lg:grid-cols-[230px_1fr]">
@@ -47,31 +35,20 @@ export async function CompletionPanel({
         <div className="text-[14px] font-bold text-blanc-casse">{t("ownedCount", { count: mainOwned })}</div>
         <div className="text-[12px] text-texte-dim">{mainHint}</div>
 
-        {/* Edition mini-bars — visible quand une saison est sélectionnée sans filtre d'édition */}
-        {es && !activeEdition && (
+        {/* Avancement par collection — masqué dès qu'une collection est filtrée. */}
+        {setBars.length > 0 && (
           <div className="mt-4 space-y-2.5 border-t border-charbon-600 pt-3">
-            {es.firstTotal > 0 && (
-              <div>
+            {setBars.map((s) => (
+              <div key={s.code}>
                 <div className="mb-1 flex items-center justify-between text-[10.5px] font-bold">
-                  <span className="text-blanc-casse">{t("editionBadge1st")}</span>
-                  <span className="text-texte-faible">{es.firstOwned}/{es.firstTotal}</span>
+                  <span className="truncate text-texte-doux">{s.name}</span>
+                  <span className="shrink-0 pl-2 text-texte-faible">{s.owned}/{s.total}</span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded bg-charbon-600">
-                  <div className="h-full rounded bg-carmin transition-all" style={{ width: `${es.firstPct}%` }} />
+                  <div className="h-full rounded bg-carmin transition-all" style={{ width: `${s.pct}%` }} />
                 </div>
               </div>
-            )}
-            {es.reprintTotal > 0 && (
-              <div>
-                <div className="mb-1 flex items-center justify-between text-[10.5px] font-bold">
-                  <span className="text-texte-doux">{t("editionBadgeReprint")}</span>
-                  <span className="text-texte-faible">{es.reprintOwned}/{es.reprintTotal}</span>
-                </div>
-                <div className="h-1.5 overflow-hidden rounded bg-charbon-600">
-                  <div className="h-full rounded bg-charbon-400 transition-all" style={{ width: `${es.reprintPct}%` }} />
-                </div>
-              </div>
-            )}
+            ))}
           </div>
         )}
       </div>
@@ -137,6 +114,8 @@ export async function CollectionFiltersBar({
         {params.rarity && <input type="hidden" name="rarity" value={params.rarity} />}
         {params.cols && <input type="hidden" name="cols" value={params.cols} />}
         {params.sort && <input type="hidden" name="sort" value={params.sort} />}
+        {params.season && <input type="hidden" name="season" value={params.season} />}
+        {params.set && <input type="hidden" name="set" value={params.set} />}
         <input
           name="q"
           defaultValue={params.q ?? ""}

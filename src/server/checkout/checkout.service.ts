@@ -4,6 +4,13 @@ import { getAppBaseUrl, isStripeConfigured } from "@/lib/env";
 import { getStripe } from "@/lib/stripe";
 import { getViewerCart } from "@/server/cart/cart.service";
 import { getShopShippingConfig } from "@/server/platform/platform.service";
+import {
+  dispatchNotificationToShopStaff,
+  localeFromLanguage,
+} from "@/server/notification/notification.mutations";
+import { buildShopOrderConfirmationEmail } from "@/server/notification/transactional-emails";
+import { sendTransactionalEmail } from "@/lib/resend";
+import { formatPrice } from "@/lib/format";
 import type { ShippingMode } from "@/generated/prisma/client";
 import {
   boutiqueCarrierLabel,
@@ -182,11 +189,14 @@ export async function fulfillOrderFromStripeSession(sessionId: string) {
   const paymentIntentId =
     typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id;
 
-  await prisma.$transaction(async (tx) => {
-    await tx.order.update({
-      where: { id: orderId },
+  // Transition atomique PENDING→PAID : si un autre appel (webhook + page succès)
+  // a déjà encaissé la commande, on ne rejoue ni le stock ni les notifications.
+  const transitioned = await prisma.$transaction(async (tx) => {
+    const claimed = await tx.order.updateMany({
+      where: { id: orderId, status: { not: "PAID" } },
       data: { status: "PAID" },
     });
+    if (claimed.count === 0) return false;
 
     if (order.payment) {
       await tx.payment.update({
@@ -207,7 +217,100 @@ export async function fulfillOrderFromStripeSession(sessionId: string) {
     }
 
     await tx.cartItem.deleteMany({ where: { userId: order.userId } });
+    return true;
   });
 
+  if (transitioned) {
+    await notifyShopStaffOfPaidOrder(orderId);
+    await sendOrderConfirmationEmail(orderId);
+  }
+
   return order;
+}
+
+/**
+ * Confirmation de commande à l'acheteur (récap articles, montants, adresse).
+ * Best-effort : un échec d'envoi ne doit pas faire échouer l'encaissement.
+ */
+async function sendOrderConfirmationEmail(orderId: string): Promise<void> {
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        user: { select: { email: true, displayName: true, language: true } },
+        items: { include: { product: { select: { name: true, sku: true } } } },
+      },
+    });
+    if (!order?.user?.email) return;
+
+    const locale = localeFromLanguage(order.user.language);
+    const { subject, html } = buildShopOrderConfirmationEmail({
+      orderNumber: order.orderNumber,
+      customerName: order.user.displayName,
+      items: order.items.map((item) => ({
+        name: item.product.name,
+        sku: item.product.sku,
+        quantity: item.quantity,
+        lineTotal: formatPrice(Number(item.unitPrice) * item.quantity),
+      })),
+      subtotal: formatPrice(order.subtotal),
+      shippingCost: formatPrice(order.shippingCost),
+      total: formatPrice(order.total),
+      shipping: {
+        name: order.shippingName,
+        line1: order.shippingLine1,
+        zip: order.shippingZip,
+        city: order.shippingCity,
+        country: order.shippingCountry,
+        method: order.shippingMethod,
+      },
+      orderUrl: `${getAppBaseUrl()}/${locale}/boutique/commandes/${order.id}`,
+      locale,
+    });
+
+    await sendTransactionalEmail({ to: order.user.email, subject, html });
+  } catch (err) {
+    console.error("[checkout] order confirmation email failed", err);
+  }
+}
+
+/**
+ * Prévient le staff boutique (in-app + e-mail + web push) qu'une commande vient
+ * d'être payée. Best-effort : un échec de notification ne doit jamais faire
+ * échouer le webhook Stripe (sinon Stripe rejoue et la commande se re-traite).
+ */
+async function notifyShopStaffOfPaidOrder(orderId: string): Promise<void> {
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: {
+        id: true,
+        orderNumber: true,
+        total: true,
+        userId: true,
+        user: { select: { displayName: true, email: true } },
+        items: { select: { quantity: true } },
+      },
+    });
+    if (!order) return;
+
+    const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
+    const buyer = order.user?.displayName ?? order.user?.email ?? "Un client";
+
+    await dispatchNotificationToShopStaff({
+      type: "SHOP_ORDER_PLACED",
+      actorId: order.userId ?? undefined,
+      entityType: "ORDER",
+      entityId: order.id,
+      payload: {
+        orderNumber: order.orderNumber,
+        buyer,
+        total: Number(order.total).toFixed(2),
+        itemCount: String(itemCount),
+        orderUrl: `${getAppBaseUrl()}/fr/admin/commandes/${order.id}`,
+      },
+    });
+  } catch (err) {
+    console.error("[checkout] staff order notification failed", err);
+  }
 }

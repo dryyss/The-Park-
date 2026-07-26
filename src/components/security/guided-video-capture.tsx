@@ -255,13 +255,18 @@ export function GuidedVideoCapture({
           <p className="mt-3 text-[11px] font-bold text-texte-faible">
             {t("tokenNotice")} <span className="font-mono text-or">{dropToken}</span>
           </p>
-          <button
-            type="button"
-            onClick={arm}
-            className="font-display mt-4 rounded-lg bg-carmin px-5 py-2.5 text-[12px] tracking-[1px] text-white uppercase transition hover:bg-carmin-alt"
-          >
-            {t("enableCamera")}
-          </button>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={arm}
+              className="font-display rounded-lg bg-carmin px-5 py-2.5 text-[12px] tracking-[1px] text-white uppercase transition hover:bg-carmin-alt"
+            >
+              {t("enableCamera")}
+            </button>
+            <span className="text-[11px] font-bold text-texte-faible uppercase">{t("or")}</span>
+            {/* Import direct : filmer avec l'app photo du téléphone puis déposer le fichier. */}
+            <FileFallback shipmentId={shipmentId} proofKind={proofKind} dropToken={dropToken} onDone={onDone} compact />
+          </div>
         </div>
       )}
 
@@ -373,11 +378,14 @@ function FileFallback({
   proofKind,
   dropToken,
   onDone,
+  compact = false,
 }: {
   shipmentId: string;
   proofKind: ProofKind;
   dropToken: string;
   onDone: () => void;
+  /** Variante en ligne (à côté du bouton caméra) : pas de marge ni de texte d'aide. */
+  compact?: boolean;
 }) {
   const t = useTranslations("security.capture");
   const [busy, setBusy] = useState(false);
@@ -415,7 +423,7 @@ function FileFallback({
   }
 
   return (
-    <div className="mt-3">
+    <div className={compact ? "contents" : "mt-3"}>
       <input
         ref={inputRef}
         type="file"
@@ -424,6 +432,8 @@ function FileFallback({
         onChange={(e) => {
           const f = e.target.files?.[0];
           if (f) handleFile(f);
+          // Autorise la re-sélection du même fichier après une erreur.
+          e.target.value = "";
         }}
       />
       <button
@@ -434,8 +444,8 @@ function FileFallback({
       >
         {busy ? `${t("uploading")} ${progress}%` : t("importFile")}
       </button>
-      <p className="mt-1.5 text-[10.5px] font-bold text-texte-faible">{t("fallbackHint")}</p>
-      {error && <p className="mt-2 text-[11px] font-bold text-neon-rouge">{error}</p>}
+      {!compact && <p className="mt-1.5 text-[10.5px] font-bold text-texte-faible">{t("fallbackHint")}</p>}
+      {error && <p className="mt-2 w-full text-[11px] font-bold text-neon-rouge">{error}</p>}
     </div>
   );
 }

@@ -170,7 +170,7 @@ export async function postTicketMessage(
 
   const ticket = await prisma.supportTicket.findUnique({
     where: { id: ticketId },
-    select: { id: true, userId: true, status: true },
+    select: { id: true, userId: true, status: true, subject: true },
   });
   if (!ticket) throw new Error("NOT_FOUND");
   if (!viewer.isStaff && ticket.userId !== viewer.id) throw new Error("FORBIDDEN");
@@ -196,6 +196,7 @@ export async function postTicketMessage(
       actorId: viewer.id,
       entityType: "ticket",
       entityId: ticketId,
+      payload: { subject: ticket.subject, preview: body.slice(0, 200) },
     }).catch(() => {});
   }
 }

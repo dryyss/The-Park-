@@ -64,27 +64,21 @@ export function rarityJp(code: string): string {
   return rarityDefinition(code)?.jp ?? "";
 }
 
-/** Chiffre d'édition d'un code série : 1 = 1ère édition, 2 = réédition, "" = indéterminé. */
-export function seriesEditionDigit(edition?: "first" | "reprint" | null): "1" | "2" | "" {
-  if (edition === "first") return "1";
-  if (edition === "reprint") return "2";
-  return "";
-}
-
 /**
  * Libellé du numéro affiché sous la carte.
- * - Avec code série : "MF1-03" (1ère éd.), "MF2-03" (réédition), "MF-03" (édition indéterminée).
+ * - Rattachée à une collection : ses initiales priment ("CHR-03").
+ * - Sinon, code série de la saison : "MF-03".
  * - Sans code série : repli historique (03/80, 01 · HS, 00 · PROMO).
  */
 export function cardNumberLabel(
   number: number,
   rarityCode: string,
   seasonCode?: string,
-  opts?: { seriesCode?: string | null; edition?: "first" | "reprint" | null },
+  opts?: { seriesCode?: string | null; setSeriesCode?: string | null },
 ): string {
   const n = String(number).padStart(2, "0");
-  const series = opts?.seriesCode?.trim();
-  if (series) return `${series}${seriesEditionDigit(opts?.edition)}-${n}`;
+  const series = opts?.setSeriesCode?.trim() || opts?.seriesCode?.trim();
+  if (series) return `${series}-${n}`;
   if (seasonCode && isHorsSerieSeasonCode(seasonCode)) return `${n} · HS`;
   if (isPromoRarity(rarityCode)) return `${n} · PROMO`;
   if (isSpecialRarity(rarityCode)) {

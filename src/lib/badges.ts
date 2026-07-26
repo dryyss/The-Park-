@@ -15,8 +15,8 @@ export const BADGE_CATEGORIES: BadgeCategoryDef[] = [
   { code: "garage", label: "Le Garage Parfait", icon: "🔧" },
   { code: "shibuya", label: "Le Loup de Shibuya", icon: "💸" },
   { code: "roi", label: "Roi du Park", icon: "👑" },
-  { code: "heritage", label: "L'Héritage de la 1ère Édition", icon: "🥇" },
-  { code: "reedition", label: "Maître de la Réédition", icon: "🔄" },
+  { code: "heritage", label: "L'Héritage du Park", icon: "🥇" },
+  { code: "reedition", label: "Maître des Collections", icon: "🔄" },
   { code: "turbo", label: "Double Turbo", icon: "🪞" },
   { code: "special", label: "Les Succès Spéciaux du Set", icon: "🏁" },
 ];
@@ -149,55 +149,55 @@ export const BADGE_DEFINITIONS: BadgeDef[] = [
     category: "roi",
   },
 
-  // ── 🥇 L'Héritage de la 1ère Édition ──────────────────────────────────────
+  // ── 🥇 L'Héritage du Park ─────────────────────────────────────────────────
   {
     code: "heritage_pionnier_du_park",
     label: "Pionnier du Park",
-    description: "Obtiens ta toute première carte « Moteur Forgé » avec le stamp 1st Edition.",
+    description: "Obtiens ta toute première carte issue d'une collection.",
     icon: "🚩",
     category: "heritage",
   },
   {
     code: "heritage_archeologue_du_bitume",
     label: "Archéologue du Bitume",
-    description: "Rassemble 10 cartes Communes différentes arborant le stamp 1st Edition.",
+    description: "Rassemble 10 cartes Communes différentes issues de collections.",
     icon: "⛏️",
     category: "heritage",
   },
   {
     code: "heritage_saint_graal_forge",
     label: "Saint Graal Forgé",
-    description: "Obtiens une carte Légendaire (comme la DMC DELOREAN D'ALEXANDRE ou la NISSAN SKYLINE R33 MIDNIGHT) en version 1st Edition.",
+    description: "Obtiens une carte Légendaire (comme la DMC DELOREAN D'ALEXANDRE ou la NISSAN SKYLINE R33 MIDNIGHT) dans une collection.",
     icon: "⚜️",
     category: "heritage",
   },
   {
     code: "heritage_age_d_or_du_drift",
     label: "L'Âge d'Or du Drift",
-    description: "Ajoute l'une des deux cartes Gold (HONDA NSX TYPE-R NA1 ou TOYOTA COROLLA AE86 TRUENO) avec le stamp 1st Edition à ton coffre.",
+    description: "Ajoute l'une des deux cartes Gold (HONDA NSX TYPE-R NA1 ou TOYOTA COROLLA AE86 TRUENO) issue d'une collection à ton coffre.",
     icon: "🥇",
     category: "heritage",
   },
 
-  // ── 🔄 Maître de la Réédition ─────────────────────────────────────────────
+  // ── 🔄 Maître des Collections ─────────────────────────────────────────────
   {
     code: "reedition_moteur_echange_standard",
     label: "Moteur Échange Standard",
-    description: "Collectionne 50 cartes « Réédition » de la série Moteur Forgé.",
+    description: "Collectionne 50 cartes différentes issues de collections.",
     icon: "🔄",
     category: "reedition",
   },
   {
     code: "reedition_flotte_complete",
     label: "Flotte Complète",
-    description: "Possède l'intégralité des cartes Rares du set (de la NISSAN SKYLINE R31 à la CHEVROLET CAMARO 1969) en version Réédition.",
+    description: "Possède l'intégralité des cartes Rares d'une même collection.",
     icon: "🚛",
     category: "reedition",
   },
   {
     code: "reedition_seconde_jeunesse",
     label: "Seconde Jeunesse",
-    description: "Atteins 100 % de complétion sur le set « Moteur Forgé » en n'utilisant que des cartes issues de la Réédition.",
+    description: "Atteins 100 % de complétion sur une collection entière.",
     icon: "✨",
     category: "reedition",
   },
@@ -206,21 +206,21 @@ export const BADGE_DEFINITIONS: BadgeDef[] = [
   {
     code: "turbo_miroir_jdm",
     label: "Miroir JDM",
-    description: "Possède la même carte exacte en version 1st Edition ET en version Réédition (ex : la MAZDA RX7 FD PRÉPARÉE Ultra Rare).",
+    description: "Possède la même carte dans deux déclinaisons différentes (ex : la MAZDA RX7 FD PRÉPARÉE en carte de base et en collection).",
     icon: "🪞",
     category: "turbo",
   },
   {
     code: "turbo_garage_bipolaire",
     label: "Garage Bipolaire",
-    description: "Rassemble 15 paires de cartes (1st Edition + Réédition) dans ton classeur.",
+    description: "Rassemble 15 cartes détenues dans au moins deux déclinaisons différentes.",
     icon: "🎭",
     category: "turbo",
   },
   {
     code: "turbo_vision_peripherique",
     label: "Vision Périphérique",
-    description: "Possède l'intégralité des cartes Ultra Rares en double : le set complet en 1st Edition ET le set complet en Réédition.",
+    description: "Possède chaque carte Ultra Rare dans au moins deux déclinaisons différentes.",
     icon: "👁️",
     category: "turbo",
   },

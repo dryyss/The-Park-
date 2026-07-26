@@ -2,8 +2,8 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { ExchangeStatus } from "@/generated/prisma/client";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
+import { GUARANTEE_MS } from "@/lib/c2c-delays";
 
-const GUARANTEE_MS = 72 * 60 * 60 * 1000;
 const REAUTH_DELAY_MS = 5 * 24 * 60 * 60 * 1000; // J+5
 export const MAX_GUARANTEE_EXTENSIONS = 2;
 
@@ -49,7 +49,7 @@ export interface ExchangeStateMachineView {
   steps: StateStep[];
   timeline: TimelineEvent[];
   deadlines: {
-    /** Expédition avant (J+3). */
+    /** Expédition avant (J+7, cf. NOT_SHIP_DAYS). */
     shipBy: Date | null;
     /** Fin de la fenêtre garantie 72 h. */
     guaranteeUntil: Date | null;

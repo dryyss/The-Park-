@@ -3,6 +3,10 @@ import { randomBytes } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { getAppBaseUrl } from "@/lib/env";
 import { sendTransactionalEmail, isResendConfigured } from "@/lib/resend";
+import {
+  buildNewsletterConfirmEmail,
+  buildNewsletterWelcomeEmail,
+} from "@/server/notification/transactional-emails";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SUPPORTED_LOCALES = ["fr", "en", "ja"];
@@ -17,39 +21,10 @@ function normalizeLocale(locale: string): string {
   return SUPPORTED_LOCALES.includes(locale) ? locale : "fr";
 }
 
-const CONFIRM_COPY: Record<string, { subject: string; intro: string; cta: string; ignore: string }> = {
-  fr: {
-    subject: "Confirme ton inscription — The Park",
-    intro: "Merci de ton intérêt pour The Park. Confirme ton adresse pour recevoir les drops, nouveautés et temps forts.",
-    cta: "Confirmer mon inscription",
-    ignore: "Si tu n'es pas à l'origine de cette demande, ignore simplement cet e-mail.",
-  },
-  en: {
-    subject: "Confirm your subscription — The Park",
-    intro: "Thanks for your interest in The Park. Confirm your address to receive drops, news and highlights.",
-    cta: "Confirm my subscription",
-    ignore: "If you didn't request this, just ignore this email.",
-  },
-  ja: {
-    subject: "登録の確認 — The Park",
-    intro: "The Park にご関心をお寄せいただきありがとうございます。ドロップやお知らせを受け取るにはアドレスを確認してください。",
-    cta: "登録を確認する",
-    ignore: "心当たりがない場合は、このメールを無視してください。",
-  },
-};
-
 async function sendConfirmationEmail(email: string, token: string, locale: string): Promise<boolean> {
-  const copy = CONFIRM_COPY[locale] ?? CONFIRM_COPY.fr!;
-  const url = `${getAppBaseUrl()}/api/newsletter/confirm?token=${token}`;
-  const html = `<div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#1E2424">
-    <p style="font-size:12px;letter-spacing:2px;color:#D6004F;text-transform:uppercase">The Park</p>
-    <p>${copy.intro}</p>
-    <p style="margin:24px 0">
-      <a href="${url}" style="background:#D6004F;color:#fff;text-decoration:none;padding:12px 20px;border-radius:9px;font-weight:700">${copy.cta}</a>
-    </p>
-    <p style="font-size:11px;color:#888">${copy.ignore}</p>
-  </div>`;
-  return sendTransactionalEmail({ to: email, subject: copy.subject, html });
+  const confirmUrl = `${getAppBaseUrl()}/api/newsletter/confirm?token=${token}`;
+  const { subject, html } = buildNewsletterConfirmEmail({ confirmUrl, locale });
+  return sendTransactionalEmail({ to: email, subject, html });
 }
 
 /**
@@ -95,7 +70,7 @@ export async function subscribeToNewsletter(
 export async function confirmNewsletter(token: string): Promise<{ ok: boolean; locale: string }> {
   const sub = await prisma.newsletterSubscription.findUnique({
     where: { token },
-    select: { id: true, status: true, locale: true },
+    select: { id: true, email: true, status: true, locale: true },
   });
   if (!sub) return { ok: false, locale: "fr" };
   if (sub.status !== "CONFIRMED") {
@@ -103,6 +78,15 @@ export async function confirmNewsletter(token: string): Promise<{ ok: boolean; l
       where: { id: sub.id },
       data: { status: "CONFIRMED", confirmedAt: new Date() },
     });
+
+    // Bienvenue — best-effort : l'inscription reste valide même si l'envoi échoue.
+    const { subject, html } = buildNewsletterWelcomeEmail({
+      locale: sub.locale,
+      unsubscribeUrl: `${getAppBaseUrl()}/api/newsletter/unsubscribe?token=${token}`,
+    });
+    await sendTransactionalEmail({ to: sub.email, subject, html }).catch((err) =>
+      console.error("[newsletter] welcome email failed", err),
+    );
   }
   return { ok: true, locale: sub.locale };
 }

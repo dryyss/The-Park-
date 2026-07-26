@@ -2,7 +2,6 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { cardImage } from "@/lib/rarity";
 import { formatPrice } from "@/lib/format";
-import { wishlistEditionDisplayLabel, wishlistIsFirstEdition } from "@/server/wishlist/wishlist.mutations";
 
 export interface WishlistCard {
   id: string;
@@ -18,8 +17,8 @@ export interface WishlistCard {
   seasonName: string;
   versionLabel: string;
   conditionCode: string;
-  editionLabel: string | null;
-  isFirstEdition: boolean;
+  /** Nom de la collection recherchée. Null = carte de base. */
+  setName: string | null;
   note: string | null;
   /** Seuil d'alerte prix (€) ou null si simple alerte de disponibilité. */
   alertPrice: number | null;
@@ -32,7 +31,7 @@ export async function getViewerWishlist(userId: string): Promise<WishlistCard[]>
     orderBy: { createdAt: "desc" },
     include: {
       card: { include: { rarity: true } },
-      variant: { include: { versionType: true } },
+      variant: { include: { versionType: true, set: true } },
       season: true,
     },
   });
@@ -51,8 +50,7 @@ export async function getViewerWishlist(userId: string): Promise<WishlistCard[]>
     seasonName: w.season.name,
     versionLabel: w.variant.versionType.label,
     conditionCode: w.condition,
-    editionLabel: wishlistEditionDisplayLabel(w.editionPreset, w.variant.editionLabel),
-    isFirstEdition: wishlistIsFirstEdition(w.editionPreset, w.variant.editionLabel),
+    setName: w.variant.set?.name ?? null,
     note: w.note,
     alertPrice: w.alertPrice == null ? null : Number(w.alertPrice.toString()),
     addedAt: w.createdAt,

@@ -15,7 +15,7 @@ function row(partial: Partial<CollectionExportRow> = {}): CollectionExportRow {
     version: "Standard",
     language: "FR",
     condition: "MINT",
-    edition: "1ère édition",
+    set: "Chrome 2026",
     quantity: 2,
     graded: "",
     signed: "",

@@ -25,7 +25,6 @@ beforeAll(async () => {
     variantId: catalog.variants[0].id,
     seasonId: catalog.season.id,
     condition: "EXCELLENT",
-    editionPreset: "unlimited",
   });
   await setWishlistItemAlertPrice(wisherAlert.id, alertItemId, 20);
 
@@ -34,7 +33,6 @@ beforeAll(async () => {
     variantId: catalog.variants[0].id,
     seasonId: catalog.season.id,
     condition: "EXCELLENT",
-    editionPreset: "unlimited",
   });
 
   // Le vendeur possède 3 exemplaires (une réservation par annonce).

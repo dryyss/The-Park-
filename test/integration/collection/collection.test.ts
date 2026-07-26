@@ -6,7 +6,6 @@ import {
   updateCollectionQuantity,
   adjustCollectionCardQuantity,
   adjustCollectionVariantQuantity,
-  updateCollectionEdition,
   updateCollectionGrading,
   updateCollectionSignature,
 } from "@/server/collection/collection.mutations";
@@ -113,39 +112,22 @@ describe(`collection [${TAG}] — ajout & quantités`, () => {
   });
 });
 
-describe(`collection [${TAG}] — édition, gradation, signature`, () => {
+describe(`collection [${TAG}] — gradation, signature`, () => {
   beforeAll(async () => {
     await addCollectionItem(user.id, variants[2].id, "EXCELLENT", 1);
   });
 
-  it("updateCollectionEdition reclasse l'exemplaire d'une édition à l'autre", async () => {
-    await updateCollectionEdition(user.id, variants[2].id, "first", "EXCELLENT", "unlimited");
-    const asFirst = (await getItem(user.id, variants[2].id, "EXCELLENT"))!;
-    expect(asFirst.editionPreset).toBe("first");
-    expect(asFirst.editionLabel).toBe("1ère édition");
+  it("une variante et un état ne forment qu'une seule pile", async () => {
+    // Ancien comportement : l'édition entrait dans la clé et scindait la pile en
+    // deux lignes pour un seul et même exemplaire réel.
+    await addCollectionItem(user.id, variants[5].id, "EXCELLENT", 2);
+    await addCollectionItem(user.id, variants[5].id, "EXCELLENT", 3);
 
-    await updateCollectionEdition(user.id, variants[2].id, "unlimited", "EXCELLENT", "first");
-    const asReprint = (await getItem(user.id, variants[2].id, "EXCELLENT"))!;
-    expect(asReprint.editionPreset).toBe("unlimited");
-    expect(asReprint.editionLabel).toBeNull();
-  });
-
-  it("updateCollectionEdition fusionne les quantités quand l'édition cible existe déjà", async () => {
-    // Deux piles distinctes sur la même variante et le même état.
-    await addCollectionItem(user.id, variants[5].id, "EXCELLENT", 2, "unlimited");
-    await addCollectionItem(user.id, variants[5].id, "EXCELLENT", 3, "first");
-    expect(
-      await prisma.collectionItem.count({ where: { userId: user.id, variantId: variants[5].id } }),
-    ).toBe(2);
-
-    await updateCollectionEdition(user.id, variants[5].id, "first", "EXCELLENT", "unlimited");
-
-    const merged = await prisma.collectionItem.findMany({
+    const rows = await prisma.collectionItem.findMany({
       where: { userId: user.id, variantId: variants[5].id },
     });
-    expect(merged).toHaveLength(1);
-    expect(merged[0].editionPreset).toBe("first");
-    expect(merged[0].quantity).toBe(5);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].quantity).toBe(5);
   });
 
   it("updateCollectionGrading active la gradation (société + note) puis la retire en purgeant les champs", async () => {
@@ -273,9 +255,6 @@ describe(`collection [${TAG}] — gestion d'erreurs`, () => {
 
     await expect(removeCollectionItem(intruder.id, variants[4].id, "EXCELLENT")).rejects.toThrow("NOT_FOUND");
     await expect(
-      updateCollectionEdition(intruder.id, variants[4].id, "first", "EXCELLENT", "unlimited"),
-    ).rejects.toThrow("NOT_FOUND");
-    await expect(
       updateCollectionGrading(intruder.id, variants[4].id, "EXCELLENT", { isGraded: true }),
     ).rejects.toThrow("NOT_FOUND");
     await expect(
@@ -285,7 +264,6 @@ describe(`collection [${TAG}] — gestion d'erreurs`, () => {
     // La ligne du propriétaire n'a pas bougé.
     const item = await getItem(user.id, variants[4].id, "EXCELLENT");
     expect(item!.quantity).toBe(1);
-    expect(item!.editionLabel).toBeNull();
     expect(item!.isGraded).toBe(false);
     expect(item!.isSigned).toBe(false);
   });
