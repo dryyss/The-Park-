@@ -10,8 +10,10 @@ import {
 
 /**
  * Couche paiement escrow d'une vente marketplace (Payment kind=PURCHASE).
- * Flux wallet : débit acheteur à l'achat, crédit vendeur à la clôture, remboursement wallet si annulé.
- * Flux legacy Stripe PI : capture + virement Connect si dispo.
+ * Débit acheteur à l'achat (wallet) ou encaissement Stripe (carte), crédit des gains
+ * vendeur dans son portefeuille à la clôture, remboursement si annulé.
+ * Le versement réel au vendeur passe ensuite par une demande de retrait
+ * (virement/PayPal manuel ou Stripe Connect) — jamais directement ici.
  * Sans Stripe configuré : tout est simulé en base (mode dev).
  */
 
@@ -35,18 +37,19 @@ export async function capturePurchase(paymentId: string): Promise<void> {
   });
 }
 
-/** Libère les fonds vers le vendeur (wallet interne ou virement Connect). Idempotent. */
+/** Libère les gains vers le portefeuille du vendeur. Idempotent. */
 export async function releaseToSeller(paymentId: string): Promise<void> {
-  const payment = await prisma.payment.findUnique({ where: { id: paymentId }, include: { payee: true } });
+  const payment = await prisma.payment.findUnique({ where: { id: paymentId } });
   if (!payment) throw new Error("PAYMENT_NOT_FOUND");
   if (payment.status === "RELEASED") return;
 
   if (payment.status !== "CAPTURED") await capturePurchase(paymentId);
 
   const net = Number(payment.amount) - Number(payment.applicationFee);
-  const walletFunded = payment.saleId ? await isWalletFundedSale(payment.saleId) : false;
 
-  if (walletFunded && payment.payeeId && payment.saleId && net > 0) {
+  // Les gains atterrissent toujours dans le portefeuille interne, que l'acheteur ait
+  // payé en crédits ou par carte : c'est `earnedBalance` qui alimente les retraits.
+  if (payment.payeeId && payment.saleId && net > 0) {
     await creditWalletForSalePayout({
       userId: payment.payeeId,
       saleId: payment.saleId,
@@ -54,27 +57,9 @@ export async function releaseToSeller(paymentId: string): Promise<void> {
     });
   }
 
-  let stripeTransferId: string | null = null;
-  if (
-    !walletFunded &&
-    isStripeConfigured() &&
-    payment.payee?.stripeConnectAccountId &&
-    payment.payee.connectPayoutsEnabled
-  ) {
-    if (net > 0) {
-      const transfer = await getStripe().transfers.create({
-        amount: Math.round(net * 100),
-        currency: "eur",
-        destination: payment.payee.stripeConnectAccountId,
-        metadata: { paymentId },
-      });
-      stripeTransferId = transfer.id;
-    }
-  }
-
   await prisma.payment.update({
     where: { id: paymentId },
-    data: { status: "RELEASED", releasedAt: new Date(), ...(stripeTransferId ? { stripeTransferId } : {}) },
+    data: { status: "RELEASED", releasedAt: new Date() },
   });
 }
 

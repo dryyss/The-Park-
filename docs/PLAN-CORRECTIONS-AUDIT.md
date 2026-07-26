@@ -65,10 +65,11 @@ Légende : ☐ à faire · sévérité 🔴 critique / 🟠 élevé / 🟡 moyen
   contrôle de stock au paiement → stock négatif.
   → Transition atomique `Order PENDING→PAID` (poursuivre si `count===1`), décrément conditionnel `stock>=qty`.
 
-- ☐ **B8 — Double virement Stripe au vendeur (C4).**
-  `releaseToSeller` (`src/server/sale/sale-payment.service.ts:39`) : garde hors transaction, `transfers.create`
-  avant mise à jour du statut ; appelé par cron + confirmation → double paiement réel possible.
-  → Transition atomique `CAPTURED→RELEASING` + `idempotencyKey` Stripe sur le transfer.
+- ✅ **B8 — Double virement Stripe au vendeur (C4).** Corrigé : `releaseToSeller` ne fait plus de
+  `transfers.create`. Les gains sont toujours crédités sur `WalletAccount.earnedBalance` via
+  `creditWalletForSalePayout`, idempotent par `saleId` (une seule écriture `SALE_PAYOUT` possible),
+  et le virement réel passe par une demande de retrait. Corrige du même coup le trou inverse :
+  une vente payée par carte ne créditait RIEN au vendeur sans compte Connect actif.
 
 ## LOT 2 — 🟠 Intégrité & robustesse
 
