@@ -11,6 +11,7 @@ import {
   createTestUser,
   createTestCatalog,
   addToCollection,
+  creditTestWallet,
   cleanupTag,
 } from "./_helpers/fixtures";
 
@@ -34,6 +35,16 @@ afterAll(async () => {
 /** Rapproche endsAt d'une enchère existante (pour tester clôture / anti-snipe). */
 async function setEndsAt(auctionId: string, endsAt: Date) {
   await prisma.auction.update({ where: { id: auctionId }, data: { endsAt } });
+}
+
+/**
+ * Enchérisseur solvable. `placeBid` refuse désormais une mise que le portefeuille
+ * ne couvre pas : tout enchérisseur de test doit donc être crédité au préalable.
+ */
+async function createSolventBidder(tag: string, seq: number, creditEur = 1_000) {
+  const user = await createTestUser(tag, seq);
+  await creditTestWallet(user.id, creditEur);
+  return user;
 }
 
 describe(`auction [${TAG}] — enchères`, () => {
@@ -102,8 +113,8 @@ describe(`auction [${TAG}] — enchères`, () => {
   // ─────────────────────────────────────────────────────────────────────────
   it("placeBid crée un Bid, met à jour currentPrice et notifie le précédent enchérisseur (AUCTION_OUTBID)", async () => {
     const seller = await createTestUser(TAG, 10);
-    const b1 = await createTestUser(TAG, 11);
-    const b2 = await createTestUser(TAG, 12);
+    const b1 = await createSolventBidder(TAG, 11);
+    const b2 = await createSolventBidder(TAG, 12);
     const { variants } = await createTestCatalog(catalogTag(), 1);
     const variantId = variants[0].id;
     await addToCollection(seller.id, variantId, { quantity: 1 });
@@ -146,7 +157,7 @@ describe(`auction [${TAG}] — enchères`, () => {
 
   it("placeBid rejette BID_TOO_LOW (montant < minNextBid)", async () => {
     const seller = await createTestUser(TAG, 21);
-    const bidder = await createTestUser(TAG, 22);
+    const bidder = await createSolventBidder(TAG, 22);
     const { variants } = await createTestCatalog(catalogTag(), 1);
     const variantId = variants[0].id;
     await addToCollection(seller.id, variantId, { quantity: 1 });
@@ -160,7 +171,7 @@ describe(`auction [${TAG}] — enchères`, () => {
     await expect(placeBid(bidder.id, auctionId, 4)).rejects.toThrow("BID_TOO_LOW");
     // Puis une mise valide, et une seconde mise trop faible (< top + increment).
     await placeBid(bidder.id, auctionId, 5);
-    const bidder2 = await createTestUser(TAG, 23);
+    const bidder2 = await createSolventBidder(TAG, 23);
     await expect(placeBid(bidder2.id, auctionId, 5.5)).rejects.toThrow("BID_TOO_LOW");
   });
 
@@ -184,7 +195,7 @@ describe(`auction [${TAG}] — enchères`, () => {
   // ─────────────────────────────────────────────────────────────────────────
   it("anti-snipe: une mise dans les <2 dernières minutes prolonge endsAt", async () => {
     const seller = await createTestUser(TAG, 30);
-    const bidder = await createTestUser(TAG, 31);
+    const bidder = await createSolventBidder(TAG, 31);
     const { variants } = await createTestCatalog(catalogTag(), 1);
     const variantId = variants[0].id;
     await addToCollection(seller.id, variantId, { quantity: 1 });
@@ -207,7 +218,7 @@ describe(`auction [${TAG}] — enchères`, () => {
   // ─────────────────────────────────────────────────────────────────────────
   it("settleDueAuctions: enchère expirée avec réserve atteinte → SOLD + winnerId + notif AUCTION_WON, libère la réservation", async () => {
     const seller = await createTestUser(TAG, 40);
-    const winner = await createTestUser(TAG, 41);
+    const winner = await createSolventBidder(TAG, 41);
     const { variants } = await createTestCatalog(catalogTag(), 1);
     const variantId = variants[0].id;
     await addToCollection(seller.id, variantId, { quantity: 1 });

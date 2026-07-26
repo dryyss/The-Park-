@@ -80,6 +80,16 @@ export async function placeBid(bidderId: string, auctionId: string, amount: numb
     const minBid = minNextBid(Number(auction.startPrice), Number(auction.bidIncrement), top ? Number(top.amount) : null);
     if (amount < minBid) throw new Error("BID_TOO_LOW");
 
+    // Une enchère est un engagement de payer : on refuse une mise que le portefeuille
+    // ne couvre pas, sinon la vente se clôture sur un gagnant insolvable. Lu dans la
+    // transaction pour rester cohérent avec un débit concurrent.
+    const wallet = await tx.walletAccount.findUnique({
+      where: { userId: bidderId },
+      select: { depositBalance: true, earnedBalance: true },
+    });
+    const balance = wallet ? Number(wallet.depositBalance) + Number(wallet.earnedBalance) : 0;
+    if (balance < amount) throw new Error("INSUFFICIENT_WALLET");
+
     const created = await tx.bid.create({ data: { auctionId, bidderId, amount } });
 
     const data: Prisma.AuctionUpdateInput = { currentPrice: amount };

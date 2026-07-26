@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useUser } from "@auth0/nextjs-auth0";
 import { useFormatter, useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { placeBidAction } from "@/server/auction/auction.actions";
 import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
 
@@ -35,6 +35,8 @@ export function AuctionBidForm({
   const [amount, setAmount] = useState(round2(minAmount));
   const [error, setError] = useState<string | null>(null);
   const [showLoginGate, setShowLoginGate] = useState(false);
+  // Solde insuffisant : on ouvre une modale de recharge plutôt qu'un message d'erreur sec.
+  const [funding, setFunding] = useState<{ balance: number; required: number } | null>(null);
   const [pending, startTransition] = useTransition();
 
   // Paliers rapides : chaque clic ajoute le montant au champ (en euros).
@@ -71,10 +73,13 @@ export function AuctionBidForm({
     startTransition(async () => {
       setError(null);
       setShowLoginGate(false);
+      setFunding(null);
       const res = await placeBidAction({ auctionId, amount: normalize(amount) });
       if (!res.ok) {
         if (res.error === "UNAUTHORIZED") setShowLoginGate(true);
-        else setError(errorMessage(res.error));
+        else if (res.error === "INSUFFICIENT_WALLET") {
+          setFunding({ balance: res.balanceEur ?? 0, required: res.requiredEur ?? normalize(amount) });
+        } else setError(errorMessage(res.error));
       } else router.refresh();
     });
   }
@@ -128,6 +133,49 @@ export function AuctionBidForm({
       </div>
       {error && <p className="mt-2 text-[12px] font-bold text-neon-rouge">{error}</p>}
       <p className="mt-3 text-center text-[11px] font-bold text-texte-faible">{t("disclaimer")}</p>
+
+      {funding && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-charbon/80 p-4 backdrop-blur-sm"
+          onClick={() => setFunding(null)}
+          role="presentation"
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="bid-funding-title"
+            className="relative w-full max-w-md rounded-[16px] border border-carmin/35 bg-charbon-800 p-6 shadow-xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h2 id="bid-funding-title" className="font-display text-[19px] tracking-[1.5px] text-blanc-casse uppercase">
+              {t("insufficientTitle")}
+            </h2>
+            <p className="mt-2.5 text-[13px] leading-relaxed font-bold text-texte-dim">
+              {t("insufficientBody", {
+                required: eur(funding.required),
+                balance: eur(funding.balance),
+                missing: eur(round2(Math.max(0, funding.required - funding.balance))),
+              })}
+            </p>
+
+            <div className="mt-5 flex flex-wrap gap-2.5">
+              <Link
+                href="/portefeuille"
+                className="rounded-[12px] bg-carmin px-5 py-3 font-display text-[13px] tracking-[1.5px] text-white uppercase"
+              >
+                {t("insufficientTopUp")}
+              </Link>
+              <button
+                type="button"
+                onClick={() => setFunding(null)}
+                className="rounded-[12px] border border-charbon-500 bg-charbon-700 px-5 py-3 font-display text-[13px] tracking-[1.5px] text-texte-dim uppercase transition hover:text-blanc-casse"
+              >
+                {t("insufficientCancel")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 }

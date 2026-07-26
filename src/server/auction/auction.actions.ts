@@ -4,10 +4,12 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getAuthenticatedViewer } from "@/server/user/user.service";
 import { createAuction, placeBid } from "@/server/auction/auction.mutations";
+import { getWalletSpendableBalanceEur } from "@/server/wallet/wallet.service";
 
 export type AuctionActionResult =
   | { ok: true; bidId?: string; auctionId?: string }
-  | { ok: false; error: string };
+  /** `INSUFFICIENT_WALLET` porte le solde et le montant visé pour alimenter la modale de recharge. */
+  | { ok: false; error: string; balanceEur?: number; requiredEur?: number };
 
 const bidSchema = z.object({
   auctionId: z.string().min(1),
@@ -52,6 +54,15 @@ export async function placeBidAction(input: unknown): Promise<AuctionActionResul
     revalidatePath(`/encheres/${parsed.data.auctionId}`);
     return { ok: true, bidId };
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+    const code = err instanceof Error ? err.message : "UNKNOWN";
+    if (code === "INSUFFICIENT_WALLET") {
+      return {
+        ok: false,
+        error: code,
+        balanceEur: await getWalletSpendableBalanceEur(viewer.id),
+        requiredEur: parsed.data.amount,
+      };
+    }
+    return { ok: false, error: code };
   }
 }

@@ -1093,6 +1093,10 @@
     "errorSelfBid": "You can't bid on your own listing.",
     "errorEnded": "This auction has ended.",
     "errorGeneric": "Couldn't place the bid.",
+    "insufficientTitle": "Not enough credit",
+    "insufficientBody": "This bid needs {required}, your wallet holds {balance}. You're {missing} short.",
+    "insufficientTopUp": "Top up my wallet",
+    "insufficientCancel": "Later",
     "disclaimer": "Demo UI — no real payment.",
     "bidHistory": "Bid history",
     "noBids": "No bids yet."

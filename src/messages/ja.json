@@ -1093,6 +1093,10 @@
     "errorSelfBid": "自分の出品には入札できないよ。",
     "errorEnded": "このオークションは終了したよ。",
     "errorGeneric": "入札できなかった。",
+    "insufficientTitle": "残高不足",
+    "insufficientBody": "この入札には {required} が必要ですが、ウォレット残高は {balance} です。{missing} 足りません。",
+    "insufficientTopUp": "ウォレットをチャージ",
+    "insufficientCancel": "あとで",
     "disclaimer": "デモUI — 実決済なし",
     "bidHistory": "入札履歴",
     "noBids": "入札なし"

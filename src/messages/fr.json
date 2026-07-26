@@ -1093,6 +1093,10 @@
     "errorSelfBid": "Tu ne peux pas enchérir sur ta propre vente.",
     "errorEnded": "Cette enchère est terminée.",
     "errorGeneric": "Impossible de placer l'enchère.",
+    "insufficientTitle": "Solde insuffisant",
+    "insufficientBody": "Cette enchère demande {required}, ton portefeuille affiche {balance}. Il te manque {missing} pour miser.",
+    "insufficientTopUp": "Recharger mon portefeuille",
+    "insufficientCancel": "Plus tard",
     "disclaimer": "Démo UI — pas d'encaissement réel.",
     "bidHistory": "Historique",
     "noBids": "Aucune enchère pour l'instant."
