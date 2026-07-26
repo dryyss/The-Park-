@@ -689,14 +689,16 @@
       "LETTER_TRACKED": "Lettre suivie",
       "PICKUP_POINT": "Point relais",
       "COLISSIMO": "Colissimo domicile",
-      "SECURED": "Envoi sécurisé"
+      "SECURED": "Envoi sécurisé",
+      "STANDARD": "Envoi standard"
     },
     "shippingModeDesc": {
       "HAND_DELIVERY": "Rencontre le vendeur — confirmation par code le jour J.",
       "LETTER_TRACKED": "2 à 4 jours ouvrés, suivi en ligne.",
       "PICKUP_POINT": "3 à 5 jours ouvrés, retrait en point relais.",
       "COLISSIMO": "2 à 3 jours ouvrés, remise à domicile.",
-      "SECURED": "Colissimo + preuves vidéo + garantie 72 h."
+      "SECURED": "Colissimo + preuves vidéo + garantie 72 h.",
+      "STANDARD": "Mode hérité, équivalent lettre suivie : 2 à 4 jours ouvrés."
     },
     "addressTitle": "Adresse de livraison",
     "addressNewLabel": "Nouvelle adresse",
@@ -759,6 +761,7 @@
       "DELIVERED_WINDOW": "Livré · à valider",
       "DELIVERED": "Livré",
       "COMPLETED": "Terminé",
+      "GUARANTEE_SUSPENDED": "Garantie suspendue",
       "DISPUTED": "Litige",
       "NOT_SHIPPED_CANCELLED": "Annulé (non expédié)",
       "CANCELLED": "Annulé",
@@ -903,6 +906,10 @@
       "shopOrderPlacedBody": "{buyer} a commandé {itemCount} article(s) — {total} € (n°{orderNumber}).",
       "messageReceived": "Nouveau message",
       "messageReceivedBody": "{preview}",
+      "friendRequest": "Demande de rival",
+      "friendRequestBody": "{actorName} veut t'ajouter en rival.",
+      "friendAccepted": "Demande acceptée",
+      "friendAcceptedBody": "{actorName} fait maintenant partie de tes rivaux.",
       "referralReward": "Bonus de parrainage 🎉",
       "referralRewardBody": "{amount} de crédits ont été ajoutés à ton portefeuille.",
       "ticketReply": "Réponse du support",
@@ -918,6 +925,7 @@
     "contextHint": "Les messages s'ouvrent automatiquement lors d'un échange.",
     "back": "Messages",
     "viewExchange": "Voir l'échange",
+    "viewSale": "Voir la vente",
     "inputPlaceholder": "Écrire un message…",
     "send": "Envoyer",
     "attachPhoto": "Ajouter une photo",
@@ -1020,6 +1028,7 @@
     "topUpCancelled": "Recharge annulée.",
     "historyTitle": "Historique",
     "historyEmpty": "Aucune opération pour le moment.",
+    "auctionOptionNote": "Option enchère automatique",
     "cautionLockNote": "Caution échange sécurisé bloquée",
     "cautionReleaseNote": "Caution restituée après échange complété",
     "cautionRefundNote": "Caution remboursée (échange annulé)",
@@ -1029,7 +1038,11 @@
       "REFUND": "Remboursement",
       "SALE_PAYOUT": "Vente reçue",
       "WITHDRAWAL": "Retrait bancaire",
-      "ADJUSTMENT": "Ajustement"
+      "ADJUSTMENT": "Ajustement",
+      "CAUTION_LOCK": "Caution bloquée",
+      "CAUTION_RELEASE": "Caution restituée",
+      "REFERRAL_BONUS": "Bonus parrainage",
+      "AUCTION_OPTION": "Option enchère auto"
     },
     "withdrawMethodTitle": "Mode de retrait",
     "withdrawMethods": {
@@ -1076,6 +1089,12 @@
     "yourBid": "Ton enchère (€)",
     "bid": "Enchérir",
     "bidMin": "Min {amount}",
+    "autoBidTitle": "Enchère auto · reste devant",
+    "autoBidPitch": "Le système mise à ta place et ne lâche que le minimum nécessaire pour rester en tête. Plus besoin de camper devant l’écran jusqu’à la dernière seconde.",
+    "autoBidUnlock": "Débloquer · {fee}",
+    "autoBidEnable": "Activer l’enchère automatique",
+    "autoBidMaxLabel": "Ton plafond (€)",
+    "autoBidHint": "Ton solde doit couvrir le plafond entier : il est engagé dès que tu l’armes, pas seulement ta mise affichée. Le système ne misera que le minimum nécessaire pour te garder en tête, jamais au-dessus du plafond.",
     "ended": "Enchère terminée — vendue",
     "endedNoSale": "Enchère terminée — sans preneur",
     "endedShort": "Terminée",
@@ -1092,12 +1111,29 @@
     "errorBidTooLow": "Mise trop basse — minimum {amount} €.",
     "errorSelfBid": "Tu ne peux pas enchérir sur ta propre vente.",
     "errorEnded": "Cette enchère est terminée.",
+    "errorMaxBelowBid": "Ton plafond doit être au moins égal à ta mise.",
+    "errorAutoBidLocked": "L’enchère automatique n’est pas encore débloquée sur cette enchère.",
+    "errorNotRegistered": "Inscris-toi juste au-dessus pour pouvoir enchérir.",
     "errorGeneric": "Impossible de placer l'enchère.",
     "insufficientTitle": "Solde insuffisant",
     "insufficientBody": "Cette enchère demande {required}, ton portefeuille affiche {balance}. Il te manque {missing} pour miser.",
+    "insufficientBodyOption": "L’enchère auto demande {required}, ton portefeuille affiche {balance}. Il te manque {missing} pour la débloquer.",
     "insufficientTopUp": "Recharger mon portefeuille",
     "insufficientCancel": "Plus tard",
     "disclaimer": "Démo UI — pas d'encaissement réel.",
+    "registerTitle": "Inscription · dis-nous où livrer",
+    "registerPitch": "Choisis dès maintenant comment tu te ferais livrer si tu remportes cette vente. Rien n'est débité pour participer : seul le gagnant est prélevé à la clôture.",
+    "registerShippingLabel": "Mode d'envoi",
+    "registerShippingFree": "Offert",
+    "registerAddressLabel": "Adresse de livraison",
+    "registerAddAddress": "Ajoute une adresse dans tes paramètres",
+    "registerTotalHint": "{fee} de port s'ajouteront au prix d'adjudication. Ton portefeuille doit couvrir l'ensemble pour que tes mises passent.",
+    "registerSubmit": "Je m'inscris",
+    "registerSaved": "Choix enregistré.",
+    "registerDone": "Tu es inscrit à cette vente",
+    "registerEdit": "Modifier",
+    "registerErrorAddressRequired": "Choisis une adresse de livraison pour ce mode d'envoi.",
+    "registerErrorAddressNotFound": "Cette adresse n'est plus disponible.",
     "bidHistory": "Historique",
     "noBids": "Aucune enchère pour l'instant."
   },
@@ -1940,11 +1976,16 @@
       "colSeller": "Vendeur",
       "colCurrent": "Prix actuel",
       "colBids": "Enchères",
+      "colOptions": "Options",
       "colStatus": "Statut",
       "colEnds": "Fin",
       "colActions": "Actions",
       "cancel": "Annuler",
       "confirmCancel": "Annuler cette enchère ?",
+      "optionsTitle": "Détenteurs de l’option",
+      "optionRefund": "Rembourser",
+      "optionRefunded": "Remboursée",
+      "confirmRefundOption": "Rembourser l’option de « {name} » ? Geste commercial : le montant est recrédité sur son portefeuille et le membre conserve son option, plafond armé compris.",
       "winner": "Gagnant",
       "empty": "Aucune enchère.",
       "total": "{count} enchères",
@@ -1955,7 +1996,9 @@
         "active": "Actives",
         "scheduled": "Programmées",
         "closed": "Clôturées",
-        "reported": "Signalements"
+        "reported": "Signalements",
+        "optionsSold": "Options vendues",
+        "optionsRevenue": "Recette options (nette)"
       },
       "statuses": {
         "SCHEDULED": "Programmée",
@@ -2950,9 +2993,7 @@
           },
           {
             "h": "Produits et pratiques interdits",
-            "p": [
-              "Sont notamment interdits à la vente :"
-            ],
+            "p": ["Sont notamment interdits à la vente :"],
             "list": [
               "les contrefaçons, reproductions non officielles et cartes falsifiées ;",
               "les articles volés ou dont le vendeur n'est pas propriétaire ;",
@@ -3024,9 +3065,7 @@
           },
           {
             "h": "Données que nous collectons",
-            "p": [
-              "Selon votre usage du Service, nous pouvons collecter :"
-            ],
+            "p": ["Selon votre usage du Service, nous pouvons collecter :"],
             "list": [
               "des données d'identification et de compte (pseudonyme, e-mail, date de naissance pour le contrôle d'âge) ;",
               "des données de transaction (commandes, ventes, portefeuille, retraits) ;",
@@ -3037,9 +3076,7 @@
           },
           {
             "h": "Finalités et bases légales",
-            "p": [
-              "Nous traitons ces données pour :"
-            ],
+            "p": ["Nous traitons ces données pour :"],
             "list": [
               "fournir et gérer le Service et votre compte (exécution du contrat) ;",
               "sécuriser les paiements, prévenir la fraude et protéger les mineurs (obligation légale et intérêt légitime) ;",
@@ -3119,9 +3156,7 @@
           },
           {
             "h": "Directeur de la publication",
-            "p": [
-              "Le directeur de la publication est : [À COMPLÉTER : nom du représentant légal]."
-            ]
+            "p": ["Le directeur de la publication est : [À COMPLÉTER : nom du représentant légal]."]
           },
           {
             "h": "Hébergement",
@@ -3156,9 +3191,7 @@
           },
           {
             "h": "Contact",
-            "p": [
-              "Pour toute question : [À COMPLÉTER : e-mail de contact]."
-            ]
+            "p": ["Pour toute question : [À COMPLÉTER : e-mail de contact]."]
           }
         ]
       }

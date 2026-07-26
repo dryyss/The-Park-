@@ -689,14 +689,16 @@
       "LETTER_TRACKED": "追跡付きレター",
       "PICKUP_POINT": "受取ポイント",
       "COLISSIMO": "Colissimo 宅配",
-      "SECURED": "セキュア配送"
+      "SECURED": "セキュア配送",
+      "STANDARD": "通常配送"
     },
     "shippingModeDesc": {
       "HAND_DELIVERY": "出品者と対面 — 当日コードで確認。",
       "LETTER_TRACKED": "2〜4営業日、オンライン追跡。",
       "PICKUP_POINT": "3〜5営業日、受取ポイントで受け取り。",
       "COLISSIMO": "2〜3営業日、自宅にお届け。",
-      "SECURED": "Colissimo + 動画証拠 + 72時間保証。"
+      "SECURED": "Colissimo + 動画証拠 + 72時間保証。",
+      "STANDARD": "旧モード、追跡付きレター相当：2〜4営業日。"
     },
     "addressTitle": "配送先住所",
     "addressNewLabel": "新しい住所",
@@ -759,6 +761,7 @@
       "DELIVERED_WINDOW": "配達済 · 確認待ち",
       "DELIVERED": "配達済",
       "COMPLETED": "完了",
+      "GUARANTEE_SUSPENDED": "保証停止",
       "DISPUTED": "係争中",
       "NOT_SHIPPED_CANCELLED": "キャンセル（未発送）",
       "CANCELLED": "キャンセル",
@@ -903,6 +906,10 @@
       "shopOrderPlacedBody": "{buyer}さんが{itemCount}点を注文しました — €{total}（注文番号{orderNumber}）",
       "messageReceived": "新着メッセージ",
       "messageReceivedBody": "{preview}",
+      "friendRequest": "ライバル申請",
+      "friendRequestBody": "{actorName}さんからライバル申請。",
+      "friendAccepted": "申請承認",
+      "friendAcceptedBody": "{actorName}さんがライバルになりました。",
       "referralReward": "紹介ボーナス 🎉",
       "referralRewardBody": "{amount} 分のクレジットがウォレットに追加されたよ。",
       "ticketReply": "サポートからの返信",
@@ -918,6 +925,7 @@
     "contextHint": "交換時に自動で開きます。",
     "back": "メッセージ",
     "viewExchange": "交換を見る",
+    "viewSale": "販売を見る",
     "inputPlaceholder": "メッセージを入力…",
     "send": "送信",
     "attachPhoto": "写真を添付",
@@ -1020,6 +1028,7 @@
     "topUpCancelled": "チャージがキャンセルされました。",
     "historyTitle": "履歴",
     "historyEmpty": "取引はまだありません。",
+    "auctionOptionNote": "自動入札オプション",
     "cautionLockNote": "安全交換の保証金が保留中",
     "cautionReleaseNote": "交換完了後に保証金を返還",
     "cautionRefundNote": "保証金返金（交換キャンセル）",
@@ -1029,7 +1038,11 @@
       "REFUND": "返金",
       "SALE_PAYOUT": "販売入金",
       "WITHDRAWAL": "銀行出金",
-      "ADJUSTMENT": "調整"
+      "ADJUSTMENT": "調整",
+      "CAUTION_LOCK": "保証金保留",
+      "CAUTION_RELEASE": "保証金返還",
+      "REFERRAL_BONUS": "紹介ボーナス",
+      "AUCTION_OPTION": "自動入札オプション"
     },
     "withdrawMethodTitle": "出金方法",
     "withdrawMethods": {
@@ -1076,6 +1089,12 @@
     "yourBid": "入札額（€）",
     "bid": "入札する",
     "bidMin": "最低 {amount}",
+    "autoBidTitle": "自動入札 · 前に出続ける",
+    "autoBidPitch": "システムが代わりに入札して、トップを守るのに必要な最低額しか使わない。最後の1秒まで画面に張り付く必要はもうないよ。",
+    "autoBidUnlock": "アンロック · {fee}",
+    "autoBidEnable": "自動入札をオンにする",
+    "autoBidMaxLabel": "上限額（€）",
+    "autoBidHint": "上限をセットした時点で全額が確保されるから、表示中の入札額だけじゃなく上限額をまるごとカバーできる残高が必要だよ。システムはトップを守るのに必要な最低額しか入札しないし、上限を超えることもない。",
     "ended": "オークション終了 — 落札",
     "endedNoSale": "オークション終了 — 入札なし",
     "endedShort": "終了",
@@ -1092,12 +1111,29 @@
     "errorBidTooLow": "入札額が低すぎ — 最低{amount}€。",
     "errorSelfBid": "自分の出品には入札できないよ。",
     "errorEnded": "このオークションは終了したよ。",
+    "errorMaxBelowBid": "上限額は入札額以上にしてね。",
+    "errorAutoBidLocked": "このオークションではまだ自動入札がアンロックされていないよ。",
+    "errorNotRegistered": "入札するには、すぐ上から参加登録してね。",
     "errorGeneric": "入札できなかった。",
     "insufficientTitle": "残高不足",
     "insufficientBody": "この入札には {required} が必要ですが、ウォレット残高は {balance} です。{missing} 足りません。",
+    "insufficientBodyOption": "自動入札のアンロックには {required} が必要ですが、ウォレット残高は {balance} です。{missing} 足りません。",
     "insufficientTopUp": "ウォレットをチャージ",
     "insufficientCancel": "あとで",
     "disclaimer": "デモUI — 実決済なし",
+    "registerTitle": "参加登録 · 配送先を教えてね",
+    "registerPitch": "落札した場合の受け取り方法を今のうちに選んでおこう。参加するだけなら引き落としはなく、落札者だけが終了時に決済されるよ。",
+    "registerShippingLabel": "配送方法",
+    "registerShippingFree": "無料",
+    "registerAddressLabel": "配送先住所",
+    "registerAddAddress": "設定から住所を追加する",
+    "registerTotalHint": "落札価格に送料 {fee} が加算されるよ。入札が通るには、その合計をカバーできる残高が必要だよ。",
+    "registerSubmit": "参加登録する",
+    "registerSaved": "保存したよ。",
+    "registerDone": "このオークションに参加登録済み",
+    "registerEdit": "変更する",
+    "registerErrorAddressRequired": "この配送方法には配送先住所を選んでね。",
+    "registerErrorAddressNotFound": "その住所はもう使えないよ。",
     "bidHistory": "入札履歴",
     "noBids": "入札なし"
   },
@@ -1940,11 +1976,16 @@
       "colSeller": "出品者",
       "colCurrent": "現在価格",
       "colBids": "入札",
+      "colOptions": "オプション",
       "colStatus": "ステータス",
       "colEnds": "終了",
       "colActions": "操作",
       "cancel": "取消",
       "confirmCancel": "このオークションを取消しますか？",
+      "optionsTitle": "オプション購入者",
+      "optionRefund": "返金",
+      "optionRefunded": "返金済",
+      "confirmRefundOption": "「{name}」のオプションを返金しますか？サービス対応として金額をウォレットに戻しますが、オプション自体は残り、設定済みの上限額もそのままです。",
       "winner": "落札者",
       "empty": "オークションがありません。",
       "total": "{count} 件",
@@ -1955,7 +1996,9 @@
         "active": "進行中",
         "scheduled": "予定",
         "closed": "終了",
-        "reported": "通報"
+        "reported": "通報",
+        "optionsSold": "オプション販売数",
+        "optionsRevenue": "オプション売上（返金後）"
       },
       "statuses": {
         "SCHEDULED": "予定",
@@ -2950,9 +2993,7 @@
           },
           {
             "h": "禁止される商品および行為",
-            "p": [
-              "特に以下の販売が禁止されています："
-            ],
+            "p": ["特に以下の販売が禁止されています："],
             "list": [
               "偽造品、非公式の複製品および改ざんされたカード；",
               "盗品または販売者が所有者でない物品；",
@@ -3024,9 +3065,7 @@
           },
           {
             "h": "当社が収集するデータ",
-            "p": [
-              "お客様の本サービスの利用状況に応じて、当社は以下を収集する場合があります："
-            ],
+            "p": ["お客様の本サービスの利用状況に応じて、当社は以下を収集する場合があります："],
             "list": [
               "識別およびアカウントのデータ（ユーザー名、メールアドレス、年齢確認のための生年月日）；",
               "取引データ（注文、販売、ウォレット、引き出し）；",
@@ -3037,9 +3076,7 @@
           },
           {
             "h": "目的および法的根拠",
-            "p": [
-              "当社は、以下の目的でこれらのデータを処理します："
-            ],
+            "p": ["当社は、以下の目的でこれらのデータを処理します："],
             "list": [
               "本サービスおよびお客様のアカウントの提供と管理（契約の履行）；",
               "支払いの保護、詐欺の防止および未成年者の保護（法的義務および正当な利益）；",
@@ -3119,9 +3156,7 @@
           },
           {
             "h": "発行責任者",
-            "p": [
-              "発行責任者は次のとおりです：[要記入：法定代表者の氏名]。"
-            ]
+            "p": ["発行責任者は次のとおりです：[要記入：法定代表者の氏名]。"]
           },
           {
             "h": "ホスティング",
@@ -3156,9 +3191,7 @@
           },
           {
             "h": "お問い合わせ",
-            "p": [
-              "お問い合わせ：[要記入：連絡先メールアドレス]。"
-            ]
+            "p": ["お問い合わせ：[要記入：連絡先メールアドレス]。"]
           }
         ]
       }

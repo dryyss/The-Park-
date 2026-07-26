@@ -5,7 +5,10 @@ import { z } from "zod";
 import { requireModule } from "@/server/auth/admin-guard";
 import { isOwner } from "@/server/auth/permissions.service";
 import { adminModerateListing } from "@/server/admin/marketplace-admin.service";
-import { adminCancelAuction } from "@/server/admin/auctions-admin.service";
+import {
+  adminCancelAuction,
+  adminRefundAuctionOption,
+} from "@/server/admin/auctions-admin.service";
 import { adminAdjustWallet } from "@/server/admin/finance-admin.service";
 import { adminDeletePhoto } from "@/server/admin/content-admin.service";
 
@@ -41,6 +44,21 @@ export async function adminCancelAuctionAction(auctionId: string): Promise<Admin
     await adminCancelAuction(access.user.id, auctionId);
     revalidatePath("/[locale]/admin/encheres", "page");
     revalidatePath("/[locale]/admin", "page");
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };
+  }
+}
+
+/** Rembourse une option « enchère automatique » (geste commercial). */
+export async function adminRefundAuctionOptionAction(optionId: string): Promise<AdminActionResult> {
+  const access = await requireModule("auctions");
+  if (!access.ok) return { ok: false, error: access.reason };
+
+  try {
+    await adminRefundAuctionOption(access.user.id, optionId);
+    revalidatePath("/[locale]/admin/encheres", "page");
+    revalidatePath("/[locale]/portefeuille", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

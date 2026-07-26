@@ -57,7 +57,10 @@ function mapNotification(
     type: n.type,
     titleKey: keys.title,
     bodyKey: keys.body,
-    bodyParams: payload,
+    // Le pseudo de l'auteur n'est pas stocké dans le payload (il n'est résolu qu'à
+    // l'envoi de l'e-mail) : on l'expose ici pour que les libellés puissent le citer.
+    // Un `actorName` déjà présent dans le payload reste prioritaire.
+    bodyParams: actorName ? { actorName, ...payload } : payload,
     actorName,
     entityType: n.entityType,
     entityId: n.entityId,

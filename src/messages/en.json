@@ -689,14 +689,16 @@
       "LETTER_TRACKED": "Tracked letter",
       "PICKUP_POINT": "Pickup point",
       "COLISSIMO": "Colissimo home delivery",
-      "SECURED": "Secured shipping"
+      "SECURED": "Secured shipping",
+      "STANDARD": "Standard shipping"
     },
     "shippingModeDesc": {
       "HAND_DELIVERY": "Meet the seller — code confirmation on the day.",
       "LETTER_TRACKED": "2–4 business days, online tracking.",
       "PICKUP_POINT": "3–5 business days, pickup point collection.",
       "COLISSIMO": "2–3 business days, home delivery.",
-      "SECURED": "Colissimo + video proofs + 72h guarantee."
+      "SECURED": "Colissimo + video proofs + 72h guarantee.",
+      "STANDARD": "Legacy mode, same as tracked letter: 2–4 business days."
     },
     "addressTitle": "Shipping address",
     "addressNewLabel": "New address",
@@ -759,6 +761,7 @@
       "DELIVERED_WINDOW": "Delivered · to confirm",
       "DELIVERED": "Delivered",
       "COMPLETED": "Completed",
+      "GUARANTEE_SUSPENDED": "Guarantee suspended",
       "DISPUTED": "Dispute",
       "NOT_SHIPPED_CANCELLED": "Cancelled (not shipped)",
       "CANCELLED": "Cancelled",
@@ -903,6 +906,10 @@
       "shopOrderPlacedBody": "{buyer} ordered {itemCount} item(s) — €{total} (no. {orderNumber}).",
       "messageReceived": "New message",
       "messageReceivedBody": "{preview}",
+      "friendRequest": "Rival request",
+      "friendRequestBody": "{actorName} wants to add you as a rival.",
+      "friendAccepted": "Request accepted",
+      "friendAcceptedBody": "{actorName} is now one of your rivals.",
       "referralReward": "Referral bonus 🎉",
       "referralRewardBody": "{amount} in credits has been added to your wallet.",
       "ticketReply": "Support reply",
@@ -918,6 +925,7 @@
     "contextHint": "Messages open automatically during a trade.",
     "back": "Messages",
     "viewExchange": "View trade",
+    "viewSale": "View sale",
     "inputPlaceholder": "Write a message…",
     "send": "Send",
     "attachPhoto": "Add a photo",
@@ -1020,6 +1028,7 @@
     "topUpCancelled": "Top-up cancelled.",
     "historyTitle": "History",
     "historyEmpty": "No transactions yet.",
+    "auctionOptionNote": "Auto-bid option",
     "cautionLockNote": "Secured trade deposit held",
     "cautionReleaseNote": "Deposit returned after completed trade",
     "cautionRefundNote": "Deposit refunded (trade cancelled)",
@@ -1029,7 +1038,11 @@
       "REFUND": "Refund",
       "SALE_PAYOUT": "Sale received",
       "WITHDRAWAL": "Bank withdrawal",
-      "ADJUSTMENT": "Adjustment"
+      "ADJUSTMENT": "Adjustment",
+      "CAUTION_LOCK": "Deposit held",
+      "CAUTION_RELEASE": "Deposit returned",
+      "REFERRAL_BONUS": "Referral bonus",
+      "AUCTION_OPTION": "Auto-bid option"
     },
     "withdrawMethodTitle": "Withdrawal method",
     "withdrawMethods": {
@@ -1076,6 +1089,12 @@
     "yourBid": "Your bid (€)",
     "bid": "Place bid",
     "bidMin": "Min {amount}",
+    "autoBidTitle": "Auto-bid · stay ahead",
+    "autoBidPitch": "The system bids for you and only spends the minimum needed to stay on top. No more camping in front of your screen until the last second.",
+    "autoBidUnlock": "Unlock · {fee}",
+    "autoBidEnable": "Turn on auto-bidding",
+    "autoBidMaxLabel": "Your cap (€)",
+    "autoBidHint": "Your balance has to cover the full cap: it's held the moment you arm it, not just your visible bid. The system only bids the minimum needed to keep you on top, never above the cap.",
     "ended": "Auction ended — sold",
     "endedNoSale": "Auction ended — no takers",
     "endedShort": "Ended",
@@ -1092,12 +1111,29 @@
     "errorBidTooLow": "Bid too low — minimum {amount} €.",
     "errorSelfBid": "You can't bid on your own listing.",
     "errorEnded": "This auction has ended.",
+    "errorMaxBelowBid": "Your cap has to be at least as high as your bid.",
+    "errorAutoBidLocked": "Auto-bidding isn't unlocked on this auction yet.",
+    "errorNotRegistered": "Sign up just above to be able to bid.",
     "errorGeneric": "Couldn't place the bid.",
     "insufficientTitle": "Not enough credit",
     "insufficientBody": "This bid needs {required}, your wallet holds {balance}. You're {missing} short.",
+    "insufficientBodyOption": "Auto-bid needs {required}, your wallet holds {balance}. You're {missing} short of unlocking it.",
     "insufficientTopUp": "Top up my wallet",
     "insufficientCancel": "Later",
     "disclaimer": "Demo UI — no real payment.",
+    "registerTitle": "Sign up · tell us where to ship",
+    "registerPitch": "Pick now how you'd like it delivered if you win this sale. Nothing is charged to take part: only the winner is debited at closing.",
+    "registerShippingLabel": "Shipping method",
+    "registerShippingFree": "Free",
+    "registerAddressLabel": "Delivery address",
+    "registerAddAddress": "Add an address in your settings",
+    "registerTotalHint": "{fee} shipping will be added to the hammer price. Your wallet has to cover the whole amount for your bids to go through.",
+    "registerSubmit": "Sign me up",
+    "registerSaved": "Choice saved.",
+    "registerDone": "You're signed up for this sale",
+    "registerEdit": "Change",
+    "registerErrorAddressRequired": "Pick a delivery address for this shipping method.",
+    "registerErrorAddressNotFound": "That address isn't available any more.",
     "bidHistory": "Bid history",
     "noBids": "No bids yet."
   },
@@ -1940,11 +1976,16 @@
       "colSeller": "Seller",
       "colCurrent": "Current price",
       "colBids": "Bids",
+      "colOptions": "Options",
       "colStatus": "Status",
       "colEnds": "Ends",
       "colActions": "Actions",
       "cancel": "Cancel",
       "confirmCancel": "Cancel this auction?",
+      "optionsTitle": "Option holders",
+      "optionRefund": "Refund",
+      "optionRefunded": "Refunded",
+      "confirmRefundOption": "Refund the option bought by “{name}”? Goodwill gesture: the amount goes back to their wallet and the member keeps the option, armed cap included.",
       "winner": "Winner",
       "empty": "No auctions.",
       "total": "{count} auctions",
@@ -1955,7 +1996,9 @@
         "active": "Active",
         "scheduled": "Scheduled",
         "closed": "Closed",
-        "reported": "Reports"
+        "reported": "Reports",
+        "optionsSold": "Options sold",
+        "optionsRevenue": "Options revenue (net)"
       },
       "statuses": {
         "SCHEDULED": "Scheduled",
@@ -2950,9 +2993,7 @@
           },
           {
             "h": "Prohibited products and practices",
-            "p": [
-              "The following are notably prohibited from sale:"
-            ],
+            "p": ["The following are notably prohibited from sale:"],
             "list": [
               "counterfeits, unofficial reproductions and falsified cards;",
               "stolen items or items the seller does not own;",
@@ -3024,9 +3065,7 @@
           },
           {
             "h": "Data we collect",
-            "p": [
-              "Depending on your use of the Service, we may collect:"
-            ],
+            "p": ["Depending on your use of the Service, we may collect:"],
             "list": [
               "identification and account data (username, e-mail, date of birth for age verification);",
               "transaction data (orders, sales, wallet, withdrawals);",
@@ -3037,9 +3076,7 @@
           },
           {
             "h": "Purposes and legal bases",
-            "p": [
-              "We process this data to:"
-            ],
+            "p": ["We process this data to:"],
             "list": [
               "provide and manage the Service and your account (performance of the contract);",
               "secure payments, prevent fraud and protect minors (legal obligation and legitimate interest);",
@@ -3050,9 +3087,7 @@
           },
           {
             "h": "Recipients and processors",
-            "p": [
-              "Your data may be shared with processors acting on our behalf, notably:"
-            ],
+            "p": ["Your data may be shared with processors acting on our behalf, notably:"],
             "list": [
               "Stripe, for processing payments and withdrawals;",
               "our provider of transactional e-mails and newsletters;",
@@ -3119,9 +3154,7 @@
           },
           {
             "h": "Publication director",
-            "p": [
-              "The publication director is: [TO COMPLETE: name of the legal representative]."
-            ]
+            "p": ["The publication director is: [TO COMPLETE: name of the legal representative]."]
           },
           {
             "h": "Hosting",
@@ -3156,9 +3189,7 @@
           },
           {
             "h": "Contact",
-            "p": [
-              "For any question: [TO COMPLETE: contact e-mail]."
-            ]
+            "p": ["For any question: [TO COMPLETE: contact e-mail]."]
           }
         ]
       }
