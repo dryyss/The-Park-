@@ -23,6 +23,7 @@
     "auth0:disable-google": "tsx scripts/disable-auth0-google.ts",
     "staff:seed": "tsx scripts/seed-staff-accounts.ts",
     "test:resend": "tsx scripts/test-resend.ts",
+    "mail:check": "tsx scripts/check-mail-deliverability.ts",
     "check:neon": "tsx scripts/check-neon.ts"
   },
   "dependencies": {
