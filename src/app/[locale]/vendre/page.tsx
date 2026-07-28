@@ -22,7 +22,7 @@ export default async function VendrePage({ params }: { params: Promise<{ locale:
   const cards = viewer && readiness?.ready ? await getOwnedCardsForSale(viewer.id) : [];
 
   return (
-    <main className="mx-auto max-w-[1120px] page-pad pt-7 pb-[60px]">
+    <main className="page-section pt-7">
       <nav className="flex items-center gap-3 text-[12.5px] font-bold text-texte-dim">
         <Link href="/collection" className="hover:text-carmin">
           {t("breadcrumbCollection")}
