@@ -94,8 +94,13 @@ export function SellForm({
     });
   }
 
+  // `minmax(0,1fr)` et non `1fr` : une piste `1fr` garde un `min-width: auto`,
+  // donc le scroller horizontal des vignettes (section 01) impose sa largeur de
+  // contenu à toute la colonne, qui déborde alors à droite. Le débordement est
+  // invisible — `AppShell` porte `overflow-x-hidden` — et rogne silencieusement
+  // la 2e carte de type et le texte du bouton Publier.
   return (
-    <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1fr_360px]">
+    <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
       <div className="flex flex-col gap-4">
         <section className="rounded-[18px] border border-charbon-500 bg-charbon-800 p-5">
           <StepHeader n="01" title={t("stepPickCard")} />
@@ -130,7 +135,9 @@ export function SellForm({
 
         <section className="rounded-[18px] border border-charbon-500 bg-charbon-800 p-5">
           <StepHeader n="02" title={t("stepType")} />
-          <div className="mb-4 flex gap-2.5">
+          {/* `flex-wrap` : sur une colonne étroite les deux cartes passent à la
+              ligne au lieu de se comprimer jusqu'à l'illisible. */}
+          <div className="mb-4 flex flex-wrap gap-2.5">
             <TypeCard active={listingType === "fixed"} icon={<TagIcon />} title={t("typeFixed")} desc={t("typeFixedDesc")} onClick={() => setListingType("fixed")} />
             <TypeCard active={listingType === "auction"} icon={<GavelIcon />} title={t("typeAuction")} desc={t("typeAuctionDesc")} onClick={() => setListingType("auction")} />
           </div>
@@ -279,12 +286,15 @@ function TypeCard({
   onClick: () => void;
   disabled?: boolean;
 }) {
+  // `basis-[240px]` plutôt que la base 0 de `flex-1` seul : sans largeur de
+  // référence, `flex-wrap` ne se déclencherait jamais et les cartes se
+  // comprimeraient indéfiniment.
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`group flex flex-1 flex-col gap-1.5 rounded-[13px] border-[1.5px] p-4 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${active ? "border-carmin bg-carmin/10" : "border-charbon-500 bg-charbon hover:border-charbon-400"}`}
+      className={`group flex flex-1 basis-[240px] flex-col gap-1.5 rounded-[13px] border-[1.5px] p-4 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${active ? "border-carmin bg-carmin/10" : "border-charbon-500 bg-charbon hover:border-charbon-400"}`}
     >
       <div
         className={`grid h-9 w-9 place-items-center rounded-[10px] transition-colors ${active ? "bg-carmin/20 text-carmin" : "bg-charbon-700 text-texte-dim group-hover:text-texte-doux"}`}
