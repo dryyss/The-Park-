@@ -22,6 +22,7 @@ export function AuctionBidForm({
   autoBidUnlocked = false,
   autoBidFeeEur,
   shippingCostEur = 0,
+  isTopBidder = false,
 }: {
   auctionId: string;
   minAmount: number;
@@ -32,6 +33,8 @@ export function AuctionBidForm({
   autoBidFeeEur: number;
   /** Port choisi à l'inscription : dû au même moment que l'adjudication. */
   shippingCostEur?: number;
+  /** Le membre détient déjà la meilleure mise : il n'a personne à dépasser. */
+  isTopBidder?: boolean;
 }) {
   const t = useTranslations("auctions");
   const format = useFormatter();
@@ -56,6 +59,10 @@ export function AuctionBidForm({
   // Enchère automatique : le plafond n'est saisissable qu'une fois l'option achetée.
   const [unlocked, setUnlocked] = useState(autoBidUnlocked);
   const [autoBidOn, setAutoBidOn] = useState(false);
+  // Miser quand on mène déjà n'a de sens que pour relever son plafond d'enchère
+  // automatique : le serveur refuse tout le reste (ALREADY_HIGHEST). On évite
+  // ainsi un aller-retour dont l'issue est connue d'avance.
+  const bidLocked = isTopBidder && !(unlocked && autoBidOn);
   const [maxAmount, setMaxAmount] = useState(round2(minAmount));
 
   // Paliers rapides : chaque clic ajoute le montant au champ (en euros).
@@ -76,6 +83,8 @@ export function AuctionBidForm({
         return t("errorBidTooLow", { amount: minAmount });
       case "SELF_BID":
         return t("errorSelfBid");
+      case "ALREADY_HIGHEST":
+        return t("errorAlreadyHighest");
       case "AUCTION_NOT_FOUND":
         return t("errorEnded");
       case "MAX_BELOW_BID":
@@ -191,12 +200,20 @@ export function AuctionBidForm({
         />
         <button
           type="submit"
-          disabled={pending}
+          disabled={pending || bidLocked}
           className="bg-carmin font-display rounded-[12px] px-6 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase disabled:opacity-50"
         >
           {t("bid")}
         </button>
       </div>
+      {/* Le leader en place n'a personne à dépasser : surenchérir sur soi-même ne
+          ferait que gonfler le prix qu'on devra payer. Relever son propre plafond
+          d'enchère automatique reste possible, et déverrouille le bouton. */}
+      {isTopBidder && (
+        <p className="text-or mt-2 text-[12px] font-bold">
+          {bidLocked ? t("alreadyHighest") : t("alreadyHighestRaise")}
+        </p>
+      )}
       {error && <p className="text-neon-rouge mt-2 text-[12px] font-bold">{error}</p>}
 
       <div className="border-or/30 bg-charbon-800/60 mt-4 rounded-[12px] border p-3.5">

@@ -350,6 +350,24 @@ export async function placeBid(
     const engaged = round2(challengerMax + Number(registration.shippingCost));
     if ((await spendableBalance(tx, bidderId)) < engaged) throw new Error("INSUFFICIENT_WALLET");
 
+    // Surenchérir sur soi-même ne fait que gonfler le prix qu'on devra payer :
+    // le leader en place n'a rien à défendre, personne ne l'a dépassé. Seul reste
+    // utile le relèvement de son propre plafond d'enchère automatique, qui ne
+    // déplace pas le prix affiché mais étend jusqu'où la défense pourra aller.
+    if (top && top.bidderId === bidderId) {
+      const currentMax = top.maxAmount != null ? Number(top.maxAmount) : Number(top.amount);
+      if (options.maxAmount == null || options.maxAmount <= currentMax) {
+        throw new Error("ALREADY_HIGHEST");
+      }
+      await tx.bid.update({ where: { id: top.id }, data: { maxAmount: options.maxAmount } });
+      return {
+        bidId: top.id,
+        outbidUserId: undefined as string | undefined,
+        outbidActorId: undefined as string | undefined,
+        leadPrice: Number(top.amount),
+      };
+    }
+
     // Le leader en place ne peut se défendre que jusqu'à ce que son solde couvre.
     let incumbentMax: number | null = null;
     if (top && top.bidderId !== bidderId) {

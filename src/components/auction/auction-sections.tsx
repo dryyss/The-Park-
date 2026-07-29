@@ -181,6 +181,7 @@ export async function AuctionDetailPanel({
                 autoBidUnlocked={autoBidUnlocked}
                 autoBidFeeEur={AUTO_BID_OPTION_FEE_EUR}
                 shippingCostEur={registration?.shippingCostEur ?? 0}
+                isTopBidder={viewerId != null && viewerId === auction.topBidderId}
               />
             )}
           </>

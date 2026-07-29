@@ -78,7 +78,11 @@ export function CollectionDisplayControls() {
         </select>
       </div>
 
-      <div className="flex items-center gap-2">
+      {/* Masqué sous `md` : les trois réglages donnent la même grille en dessous
+          (2 colonnes en base, 3 dès `sm` — cf. columnConfigFromCollectionCols).
+          Ils ne divergent qu'à partir de `md`, le contrôle n'avait donc aucun
+          effet visible sur mobile. */}
+      <div className="hidden items-center gap-2 md:flex">
         <span className="text-[10.5px] font-extrabold tracking-[2px] text-texte-dim uppercase">{t("gridColsLabel")}</span>
         <div className="flex gap-0.5 rounded-[10px] border border-charbon-500 bg-charbon-800 p-1">
           {COLLECTION_GRID_COLS.map((n) => (
