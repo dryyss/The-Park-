@@ -6,9 +6,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { placeBidAction, purchaseAutoBidOptionAction } from "@/server/auction/auction.actions";
 import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
-
-// Pas minimum imposé sur toute enchère : 10 centimes.
-const MIN_STEP = 0.1;
+import { MIN_BID_INCREMENT_EUR as MIN_STEP } from "@/lib/auction";
 
 function round2(n: number): number {
   return Math.round(n * 100) / 100;

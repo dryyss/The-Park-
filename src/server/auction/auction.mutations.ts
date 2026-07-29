@@ -2,6 +2,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { Prisma, ShippingMode } from "@/generated/prisma/client";
 import { isHandDelivery, isSelectableShippingMode, shippingFeeEur } from "@/lib/shipping";
+import { MIN_BID_INCREMENT_EUR } from "@/lib/auction";
 import { formatPrice } from "@/lib/format";
 import { dispatchNotification } from "@/server/notification/notification.mutations";
 import { evaluateUserBadgesSafe } from "@/server/badge/badge.service";
@@ -15,9 +16,18 @@ const ANTI_SNIPE_EXTENSION_MS = 2 * 60 * 1000;
 /** Tarif de l'option « enchère automatique », à l'acte et par enchère. */
 export const AUTO_BID_OPTION_FEE_EUR = 5;
 
-/** Mise minimale acceptée : prix de départ pour la 1ʳᵉ enchère, sinon meilleure mise + pas. */
+/**
+ * Mise minimale acceptée : prix de départ pour la 1ʳᵉ enchère, sinon meilleure
+ * mise + pas.
+ *
+ * Le plancher est appliqué ici plutôt qu'à la création : les ventes déjà
+ * ouvertes avec un pas plus fin s'y conforment sans reprise de données. C'est
+ * aussi le point de passage commun à l'affichage et à la validation, donc le
+ * minimum annoncé au membre est toujours celui qui sera exigé.
+ */
 export function minNextBid(startPrice: number, increment: number, topBid: number | null): number {
-  return topBid == null ? startPrice : topBid + increment;
+  if (topBid == null) return startPrice;
+  return round2(topBid + Math.max(MIN_BID_INCREMENT_EUR, increment));
 }
 
 export interface ProxyDuel {
@@ -130,7 +140,7 @@ export async function createAuction(
         startPrice: input.startPrice,
         reservePrice: input.reservePrice ?? null,
         currentPrice: input.startPrice,
-        bidIncrement: input.bidIncrement ?? 0.1,
+        bidIncrement: Math.max(MIN_BID_INCREMENT_EUR, input.bidIncrement ?? MIN_BID_INCREMENT_EUR),
         status: "ACTIVE",
         startsAt: new Date(now),
         endsAt,
@@ -311,7 +321,9 @@ export async function placeBid(
     if (!auction) throw new Error("AUCTION_NOT_FOUND");
     if (auction.sellerId === bidderId) throw new Error("SELF_BID");
 
-    const increment = Number(auction.bidIncrement);
+    // Même plancher que `minNextBid` : la contre-mise automatique du leader doit
+    // progresser du pas réellement exigé, pas de celui inscrit en base.
+    const increment = Math.max(MIN_BID_INCREMENT_EUR, Number(auction.bidIncrement));
     const top = await tx.bid.findFirst({ where: { auctionId }, orderBy: { amount: "desc" } });
     const topAmount = top ? Number(top.amount) : null;
 
