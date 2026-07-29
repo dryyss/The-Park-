@@ -168,35 +168,9 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
             <p className="mt-5 max-w-[620px] text-[15px] leading-[1.75] text-texte-doux">{card.description}</p>
           )}
 
-          {card.versions.length > 1 && (
-          <div className="mt-6">
-            <div className="mb-2.5 text-[11px] font-extrabold tracking-[2.5px] text-texte-dim uppercase">{t("versionsTitle")}</div>
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-              {card.versions.map((v) => (
-                <div
-                  key={v.variantId}
-                  className={[
-                    "rounded-xl border-[1.5px] px-4 py-3",
-                    v.owned ? "border-statut-succes/45 bg-statut-succes/8" : "border-charbon-500 bg-charbon-800",
-                  ].join(" ")}
-                >
-                  <div className={`text-[13px] font-extrabold ${v.owned ? "text-blanc-casse" : "text-texte-dim"}`}>{v.label}</div>
-                  <div className={`mt-1 text-[11.5px] font-bold ${v.owned ? "text-statut-succes" : "text-texte-faible"}`}>
-                    {v.owned
-                      ? v.reservedQuantity > 0
-                        ? t("versionQtyReserved", { count: v.quantity, reserved: v.reservedQuantity })
-                        : t("versionQty", { count: v.quantity })
-                      : t("versionMissing")}
-                  </div>
-                  <div className="mt-1 text-[10.5px] font-bold text-texte-dim">
-                    {v.setName ? t("setBelongs", { name: v.setName }) : t("setBase")}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          )}
-
+          {/* La grille des versions a été retirée : elle répétait à l'identique
+              le libellé, la quantité et le set déjà affichés par le bloc
+              « Ma collection » juste en dessous, qui y ajoute les contrôles. */}
           <CardMemberActions
             cardId={card.id}
             seasonId={card.seasonId}

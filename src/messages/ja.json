@@ -235,7 +235,6 @@
     "likeCount": "{count}いいね",
     "yes": "はい",
     "no": "いいえ",
-    "versionsTitle": "バージョン · 個別追跡",
     "versionOwned": "所持 ✓",
     "versionQty": "{count}枚",
     "versionQtyReserved": "{count}枚 · {reserved}枚予約中",

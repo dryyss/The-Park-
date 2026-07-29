@@ -47,31 +47,43 @@ export function CardMemberActions({
         </div>
       )}
       <div className="flex flex-col gap-3">
-        {versions.map((v) => (
-          <div
-            key={v.variantId}
-            className={`rounded-xl border px-4 py-3 ${
-              v.owned ? "border-statut-succes/45 bg-statut-succes/8" : "border-charbon-500 bg-charbon"
-            }`}
-          >
-            <div className="flex flex-col gap-2">
+        {versions.map((v) => {
+          // Carte à version unique : le panneau qui entoure déjà le bloc suffit.
+          // Un second cadre n'ajoutait qu'un niveau d'imbrication sans rien
+          // séparer, puisqu'il n'y a rien dont distinguer cette version.
+          const framed = versions.length > 1;
+          return (
+            <div
+              key={v.variantId}
+              className={
+                framed
+                  ? `flex flex-col gap-2 rounded-xl border px-4 py-3 ${
+                      v.owned ? "border-statut-succes/45 bg-statut-succes/8" : "border-charbon-500 bg-charbon"
+                    }`
+                  : "flex flex-col gap-2"
+              }
+            >
               <div className="flex flex-wrap items-center gap-2">
                 <div className={`text-[13px] font-extrabold ${v.owned ? "text-blanc-casse" : "text-texte-dim"}`}>{v.label}</div>
                 <span className={`text-[11px] font-bold ${v.owned ? "text-statut-succes" : "text-texte-faible"}`}>
-                  {v.owned ? t("versionQty", { count: v.quantity }) : t("versionMissing")}
+                  {v.owned
+                    ? v.reservedQuantity > 0
+                      ? t("versionQtyReserved", { count: v.quantity, reserved: v.reservedQuantity })
+                      : t("versionQty", { count: v.quantity })
+                    : t("versionMissing")}
+                </span>
+                <span className="text-[10.5px] font-bold text-texte-faible">
+                  {v.setName ? t("setBelongs", { name: v.setName }) : t("setBase")}
                 </span>
               </div>
-              <p className="text-[10.5px] font-bold text-texte-faible">
-                {v.setName ? t("setBelongs", { name: v.setName }) : t("setBase")}
-              </p>
               <VariantConditionManager
                 variantId={v.variantId}
                 conditions={v.conditions}
                 isAuthenticated={isAuthenticated}
               />
             </div>
-          </div>
-        ))}
+          );
+        })}
         <button
           type="button"
           onClick={() => {
