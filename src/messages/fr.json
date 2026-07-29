@@ -235,7 +235,6 @@
     "likeCount": "{count, plural, one {# like} other {# likes}}",
     "yes": "Oui",
     "no": "Non",
-    "versionsTitle": "Versions · suivies séparément",
     "versionOwned": "Possédée ✓",
     "versionQty": "{count, plural, one {# exemplaire} other {# exemplaires}}",
     "versionQtyReserved": "{count, plural, one {# exemplaire} other {# exemplaires}} · {reserved} réservé(s)",

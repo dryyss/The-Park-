@@ -45,17 +45,24 @@ export function CardPriceHistory({ history }: { history: CardPriceHistoryData })
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-        <Stat
-          label={t("last")}
-          value={history.last != null ? formatPrice(history.last) : "—"}
-          accent={trend}
-        />
-        <Stat label={t("average")} value={history.avg != null ? formatPrice(history.avg) : "—"} />
-        <Stat
-          label={t("range")}
-          value={history.min != null ? `${formatPrice(history.min)} – ${formatPrice(history.max)}` : "—"}
-        />
+      {/* Sans aucune vente, « dernier prix », « moyenne » et « fourchette » ne
+          peuvent afficher qu'un tiret : trois tuiles vides sur toute la largeur
+          pour une seule valeur réelle. On ne garde alors que la cote. */}
+      <div className={hasData ? "grid grid-cols-2 gap-2.5 sm:grid-cols-4" : "max-w-50"}>
+        {hasData && (
+          <>
+            <Stat
+              label={t("last")}
+              value={history.last != null ? formatPrice(history.last) : "—"}
+              accent={trend}
+            />
+            <Stat label={t("average")} value={history.avg != null ? formatPrice(history.avg) : "—"} />
+            <Stat
+              label={t("range")}
+              value={history.min != null ? `${formatPrice(history.min)} – ${formatPrice(history.max)}` : "—"}
+            />
+          </>
+        )}
         <Stat label={t("quote")} value={formatPrice(history.quoteValue)} />
       </div>
 
