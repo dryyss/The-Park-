@@ -42,6 +42,9 @@ export interface AuctionDetail extends AuctionListItem {
   winnerName: string | null;
   winnerId: string | null;
   sellerId: string;
+  /** Auteur de la meilleure mise. Permet à la vue de reconnaître le leader en
+   *  place sans exposer l'identifiant de tous les enchérisseurs. */
+  topBidderId: string | null;
   /** Fil gagnant ⇄ vendeur ouvert à la clôture (suivi paiement / livraison). */
   conversationId: string | null;
 }
@@ -121,6 +124,7 @@ export async function getAuctionById(id: string): Promise<AuctionDetail | null> 
     winnerName: a.winner?.displayName ?? null,
     winnerId: a.winnerId,
     sellerId: a.sellerId,
+    topBidderId: a.bids[0]?.bidderId ?? null,
     conversationId: a.conversation?.id ?? null,
     bids: a.bids.map((b) => ({
       id: b.id,

@@ -284,6 +284,60 @@ export async function creditWalletForSalePayout(input: {
   });
 }
 
+/**
+ * Débite le portefeuille de l'option « enchère automatique » d'une enchère.
+ * Idempotent par (enchère, membre) : un double clic ne facture pas deux fois.
+ * Le débit puise d'abord dans le solde dépôt, comme un achat.
+ */
+export async function debitWalletForAuctionOption(input: {
+  userId: string;
+  auctionId: string;
+  amountEur: number;
+}): Promise<void> {
+  const amount = roundEur(input.amountEur);
+  if (amount <= 0) throw new Error("INVALID_AMOUNT");
+
+  await prisma.$transaction(async (tx) => {
+    const already = await tx.walletLedgerEntry.findFirst({
+      where: {
+        auctionId: input.auctionId,
+        type: "AUCTION_OPTION",
+        wallet: { userId: input.userId },
+      },
+      select: { id: true },
+    });
+    if (already) return;
+
+    const account = await tx.walletAccount.findUnique({ where: { userId: input.userId } });
+    if (!account) throw new Error("INSUFFICIENT_CREDIT");
+
+    const deposit = Number(account.depositBalance);
+    const earned = Number(account.earnedBalance);
+    if (deposit + earned < amount) throw new Error("INSUFFICIENT_CREDIT");
+
+    const fromDeposit = roundEur(Math.min(deposit, amount));
+    const depositAfter = roundEur(deposit - fromDeposit);
+    const earnedAfter = roundEur(earned - roundEur(amount - fromDeposit));
+
+    await tx.walletAccount.update({
+      where: { id: account.id },
+      data: { depositBalance: depositAfter, earnedBalance: earnedAfter },
+    });
+
+    await tx.walletLedgerEntry.create({
+      data: {
+        walletAccountId: account.id,
+        type: "AUCTION_OPTION",
+        amount: -amount,
+        feeAmount: 0,
+        balanceAfter: totalBalance(depositAfter, earnedAfter),
+        auctionId: input.auctionId,
+        note: "wallet.auctionOptionNote",
+      },
+    });
+  });
+}
+
 /** Vérifie si une vente a été payée via le portefeuille interne (pas de PI Stripe). */
 export async function isWalletFundedSale(saleId: string): Promise<boolean> {
   const entry = await prisma.walletLedgerEntry.findFirst({

@@ -417,6 +417,8 @@ model User {
   auctionsSelling Auction[] @relation("AuctionSeller")
   auctionsWon     Auction[] @relation("AuctionWinner")
   bids            Bid[]
+  auctionRegistrations AuctionRegistration[]
+  autoBidOptions  AuctionAutoBidOption[]
 
   exchangesInitiated Exchange[] @relation("ExchangeInitiator")
   exchangesReceived  Exchange[] @relation("ExchangeRecipient")
@@ -519,6 +521,7 @@ model Address {
 
   orders               Order[]
   marketplaceCheckouts MarketplaceCheckout[] @relation("CheckoutShipping")
+  auctionRegistrations AuctionRegistration[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -758,6 +761,7 @@ enum WalletEntryType {
   CAUTION_LOCK    // Blocage de caution échange sécurisé
   CAUTION_RELEASE // Restitution de caution après échange complété/annulé
   REFERRAL_BONUS  // Crédit promotionnel de parrainage (non retirable)
+  AUCTION_OPTION  // Achat de l'option « enchère automatique » sur une enchère
 }
 
 model WalletAccount {
@@ -785,6 +789,7 @@ model WalletLedgerEntry {
   balanceAfter            Decimal         @db.Decimal(10, 2)
   saleId                  String?
   exchangeId              String?
+  auctionId               String?
   stripeCheckoutSessionId String?         @unique
   stripeTransferId        String?         @unique
   note                    String?
@@ -1059,7 +1064,9 @@ model Auction {
   startPrice   Decimal       @db.Decimal(10, 2)
   reservePrice Decimal?      @db.Decimal(10, 2)
   currentPrice Decimal       @default(0) @db.Decimal(10, 2)
-  bidIncrement Decimal       @default(0.1) @db.Decimal(10, 2)
+  /// Pas de mise. Plancher de 0,25 € appliqué à la lecture (cf. minNextBid) :
+  /// les ventes ouvertes avec un pas plus fin s'y conforment sans reprise.
+  bidIncrement Decimal       @default(0.25) @db.Decimal(10, 2)
   status       AuctionStatus @default(SCHEDULED)
   antiSnipe    Boolean       @default(true)
   startsAt     DateTime
@@ -1067,10 +1074,14 @@ model Auction {
   winner       User?         @relation("AuctionWinner", fields: [winnerId], references: [id])
   winnerId     String?
 
-  bids         Bid[]
-  payment      Payment?
-  disputes     Dispute[]
-  conversation Conversation?
+  bids           Bid[]
+  registrations  AuctionRegistration[]
+  autoBidOptions AuctionAutoBidOption[]
+  payment        Payment?
+  /// Vente générée à la clôture : c'est elle qui porte l'encaissement et la livraison.
+  sale           Sale?
+  disputes       Dispute[]
+  conversation   Conversation?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1090,6 +1101,54 @@ model Bid {
   createdAt DateTime @default(now())
 
   @@index([auctionId])
+}
+
+/// Inscription d'un membre à une enchère : il ne peut miser qu'après avoir dit
+/// où et comment il se ferait livrer s'il gagne. Sans ça, l'adjudication produit
+/// une vente sans adresse ni mode d'envoi, à réclamer après coup au gagnant.
+model AuctionRegistration {
+  id        String  @id @default(cuid())
+  auction   Auction @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  auctionId String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  /// Référence — et non copie — de l'adresse : le membre peut la corriger tant que
+  /// l'enchère court. Le snapshot immuable est figé sur la vente à l'adjudication.
+  /// Null pour une remise en main propre.
+  address   Address? @relation(fields: [addressId], references: [id])
+  addressId String?
+
+  shippingMode ShippingMode
+  /// Frais figés à l'inscription : le tarif du mode peut bouger, pas l'engagement pris.
+  shippingCost Decimal      @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([auctionId, userId])
+  @@index([userId])
+  @@index([addressId])
+}
+
+/// Option « enchère automatique » achetée par un membre sur une enchère donnée.
+/// Payante et à l'acte : elle donne le droit d'armer un plafond sur CETTE vente.
+/// Non remboursable — le service est rendu dès que le plafond est armé.
+model AuctionAutoBidOption {
+  id        String  @id @default(cuid())
+  auction   Auction @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  auctionId String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  /// Prix payé au moment de l'achat : le tarif peut évoluer, pas les options vendues.
+  feePaid   Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+
+  // Une seule option par membre et par enchère : on ne fait pas payer deux fois
+  // le même droit, et le plafond vit sur les mises (Bid.maxAmount), pas ici.
+  @@unique([auctionId, userId])
+  @@index([userId])
 }
 
 // ============================================================================
@@ -1146,6 +1205,12 @@ model Sale {
   id        String     @id @default(cuid())
   listing   Listing    @relation(fields: [listingId], references: [id])
   listingId String
+  /// Enchère à l'origine de la vente. Null pour une vente marketplace classique.
+  /// La vente reste rattachée à une annonce dans les deux cas : la clôture d'une
+  /// enchère en crée une (statut SOLD), ce qui laisse intact tout le cycle de vie
+  /// aval — expédition, garantie, litige, avis.
+  auction   Auction?   @relation(fields: [auctionId], references: [id])
+  auctionId String?    @unique
   buyer     User       @relation("SaleBuyer", fields: [buyerId], references: [id])
   buyerId   String
   seller    User       @relation("SaleSeller", fields: [sellerId], references: [id])

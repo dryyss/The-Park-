@@ -4,11 +4,9 @@ import { useState, useTransition } from "react";
 import { useUser } from "@auth0/nextjs-auth0";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
-import { placeBidAction } from "@/server/auction/auction.actions";
+import { placeBidAction, purchaseAutoBidOptionAction } from "@/server/auction/auction.actions";
 import { LoginGatePrompt } from "@/components/auth/login-gate-prompt";
-
-// Pas minimum imposé sur toute enchère : 10 centimes.
-const MIN_STEP = 0.1;
+import { MIN_BID_INCREMENT_EUR as MIN_STEP } from "@/lib/auction";
 
 function round2(n: number): number {
   return Math.round(n * 100) / 100;
@@ -19,11 +17,22 @@ export function AuctionBidForm({
   minAmount,
   increment = MIN_STEP,
   isAuthenticated: isAuthenticatedProp,
+  autoBidUnlocked = false,
+  autoBidFeeEur,
+  shippingCostEur = 0,
+  isTopBidder = false,
 }: {
   auctionId: string;
   minAmount: number;
   increment?: number;
   isAuthenticated?: boolean;
+  /** L'option payante « enchère automatique » est déjà détenue sur cette enchère. */
+  autoBidUnlocked?: boolean;
+  autoBidFeeEur: number;
+  /** Port choisi à l'inscription : dû au même moment que l'adjudication. */
+  shippingCostEur?: number;
+  /** Le membre détient déjà la meilleure mise : il n'a personne à dépasser. */
+  isTopBidder?: boolean;
 }) {
   const t = useTranslations("auctions");
   const format = useFormatter();
@@ -36,8 +45,23 @@ export function AuctionBidForm({
   const [error, setError] = useState<string | null>(null);
   const [showLoginGate, setShowLoginGate] = useState(false);
   // Solde insuffisant : on ouvre une modale de recharge plutôt qu'un message d'erreur sec.
-  const [funding, setFunding] = useState<{ balance: number; required: number } | null>(null);
+  // `forOption` distingue l'achat de l'option de la mise elle-même — le manque
+  // d'argent ne porte pas sur la même chose, le texte non plus.
+  const [funding, setFunding] = useState<{
+    balance: number;
+    required: number;
+    forOption?: boolean;
+  } | null>(null);
   const [pending, startTransition] = useTransition();
+
+  // Enchère automatique : le plafond n'est saisissable qu'une fois l'option achetée.
+  const [unlocked, setUnlocked] = useState(autoBidUnlocked);
+  const [autoBidOn, setAutoBidOn] = useState(false);
+  // Miser quand on mène déjà n'a de sens que pour relever son plafond d'enchère
+  // automatique : le serveur refuse tout le reste (ALREADY_HIGHEST). On évite
+  // ainsi un aller-retour dont l'issue est connue d'avance.
+  const bidLocked = isTopBidder && !(unlocked && autoBidOn);
+  const [maxAmount, setMaxAmount] = useState(round2(minAmount));
 
   // Paliers rapides : chaque clic ajoute le montant au champ (en euros).
   const quickIncrements = [1, 5, 10, 100];
@@ -57,8 +81,16 @@ export function AuctionBidForm({
         return t("errorBidTooLow", { amount: minAmount });
       case "SELF_BID":
         return t("errorSelfBid");
+      case "ALREADY_HIGHEST":
+        return t("errorAlreadyHighest");
       case "AUCTION_NOT_FOUND":
         return t("errorEnded");
+      case "MAX_BELOW_BID":
+        return t("errorMaxBelowBid");
+      case "AUTO_BID_NOT_UNLOCKED":
+        return t("errorAutoBidLocked");
+      case "NOT_REGISTERED":
+        return t("errorNotRegistered");
       default:
         return t("errorGeneric");
     }
@@ -70,24 +102,65 @@ export function AuctionBidForm({
       setShowLoginGate(true);
       return;
     }
+    const bid = normalize(amount);
+    // Un plafond sous la mise n'a pas de sens : on le remonte plutôt que de faire
+    // un aller-retour serveur pour se voir renvoyer MAX_BELOW_BID.
+    const cap = autoBidOn && unlocked ? Math.max(round2(maxAmount), bid) : undefined;
+
     startTransition(async () => {
       setError(null);
       setShowLoginGate(false);
       setFunding(null);
-      const res = await placeBidAction({ auctionId, amount: normalize(amount) });
+      const res = await placeBidAction({ auctionId, amount: bid, maxAmount: cap });
       if (!res.ok) {
         if (res.error === "UNAUTHORIZED") setShowLoginGate(true);
         else if (res.error === "INSUFFICIENT_WALLET") {
-          setFunding({ balance: res.balanceEur ?? 0, required: res.requiredEur ?? normalize(amount) });
+          // Le serveur renvoie le montant engagé (plafond) ; le port s'y ajoute.
+          setFunding({
+            balance: res.balanceEur ?? 0,
+            required: round2((res.requiredEur ?? cap ?? bid) + shippingCostEur),
+          });
         } else setError(errorMessage(res.error));
       } else router.refresh();
     });
   }
 
+  function buyAutoBidOption() {
+    if (!isAuthenticated) {
+      setShowLoginGate(true);
+      return;
+    }
+    startTransition(async () => {
+      setError(null);
+      setFunding(null);
+      const res = await purchaseAutoBidOptionAction({ auctionId });
+      if (!res.ok) {
+        if (res.error === "UNAUTHORIZED") setShowLoginGate(true);
+        else if (res.error === "INSUFFICIENT_WALLET") {
+          setFunding({
+            balance: res.balanceEur ?? 0,
+            required: res.requiredEur ?? autoBidFeeEur,
+            forOption: true,
+          });
+        } else setError(errorMessage(res.error));
+        return;
+      }
+      setUnlocked(true);
+      setAutoBidOn(true);
+      router.refresh();
+    });
+  }
+
   return (
     <form onSubmit={submit} className="mt-6">
-      {showLoginGate && <div className="mb-3"><LoginGatePrompt compact messageKey="loginGateAuction" /></div>}
-      <label className="text-[11px] font-extrabold tracking-wide text-texte-dim uppercase">{t("yourBid")}</label>
+      {showLoginGate && (
+        <div className="mb-3">
+          <LoginGatePrompt compact messageKey="loginGateAuction" />
+        </div>
+      )}
+      <label className="text-texte-dim text-[11px] font-extrabold tracking-wide uppercase">
+        {t("yourBid")}
+      </label>
 
       <div className="mt-2 flex flex-wrap gap-2">
         <button
@@ -106,7 +179,7 @@ export function AuctionBidForm({
             key={inc}
             type="button"
             onClick={() => setAmount((v) => normalize((Number.isFinite(v) ? v : minAmount) + inc))}
-            className="rounded-full border border-charbon-500 bg-charbon-700 px-3.5 py-1.5 text-[12px] font-extrabold text-texte-dim transition hover:border-carmin/60 hover:text-blanc-casse"
+            className="border-charbon-500 bg-charbon-700 text-texte-dim hover:border-carmin/60 hover:text-blanc-casse rounded-full border px-3.5 py-1.5 text-[12px] font-extrabold transition"
           >
             +{inc} €
           </button>
@@ -121,22 +194,85 @@ export function AuctionBidForm({
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value))}
           onBlur={() => setAmount((v) => normalize(v))}
-          className="w-[140px] min-w-0 rounded-[11px] border border-charbon-500 bg-charbon-700 px-4 py-2.5 font-display text-[18px] text-or outline-none focus:border-carmin"
+          className="border-charbon-500 bg-charbon-700 font-display text-or focus:border-carmin w-[140px] min-w-0 rounded-[11px] border px-4 py-2.5 text-[18px] outline-none"
         />
         <button
           type="submit"
-          disabled={pending}
-          className="rounded-[12px] bg-carmin px-6 py-3.5 font-display text-[14px] tracking-[1.5px] text-white uppercase disabled:opacity-50"
+          disabled={pending || bidLocked}
+          className="bg-carmin font-display rounded-[12px] px-6 py-3.5 text-[14px] tracking-[1.5px] text-white uppercase disabled:opacity-50"
         >
           {t("bid")}
         </button>
       </div>
-      {error && <p className="mt-2 text-[12px] font-bold text-neon-rouge">{error}</p>}
-      <p className="mt-3 text-center text-[11px] font-bold text-texte-faible">{t("disclaimer")}</p>
+      {/* Le leader en place n'a personne à dépasser : surenchérir sur soi-même ne
+          ferait que gonfler le prix qu'on devra payer. Relever son propre plafond
+          d'enchère automatique reste possible, et déverrouille le bouton. */}
+      {isTopBidder && (
+        <p className="text-or mt-2 text-[12px] font-bold">
+          {bidLocked ? t("alreadyHighest") : t("alreadyHighestRaise")}
+        </p>
+      )}
+      {error && <p className="text-neon-rouge mt-2 text-[12px] font-bold">{error}</p>}
+
+      <div className="border-or/30 bg-charbon-800/60 mt-4 rounded-[12px] border p-3.5">
+        {unlocked ? (
+          <>
+            <label className="text-texte-doux flex items-center gap-2.5 text-[12.5px] font-bold">
+              <input
+                type="checkbox"
+                checked={autoBidOn}
+                onChange={(e) => setAutoBidOn(e.target.checked)}
+                className="accent-or"
+              />
+              {t("autoBidEnable")}
+            </label>
+            {autoBidOn && (
+              <div className="mt-3">
+                <label
+                  htmlFor="auto-bid-max"
+                  className="text-texte-dim text-[10px] font-extrabold tracking-wide uppercase"
+                >
+                  {t("autoBidMaxLabel")}
+                </label>
+                <input
+                  id="auto-bid-max"
+                  type="number"
+                  step={step}
+                  min={minAmount}
+                  value={maxAmount}
+                  onChange={(e) => setMaxAmount(Number(e.target.value))}
+                  onBlur={() => setMaxAmount((v) => normalize(v))}
+                  className="font-display border-charbon-500 bg-charbon-700 text-or focus:border-or mt-1 w-[140px] rounded-[11px] border px-4 py-2 text-[16px] outline-none"
+                />
+                <p className="text-texte-faible mt-2 text-[11px] leading-relaxed font-bold">
+                  {t("autoBidHint")}
+                </p>
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <p className="text-or text-[12.5px] font-extrabold">{t("autoBidTitle")}</p>
+            <p className="text-texte-faible mt-1 text-[11.5px] leading-relaxed font-bold">
+              {t("autoBidPitch")}
+            </p>
+            <button
+              type="button"
+              onClick={buyAutoBidOption}
+              disabled={pending}
+              className="font-display border-or/60 text-or hover:bg-or/10 mt-2.5 rounded-[11px] border px-4 py-2 text-[12px] tracking-[1px] uppercase transition disabled:opacity-50"
+            >
+              {t("autoBidUnlock", { fee: eur(autoBidFeeEur) })}
+            </button>
+          </>
+        )}
+      </div>
+
+      <p className="text-texte-faible mt-3 text-center text-[11px] font-bold">{t("disclaimer")}</p>
 
       {funding && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-charbon/80 p-4 backdrop-blur-sm"
+          className="bg-charbon/80 fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
           onClick={() => setFunding(null)}
           role="presentation"
         >
@@ -144,14 +280,17 @@ export function AuctionBidForm({
             role="dialog"
             aria-modal="true"
             aria-labelledby="bid-funding-title"
-            className="relative w-full max-w-md rounded-[16px] border border-carmin/35 bg-charbon-800 p-6 shadow-xl"
+            className="border-carmin/35 bg-charbon-800 relative w-full max-w-md rounded-[16px] border p-6 shadow-xl"
             onClick={(event) => event.stopPropagation()}
           >
-            <h2 id="bid-funding-title" className="font-display text-[19px] tracking-[1.5px] text-blanc-casse uppercase">
+            <h2
+              id="bid-funding-title"
+              className="font-display text-blanc-casse text-[19px] tracking-[1.5px] uppercase"
+            >
               {t("insufficientTitle")}
             </h2>
-            <p className="mt-2.5 text-[13px] leading-relaxed font-bold text-texte-dim">
-              {t("insufficientBody", {
+            <p className="text-texte-dim mt-2.5 text-[13px] leading-relaxed font-bold">
+              {t(funding.forOption ? "insufficientBodyOption" : "insufficientBody", {
                 required: eur(funding.required),
                 balance: eur(funding.balance),
                 missing: eur(round2(Math.max(0, funding.required - funding.balance))),
@@ -161,14 +300,14 @@ export function AuctionBidForm({
             <div className="mt-5 flex flex-wrap gap-2.5">
               <Link
                 href="/portefeuille"
-                className="rounded-[12px] bg-carmin px-5 py-3 font-display text-[13px] tracking-[1.5px] text-white uppercase"
+                className="bg-carmin font-display rounded-[12px] px-5 py-3 text-[13px] tracking-[1.5px] text-white uppercase"
               >
                 {t("insufficientTopUp")}
               </Link>
               <button
                 type="button"
                 onClick={() => setFunding(null)}
-                className="rounded-[12px] border border-charbon-500 bg-charbon-700 px-5 py-3 font-display text-[13px] tracking-[1.5px] text-texte-dim uppercase transition hover:text-blanc-casse"
+                className="border-charbon-500 bg-charbon-700 font-display text-texte-dim hover:text-blanc-casse rounded-[12px] border px-5 py-3 text-[13px] tracking-[1.5px] uppercase transition"
               >
                 {t("insufficientCancel")}
               </button>
