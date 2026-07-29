@@ -11,12 +11,15 @@ export interface PlatformConfigView {
   shopShipping: ShopShippingConfig;
   demoUserSlug: string | null;
   listingDefaultDays: number;
+  /** Vidéo de présentation de l'accueil. `null` = section masquée. */
+  introVideo: { url: string; posterUrl: string | null } | null;
 }
 
 const DEFAULTS: PlatformConfigView = {
   shopShipping: { freeShippingMin: 50, standardShipping: 4.9, defaultCarrier: "Colissimo" },
   demoUserSlug: null,
   listingDefaultDays: 30,
+  introVideo: null,
 };
 
 async function getRow() {
@@ -34,6 +37,10 @@ export async function getPlatformConfig(): Promise<PlatformConfigView> {
     },
     demoUserSlug: row.demoUserSlug,
     listingDefaultDays: row.listingDefaultDays,
+    // Sans URL, pas de section : une vignette seule n'aurait rien à lire.
+    introVideo: row.introVideoUrl
+      ? { url: row.introVideoUrl, posterUrl: row.introVideoPosterUrl }
+      : null,
   };
 }
 
@@ -54,6 +61,8 @@ export async function updatePlatformConfig(data: {
   shopDefaultCarrier?: string;
   demoUserSlug?: string | null;
   listingDefaultDays?: number;
+  introVideoUrl?: string | null;
+  introVideoPosterUrl?: string | null;
 }): Promise<void> {
   await prisma.platformConfig.upsert({
     where: { id: "default" },
@@ -64,6 +73,8 @@ export async function updatePlatformConfig(data: {
       shopDefaultCarrier: data.shopDefaultCarrier ?? DEFAULTS.shopShipping.defaultCarrier,
       demoUserSlug: data.demoUserSlug ?? null,
       listingDefaultDays: data.listingDefaultDays ?? DEFAULTS.listingDefaultDays,
+      introVideoUrl: data.introVideoUrl ?? null,
+      introVideoPosterUrl: data.introVideoPosterUrl ?? null,
     },
     update: {
       ...(data.shopFreeShippingMin !== undefined ? { shopFreeShippingMin: data.shopFreeShippingMin } : {}),
@@ -71,6 +82,10 @@ export async function updatePlatformConfig(data: {
       ...(data.shopDefaultCarrier !== undefined ? { shopDefaultCarrier: data.shopDefaultCarrier } : {}),
       ...(data.demoUserSlug !== undefined ? { demoUserSlug: data.demoUserSlug } : {}),
       ...(data.listingDefaultDays !== undefined ? { listingDefaultDays: data.listingDefaultDays } : {}),
+      ...(data.introVideoUrl !== undefined ? { introVideoUrl: data.introVideoUrl } : {}),
+      ...(data.introVideoPosterUrl !== undefined
+        ? { introVideoPosterUrl: data.introVideoPosterUrl }
+        : {}),
     },
   });
 }

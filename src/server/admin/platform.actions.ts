@@ -14,6 +14,8 @@ const platformSchema = z.object({
   shopDefaultCarrier: z.string().min(1).max(40).optional(),
   demoUserSlug: z.string().max(64).nullable().optional(),
   listingDefaultDays: z.number().int().min(1).max(365).optional(),
+  introVideoUrl: z.string().trim().max(500).nullish(),
+  introVideoPosterUrl: z.string().trim().max(500).nullish(),
 });
 
 export async function updatePlatformConfigAction(input: unknown): Promise<AdminActionResult> {
@@ -28,6 +30,8 @@ export async function updatePlatformConfigAction(input: unknown): Promise<AdminA
     revalidatePath("/[locale]/admin/reglages", "page");
     revalidatePath("/[locale]/boutique/panier", "page");
     revalidatePath("/[locale]/panier", "page");
+    // L'accueil affiche la vidéo : il doit repartir sur la nouvelle URL.
+    revalidatePath("/[locale]", "page");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "UNKNOWN" };

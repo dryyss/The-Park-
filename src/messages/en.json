@@ -150,7 +150,11 @@
     "spotlightJp": "注目",
     "endingSoonTitle": "Ending Soon",
     "endingSoonJp": "終了間近",
-    "seeAllAuctions": "See all auctions"
+    "seeAllAuctions": "See all auctions",
+    "introVideoKicker": "Watch",
+    "introVideoTitle": "Discover The Park",
+    "introVideoPlay": "Play the intro video",
+    "introVideoNoSupport": "Your browser can't play this video."
   },
   "pages": {
     "soon": "This section is already wired into the navigation. Its dynamic content is coming very soon.",
@@ -1636,7 +1640,11 @@
       "listingDays": "Listing duration (days)",
       "demoSlug": "Demo user slug (optional)",
       "demoSlugHint": "Leave empty to require login",
-      "save": "Save"
+      "save": "Save",
+      "introVideoUrl": "Intro video (URL)",
+      "introVideoUrlHint": "https://…cellar-c2.services.clever-cloud.com/… — empty hides the section",
+      "introVideoPoster": "Video thumbnail (URL)",
+      "introVideoPosterHint": "Shown before playback — without it, a gradient is used"
     },
     "orders": {
       "kicker": "Shop · orders",
@@ -2995,7 +3003,9 @@
           },
           {
             "h": "Prohibited products and practices",
-            "p": ["The following are notably prohibited from sale:"],
+            "p": [
+              "The following are notably prohibited from sale:"
+            ],
             "list": [
               "counterfeits, unofficial reproductions and falsified cards;",
               "stolen items or items the seller does not own;",
@@ -3067,7 +3077,9 @@
           },
           {
             "h": "Data we collect",
-            "p": ["Depending on your use of the Service, we may collect:"],
+            "p": [
+              "Depending on your use of the Service, we may collect:"
+            ],
             "list": [
               "identification and account data (username, e-mail, date of birth for age verification);",
               "transaction data (orders, sales, wallet, withdrawals);",
@@ -3078,7 +3090,9 @@
           },
           {
             "h": "Purposes and legal bases",
-            "p": ["We process this data to:"],
+            "p": [
+              "We process this data to:"
+            ],
             "list": [
               "provide and manage the Service and your account (performance of the contract);",
               "secure payments, prevent fraud and protect minors (legal obligation and legitimate interest);",
@@ -3089,7 +3103,9 @@
           },
           {
             "h": "Recipients and processors",
-            "p": ["Your data may be shared with processors acting on our behalf, notably:"],
+            "p": [
+              "Your data may be shared with processors acting on our behalf, notably:"
+            ],
             "list": [
               "Stripe, for processing payments and withdrawals;",
               "our provider of transactional e-mails and newsletters;",
@@ -3156,7 +3172,9 @@
           },
           {
             "h": "Publication director",
-            "p": ["The publication director is: [TO COMPLETE: name of the legal representative]."]
+            "p": [
+              "The publication director is: [TO COMPLETE: name of the legal representative]."
+            ]
           },
           {
             "h": "Hosting",
@@ -3191,7 +3209,9 @@
           },
           {
             "h": "Contact",
-            "p": ["For any question: [TO COMPLETE: contact e-mail]."]
+            "p": [
+              "For any question: [TO COMPLETE: contact e-mail]."
+            ]
           }
         ]
       }

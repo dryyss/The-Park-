@@ -150,7 +150,11 @@
     "spotlightJp": "注目",
     "endingSoonTitle": "Enchères Imminentes",
     "endingSoonJp": "終了間近",
-    "seeAllAuctions": "Voir toutes les enchères"
+    "seeAllAuctions": "Voir toutes les enchères",
+    "introVideoKicker": "En vidéo",
+    "introVideoTitle": "Découvre The Park",
+    "introVideoPlay": "Lancer la vidéo de présentation",
+    "introVideoNoSupport": "Ton navigateur ne peut pas lire cette vidéo."
   },
   "pages": {
     "soon": "Cette section est déjà branchée à la navigation. Son contenu dynamique arrive très bientôt.",
@@ -1636,7 +1640,11 @@
       "listingDays": "Durée annonce (jours)",
       "demoSlug": "Slug utilisateur démo (optionnel)",
       "demoSlugHint": "Laisser vide pour exiger la connexion",
-      "save": "Enregistrer"
+      "save": "Enregistrer",
+      "introVideoUrl": "Vidéo de présentation (URL)",
+      "introVideoUrlHint": "https://…cellar-c2.services.clever-cloud.com/… — vide = section masquée",
+      "introVideoPoster": "Vignette de la vidéo (URL)",
+      "introVideoPosterHint": "Image affichée avant lecture — sans elle, un fond dégradé s'affiche"
     },
     "orders": {
       "kicker": "Boutique · commandes",
@@ -2995,7 +3003,9 @@
           },
           {
             "h": "Produits et pratiques interdits",
-            "p": ["Sont notamment interdits à la vente :"],
+            "p": [
+              "Sont notamment interdits à la vente :"
+            ],
             "list": [
               "les contrefaçons, reproductions non officielles et cartes falsifiées ;",
               "les articles volés ou dont le vendeur n'est pas propriétaire ;",
@@ -3067,7 +3077,9 @@
           },
           {
             "h": "Données que nous collectons",
-            "p": ["Selon votre usage du Service, nous pouvons collecter :"],
+            "p": [
+              "Selon votre usage du Service, nous pouvons collecter :"
+            ],
             "list": [
               "des données d'identification et de compte (pseudonyme, e-mail, date de naissance pour le contrôle d'âge) ;",
               "des données de transaction (commandes, ventes, portefeuille, retraits) ;",
@@ -3078,7 +3090,9 @@
           },
           {
             "h": "Finalités et bases légales",
-            "p": ["Nous traitons ces données pour :"],
+            "p": [
+              "Nous traitons ces données pour :"
+            ],
             "list": [
               "fournir et gérer le Service et votre compte (exécution du contrat) ;",
               "sécuriser les paiements, prévenir la fraude et protéger les mineurs (obligation légale et intérêt légitime) ;",
@@ -3158,7 +3172,9 @@
           },
           {
             "h": "Directeur de la publication",
-            "p": ["Le directeur de la publication est : [À COMPLÉTER : nom du représentant légal]."]
+            "p": [
+              "Le directeur de la publication est : [À COMPLÉTER : nom du représentant légal]."
+            ]
           },
           {
             "h": "Hébergement",
@@ -3193,7 +3209,9 @@
           },
           {
             "h": "Contact",
-            "p": ["Pour toute question : [À COMPLÉTER : e-mail de contact]."]
+            "p": [
+              "Pour toute question : [À COMPLÉTER : e-mail de contact]."
+            ]
           }
         ]
       }
