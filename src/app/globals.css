@@ -64,6 +64,10 @@
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
   --font-jp: var(--font-jp);
+
+  /* Paliers grands écrans (au-delà du 2xl de Tailwind, 1536px) */
+  --breakpoint-3xl: 120rem; /* 1920px — QHD / 4K fenêtré */
+  --breakpoint-4xl: 160rem; /* 2560px — QHD plein écran, ultrawide */
 }
 
 :root {
@@ -223,24 +227,86 @@ h3,
   color: #fff;
 }
 
-/* Conteneurs responsive — mobile-first */
+/*
+  Conteneurs responsive — mobile-first, puis élargissement par paliers.
+  Deux tokens pilotent toute la mise en page : la largeur utile (--page-max)
+  et la gouttière (--page-gutter). Les modifier ici suffit à recadrer le site.
+*/
+:root {
+  --page-max: 1320px;
+  --page-gutter: 1rem;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --page-gutter: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --page-gutter: 1.75rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  :root {
+    --page-max: 1480px;
+    --page-gutter: 2rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  :root {
+    --page-max: 1800px;
+    --page-gutter: 2.5rem;
+  }
+}
+
+@media (min-width: 2560px) {
+  :root {
+    --page-max: 2280px;
+    --page-gutter: 3rem;
+  }
+}
+
 @layer components {
   .page-container {
     margin-inline: auto;
-    max-width: 1320px;
-    padding-inline: 1rem;
+    max-width: var(--page-max);
+    padding-inline: var(--page-gutter);
   }
 
   .page-section {
     margin-inline: auto;
-    max-width: 1320px;
-    padding-inline: 1rem;
+    max-width: var(--page-max);
+    padding-inline: var(--page-gutter);
     padding-top: 2.25rem;
     padding-bottom: 60px;
   }
 
   .page-pad {
-    padding-inline: 1rem;
+    padding-inline: var(--page-gutter);
+  }
+
+  /*
+    Bandeau pleine largeur (barre de nav…) dont le contenu reste aligné
+    sur le bord des sections : la gouttière absorbe la marge du conteneur
+    dès que l'écran dépasse --page-max.
+  */
+  .page-bleed {
+    padding-inline: max(var(--page-gutter), calc((100% - var(--page-max)) / 2));
+  }
+
+  /*
+    Contenu « à lire », pas « à balayer » : panier, tunnel d'achat, réglages,
+    fiche produit. Le conteneur s'élargit pour les catalogues, mais un
+    formulaire étiré sur 1900px devient illisible — on le recentre.
+    Inactif sous 1920px : les tailles d'écran courantes ne bougent pas.
+  */
+  .page-focus {
+    margin-inline: auto;
+    max-width: var(--page-focus-max, 100%);
   }
 
   .scroll-touch {
@@ -248,24 +314,14 @@ h3,
   }
 }
 
-@media (min-width: 640px) {
-  .page-container,
-  .page-section {
-    padding-inline: 1.5rem;
-  }
-
-  .page-pad {
-    padding-inline: 1.5rem;
+@media (min-width: 1920px) {
+  :root {
+    --page-focus-max: 1500px;
   }
 }
 
-@media (min-width: 1024px) {
-  .page-container,
-  .page-section {
-    padding-inline: 1.75rem;
-  }
-
-  .page-pad {
-    padding-inline: 1.75rem;
+@media (min-width: 2560px) {
+  :root {
+    --page-focus-max: 1680px;
   }
 }

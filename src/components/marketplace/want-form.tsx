@@ -79,7 +79,7 @@ export function WantForm({
   }
 
   return (
-    <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1fr_360px]">
+    <div className="page-focus grid grid-cols-1 items-start gap-4 lg:grid-cols-[1fr_360px]">
       <div className="flex flex-col gap-4">
         <section className="rounded-[18px] border border-charbon-500 bg-charbon-800 p-5">
           <StepHeader n="01" title={t("stepPickCard")} />
@@ -93,7 +93,7 @@ export function WantForm({
           {filtered.length === 0 ? (
             <p className="py-6 text-center text-[12.5px] font-bold text-texte-faible">{t("noResults")}</p>
           ) : (
-            <div className="grid max-h-[420px] grid-cols-3 gap-3 overflow-y-auto pb-1 sm:grid-cols-4 md:grid-cols-5">
+            <div className="grid max-h-[420px] grid-cols-3 gap-3 overflow-y-auto pb-1 sm:grid-cols-4 md:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7">
               {filtered.map((c) => (
                 <button
                   key={c.variantId}

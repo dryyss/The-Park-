@@ -360,7 +360,7 @@ export function MarketplaceRecapClient({
   }
 
   return (
-    <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
+    <div className="page-focus mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
       <div className="flex flex-col gap-3">
         {recap.lines.map((line) => (
           <div key={line.id} className="flex gap-4 rounded-[16px] border border-charbon-500 bg-charbon-800 p-4">

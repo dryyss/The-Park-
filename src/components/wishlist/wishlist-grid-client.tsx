@@ -51,7 +51,7 @@ export function WishlistGridClient({
   return (
     <div className="flex flex-col gap-4">
       {showLoginGate && <LoginGatePrompt messageKey="loginGateWishlist" />}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6">
       {items.map((card) => {
         const meta = rarityMeta(card.rarityCode);
         return (

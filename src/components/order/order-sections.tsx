@@ -56,7 +56,7 @@ export async function OrderDetailPanel({ order }: { order: OrderDetail }) {
   const t = await getTranslations("orders");
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
+    <div className="page-focus grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
       <div className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
         <p className="font-mono text-[14px] font-extrabold text-or">{order.orderNumber}</p>
         <p className="mt-1 text-[12px] font-bold text-texte-dim">

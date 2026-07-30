@@ -17,18 +17,6 @@ export function parseCollectionGridCols(value?: string): CollectionGridCols {
   return DEFAULT_COLLECTION_GRID_COLS;
 }
 
-export function collectionGridClassName(cols: CollectionGridCols): string {
-  const base = "grid gap-4.5";
-  switch (cols) {
-    case 3:
-      return `${base} grid-cols-2 sm:grid-cols-3`;
-    case 5:
-      return `${base} grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`;
-    default:
-      return `${base} grid-cols-2 sm:grid-cols-3 md:grid-cols-4`;
-  }
-}
-
 export interface CollectionUrlParams {
   segment: "all" | "owned" | "missing";
   rarity?: string;

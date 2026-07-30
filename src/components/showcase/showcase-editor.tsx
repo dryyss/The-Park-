@@ -366,7 +366,7 @@ export function ShowcaseEditor({
   const bySlot = new Map(active.items.filter((it) => it.page === safePage).map((it) => [it.slot, it]));
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+    <div className="page-focus grid gap-6 lg:grid-cols-[1fr_320px]">
       {/* Colonne principale : classeur */}
       <div>
         {/* Onglets de classeurs */}

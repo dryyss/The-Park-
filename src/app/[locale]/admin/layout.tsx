@@ -34,7 +34,8 @@ export default async function AdminLayout({
       staffRole={staffRole}
       displayName={access.user.displayName}
     >
-      <div className="mx-auto max-w-[1200px]">{children}</div>
+      {/* La console respire aussi sur les très grands écrans (cf. --page-max côté vitrine). */}
+      <div className="mx-auto max-w-[1200px] 2xl:max-w-[1440px] 3xl:max-w-[1760px] 4xl:max-w-[2160px]">{children}</div>
     </AdminShell>
   );
 }

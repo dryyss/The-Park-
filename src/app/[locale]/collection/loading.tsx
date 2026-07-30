@@ -26,7 +26,7 @@ export default function CollectionLoading() {
             <div className="h-6 w-44 rounded bg-charbon-700" />
             <div className="h-5 w-16 rounded-full bg-charbon-700" />
           </div>
-          <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-4 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-7 3xl:grid-cols-8">
             {Array.from({ length: 12 }, (_, i) => (
               <div key={i} className="aspect-5/7 rounded-[10px] border border-charbon-500 bg-charbon-800" />
             ))}

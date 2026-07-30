@@ -66,7 +66,7 @@ export default async function PortefeuillePage({
             earnedBalanceEur={summary.earnedBalanceEur}
             spendableBalanceEur={summary.spendableBalanceEur}
           />
-          <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
+          <div className="page-focus grid gap-6 lg:grid-cols-[1fr_1fr]">
             <WalletTopUpForm locale={locale} depositBalanceEur={summary.depositBalanceEur} />
 
           <div className="rounded-2xl border border-charbon-500 bg-charbon-800 p-5">

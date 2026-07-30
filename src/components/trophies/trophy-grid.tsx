@@ -40,7 +40,7 @@ export async function TrophyGrid({ badges, unlocked, total, pct }: { badges: Tro
               {catBadges.filter((b) => b.unlocked).length}/{catBadges.length}
             </span>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6">
             {catBadges.map((b) => (
               <div
                 key={b.code}

@@ -132,7 +132,7 @@ export default async function RecherchePage({
                 ? t("resultCount", { count: results.length, q })
                 : t("resultCountFiltered", { count: results.length })}
           </p>
-          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-7 3xl:grid-cols-8">
             {results.map((c) => (
               <Link key={c.slug} href={`/carte/${c.slug}`}>
                 <CatalogCardFrame rarityColor={c.color}>

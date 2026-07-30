@@ -28,7 +28,11 @@
       "Bash(xargs -I{} sh -c 'echo \"=== {} : $\\(grep -c \"editionLabel\\\\|editionPreset\\\\|isFirstEdition\\\\|EditionLabel\\\\|EDITION_PRESET\\\\|CollectionEdition\\\\|reprint\\\\|firstEdition\" {}\\)\"')",
       "Bash(node -e \"const m=require\\('./src/messages/fr.json'\\);console.log\\(JSON.stringify\\(m.admin.catalog,null,2\\)\\);console.log\\('--filters--'\\);console.log\\(JSON.stringify\\(m.admin.filters,null,2\\)\\)\")",
       "PowerShell(npx tsc --noEmit -p tsconfig.json)",
-      "Bash(echo \"EXIT_TSC=$?\")"
+      "Bash(echo \"EXIT_TSC=$?\")",
+      "Bash(node -e \"const fr=require\\('./src/messages/fr.json'\\),en=require\\('./src/messages/en.json'\\),ja=require\\('./src/messages/ja.json'\\);const leaves=o=>{const s=new Set\\(\\);const w=\\(x,p=''\\)=>{for\\(const k in x\\){const q=p?p+'.'+k:k;if\\(x[k]&&typeof x[k]==='object'\\)w\\(x[k],q\\);else s.add\\(q\\)}};w\\(o\\);return s};const F=leaves\\(fr\\),E=leaves\\(en\\),J=leaves\\(ja\\);const miss=\\(a,b\\)=>[...a].filter\\(k=>!b.has\\(k\\)\\);console.log\\('fr',F.size,'en',E.size,'ja',J.size\\);console.log\\('manque en EN:',miss\\(F,E\\).join\\(', '\\)||'-'\\);console.log\\('manque en JA:',miss\\(F,J\\).join\\(', '\\)||'-'\\);console.log\\('en trop EN:',miss\\(E,F\\).join\\(', '\\)||'-'\\);console.log\\('en trop JA:',miss\\(J,F\\).join\\(', '\\)||'-'\\);const ks=['friendRequest','friendRequestBody','friendAccepted','friendAcceptedBody'];for\\(const k of ks\\)console.log\\(k,'|',fr.notifications.types[k],'|',en.notifications.types[k],'|',ja.notifications.types[k]\\);const ord=o=>Object.keys\\(o.notifications.types\\).join\\(','\\);console.log\\('ordre identique:',ord\\(fr\\)===ord\\(en\\)&&ord\\(fr\\)===ord\\(ja\\)\\)\")",
+      "Bash(git --no-pager log --oneline -3)",
+      "Bash(git --no-pager log --oneline origin/main -1)",
+      "Bash(git --no-pager log --oneline --all)"
     ],
     "additionalDirectories": [
       "\\tmp"

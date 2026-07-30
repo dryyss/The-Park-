@@ -97,7 +97,7 @@ export function CheckoutForm({ cart, locale, isAuthenticated, defaultName, freeS
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+    <form onSubmit={handleSubmit} className="page-focus grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
       <div className="flex flex-col gap-5">
         <section className="rounded-[16px] border border-charbon-500 bg-charbon-800 p-5">
           <h2 className="font-display text-[16px] tracking-wide text-blanc-casse uppercase">{t("shipping")}</h2>

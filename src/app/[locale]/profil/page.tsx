@@ -44,7 +44,7 @@ export default async function ProfilPage({ params }: { params: Promise<{ locale:
   return (
     <main className="page-section pt-8">
       <ProfileHeader profile={profile} />
-      <div className="mt-5 grid grid-cols-1 items-start gap-5 lg:grid-cols-[330px_1fr]">
+      <div className="page-focus mt-5 grid grid-cols-1 items-start gap-5 lg:grid-cols-[330px_1fr]">
         <ProfileSidebar profile={profile} />
         <div className="flex flex-col gap-6">
           <ProfileQuickLinks profile={profile} />

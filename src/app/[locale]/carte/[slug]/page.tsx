@@ -94,7 +94,7 @@ export default async function CartePage({ params }: { params: Promise<{ locale: 
         )}
       </nav>
 
-      <div className="mt-6 grid items-start gap-6 lg:grid-cols-2 lg:gap-4 xl:grid-cols-[380px_1fr]">
+      <div className="page-focus mt-6 grid items-start gap-6 lg:grid-cols-2 lg:gap-4 xl:grid-cols-[380px_1fr] 3xl:grid-cols-[460px_1fr]">
         <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
           <div className="relative min-w-0 flex-1 lg:sticky lg:top-[90px]">
             <CardSetViewer

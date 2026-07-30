@@ -58,7 +58,7 @@ export async function UnifiedCartView({ locale }: { locale: string }) {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
+          <div className="page-focus grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
             <div className="flex flex-col gap-3">
               {shopCart.lines.map((line) => (
                 <div key={line.id} className="flex gap-4 rounded-[16px] border border-charbon-500 bg-charbon-800 p-4">

@@ -38,7 +38,10 @@ export function VirtualCardGrid<T>({
   gapPx?: number;
 }) {
   const parentRef = useRef<HTMLDivElement>(null);
+  /** Largeur du conteneur : sert à estimer la hauteur d'une ligne. */
   const [width, setWidth] = useState(0);
+  /** Largeur du viewport : sert à déduire le nombre de colonnes, comme les media queries. */
+  const [viewportWidth, setViewportWidth] = useState(0);
   const [scrollMargin, setScrollMargin] = useState(0);
 
   useLayoutEffect(() => {
@@ -47,6 +50,7 @@ export function VirtualCardGrid<T>({
 
     const measure = () => {
       setWidth(el.clientWidth);
+      setViewportWidth(window.innerWidth);
       setScrollMargin(el.offsetTop);
     };
 
@@ -60,7 +64,7 @@ export function VirtualCardGrid<T>({
     };
   }, [items.length]);
 
-  const columns = Math.max(1, getColumnCount(width, columnConfig));
+  const columns = Math.max(1, getColumnCount(viewportWidth, columnConfig));
   const rows = useMemo(() => chunk(items, columns), [items, columns]);
   const gridClass = gridClassFromColumnConfig(columnConfig);
 

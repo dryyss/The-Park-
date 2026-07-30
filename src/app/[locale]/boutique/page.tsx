@@ -56,7 +56,7 @@ export default async function BoutiquePage({
       {products.length === 0 ? (
         <p className="mt-10 text-center text-[14px] font-bold text-texte-dim">{t("empty")}</p>
       ) : (
-        <div className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6">
           {products.map((p) => (
             <ProductTile key={p.id} product={p} />
           ))}

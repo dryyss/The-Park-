@@ -94,7 +94,7 @@ export function TopBar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex h-14 items-center gap-3 border-b border-charbon-500 bg-charbon/[0.86] px-4 backdrop-blur-md sm:h-[66px] sm:gap-5 md:gap-7 md:px-6 lg:px-7">
+      <header className="page-bleed sticky top-0 z-40 flex h-14 items-center gap-3 border-b border-charbon-500 bg-charbon/[0.86] backdrop-blur-md sm:h-[66px] sm:gap-5 md:gap-7">
         <Link href="/" className="flex shrink-0 items-center gap-2.5 sm:gap-3">
           <span className="h-9 w-9 -rotate-[4deg] overflow-hidden rounded-[9px] bg-blanc-casse shadow-lg sm:h-[42px] sm:w-[42px]">
             <Image src="/uploads/pasted-1781200672492-0.png" alt="The Park" width={42} height={42} className="h-full w-full scale-110 object-cover" />

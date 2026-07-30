@@ -25,8 +25,12 @@ const FAN_SLOTS = [
 ] as const;
 
 export function HeroCardFan({ cards }: { cards: CardDisplay[] }) {
+  // Les décalages de l'éventail sont en %, mais la largeur des cartes est
+  // plafonnée en px : au-delà d'une certaine largeur les cartes cessent de se
+  // chevaucher et l'éventail se disloque. On borne donc la zone, puis on la
+  // recentre dans sa colonne.
   return (
-    <div className="relative mx-auto h-[300px] w-full max-w-[480px] sm:h-[360px] lg:mx-0 lg:h-[500px] lg:max-w-none">
+    <div className="relative mx-auto h-[300px] w-full max-w-[480px] sm:h-[360px] lg:mx-0 lg:h-[500px] lg:max-w-none xl:mx-auto xl:max-w-[560px] 3xl:h-[560px] 3xl:max-w-[620px]">
       {cards.slice(0, 3).map((card, i) => {
         const slot = FAN_SLOTS[i];
         if (!slot) return null;

@@ -84,7 +84,7 @@ export function MarketplaceCartClient({
   }
 
   return (
-    <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+    <div className="page-focus mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
       <div className="flex flex-col gap-3">
         {cart.expiredCount > 0 && (
           <div className="flex flex-wrap items-center gap-3 rounded-[14px] border border-neon-rouge/40 bg-neon-rouge/8 px-4 py-3">

@@ -23,7 +23,7 @@ export async function AuctionGrid({ auctions }: { auctions: AuctionListItem[] })
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5">
       {auctions.map((a) => {
         const meta = rarityMeta(a.rarityCode);
         return (
@@ -101,7 +101,7 @@ export async function AuctionDetailPanel({
   const shippingModes = SELECTABLE_SHIPPING_MODES.map((m) => ({ code: m.code, feeEur: m.feeEur }));
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
+    <div className="page-focus grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
       <div className="border-charbon-500 bg-charbon-800 rounded-[18px] border p-6">
         <div className="flex flex-col gap-5 sm:flex-row">
           <Link

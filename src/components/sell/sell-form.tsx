@@ -100,7 +100,7 @@ export function SellForm({
   // invisible — `AppShell` porte `overflow-x-hidden` — et rogne silencieusement
   // la 2e carte de type et le texte du bouton Publier.
   return (
-    <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+    <div className="page-focus grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
       <div className="flex flex-col gap-4">
         <section className="rounded-[18px] border border-charbon-500 bg-charbon-800 p-5">
           <StepHeader n="01" title={t("stepPickCard")} />

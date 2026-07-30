@@ -138,7 +138,7 @@ export function FriendsListWithSearch({
       {filtered.length === 0 ? (
         <p className="py-4 text-center text-[12.5px] font-bold text-texte-dim">{noResult}</p>
       ) : (
-        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6">
           {filtered.map((f) => (
             <li key={f.id}>
               <Link

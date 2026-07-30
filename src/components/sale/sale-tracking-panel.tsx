@@ -160,7 +160,7 @@ export function SaleTrackingPanel({ view }: { view: SaleTrackingView }) {
   const notShipDeadline = shipment?.notShipDeadline ? new Date(shipment.notShipDeadline) : null;
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
+    <div className="page-focus grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
       <div className="rounded-[18px] border border-charbon-500 bg-charbon-800 p-6">
         {/* En-tête vente */}
         <div className="flex gap-4">

@@ -52,7 +52,7 @@ export default async function HorsSeriePage({ params }: { params: Promise<{ loca
           <div className="mt-8">
             <RarityCarousel rarities={rarities} />
           </div>
-          <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-7 3xl:grid-cols-8">
             {cardsWithQty.map((c) => (
               <SeasonCardTile key={c.slug} card={c} isAuthenticated={isAuthenticated} />
             ))}

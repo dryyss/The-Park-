@@ -68,7 +68,7 @@ export function ShippingOptionPicker() {
           <p className="mt-4 max-w-[700px] text-[13.5px] leading-relaxed font-semibold text-texte-muet">{t("heroDesc")}</p>
         </div>
 
-        <div className="mt-6 grid grid-cols-1 items-start gap-5 lg:grid-cols-[1fr_340px]">
+        <div className="page-focus mt-6 grid grid-cols-1 items-start gap-5 lg:grid-cols-[1fr_340px]">
           <div className="flex flex-col gap-3.5">
             <button
               type="button"
