@@ -12,7 +12,7 @@ export interface PlatformConfigView {
   demoUserSlug: string | null;
   listingDefaultDays: number;
   /** Vidéo de présentation de l'accueil. `null` = section masquée. */
-  introVideo: { url: string; posterUrl: string | null } | null;
+  introVideo: { url: string; posterUrl: string | null; placement: "intro" | "section" } | null;
 }
 
 const DEFAULTS: PlatformConfigView = {
@@ -39,7 +39,11 @@ export async function getPlatformConfig(): Promise<PlatformConfigView> {
     listingDefaultDays: row.listingDefaultDays,
     // Sans URL, pas de section : une vignette seule n'aurait rien à lire.
     introVideo: row.introVideoUrl
-      ? { url: row.introVideoUrl, posterUrl: row.introVideoPosterUrl }
+      ? {
+          url: row.introVideoUrl,
+          posterUrl: row.introVideoPosterUrl,
+          placement: row.introVideoPlacement === "section" ? "section" : "intro",
+        }
       : null,
   };
 }
@@ -63,6 +67,7 @@ export async function updatePlatformConfig(data: {
   listingDefaultDays?: number;
   introVideoUrl?: string | null;
   introVideoPosterUrl?: string | null;
+  introVideoPlacement?: string;
 }): Promise<void> {
   await prisma.platformConfig.upsert({
     where: { id: "default" },
@@ -75,6 +80,7 @@ export async function updatePlatformConfig(data: {
       listingDefaultDays: data.listingDefaultDays ?? DEFAULTS.listingDefaultDays,
       introVideoUrl: data.introVideoUrl ?? null,
       introVideoPosterUrl: data.introVideoPosterUrl ?? null,
+      introVideoPlacement: data.introVideoPlacement ?? "intro",
     },
     update: {
       ...(data.shopFreeShippingMin !== undefined ? { shopFreeShippingMin: data.shopFreeShippingMin } : {}),
@@ -85,6 +91,9 @@ export async function updatePlatformConfig(data: {
       ...(data.introVideoUrl !== undefined ? { introVideoUrl: data.introVideoUrl } : {}),
       ...(data.introVideoPosterUrl !== undefined
         ? { introVideoPosterUrl: data.introVideoPosterUrl }
+        : {}),
+      ...(data.introVideoPlacement !== undefined
+        ? { introVideoPlacement: data.introVideoPlacement }
         : {}),
     },
   });

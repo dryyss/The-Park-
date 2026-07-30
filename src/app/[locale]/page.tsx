@@ -8,6 +8,7 @@ import { getViewerUser } from "@/server/user/user.service";
 import { getPlatformConfig } from "@/server/platform/platform.service";
 import { HeroSection } from "@/components/home/hero-section";
 import { IntroVideo } from "@/components/home/intro-video";
+import { IntroOverlay } from "@/components/home/intro-overlay";
 import { HowToDominate } from "@/components/home/how-to-dominate";
 import { FeaturedCards } from "@/components/home/featured-cards";
 import { SeasonBanner } from "@/components/home/season-banner";
@@ -66,11 +67,15 @@ export default async function Home({
           {tAuth("loginFailed", { code: authError })}
         </div>
       )}
+      {platform.introVideo?.placement === "intro" && (
+        <IntroOverlay url={platform.introVideo.url} posterUrl={platform.introVideo.posterUrl} />
+      )}
+
       <HeroSection heroCards={heroCards} />
 
       {/* Masquée tant qu'aucune URL n'est renseignée en admin : la page reste
           intacte avant la mise en ligne de la vidéo. */}
-      {platform.introVideo && (
+      {platform.introVideo?.placement === "section" && (
         <IntroVideo url={platform.introVideo.url} posterUrl={platform.introVideo.posterUrl} />
       )}
 

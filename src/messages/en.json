@@ -154,7 +154,10 @@
     "introVideoKicker": "Watch",
     "introVideoTitle": "Discover The Park",
     "introVideoPlay": "Play the intro video",
-    "introVideoNoSupport": "Your browser can't play this video."
+    "introVideoNoSupport": "Your browser can't play this video.",
+    "introVideoSkip": "Skip",
+    "introVideoUnmute": "🔇 Turn sound on",
+    "introVideoMute": "🔊 Turn sound off"
   },
   "pages": {
     "soon": "This section is already wired into the navigation. Its dynamic content is coming very soon.",
@@ -1644,7 +1647,10 @@
       "introVideoUrl": "Intro video (URL)",
       "introVideoUrlHint": "https://…cellar-c2.services.clever-cloud.com/… — empty hides the section",
       "introVideoPoster": "Video thumbnail (URL)",
-      "introVideoPosterHint": "Shown before playback — without it, a gradient is used"
+      "introVideoPosterHint": "Shown before playback — without it, a gradient is used",
+      "introVideoPlacement": "Video placement",
+      "introVideoPlacementIntro": "Full-screen intro (first visit)",
+      "introVideoPlacementSection": "Block on the home page"
     },
     "orders": {
       "kicker": "Shop · orders",

@@ -22,6 +22,7 @@ export function AdminPlatformSettings({ config }: { config: PlatformConfigView }
         // Champ vidé = section masquée : on renvoie null plutôt qu'une chaîne vide.
         introVideoUrl: String(form.get("introVideoUrl") || "") || null,
         introVideoPosterUrl: String(form.get("introVideoPosterUrl") || "") || null,
+        introVideoPlacement: String(form.get("introVideoPlacement") || "intro"),
       });
       router.refresh();
     });
@@ -94,6 +95,17 @@ export function AdminPlatformSettings({ config }: { config: PlatformConfigView }
             placeholder={t("introVideoPosterHint")}
             className="mt-1 w-full rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse"
           />
+        </label>
+        <label className="block md:col-span-2">
+          <span className="text-[10px] font-extrabold tracking-wide text-texte-dim uppercase">{t("introVideoPlacement")}</span>
+          <select
+            name="introVideoPlacement"
+            defaultValue={config.introVideo?.placement ?? "intro"}
+            className="mt-1 w-full rounded-lg border border-charbon-500 bg-charbon-700 px-3 py-2 text-blanc-casse"
+          >
+            <option value="intro" className="bg-charbon-800">{t("introVideoPlacementIntro")}</option>
+            <option value="section" className="bg-charbon-800">{t("introVideoPlacementSection")}</option>
+          </select>
         </label>
       </div>
       <button

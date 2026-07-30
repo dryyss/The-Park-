@@ -16,6 +16,7 @@ const platformSchema = z.object({
   listingDefaultDays: z.number().int().min(1).max(365).optional(),
   introVideoUrl: z.string().trim().max(500).nullish(),
   introVideoPosterUrl: z.string().trim().max(500).nullish(),
+  introVideoPlacement: z.enum(["intro", "section"]).optional(),
 });
 
 export async function updatePlatformConfigAction(input: unknown): Promise<AdminActionResult> {

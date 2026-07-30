@@ -154,7 +154,10 @@
     "introVideoKicker": "動画で見る",
     "introVideoTitle": "The Park を見てみよう",
     "introVideoPlay": "紹介動画を再生する",
-    "introVideoNoSupport": "お使いのブラウザではこの動画を再生できません。"
+    "introVideoNoSupport": "お使いのブラウザではこの動画を再生できません。",
+    "introVideoSkip": "スキップ",
+    "introVideoUnmute": "🔇 音を出す",
+    "introVideoMute": "🔊 音を消す"
   },
   "pages": {
     "soon": "このセクションはすでにナビゲーションに接続されています。動的コンテンツは近日公開予定です。",
@@ -1644,7 +1647,10 @@
       "introVideoUrl": "紹介動画（URL）",
       "introVideoUrlHint": "https://…cellar-c2.services.clever-cloud.com/… — 空欄でセクション非表示",
       "introVideoPoster": "動画サムネイル（URL）",
-      "introVideoPosterHint": "再生前に表示される画像。未設定ならグラデーション表示"
+      "introVideoPosterHint": "再生前に表示される画像。未設定ならグラデーション表示",
+      "introVideoPlacement": "動画の表示方法",
+      "introVideoPlacementIntro": "全画面イントロ（初回訪問時）",
+      "introVideoPlacementSection": "ホームページ内のブロック"
     },
     "orders": {
       "kicker": "ショップ · 注文",

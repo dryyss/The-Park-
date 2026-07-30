@@ -154,7 +154,10 @@
     "introVideoKicker": "En vidéo",
     "introVideoTitle": "Découvre The Park",
     "introVideoPlay": "Lancer la vidéo de présentation",
-    "introVideoNoSupport": "Ton navigateur ne peut pas lire cette vidéo."
+    "introVideoNoSupport": "Ton navigateur ne peut pas lire cette vidéo.",
+    "introVideoSkip": "Passer",
+    "introVideoUnmute": "🔇 Activer le son",
+    "introVideoMute": "🔊 Couper le son"
   },
   "pages": {
     "soon": "Cette section est déjà branchée à la navigation. Son contenu dynamique arrive très bientôt.",
@@ -1644,7 +1647,10 @@
       "introVideoUrl": "Vidéo de présentation (URL)",
       "introVideoUrlHint": "https://…cellar-c2.services.clever-cloud.com/… — vide = section masquée",
       "introVideoPoster": "Vignette de la vidéo (URL)",
-      "introVideoPosterHint": "Image affichée avant lecture — sans elle, un fond dégradé s'affiche"
+      "introVideoPosterHint": "Image affichée avant lecture — sans elle, un fond dégradé s'affiche",
+      "introVideoPlacement": "Affichage de la vidéo",
+      "introVideoPlacementIntro": "En intro plein écran (1re visite)",
+      "introVideoPlacementSection": "En bloc dans la page d'accueil"
     },
     "orders": {
       "kicker": "Boutique · commandes",
