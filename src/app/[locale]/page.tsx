@@ -71,13 +71,13 @@ export default async function Home({
         <IntroOverlay url={platform.introVideo.url} posterUrl={platform.introVideo.posterUrl} />
       )}
 
-      <HeroSection heroCards={heroCards} />
-
-      {/* Masquée tant qu'aucune URL n'est renseignée en admin : la page reste
-          intacte avant la mise en ligne de la vidéo. */}
+      {/* Bandeau vidéo immersif en tête de page (avant le hero). Masqué tant
+          qu'aucune URL n'est renseignée en admin : la page reste intacte. */}
       {platform.introVideo?.placement === "section" && (
         <IntroVideo url={platform.introVideo.url} posterUrl={platform.introVideo.posterUrl} />
       )}
+
+      <HeroSection heroCards={heroCards} />
 
       <div className="page-container pb-[60px]">
         <PromoBannerStrip className="mt-6" />

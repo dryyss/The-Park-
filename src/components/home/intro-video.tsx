@@ -4,69 +4,64 @@ import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
 /**
- * Vidéo de présentation sur l'accueil.
+ * Vidéo de présentation sur l'accueil, en bandeau immersif plein écran
+ * (pleine largeur, hauteur de viewport, sans bordure).
  *
- * Rien de la vidéo n'est téléchargé au chargement de la page : on affiche une
- * vignette, et le `<video>` n'est monté qu'au clic, avec `preload="none"`. Une
- * lecture automatique aurait coûté plusieurs mégaoctets à chaque visite — pour
- * un contenu que la plupart des visiteurs ne regarderont pas — et dégradé le
- * temps d'affichage de la page comme la bande passante de l'hébergement.
+ * Lecture automatique en sourdine + boucle : c'est un décor d'accueil, pas un
+ * lecteur classique. Le son s'active d'un clic (les navigateurs refusent
+ * l'autoplay sonore). Si la source ne peut pas être décodée (format, réseau),
+ * on masque proprement au lieu de laisser un écran noir.
  */
 export function IntroVideo({ url, posterUrl }: { url: string; posterUrl: string | null }) {
   const t = useTranslations("home");
-  const [playing, setPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [muted, setMuted] = useState(true);
+  const [failed, setFailed] = useState(false);
+
+  function toggleMute() {
+    setMuted((m) => {
+      const next = !m;
+      if (videoRef.current) videoRef.current.muted = next;
+      return next;
+    });
+  }
+
+  if (failed) return null;
 
   return (
-    <section className="page-container py-10 sm:py-14">
-      <div className="mb-5 text-center">
-        <p className="text-carmin text-[12px] font-bold tracking-[4px] uppercase">
-          {t("introVideoKicker")}
-        </p>
-        <h2 className="font-display text-blanc-casse mt-2 skew-x-[-3deg] text-[clamp(26px,5vw,44px)] leading-[1.05] uppercase">
+    <section className="relative h-svh min-h-105 w-full overflow-hidden bg-black">
+      <video
+        ref={videoRef}
+        src={url}
+        poster={posterUrl ?? undefined}
+        autoPlay
+        muted={muted}
+        loop
+        playsInline
+        preload="auto"
+        onError={() => setFailed(true)}
+        className="absolute inset-0 h-full w-full object-cover"
+      >
+        {t("introVideoNoSupport")}
+      </video>
+
+      {/* Voile dégradé : garde le titre lisible sans masquer la vidéo. */}
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-black/40" />
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 px-6 pb-10 text-center sm:pb-14">
+        <p className="text-carmin text-[12px] font-bold tracking-[4px] uppercase">{t("introVideoKicker")}</p>
+        <h2 className="font-display text-blanc-casse mt-2 -skew-x-3 text-[clamp(28px,6vw,56px)] leading-[1.05] uppercase drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
           {t("introVideoTitle")}
         </h2>
       </div>
 
-      <div className="border-charbon-500 bg-charbon-900 relative mx-auto aspect-video w-full max-w-[900px] overflow-hidden rounded-[18px] border shadow-[0_18px_40px_rgba(0,0,0,0.55)]">
-        {playing ? (
-          <video
-            ref={videoRef}
-            src={url}
-            poster={posterUrl ?? undefined}
-            controls
-            autoPlay
-            playsInline
-            preload="none"
-            className="h-full w-full bg-black"
-          >
-            {t("introVideoNoSupport")}
-          </video>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setPlaying(true)}
-            aria-label={t("introVideoPlay")}
-            className="group relative block h-full w-full cursor-pointer"
-          >
-            {posterUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element -- visuel hébergé sur Cellar, hors loader Next
-              <img
-                src={posterUrl}
-                alt=""
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-              />
-            ) : (
-              <span className="from-charbon-800 to-charbon absolute inset-0 bg-gradient-to-br" />
-            )}
-            <span className="absolute inset-0 bg-black/35 transition group-hover:bg-black/20" />
-            <span className="bg-carmin absolute top-1/2 left-1/2 flex h-[72px] w-[72px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full shadow-[0_8px_24px_rgba(0,0,0,0.5)] transition group-hover:scale-110">
-              {/* Triangle légèrement décalé : optiquement centré dans le disque. */}
-              <span className="ml-1.5 border-y-[14px] border-l-[22px] border-y-transparent border-l-white" />
-            </span>
-          </button>
-        )}
-      </div>
+      <button
+        type="button"
+        onClick={toggleMute}
+        className="border-charbon-400 text-blanc-casse absolute right-4 bottom-4 rounded-full border bg-black/50 px-4 py-2 text-[12px] font-extrabold uppercase backdrop-blur transition hover:border-white sm:right-6 sm:bottom-6"
+      >
+        {muted ? t("introVideoUnmute") : t("introVideoMute")}
+      </button>
     </section>
   );
 }
