@@ -37,11 +37,17 @@ export function IntroOverlay({ url, posterUrl }: { url: string; posterUrl: strin
   }, []);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    try {
-      if (localStorage.getItem(SEEN_KEY)) return;
-    } catch {
-      return;
+    // `?intro=1` rejoue l'intro à la demande. Sans ça, elle n'est visible qu'une
+    // seule fois par navigateur : impossible de relire un rendu qu'on vient de
+    // modifier, ni de la montrer à quelqu'un sans vider son stockage local.
+    const forced = new URLSearchParams(window.location.search).get("intro") === "1";
+    if (!forced) {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      try {
+        if (localStorage.getItem(SEEN_KEY)) return;
+      } catch {
+        return;
+      }
     }
     setVisible(true);
   }, []);
