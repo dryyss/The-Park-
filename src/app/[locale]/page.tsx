@@ -5,7 +5,10 @@ import { getRecentListings, getMostWantedForSale } from "@/server/marketplace/ma
 import { getActiveAuctions } from "@/server/auction/auction.service";
 import { getTopCollectors, getRecentActivity } from "@/server/community/community.service";
 import { getViewerUser } from "@/server/user/user.service";
+import { getPlatformConfig } from "@/server/platform/platform.service";
 import { HeroSection } from "@/components/home/hero-section";
+import { IntroVideo } from "@/components/home/intro-video";
+import { IntroOverlay } from "@/components/home/intro-overlay";
 import { HowToDominate } from "@/components/home/how-to-dominate";
 import { FeaturedCards } from "@/components/home/featured-cards";
 import { SeasonBanner } from "@/components/home/season-banner";
@@ -47,6 +50,8 @@ export default async function Home({
     getMostWantedForSale(3),
   ]);
 
+  const platform = await getPlatformConfig();
+
   const featuredSlice = featured.slice(3, 8);
   const likeMeta = Object.fromEntries(
     await getCardsLikeMeta(
@@ -62,7 +67,17 @@ export default async function Home({
           {tAuth("loginFailed", { code: authError })}
         </div>
       )}
+      {platform.introVideo?.placement === "intro" && (
+        <IntroOverlay url={platform.introVideo.url} posterUrl={platform.introVideo.posterUrl} />
+      )}
+
       <HeroSection heroCards={heroCards} />
+
+      {/* Masquée tant qu'aucune URL n'est renseignée en admin : la page reste
+          intacte avant la mise en ligne de la vidéo. */}
+      {platform.introVideo?.placement === "section" && (
+        <IntroVideo url={platform.introVideo.url} posterUrl={platform.introVideo.posterUrl} />
+      )}
 
       <div className="page-container pb-[60px]">
         <PromoBannerStrip className="mt-6" />

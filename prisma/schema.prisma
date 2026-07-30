@@ -1696,6 +1696,15 @@ model PlatformConfig {
   /// Slug utilisateur démo si navigation sans login (null = désactivé)
   demoUserSlug         String?
   listingDefaultDays   Int      @default(30)
+  /// Vidéo de présentation affichée sur l'accueil. URL du fichier hébergé
+  /// (Cellar) — jamais la vidéo elle-même. Null = section masquée.
+  introVideoUrl        String?
+  /// Vignette affichée avant lecture. Sans elle, le navigateur devrait charger
+  /// la vidéo pour en extraire une image, ce qui annulerait le `preload="none"`.
+  introVideoPosterUrl  String?
+  /// « intro » = plein écran à la première visite, « section » = bloc dans la
+  /// page. Modifiable en admin : le placement se change sans redéploiement.
+  introVideoPlacement  String   @default("intro")
   updatedAt            DateTime @updatedAt
 }
 

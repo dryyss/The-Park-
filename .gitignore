@@ -46,4 +46,11 @@ next-env.d.ts
 # Maquettes HTML de référence (prévisualisation locale uniquement)
 _reference/**/*.html
 
+# Masters vidéo déposés à la racine (rushes client, exports 4K). Ils partent sur
+# Cellar, jamais dans git : au-delà de 100 Mo GitHub refuse le push, et un binaire
+# versionné alourdit le dépôt définitivement même après suppression.
+/*.mp4
+/*.mov
+/*.webm
+
 .vercel
