@@ -1,29 +1,42 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import type { PlatformConfigView } from "@/server/platform/platform.service";
 import { updatePlatformConfigAction } from "@/server/admin/platform.actions";
 
+/** Parse un nombre saisi en tolérant la virgule décimale ; jamais NaN. */
+function parseNumber(value: FormDataEntryValue | null, fallback: number): number {
+  const parsed = Number(String(value ?? "").replace(",", ".").trim());
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
 export function AdminPlatformSettings({ config }: { config: PlatformConfigView }) {
   const t = useTranslations("admin.settings");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const [status, setStatus] = useState<{ type: "ok" | "error"; message: string } | null>(null);
 
   function save(form: FormData) {
+    setStatus(null);
     startTransition(async () => {
-      await updatePlatformConfigAction({
-        shopFreeShippingMin: Number(form.get("shopFreeShippingMin")),
-        shopStandardShipping: Number(form.get("shopStandardShipping")),
+      const result = await updatePlatformConfigAction({
+        shopFreeShippingMin: parseNumber(form.get("shopFreeShippingMin"), config.shopShipping.freeShippingMin),
+        shopStandardShipping: parseNumber(form.get("shopStandardShipping"), config.shopShipping.standardShipping),
         shopDefaultCarrier: String(form.get("shopDefaultCarrier")),
         demoUserSlug: String(form.get("demoUserSlug") || "") || null,
-        listingDefaultDays: Number(form.get("listingDefaultDays")),
+        listingDefaultDays: parseNumber(form.get("listingDefaultDays"), config.listingDefaultDays),
         // Champ vidé = section masquée : on renvoie null plutôt qu'une chaîne vide.
         introVideoUrl: String(form.get("introVideoUrl") || "") || null,
         introVideoPosterUrl: String(form.get("introVideoPosterUrl") || "") || null,
         introVideoPlacement: String(form.get("introVideoPlacement") || "intro"),
       });
+      if (!result.ok) {
+        setStatus({ type: "error", message: result.error === "VALIDATION" ? t("saveValidation") : t("saveError") });
+        return;
+      }
+      setStatus({ type: "ok", message: t("saved") });
       router.refresh();
     });
   }
@@ -108,13 +121,23 @@ export function AdminPlatformSettings({ config }: { config: PlatformConfigView }
           </select>
         </label>
       </div>
-      <button
-        type="submit"
-        disabled={pending}
-        className="mt-6 rounded-lg bg-carmin px-5 py-2.5 text-[12px] font-extrabold text-white uppercase disabled:opacity-50"
-      >
-        {t("save")}
-      </button>
+      <div className="mt-6 flex items-center gap-4">
+        <button
+          type="submit"
+          disabled={pending}
+          className="rounded-lg bg-carmin px-5 py-2.5 text-[12px] font-extrabold text-white uppercase disabled:opacity-50"
+        >
+          {pending ? t("saving") : t("save")}
+        </button>
+        {status && (
+          <span
+            role="status"
+            className={`text-[12px] font-semibold ${status.type === "ok" ? "text-emerald-400" : "text-carmin-alt"}`}
+          >
+            {status.message}
+          </span>
+        )}
+      </div>
     </form>
   );
 }
