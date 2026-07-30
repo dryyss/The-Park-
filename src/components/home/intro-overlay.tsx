@@ -3,14 +3,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
-/** Une intro vue est une intro vue : on ne la rejoue pas à chaque passage. */
+/**
+ * Marqueur de session — volontairement dans `sessionStorage` et non
+ * `localStorage` : il s'efface à la fermeture du navigateur, donc l'intro
+ * rejoue à la visite suivante, mais survit à la navigation interne. Un membre
+ * qui revient sur l'accueil en cours de session ne la resubit pas.
+ */
 const SEEN_KEY = "the-park:intro-video-seen";
 
 /**
- * Vidéo d'intro plein écran, à la première visite de l'accueil.
+ * Vidéo d'intro plein écran, à l'ouverture du site.
  *
  * Trois garde-fous, parce qu'une intro qui s'impose est vite une intro qu'on
- * subit : elle ne se joue qu'une fois par visiteur, elle est interruptible à
+ * subit : elle ne se joue qu'une fois par session, elle est interruptible à
  * tout moment (bouton, Échap, fin de lecture), et elle ne se déclenche pas du
  * tout si le système demande de limiter les animations.
  *
@@ -29,22 +34,22 @@ export function IntroOverlay({ url, posterUrl }: { url: string; posterUrl: strin
 
   const dismiss = useCallback(() => {
     try {
-      localStorage.setItem(SEEN_KEY, "1");
+      sessionStorage.setItem(SEEN_KEY, "1");
     } catch {
-      // Navigation privée / stockage refusé : tant pis, l'intro se rejouera.
+      // Stockage refusé : tant pis, l'intro se rejouera à la prochaine page.
     }
     setVisible(false);
   }, []);
 
   useEffect(() => {
-    // `?intro=1` rejoue l'intro à la demande. Sans ça, elle n'est visible qu'une
-    // seule fois par navigateur : impossible de relire un rendu qu'on vient de
-    // modifier, ni de la montrer à quelqu'un sans vider son stockage local.
+    // `?intro=1` rejoue l'intro à la demande, sans attendre une nouvelle session :
+    // indispensable pour relire un rendu qu'on vient de modifier ou le montrer à
+    // quelqu'un dans la foulée.
     const forced = new URLSearchParams(window.location.search).get("intro") === "1";
     if (!forced) {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       try {
-        if (localStorage.getItem(SEEN_KEY)) return;
+        if (sessionStorage.getItem(SEEN_KEY)) return;
       } catch {
         return;
       }
