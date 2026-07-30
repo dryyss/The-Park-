@@ -6,8 +6,21 @@ import type { CardDisplay } from "@/server/catalog/catalog.service";
 export async function HeroSection({ heroCards }: { heroCards: CardDisplay[] }) {
   const t = await getTranslations("home");
 
+  // Hero plein écran.
+  //
+  // `dvh` et non `vh` : sur mobile, `vh` se calcule sur la hauteur barre
+  // d'adresse masquée, si bien qu'une section en 100vh dépasse la zone
+  // réellement visible et se fait rogner par le bas.
+  //
+  // On retranche ce qui empiète sur l'écran : l'en-tête, `sticky` donc occupant
+  // la hauteur de page (3.5rem, puis 66px dès `sm`), et la barre d'onglets
+  // mobile, `fixed` en bas et masquée à partir de `md` (~5rem).
+  //
+  // `min-h-` et non `h-` : au-delà d'un écran, le contenu s'étend au lieu d'être
+  // coupé. `content-center` répartit la hauteur libre autour des lignes de la
+  // grille — c'est lui qui centre verticalement.
   return (
-    <section className="page-container relative grid grid-cols-1 items-center gap-8 pt-12 pb-10 sm:gap-10 sm:pt-[70px] sm:pb-[50px] lg:grid-cols-[1.05fr_1fr] lg:gap-8">
+    <section className="page-container relative grid min-h-[calc(100dvh-3.5rem-5rem)] grid-cols-1 items-center content-center gap-8 pt-12 pb-10 sm:min-h-[calc(100dvh-66px-5rem)] sm:gap-10 sm:pt-[70px] sm:pb-[50px] md:min-h-[calc(100dvh-66px)] lg:grid-cols-[1.05fr_1fr] lg:gap-8">
       <div className="font-jp pointer-events-none absolute top-2.5 right-0 hidden text-[210px] leading-none font-black text-blanc-casse/3 select-none lg:block">
         駐車場
       </div>
